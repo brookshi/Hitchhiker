@@ -1,0 +1,13 @@
+{
+  "globalDependencies": {
+    "cookies": "registry:dt/cookies#0.5.1+20160316171810",
+    "koa": "registry:dt/koa#2.0.0+20161025101853",
+    "koa-bodyparser": "registry:dt/koa-bodyparser#3.0.0+20160928122441",
+    "koa-router": "registry:dt/koa-router#7.0.0+20160907102352",
+    "koa-session-minimal": "registry:dt/koa-session-minimal#3.0.0+20161019121247",
+    "node": "registry:dt/node#6.0.0+20161121110008"
+  },
+  "dependencies": {
+    "koa-compose": "registry:npm/koa-compose#3.0.0+20160723033700"
+  }
+}
