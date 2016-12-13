@@ -11,7 +11,7 @@ export default function middleware(context: Koa){
     return Compose(
         [
             Session(),
-            Bodyparser({enableTypes: ['json', 'form', 'text']}),
+            Bodyparser(),
             ctrlRouter.router(),
         ]
     );

@@ -3,7 +3,7 @@ import * as FS from 'fs';
 import * as KoaRouter from 'koa-router';
 import * as Koa from 'koa';
 import * as FileUtil from '../../utils/fileutil';
-import { Router } from '../../utils/symbols';
+import { Router } from '../../utils/decorators';
 import { ParamType } from '../../utils/paramType';
 import baseController from '../../common/baseController';
 import 'reflect-metadata';

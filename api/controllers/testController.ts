@@ -8,7 +8,7 @@ export default class Test extends baseController{
         console.info("test");
     }
 
-    @POST('/aaa/:id/:pwd')
+    @GET('/aaa/:id/:pwd')
     test1(@PathParam('id') id: string, @PathParam('pwd') pwd: number, @QueryParam('name') name: string, @BodyParam body: Object){
         console.info(`id:${id}, name:${name}, body:${body}`);
     }

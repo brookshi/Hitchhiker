@@ -1,7 +1,9 @@
 import baseController from '../common/baseController';
-import { Router } from "./symbols";
 import { ParamType } from "./paramType";
 import 'reflect-metadata';
+
+const Router = Symbol();
+export { Router }; 
 
 export function GET(path?: string) {
     return (target: baseController, name: string) => setMethodDecorator(target, name, 'GET', path);
