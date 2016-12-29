@@ -10,7 +10,8 @@
     "koa-query": "0.0.6",
     "koa-router": "^7.0.1",
     "koa-session-minimal": "^3.0.2",
-    "reflect-metadata": "^0.1.8"
+    "reflect-metadata": "^0.1.8",
+    "typeorm": "0.0.5"
   },
   "devDependencies": {},
   "scripts": {
