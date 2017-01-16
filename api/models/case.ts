@@ -1,4 +1,4 @@
-import { Table, PrimaryColumn, Column } from 'typeorm';
+import { Table, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn } from 'typeorm';
 
 @Table()
 export class Case
@@ -7,13 +7,13 @@ export class Case
     id: string;
 
     @Column()
+    collectionid: string;
+
+    @Column()
     pid: string;
 
     @Column()
     name: string;
-
-    @Column()
-    environment: string;
 
     @Column()
     url: string;
@@ -27,18 +27,18 @@ export class Case
     @Column("text")
     body: string;
 
-    @Column()
-    validation: string;
+    @Column("text")
+    test: string;
 
     @Column()
     sort: number;
 
     @Column()
-    isvalid: boolean;
+    isValid: boolean;
 
-    @Column()
-    createdtime: Date;
+    @CreateDateColumn()
+    createDate: Date;
 
-    @Column()
-    modifiedtime: Date;
+    @UpdateDateColumn()
+    updateDate: Date;
 }

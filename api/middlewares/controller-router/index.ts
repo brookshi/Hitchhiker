@@ -64,11 +64,14 @@ export class ControllerRouter {
     private buildFuncParams(ctx: any, controller: any, func: Function) {
         let paramsInfo = controller[Router][func.name].params;
         let params = [];
-        for(let i = 0; i < paramsInfo.length; i++) {
-            if(paramsInfo[i]){
-                params.push(paramsInfo[i].type(this.getParam(ctx, paramsInfo[i].paramType, paramsInfo[i].name)));
-            } else {
-                params.push(ctx);
+        if(paramsInfo)
+        {
+            for(let i = 0; i < paramsInfo.length; i++) {
+                if(paramsInfo[i]){
+                    params.push(paramsInfo[i].type(this.getParam(ctx, paramsInfo[i].paramType, paramsInfo[i].name)));
+                } else {
+                    params.push(ctx);
+                }
             }
         }
         return params;
