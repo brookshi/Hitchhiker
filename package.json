@@ -4,8 +4,6 @@
   "description": "restful api test tool",
   "main": "index.js",
   "dependencies": {
-    "@types/reflect-metadata": "0.0.5",
-    "@types/shortid": "0.0.28",
     "koa": "^2.0.0-alpha.7",
     "koa-bodyparser": "^3.2.0",
     "koa-query": "0.0.6",
@@ -13,10 +11,14 @@
     "koa-session-minimal": "^3.0.2",
     "reflect-metadata": "^0.1.8",
     "shortid": "^2.2.6",
+    "sqlite3": "3.1.8",
     "typeorm": "0.0.5",
-	  "sqlite3": "3.1.8"
+    "webapi-router": "^1.0.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/reflect-metadata": "0.0.5",
+    "@types/shortid": "0.0.28"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

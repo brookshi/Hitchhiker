@@ -4,7 +4,7 @@ import * as Koa from 'koa';
 import * as Compose from 'koa-compose';
 import * as Bodyparser from 'koa-bodyparser';
 import * as Session from 'koa-session-minimal';
-import {ControllerRouter} from './controller-router/index';
+import {ControllerRouter} from 'webapi-router';
 
 export default function middleware(context: Koa){
     let ctrlRouter = new ControllerRouter();

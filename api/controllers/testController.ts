@@ -1,10 +1,9 @@
-import baseController from '../common/baseController';
-import { GET, POST, DELETE, PUT, PathParam, QueryParam, BodyParam } from '../utils/decorators';
+import { GET, POST, DELETE, PUT, PathParam, QueryParam, BodyParam, BaseController } from 'webapi-router';
 import { CaseService } from '../services/collectionService';
 import { Database } from 'sqlite3';
 import * as fs from 'fs';
 
-export default class Test extends baseController{
+export default class Test extends BaseController{
 
     @GET()
     test(){
