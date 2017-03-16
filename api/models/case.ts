@@ -1,13 +1,14 @@
-import { Table, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne, UpdateDateColumn, CreateDateColumn } from 'typeorm';
+import { Collection } from './collection';
 
-@Table()
+@Entity()
 export class Case
 {
     @PrimaryColumn()
     id: string;
 
-    @Column()
-    collectionid: string;
+    @ManyToOne(type => Collection, collection => collection.cases)
+    collection: Collection;
 
     @Column()
     pid: string;

@@ -1,7 +1,7 @@
-import { Table, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, OneToOne, JoinColumn  } from 'typeorm';
+import { Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, OneToOne, JoinColumn  } from 'typeorm';
 import { User } from './user';
 
-@Table()
+@Entity()
 export class Environment
 {
     @PrimaryColumn()

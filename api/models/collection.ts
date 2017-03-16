@@ -1,7 +1,9 @@
-import { Table, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, OneToOne, OneToMany, JoinColumn } from 'typeorm';
 import { Environment } from './environment';
+import { Case } from './case';
+import { User } from './user';
 
-@Table()
+@Entity()
 export class Collection
 {
     @PrimaryColumn()
@@ -14,11 +16,15 @@ export class Collection
     @OneToOne(type => Environment)
     environment: Environment;
 
+    @OneToMany(type => Case, caseItem => caseItem.collection)
+    cases: Case[];
+
     @Column()
     comment: string;
 
-    @Column()
-    owner: string;
+    @OneToOne(type => User)
+    @JoinColumn()
+    owner: User;
 
     @Column()
     isValid: boolean;
