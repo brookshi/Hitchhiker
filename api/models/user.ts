@@ -1,8 +1,8 @@
-import { Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, ManyToMany } from 'typeorm';
+import { Team } from './team';
 
 @Entity()
-export class User
-{
+export class User {
     @PrimaryColumn()
     id: string;
 
@@ -14,6 +14,12 @@ export class User
 
     @Column()
     email: string;
+
+    @ManyToMany(type => Team, team => team.members, {
+        cascadeInsert: true,
+        cascadeUpdate: true,
+    })
+    teams: Team[];
 
     @CreateDateColumn()
     createDate: Date;

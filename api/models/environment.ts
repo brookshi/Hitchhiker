@@ -1,9 +1,8 @@
-import { Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, OneToOne, JoinColumn  } from 'typeorm';
+import { Entity, PrimaryColumn, Column, OneToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { User } from './user';
 
 @Entity()
-export class Environment
-{
+export class Environment {
     @PrimaryColumn()
     id: string;
 
