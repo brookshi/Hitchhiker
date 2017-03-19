@@ -1,18 +1,16 @@
 import { GET, POST, DELETE, PUT, PathParam, QueryParam, BodyParam, BaseController } from 'webapi-router';
-import { CaseService } from '../services/collectionService';
-import { Database } from 'sqlite3';
-import * as fs from 'fs';
+import { CollectionService } from '../services/collectionService';
 
-export default class Test extends BaseController{
+export default class Test extends BaseController {
 
     @GET()
-    test(){
+    async test() {
         console.info("test");
-        CaseService.getAll("");
+        await CollectionService.getCollections("1", "develop");
     }
 
     @GET('/aaa/:id/:pwd')
-    test1(@PathParam('id') id: string, @PathParam('pwd') pwd: number, @QueryParam('name') name: string, @BodyParam body: Object){
+    test1( @PathParam('id') id: string, @PathParam('pwd') pwd: number, @QueryParam('name') name: string, @BodyParam body: Object) {
         console.info(`id:${id}, name:${name}, body:${body}`);
     }
 }

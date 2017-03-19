@@ -1,6 +1,6 @@
 import { Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, OneToOne, OneToMany, JoinColumn, ManyToOne } from 'typeorm';
 import { Environment } from './environment';
-import { Case } from './case';
+import { Record } from './record';
 import { User } from './user';
 import { Team } from './team';
 
@@ -16,10 +16,10 @@ export class Collection {
     @OneToOne(type => Environment)
     environment: Environment;
 
-    @OneToMany(type => Case, caseItem => caseItem.collection)
-    cases: Case[];
+    @OneToMany(type => Record, record => record.collection)
+    records: Record[];
 
-    @Column()
+    @Column({ nullable: true })
     comment: string;
 
     @OneToOne(type => User)
@@ -29,8 +29,8 @@ export class Collection {
     @ManyToOne(type => Team, team => team.collections)
     team: Team;
 
-    @Column()
-    isValid: boolean;
+    @Column({ default: false })
+    Invalid: boolean;
 
     @CreateDateColumn()
     createDate: Date;

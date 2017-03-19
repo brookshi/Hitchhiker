@@ -2,12 +2,11 @@ import { Entity, PrimaryColumn, Column, ManyToOne, UpdateDateColumn, CreateDateC
 import { Collection } from './collection';
 
 @Entity()
-export class Case
-{
+export class Record {
     @PrimaryColumn()
     id: string;
 
-    @ManyToOne(type => Collection, collection => collection.cases)
+    @ManyToOne(type => Collection, collection => collection.records)
     collection: Collection;
 
     @Column()
@@ -22,20 +21,20 @@ export class Case
     @Column()
     method: string;
 
-    @Column()
+    @Column({ nullable: true })
     headers: string;
 
-    @Column("text")
+    @Column({ nullable: true, type: "text" })
     body: string;
 
-    @Column("text")
+    @Column({ nullable: true, type: "text" })
     test: string;
 
-    @Column()
+    @Column({ nullable: true })
     sort: number;
 
-    @Column()
-    isValid: boolean;
+    @Column({ default: false })
+    Invalid: boolean;
 
     @CreateDateColumn()
     createDate: Date;

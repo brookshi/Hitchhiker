@@ -9,18 +9,18 @@ export class Environment {
     @Column()
     name: string;
 
-    @Column()
+    @Column({ nullable: true })
     host: string;
 
-    @Column()
+    @Column({ nullable: true })
     note: string;
 
     @OneToOne(type => User)
     @JoinColumn()
     owner: User;
 
-    @Column()
-    isValid: boolean;
+    @Column({ default: false })
+    Invalid: boolean;
 
     @CreateDateColumn()
     createDate: Date;

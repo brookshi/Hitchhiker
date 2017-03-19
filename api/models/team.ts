@@ -1,4 +1,4 @@
-import { OneToMany, Entity, PrimaryColumn, Column, ManyToMany, UpdateDateColumn, CreateDateColumn } from 'typeorm';
+import { OneToOne, JoinColumn, OneToMany, Entity, PrimaryColumn, Column, ManyToMany, UpdateDateColumn, CreateDateColumn, JoinTable } from 'typeorm';
 import { Collection } from './collection';
 import { User } from './user';
 
@@ -10,12 +10,13 @@ export class Team {
     @Column()
     name: string;
 
-    @Column()
+    @Column({ nullable: true })
     company: string;
 
-    @Column()
-    isPublic: string
+    @Column({ default: true })
+    isPublic: boolean
 
+    @JoinTable()
     @ManyToMany(type => User, user => user.teams, {
         cascadeUpdate: true,
     })
@@ -24,14 +25,15 @@ export class Team {
     @OneToMany(type => Collection, collection => collection.team)
     collections: Collection[];
 
-    @Column()
+    @Column({ nullable: true })
     note: string;
 
-    @Column()
-    admin: string;
+    @JoinColumn()
+    @OneToOne(type => User)
+    owner: User;
 
-    @Column()
-    isValid: boolean;
+    @Column({ default: false })
+    Invalid: boolean;
 
     @CreateDateColumn()
     createDate: Date;
