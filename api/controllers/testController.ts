@@ -1,12 +1,13 @@
 import { GET, POST, DELETE, PUT, PathParam, QueryParam, BodyParam, BaseController } from 'webapi-router';
-import { CollectionService } from '../services/collectionService';
+import { UserCollectionService } from '../services/userCollectionService';
+import { Collection } from "../models/collection";
 
 export default class Test extends BaseController {
 
     @GET()
-    async test() {
-        console.info("test");
-        await CollectionService.getCollections("1", "develop");
+    async test(): Promise<Collection[]> {
+        const collections = await UserCollectionService.getUserCollections("1", "develop");
+        return collections;
     }
 
     @GET('/aaa/:id/:pwd')

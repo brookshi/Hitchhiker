@@ -19,9 +19,6 @@ export class Environment {
     @JoinColumn()
     owner: User;
 
-    @Column({ default: false })
-    Invalid: boolean;
-
     @CreateDateColumn()
     createDate: Date;
 

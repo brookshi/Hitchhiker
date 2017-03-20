@@ -32,9 +32,6 @@ export class Team {
     @OneToOne(type => User)
     owner: User;
 
-    @Column({ default: false })
-    Invalid: boolean;
-
     @CreateDateColumn()
     createDate: Date;
 }

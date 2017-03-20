@@ -30,7 +30,7 @@ export class Collection {
     team: Team;
 
     @Column({ default: false })
-    Invalid: boolean;
+    recycle: boolean;
 
     @CreateDateColumn()
     createDate: Date;

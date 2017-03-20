@@ -13,8 +13,10 @@ export class CollectionService {
 
         return await connection.getRepository(Collection)
             .createQueryBuilder("collection")
-            .where(`collection.owner = :id`)
             .innerJoinAndSelect('collection.environment', 'env', 'env.name = :environment')
+            .innerJoinAndSelect('collection.team', 'team')
+            .innerJoinAndSelect('collection.owner', 'owner')
+            .where('recycle = 0')
             .setParameter('environment', env)
             .setParameter('id', userId)
             .getMany();
@@ -26,7 +28,9 @@ export class CollectionService {
         return await connection.getRepository(Collection)
             .createQueryBuilder("collection")
             .innerJoinAndSelect('collection.environment', 'env', 'env.name = :environment')
-            .where('1=1')
+            .innerJoinAndSelect('collection.team', 'team')
+            .innerJoinAndSelect('collection.owner', 'owner')
+            .where('recycle = 0')
             .andWhereInIds(ids)
             .setParameter('environment', env)
             .getMany();
@@ -38,8 +42,11 @@ export class CollectionService {
         return await connection.getRepository(Collection)
             .createQueryBuilder("collection")
             .innerJoinAndSelect('collection.environment', 'env', 'env.name = :environment')
-            .innerJoinAndSelect('connection.team', 'team', 'team.id=:id')
+            .innerJoinAndSelect('collection.team', 'team', 'team.id=:id')
+            .innerJoinAndSelect('collection.owner', 'owner')
+            .where('recycle = 0')
             .setParameter('id', teamid)
+            .setParameter('environment', env)
             .getMany();
     }
 
@@ -55,9 +62,11 @@ export class CollectionService {
         return await connection.getRepository(Collection)
             .createQueryBuilder("collection")
             .innerJoinAndSelect('collection.environment', 'env', 'env.name = :environment')
-            .innerJoinAndSelect('connection.team', 'team')
-            .where('1=1')
+            .innerJoinAndSelect('collection.team', 'team')
+            .innerJoinAndSelect('collection.owner', 'owner')
+            .where('recycle = 0')
             .andWhere(whereStr, parameters)
+            .setParameter('environment', env)
             .getMany();
     }
 }

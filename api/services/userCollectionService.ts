@@ -8,12 +8,12 @@ import { Team } from "../models/team";
 import { TeamService } from "./teamService";
 import * as _ from "lodash";
 
-class UserCollectionService {
+export class UserCollectionService {
 
     static async getUserCollections(userId: string, env: string): Promise<Collection[]> {
         let collectionArr = await Promise.all([CollectionService.getOwnCollections(userId, env), UserCollectionService.getUserTeamCollections(userId, env)]);
 
-        return <Collection[]>_.intersectionWith(collectionArr[0], collectionArr[1], (a, b) => (<Collection>a).id == (<Collection>b).id);
+        return <Collection[]>_.unionWith(collectionArr[0], collectionArr[1], (a, b) => (<Collection>a).id == (<Collection>b).id);
     }
 
     static async getUserTeamCollections(userId: string, env: string): Promise<Collection[]> {

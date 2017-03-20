@@ -34,7 +34,7 @@ export class Record {
     sort: number;
 
     @Column({ default: false })
-    Invalid: boolean;
+    recycle: boolean;
 
     @CreateDateColumn()
     createDate: Date;
