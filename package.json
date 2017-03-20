@@ -4,11 +4,13 @@
   "description": "restful api test tool",
   "main": "index.js",
   "dependencies": {
+    "@types/lodash": "^4.14.55",
     "koa": "^2.0.0-alpha.7",
     "koa-bodyparser": "^3.2.0",
     "koa-query": "^0.0.6",
     "koa-router": "^7.0.1",
     "koa-session-minimal": "^3.0.2",
+    "lodash": "^4.17.4",
     "mysql": "^2.13.0",
     "reflect-metadata": "^0.1.8",
     "shortid": "^2.2.6",

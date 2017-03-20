@@ -22,8 +22,8 @@ export class Collection {
     @Column({ nullable: true })
     comment: string;
 
-    @OneToOne(type => User)
     @JoinColumn()
+    @OneToOne(type => User)
     owner: User;
 
     @ManyToOne(type => Team, team => team.collections)
