@@ -35,14 +35,14 @@ export class User {
     constructor(name: string, email: string, password: string) {
         this.name = name;
         this.email = email;
-        this.password = password;//StringUtil.md5(password);
+        this.password = password;//TODO: md5, StringUtil.md5(password);
         this.id = shortid.generate();
     }
 
     async save() {
         const connection = await ConnectionManager.getInstance();
 
-        await connection.getRepository('user').persist(this).catch(e => {
+        await connection.getRepository(User).persist(this).catch(e => {
             throw new Error(Message.userCreateFailed);
         });
     }

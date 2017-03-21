@@ -1,8 +1,10 @@
 
 export class Message {
-    static userEmailRepeat: string = '';
+    static userEmailRepeat: string = 'email is taken';
     static userEmailFormatError: string = 'email format error';
     static userPasswordFormatError: string = 'password format error';
-    static userCreateSuccess: string = 'create user failed';
-    static userCreateFailed: string = 'create user success';
+    static userNameFormatError: string = 'name format error';
+    static userCreateSuccess: string = 'create user success';
+    static userCreateFailed: string = 'create user failed';
+    static userCheckFailed: string = 'email or password error';
 }    

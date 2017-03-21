@@ -7,19 +7,24 @@ import { ValidateUtil } from "../utils/validateUtil";
 
 export class UserService {
     static async checkUser(email: string, pwd: string): Promise<ResObject> {
-
+        const user = await UserService.getUserByEmail(email);
+        if (user && user.password === pwd) {//TODO: md5
+            return { success: true, message: '' };
+        }
+        return { success: false, message: Message.userCheckFailed };
     }
 
     static async createUser(name: string, email: string, pwd: string): Promise<ResObject> {
+        let checkRst = ValidateUtil.checkEmail(email);
+        checkRst.success && (checkRst = ValidateUtil.checkPassword(pwd));
+        checkRst.success && (checkRst = ValidateUtil.checkUserName(name));
+        if (!checkRst.success) {
+            return checkRst;
+        }
+
         const isEmailExist = await UserService.IsUserEmailExist(email);
         if (isEmailExist) {
             return { success: false, message: Message.userEmailRepeat };
-        }
-
-        let checkRst = ValidateUtil.checkEmail(email);
-        checkRst.success && (checkRst = ValidateUtil.checkPassword(pwd));
-        if (!checkRst.success) {
-            return checkRst;
         }
 
         const user = new User(name, email, pwd);
@@ -29,22 +34,25 @@ export class UserService {
     }
 
     static async IsUserEmailExist(email: string): Promise<boolean> {
-
-        const connection = await ConnectionManager.getInstance();
-
-        const user = await connection.getRepository('user').findOne({ alias: 'user', where: 'user.email=:email' });
+        const user = await UserService.getUserByEmail(email);
 
         return user !== undefined;
     }
 
-    static async getUser(userId: string): Promise<User> {
+    static async getUserByEmail(email: string): Promise<User> {
+        const connection = await ConnectionManager.getInstance();
+
+        return await connection.getRepository(User).findOne({ alias: 'user', where: 'user.email=:email', parameters: { email: email } });
+    }
+
+    static async getUserById(id: string): Promise<User> {
         const connection = await ConnectionManager.getInstance();
 
         return await connection.getRepository(User)
             .createQueryBuilder("user")
             .innerJoinAndSelect('user.teams', 'team')
             .where(`user.id = :id`)
-            .setParameter('id', userId)
+            .setParameter('id', id)
             .getOne();
     }
 }
