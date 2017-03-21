@@ -1,5 +1,11 @@
+import * as shortid from 'shortid';
 import { Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, ManyToMany } from 'typeorm';
 import { Team } from './team';
+import { Message } from "../common/message";
+import { ResObject } from "./ResObject";
+import { ValidateUtil } from "../utils/validateUtil";
+import { ConnectionManager } from "../services/connectionManager";
+import { StringUtil } from "../utils/stringUtil";
 
 @Entity()
 export class User {
@@ -16,14 +22,28 @@ export class User {
     email: string;
 
     @ManyToMany(type => Team, team => team.members, {
-        cascadeInsert: true,
         cascadeUpdate: true,
     })
-    teams: Team[];
+    teams: Team[] = [];
 
     @CreateDateColumn()
     createDate: Date;
 
     @UpdateDateColumn()
     updateDate: Date;
+
+    constructor(name: string, email: string, password: string) {
+        this.name = name;
+        this.email = email;
+        this.password = password;//StringUtil.md5(password);
+        this.id = shortid.generate();
+    }
+
+    async save() {
+        const connection = await ConnectionManager.getInstance();
+
+        await connection.getRepository('user').persist(this).catch(e => {
+            throw new Error(Message.userCreateFailed);
+        });
+    }
 }

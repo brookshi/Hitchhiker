@@ -20,10 +20,10 @@ export class Team {
     @ManyToMany(type => User, user => user.teams, {
         cascadeUpdate: true,
     })
-    members: User[];
+    members: User[] = [];
 
     @OneToMany(type => Collection, collection => collection.team)
-    collections: Collection[];
+    collections: Collection[] = [];
 
     @Column({ nullable: true })
     note: string;

@@ -4,7 +4,6 @@
   "description": "restful api test tool",
   "main": "index.js",
   "dependencies": {
-    "@types/lodash": "^4.14.55",
     "koa": "^2.0.0-alpha.7",
     "koa-bodyparser": "^3.2.0",
     "koa-query": "^0.0.6",
@@ -19,7 +18,9 @@
   },
   "devDependencies": {
     "@types/reflect-metadata": "^0.0.5",
-    "@types/shortid": "^0.0.28"
+    "@types/lodash": "^4.14.55",
+    "@types/shortid": "^0.0.28",
+    "@types/node": "^7.0.8"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
