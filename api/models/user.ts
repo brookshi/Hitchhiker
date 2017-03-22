@@ -1,5 +1,6 @@
+import { Environment } from './environment';
 import * as shortid from 'shortid';
-import { Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, ManyToMany } from 'typeorm';
+import { JoinTable, Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, ManyToMany } from 'typeorm';
 import { Team } from './team';
 import { Message } from "../common/message";
 import { ResObject } from "./ResObject";
@@ -23,8 +24,13 @@ export class User {
 
     @ManyToMany(type => Team, team => team.members, {
         cascadeUpdate: true,
+        cascadeInsert: true
     })
     teams: Team[] = [];
+
+    @JoinTable()
+    @ManyToMany(type => Environment)
+    environments: Environment[] = [];
 
     @CreateDateColumn()
     createDate: Date;

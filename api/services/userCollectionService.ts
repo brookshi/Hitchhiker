@@ -17,7 +17,7 @@ export class UserCollectionService {
     }
 
     static async getUserTeamCollections(userId: string, env: string): Promise<Collection[]> {
-        const user = await UserService.getUser(userId);
+        const user = await UserService.getUserById(userId);
 
         if (!user) {
             return null;
