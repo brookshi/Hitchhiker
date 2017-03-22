@@ -10,7 +10,7 @@ export class Environment {
     name: string;
 
     @Column({ nullable: true })
-    host: string;
+    variables: string;
 
     @Column({ nullable: true })
     note: string;

@@ -1,3 +1,4 @@
+import { Environment } from './environment';
 import { OneToOne, JoinColumn, OneToMany, Entity, PrimaryColumn, Column, ManyToMany, UpdateDateColumn, CreateDateColumn, JoinTable } from 'typeorm';
 import { Collection } from './collection';
 import { User } from './user';
@@ -17,9 +18,7 @@ export class Team {
     isPublic: boolean
 
     @JoinTable()
-    @ManyToMany(type => User, user => user.teams, {
-        cascadeUpdate: true,
-    })
+    @ManyToMany(type => User, user => user.teams)
     members: User[] = [];
 
     @OneToMany(type => Collection, collection => collection.team)
@@ -31,6 +30,10 @@ export class Team {
     @JoinColumn()
     @OneToOne(type => User)
     owner: User;
+
+    @JoinTable()
+    @ManyToMany(type => Environment)
+    environments: Environment[] = [];
 
     @CreateDateColumn()
     createDate: Date;
