@@ -12,6 +12,7 @@
     "lodash": "^4.17.4",
     "mysql": "^2.13.0",
     "reflect-metadata": "^0.1.8",
+    "request": "^2.81.0",
     "shortid": "^2.2.6",
     "typeorm": "^0.0.9",
     "webapi-router": "^1.0.2"
@@ -20,7 +21,8 @@
     "@types/reflect-metadata": "^0.0.5",
     "@types/lodash": "^4.14.55",
     "@types/shortid": "^0.0.28",
-    "@types/node": "^7.0.8"
+    "@types/node": "^7.0.8",
+    "@types/request": "^0.0.42"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
