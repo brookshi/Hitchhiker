@@ -1,5 +1,8 @@
+import { Message } from '../common/message';
+import { ConnectionManager } from '../services/connectionManager';
+import { ResObject } from '../common/res_object';
+import * as shortid from 'shortid';
 import { Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, OneToOne, OneToMany, JoinColumn, ManyToOne } from 'typeorm';
-import { Environment } from './environment';
 import { Record } from './record';
 import { User } from './user';
 import { Team } from './team';
@@ -12,15 +15,11 @@ export class Collection {
     @Column()
     name: string;
 
-    @JoinColumn()
-    @OneToOne(type => Environment)
-    environment: Environment;
-
     @OneToMany(type => Record, record => record.collection)
     records: Record[];
 
     @Column({ nullable: true })
-    comment: string;
+    description: string;
 
     @JoinColumn()
     @OneToOne(type => User)
@@ -34,4 +33,18 @@ export class Collection {
 
     @CreateDateColumn()
     createDate: Date;
+
+    constructor(name: string, description: string) {
+        this.id = shortid.generate();
+        this.name = name;
+        this.description = description;
+    }
+
+    async save() {
+        const connection = await ConnectionManager.getInstance();
+
+        await connection.getRepository(Collection).persist(this).catch(e => {
+            throw new Error(Message.userCreateFailed);
+        });
+    }
 }

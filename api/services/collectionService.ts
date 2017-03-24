@@ -1,3 +1,4 @@
+import { ResObject } from '../common/res_object';
 import { Connection } from 'typeorm';
 import { Collection } from '../models/collection';
 import { Environment } from '../models/environment';
@@ -8,52 +9,49 @@ import { ObjectLiteral } from "typeorm/common/ObjectLiteral";
 
 export class CollectionService {
 
-    static async getOwnCollections(userId: string, env: string): Promise<Collection[]> {
+    static async create(name: string, desc: string): Promise<ResObject> {
+        let collection = new Collection(name, desc);
+        await collection.save();
+        return { success: true, message: '' };
+    }
+
+    static async getOwns(userId: string): Promise<Collection[]> {
         const connection = await ConnectionManager.getInstance();
 
         return await connection.getRepository(Collection)
             .createQueryBuilder("collection")
-            .innerJoinAndSelect('collection.environment', 'env', 'env.name = :environment')
             .innerJoinAndSelect('collection.team', 'team')
             .innerJoinAndSelect('collection.owner', 'owner')
-            .innerJoinAndSelect('collection.records', 'record')
             .where('recycle = 0')
-            .setParameter('environment', env)
             .setParameter('id', userId)
             .getMany();
     }
 
-    static async getCollections(ids: string[], env: string): Promise<Collection[]> {
+    static async getByIds(ids: string[]): Promise<Collection[]> {
         const connection = await ConnectionManager.getInstance();
 
         return await connection.getRepository(Collection)
             .createQueryBuilder("collection")
-            .innerJoinAndSelect('collection.environment', 'env', 'env.name = :environment')
             .innerJoinAndSelect('collection.team', 'team')
             .innerJoinAndSelect('collection.owner', 'owner')
-            .innerJoinAndSelect('collection.records', 'record')
             .where('recycle = 0')
             .andWhereInIds(ids)
-            .setParameter('environment', env)
             .getMany();
     }
 
-    static async getTeamCollections(teamid: string, env: string): Promise<Collection[]> {
+    static async getByTeamId(teamid: string): Promise<Collection[]> {
         const connection = await ConnectionManager.getInstance();
 
         return await connection.getRepository(Collection)
             .createQueryBuilder("collection")
-            .innerJoinAndSelect('collection.environment', 'env', 'env.name = :environment')
             .innerJoinAndSelect('collection.team', 'team', 'team.id=:id')
             .innerJoinAndSelect('collection.owner', 'owner')
-            .innerJoinAndSelect('collection.records', 'record')
             .where('recycle = 0')
             .setParameter('id', teamid)
-            .setParameter('environment', env)
             .getMany();
     }
 
-    static async getTeamsCollections(teamIds: string[], env: string): Promise<Collection[]> {
+    static async getByTeamIds(teamIds: string[]): Promise<Collection[]> {
         const connection = await ConnectionManager.getInstance();
         const parameters: ObjectLiteral = {};
         const whereStrs = teamIds.map((id, index) => {
@@ -64,13 +62,10 @@ export class CollectionService {
 
         return await connection.getRepository(Collection)
             .createQueryBuilder("collection")
-            .innerJoinAndSelect('collection.environment', 'env', 'env.name = :environment')
             .innerJoinAndSelect('collection.team', 'team')
             .innerJoinAndSelect('collection.owner', 'owner')
-            .innerJoinAndSelect('collection.records', 'record')
             .where('recycle = 0')
             .andWhere(whereStr, parameters)
-            .setParameter('environment', env)
             .getMany();
     }
 }
