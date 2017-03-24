@@ -6,7 +6,7 @@ export default class Test extends BaseController {
 
     @GET()
     async test(): Promise<Collection[]> {
-        const collections = await UserCollectionService.getUserCollections("1", "develop");
+        const collections = await UserCollectionService.getUserCollections("1");
         return collections;
     }
 

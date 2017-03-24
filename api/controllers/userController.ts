@@ -1,11 +1,11 @@
 import { GET, POST, DELETE, PUT, PathParam, QueryParam, BodyParam, BaseController } from 'webapi-router';
-import { ResObject } from "../models/ResObject";
+import { ResObject } from "../common/res_object";
 import { UserService } from "../services/userService";
 import * as Koa from 'koa';
 
 export default class UserController extends BaseController {
 
-    @POST()
+    @POST("/user")
     async register( @BodyParam body: { name: string, email: string, pwd: string }): Promise<ResObject> {
         return await UserService.createUser(body.name, body.email, body.pwd);
     }
