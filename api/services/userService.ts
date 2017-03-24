@@ -2,12 +2,12 @@ import { Connection } from 'typeorm';
 import { User } from "../models/user";
 import { ConnectionManager } from "./connectionManager";
 import { Message } from "../common/message";
-import { ResObject } from "../models/ResObject";
+import { ResObject } from "../common/res_object";
 import { ValidateUtil } from "../utils/validateUtil";
 
 export class UserService {
     static async checkUser(email: string, pwd: string): Promise<ResObject> {
-        const user = await UserService.getUserByEmail(email);
+        const user = await UserService.getUserByEmail(email, true, true);
         if (user && user.password === pwd) {//TODO: md5
             return { success: true, message: '', result: user };
         }

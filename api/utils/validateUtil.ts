@@ -1,4 +1,4 @@
-import { ResObject } from "../models/ResObject";
+import { ResObject } from "../common/res_object";
 import { Message } from "../common/message";
 
 export class ValidateUtil {

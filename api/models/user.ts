@@ -1,9 +1,9 @@
 import { Environment } from './environment';
 import * as shortid from 'shortid';
-import { JoinTable, Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, ManyToMany } from 'typeorm';
+import { JoinColumn, OneToMany, JoinTable, Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, ManyToMany } from 'typeorm';
 import { Team } from './team';
 import { Message } from "../common/message";
-import { ResObject } from "./ResObject";
+import { ResObject } from "../common/res_object";
 import { ValidateUtil } from "../utils/validateUtil";
 import { ConnectionManager } from "../services/connectionManager";
 import { StringUtil } from "../utils/stringUtil";
@@ -28,8 +28,8 @@ export class User {
     })
     teams: Team[] = [];
 
-    @JoinTable()
-    @ManyToMany(type => Environment)
+    @JoinColumn()
+    @OneToMany(type => Environment, env => env.owner)
     environments: Environment[] = [];
 
     @CreateDateColumn()
