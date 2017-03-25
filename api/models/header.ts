@@ -1,4 +1,5 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne } from 'typeorm';
+import { User } from "./user";
 
 @Entity()
 export class Header {
@@ -17,6 +18,6 @@ export class Header {
     @Column()
     sort: number;
 
-    @Column()
+    @ManyToOne(type => User, user => user.id)
     recordId: string;
 }

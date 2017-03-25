@@ -1,5 +1,6 @@
 import * as shortid from 'shortid';
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne } from 'typeorm';
+import { Environment } from "./environment";
 
 @Entity()
 export class Variable {
@@ -18,7 +19,7 @@ export class Variable {
     @Column()
     sort: number;
 
-    @Column()
+    @ManyToOne(type => Environment, env => env.id)
     envId: string;
 
     constructor(key: string, value: string, isActive: boolean, sort: number, envId: string) {

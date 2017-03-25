@@ -1,6 +1,5 @@
 import * as shortid from 'shortid';
-import { Message } from '../common/message';
-import { ConnectionManager } from '../services/connectionManager';
+import { ConnectionManager } from '../services/connection_manager';
 import { OneToMany, Entity, PrimaryColumn, Column, ManyToOne, UpdateDateColumn, CreateDateColumn } from 'typeorm';
 import { Collection } from './collection';
 import { Header } from "./header";
@@ -25,7 +24,10 @@ export class Record {
     @Column()
     method: string;
 
-    @OneToMany(type => Header, header => header.recordId)
+    @OneToMany(type => Header, header => header.recordId, {
+        cascadeInsert: true,
+        cascadeUpdate: true
+    })
     headers: Header[] = [];
 
     @Column({ nullable: true, type: "text" })
@@ -48,10 +50,7 @@ export class Record {
             this.id = shortid.generate();
         }
         const connection = await ConnectionManager.getInstance();
-
-        await connection.getRepository(Record).persist(this).catch(e => {
-            throw new Error(Message.userCreateFailed);
-        });
+        await connection.getRepository(Record).persist(this);
     }
 
     get formatHeaders(): { [key: string]: string } {

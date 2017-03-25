@@ -10,6 +10,7 @@
     "koa-router": "^7.0.1",
     "koa-session-minimal": "^3.0.2",
     "lodash": "^4.17.4",
+    "log4js": "^1.1.1",
     "mysql": "^2.13.0",
     "reflect-metadata": "^0.1.8",
     "request": "^2.81.0",
@@ -22,7 +23,8 @@
     "@types/lodash": "^4.14.55",
     "@types/shortid": "^0.0.28",
     "@types/node": "^7.0.8",
-    "@types/request": "^0.0.42"
+    "@types/request": "^0.0.42",
+    "@types/log4js": "^0.0.32"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

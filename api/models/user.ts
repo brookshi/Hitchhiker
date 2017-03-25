@@ -2,7 +2,6 @@ import { Environment } from './environment';
 import * as shortid from 'shortid';
 import { JoinColumn, OneToMany, Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, ManyToMany } from 'typeorm';
 import { Team } from './team';
-import { Message } from "../common/message";
 import { ConnectionManager } from "../services/connection_manager";
 
 @Entity()
@@ -44,9 +43,6 @@ export class User {
 
     async save() {
         const connection = await ConnectionManager.getInstance();
-
-        await connection.getRepository(User).persist(this).catch(e => {
-            throw new Error(Message.userCreateFailed);
-        });
+        await connection.getRepository(User).persist(this);
     }
 }

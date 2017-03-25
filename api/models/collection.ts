@@ -1,8 +1,6 @@
-import { Message } from '../common/message';
-import { ConnectionManager } from '../services/connectionManager';
-import { ResObject } from '../common/res_object';
+import { ConnectionManager } from '../services/connection_manager';
 import * as shortid from 'shortid';
-import { Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, OneToOne, OneToMany, JoinColumn, ManyToOne } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, OneToOne, OneToMany, JoinColumn, ManyToOne } from 'typeorm';
 import { Record } from './record';
 import { User } from './user';
 import { Team } from './team';
@@ -42,9 +40,6 @@ export class Collection {
 
     async save() {
         const connection = await ConnectionManager.getInstance();
-
-        await connection.getRepository(Collection).persist(this).catch(e => {
-            throw new Error(Message.userCreateFailed);
-        });
+        await connection.getRepository(Collection).persist(this);
     }
 }

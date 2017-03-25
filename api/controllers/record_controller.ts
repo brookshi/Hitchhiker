@@ -1,9 +1,8 @@
 import { Record } from '../models/record';
-import { User } from '../models/user';
-import { GET, POST, DELETE, PUT, PathParam, QueryParam, BodyParam, BaseController } from 'webapi-router';
+import { POST, PUT, BodyParam, BaseController } from 'webapi-router';
 import { ResObject } from "../common/res_object";
 import * as Koa from 'koa';
-import { RecordService } from "../services/recordService";
+import { RecordService } from "../services/record_service";
 
 export default class RecordController extends BaseController {
 

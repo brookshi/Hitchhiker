@@ -23,8 +23,7 @@ export class EnvironmentService {
     }
 
     static async update(id: string, name: string, variables: Variable[], owner: User): Promise<ResObject> {
-        const env = new Environment(name, variables, owner);
-        env.id = id;
+        const env = new Environment(name, variables, owner, id);
         await env.save();
 
         return { success: true, message: '' };

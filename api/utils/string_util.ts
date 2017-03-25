@@ -9,7 +9,7 @@ export class StringUtil {
         let arr = new Array<string>();
         let regex = /{{.*?}}/g;
         let rst;
-        while ((rst = regex.exec(target)) != null) {
+        while ((rst = regex.exec(target)) !== null) {
             arr.push(<string>rst);
         }
 

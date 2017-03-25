@@ -46,8 +46,8 @@ export class UserService {
             .where(`user.email = :email`)
             .setParameter('email', email);
 
-        if (needTeam) { rep = rep.innerJoinAndSelect('user.teams', 'team'); };
-        if (needEnv) { rep = rep.innerJoinAndSelect('user.environments', 'env'); };
+        if (needTeam) { rep = rep.leftJoinAndSelect('user.teams', 'team'); };
+        if (needEnv) { rep = rep.leftJoinAndSelect('user.environments', 'env'); };
 
         return rep.getOne();
     }
@@ -60,8 +60,8 @@ export class UserService {
             .where(`user.id = :id`)
             .setParameter('id', id);
 
-        if (needTeam) { rep = rep.innerJoinAndSelect('user.teams', 'team'); };
-        if (needEnv) { rep = rep.innerJoinAndSelect('user.environments', 'env'); };
+        if (needTeam) { rep = rep.leftJoinAndSelect('user.teams', 'team'); };
+        if (needEnv) { rep = rep.leftJoinAndSelect('user.environments', 'env'); };
 
         return rep.getOne();
     }
