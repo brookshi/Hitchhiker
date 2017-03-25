@@ -1,6 +1,6 @@
 import { Record } from '../models/record';
 import { Options } from 'request';
-import { VariableService } from "../services/variableService";
+import { VariableService } from "../services/variable_service";
 
 
 export class RequestOptionAdapter {

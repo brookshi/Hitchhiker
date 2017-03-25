@@ -1,6 +1,5 @@
 import { Record } from '../models/record';
-import { ConnectionManager } from './connectionManager';
-import { createConnection } from 'typeorm';
+import { ConnectionManager } from './connection_manager';
 import { ObjectLiteral } from "typeorm/common/ObjectLiteral";
 import * as _ from "lodash";
 import { ResObject } from "../common/res_object";

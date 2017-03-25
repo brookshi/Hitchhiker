@@ -1,10 +1,9 @@
 import { User } from '../models/user';
-import { Environment } from '../models/environment';
-import { GET, POST, DELETE, PUT, PathParam, QueryParam, BodyParam, BaseController } from 'webapi-router';
+import { POST, DELETE, PUT, PathParam, BodyParam, BaseController } from 'webapi-router';
 import { ResObject } from "../common/res_object";
 import * as Koa from 'koa';
 import { Variable } from "../models/variable";
-import { EnvironmentService } from "../services/environmentService";
+import { EnvironmentService } from "../services/environment_service";
 
 export default class EnvironmentController extends BaseController {
 

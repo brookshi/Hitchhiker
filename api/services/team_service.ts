@@ -1,6 +1,5 @@
-import { Connection } from 'typeorm';
 import { Team } from "../models/team";
-import { ConnectionManager } from "./connectionManager";
+import { ConnectionManager } from "./connection_manager";
 
 export class TeamService {
     static async getTeam(id: string): Promise<Team> {

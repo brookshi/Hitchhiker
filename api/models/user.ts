@@ -3,7 +3,7 @@ import * as shortid from 'shortid';
 import { JoinColumn, OneToMany, Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, ManyToMany } from 'typeorm';
 import { Team } from './team';
 import { Message } from "../common/message";
-import { ConnectionManager } from "../services/connectionManager";
+import { ConnectionManager } from "../services/connection_manager";
 
 @Entity()
 export class User {

@@ -1,8 +1,8 @@
-import { CollectionService } from '../services/collectionService';
+import { CollectionService } from '../services/collection_service';
 import { Collection } from '../models/collection';
-import { UserCollectionService } from '../services/userCollectionService';
+import { UserCollectionService } from '../services/user_collection_service';
 import { User } from '../models/user';
-import { GET, POST, DELETE, PUT, PathParam, QueryParam, BodyParam, BaseController } from 'webapi-router';
+import { GET, POST, BodyParam, BaseController } from 'webapi-router';
 import { ResObject } from "../common/res_object";
 import * as Koa from 'koa';
 

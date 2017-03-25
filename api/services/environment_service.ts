@@ -1,11 +1,7 @@
 import { ResObject } from '../common/res_object';
-import { Connection } from 'typeorm';
-import { Collection } from '../models/collection';
 import { Environment } from '../models/environment';
-import { Team } from '../models/team';
 import { User } from '../models/user';
-import { ConnectionManager } from "./connectionManager";
-import { ObjectLiteral } from "typeorm/common/ObjectLiteral";
+import { ConnectionManager } from "./connection_manager";
 import { Variable } from "../models/variable";
 
 export class EnvironmentService {

@@ -1,6 +1,6 @@
-import { GET, POST, DELETE, PUT, PathParam, QueryParam, BodyParam, BaseController } from 'webapi-router';
+import { POST, BodyParam, BaseController } from 'webapi-router';
 import { ResObject } from "../common/res_object";
-import { UserService } from "../services/userService";
+import { UserService } from "../services/user_service";
 import * as Koa from 'koa';
 
 export default class UserController extends BaseController {

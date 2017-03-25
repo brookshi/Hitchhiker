@@ -1,6 +1,6 @@
-import { StringUtil } from '../utils/stringUtil';
+import { StringUtil } from '../utils/string_util';
 import { Record } from '../models/record';
-import { EnvironmentService } from "./environmentService";
+import { EnvironmentService } from "./environment_service";
 
 export class VariableService {
 

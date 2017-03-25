@@ -1,9 +1,8 @@
-import { Connection } from 'typeorm';
 import { User } from "../models/user";
-import { ConnectionManager } from "./connectionManager";
+import { ConnectionManager } from "./connection_manager";
 import { Message } from "../common/message";
 import { ResObject } from "../common/res_object";
-import { ValidateUtil } from "../utils/validateUtil";
+import { ValidateUtil } from "../utils/validate_util";
 
 export class UserService {
     static async checkUser(email: string, pwd: string): Promise<ResObject> {
@@ -16,8 +15,8 @@ export class UserService {
 
     static async createUser(name: string, email: string, pwd: string): Promise<ResObject> {
         let checkRst = ValidateUtil.checkEmail(email);
-        checkRst.success && (checkRst = ValidateUtil.checkPassword(pwd));
-        checkRst.success && (checkRst = ValidateUtil.checkUserName(name));
+        if (checkRst.success) { checkRst = ValidateUtil.checkPassword(pwd); }
+        if (checkRst.success) { checkRst = ValidateUtil.checkUserName(name); }
         if (!checkRst.success) {
             return checkRst;
         }
@@ -47,8 +46,8 @@ export class UserService {
             .where(`user.email = :email`)
             .setParameter('email', email);
 
-        needTeam && (rep = rep.innerJoinAndSelect('user.teams', 'team'));
-        needEnv && (rep = rep.innerJoinAndSelect('user.environments', 'env'));
+        if (needTeam) { rep = rep.innerJoinAndSelect('user.teams', 'team'); };
+        if (needEnv) { rep = rep.innerJoinAndSelect('user.environments', 'env'); };
 
         return rep.getOne();
     }
@@ -61,8 +60,8 @@ export class UserService {
             .where(`user.id = :id`)
             .setParameter('id', id);
 
-        needTeam && (rep = rep.innerJoinAndSelect('user.teams', 'team'));
-        needEnv && (rep = rep.innerJoinAndSelect('user.environments', 'env'));
+        if (needTeam) { rep = rep.innerJoinAndSelect('user.teams', 'team'); };
+        if (needEnv) { rep = rep.innerJoinAndSelect('user.environments', 'env'); };
 
         return rep.getOne();
     }

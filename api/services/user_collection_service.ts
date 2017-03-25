@@ -1,12 +1,7 @@
-import { RecordService } from './recordService';
-import { Connection } from 'typeorm';
-import { ConnectionManager } from "./connectionManager";
-import { CollectionService } from "./collectionService";
-import { UserService } from "./userService";
+import { RecordService } from './record_service';
+import { CollectionService } from "./collection_service";
+import { UserService } from "./user_service";
 import { Collection } from "../models/collection";
-import { User } from "../models/user";
-import { Team } from "../models/team";
-import { TeamService } from "./teamService";
 import * as _ from "lodash";
 
 export class UserCollectionService {
@@ -14,7 +9,7 @@ export class UserCollectionService {
     static async getUserCollections(userId: string): Promise<Collection[]> {
         let collectionArr = await Promise.all([CollectionService.getOwns(userId), UserCollectionService.getUserTeamCollections(userId)]);
 
-        let collections = <Collection[]>_.unionWith(collectionArr[0], collectionArr[1], (a, b) => (<Collection>a).id == (<Collection>b).id);
+        let collections = <Collection[]>_.unionWith(collectionArr[0], collectionArr[1], (a, b) => (<Collection>a).id === (<Collection>b).id);
 
         const collectionIds = collections.map(o => o.id);
         const records = await RecordService.getByCollectionIds(collectionIds);
