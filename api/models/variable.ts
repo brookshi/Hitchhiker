@@ -19,15 +19,15 @@ export class Variable {
     @Column()
     sort: number;
 
-    @ManyToOne(type => Environment, env => env.id)
-    envId: string;
+    @ManyToOne(type => Environment, env => env.variables)
+    environment: Environment;
 
-    constructor(key: string, value: string, isActive: boolean, sort: number, envId: string) {
+    constructor(key: string, value: string, isActive: boolean, sort: number, env: Environment) {
         this.id = shortid.generate();
         this.key = key;
         this.value = value;
         this.isActive = isActive;
         this.sort = sort;
-        this.envId = envId;
+        this.environment = env;
     }
 }

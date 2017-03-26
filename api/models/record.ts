@@ -24,7 +24,7 @@ export class Record {
     @Column()
     method: string;
 
-    @OneToMany(type => Header, header => header.recordId, {
+    @OneToMany(type => Header, header => header.record, {
         cascadeInsert: true,
         cascadeUpdate: true
     })

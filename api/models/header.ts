@@ -1,5 +1,6 @@
 import { Entity, PrimaryColumn, Column, ManyToOne } from 'typeorm';
 import { User } from "./user";
+import { Record } from "./record";
 
 @Entity()
 export class Header {
@@ -19,5 +20,5 @@ export class Header {
     sort: number;
 
     @ManyToOne(type => User, user => user.id)
-    recordId: string;
+    record: Record;
 }

@@ -12,7 +12,7 @@ export class EnvironmentService {
         if (needVars) {
             rep = rep.innerJoinAndSelect('env.variables', 'variable');
         }
-        return await rep.where('id=:id').addParameters({ 'id': id }).getOne();
+        return await rep.where('env.id=:id').addParameters({ 'id': id }).getOne();
     }
 
     static async create(name: string, variables: Variable[], owner: User): Promise<ResObject> {
@@ -22,9 +22,16 @@ export class EnvironmentService {
         return { success: true, message: '' };
     }
 
-    static async update(id: string, name: string, variables: Variable[], owner: User): Promise<ResObject> {
-        const env = new Environment(name, variables, owner, id);
-        await env.save();
+    static async update(id: string, name: string, variables: Variable[]): Promise<ResObject> {
+        const connection = await ConnectionManager.getInstance();
+        const env = await EnvironmentService.get(id, true);
+        if (!env) {
+            throw new Error('enviornment doesnot exist');
+        }
+        if (env.variables && env.variables.length > 0) {
+            await connection.getRepository(Variable).remove(env.variables);
+        }
+        await env.update(name, variables);
 
         return { success: true, message: '' };
     }

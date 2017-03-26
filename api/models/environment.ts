@@ -12,7 +12,7 @@ export class Environment {
     @Column()
     name: string;
 
-    @OneToMany(type => Variable, variable => variable.envId, {
+    @OneToMany(type => Variable, variable => variable.environment, {
         cascadeInsert: true,
         cascadeUpdate: true
     })
@@ -28,14 +28,26 @@ export class Environment {
     updateDate: Date;
 
     constructor(name: string, variables: Variable[], owner: User, id: string = undefined) {
-        this.id = id || shortid.generate();
+        id = id || shortid.generate();
+        this.id = id;
         this.name = name;
         this.owner = owner;
         if (variables) {
             variables.forEach(v => {
-                this.variables.push(new Variable(v.key, v.value, v.isActive, v.sort, this.id));
+                this.variables.push(new Variable(v.key, v.value, v.isActive, v.sort, this));
             });
         }
+    }
+
+    async update(name: string, variables: Variable[]) {
+        this.name = name;
+        this.variables = [];
+        if (variables) {
+            variables.forEach(v => {
+                this.variables.push(new Variable(v.key, v.value, v.isActive, v.sort, this));
+            });
+        }
+        await this.save();
     }
 
     async save() {
