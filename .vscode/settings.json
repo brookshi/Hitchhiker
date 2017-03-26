@@ -1,4 +1,5 @@
 {
     "vsicons.presets.angular": false,
-    "tslint.run": "onSave"
+    "tslint.run": "onSave",
+    "todohighlight.include": "{**/*.ts,**/*.html,**/*.php,**/*.css}"
 }
