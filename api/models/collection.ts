@@ -1,6 +1,6 @@
 import { ConnectionManager } from '../services/connection_manager';
 import * as shortid from 'shortid';
-import { Entity, PrimaryColumn, Column, CreateDateColumn, OneToOne, OneToMany, JoinColumn, ManyToOne } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, OneToOne, OneToMany, JoinColumn, ManyToOne, UpdateDateColumn } from 'typeorm';
 import { Record } from './record';
 import { User } from './user';
 import { Team } from './team';
@@ -32,10 +32,14 @@ export class Collection {
     @CreateDateColumn()
     createDate: Date;
 
-    constructor(name: string, description: string) {
+    @UpdateDateColumn()
+    updateDate: Date;
+
+    constructor(name: string, description: string, owner: User) {
         this.id = shortid.generate();
         this.name = name;
         this.description = description;
+        this.owner = owner;
     }
 
     async save() {

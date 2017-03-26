@@ -16,6 +16,7 @@ export default class CollectionController extends BaseController {
 
     @POST('/collection')
     async create(ctx: Koa.Context, @BodyParam collection: { name: string, description: string }): Promise<ResObject> {
-        return await CollectionService.create(collection.name, collection.description);
+        const user = <User>ctx.session.user;
+        return await CollectionService.create(collection.name, collection.description, user);
     }
 }

@@ -2,11 +2,12 @@ import { ResObject } from '../common/res_object';
 import { Collection } from '../models/collection';
 import { ConnectionManager } from "./connection_manager";
 import { ObjectLiteral } from "typeorm/common/ObjectLiteral";
+import { User } from "../models/user";
 
 export class CollectionService {
 
-    static async create(name: string, desc: string): Promise<ResObject> {
-        let collection = new Collection(name, desc);
+    static async create(name: string, desc: string, owner: User): Promise<ResObject> {
+        let collection = new Collection(name, desc, owner);
         await collection.save();
         return { success: true, message: '' };
     }
