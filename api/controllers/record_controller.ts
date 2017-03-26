@@ -6,7 +6,6 @@ import { RecordService } from "../services/record_service";
 
 export default class RecordController extends BaseController {
 
-
     @POST('/record')
     async create(ctx: Koa.Context, @BodyParam record: Record): Promise<ResObject> {
         return await RecordService.create(record);
