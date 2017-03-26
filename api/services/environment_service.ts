@@ -38,8 +38,9 @@ export class EnvironmentService {
 
     static async delete(id: string): Promise<ResObject> {
         const connection = await ConnectionManager.getInstance();
-        const env = await EnvironmentService.get(id);
+        const env = await EnvironmentService.get(id, true);
         if (env) {
+            await connection.getRepository(Variable).remove(env.variables);
             await connection.getRepository(Environment).remove(env);
         }
 

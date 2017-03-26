@@ -15,8 +15,7 @@ export default class EnvironmentController extends BaseController {
 
     @PUT('/environment')
     async update(ctx: Koa.Context, @BodyParam env: { id: string, name: string, variables: Variable[] }): Promise<ResObject> {
-        const user = <User>ctx.session.user;
-        return await EnvironmentService.update(env.id, env.name, env.variables, user);
+        return await EnvironmentService.update(env.id, env.name, env.variables);
     }
 
     @DELETE("/environment/:id")
