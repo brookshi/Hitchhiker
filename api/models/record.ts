@@ -36,7 +36,7 @@ export class Record {
     @Column({ nullable: true, type: "text" })
     test: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, type: 'int' })
     sort: number;
 
     @CreateDateColumn()
@@ -45,9 +45,10 @@ export class Record {
     @UpdateDateColumn()
     updateDate: Date;
 
-    static clone(target: Record): Record {
+    static clone(target: any): Record {
         let r = new Record();
         r.url = target.url;
+        r.pid = target.pid;
         r.body = target.body;
         r.headers = target.headers;
         r.test = target.test;

@@ -16,7 +16,7 @@ export class Variable {
     @Column({ default: false })
     isActive: boolean;
 
-    @PrimaryColumn({ generated: true })
+    @Column({ type: 'int' })
     sort: number;
 
     @ManyToOne(type => Environment, env => env.variables)

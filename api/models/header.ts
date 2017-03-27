@@ -16,7 +16,7 @@ export class Header {
     @Column({ default: true })
     isActive: boolean;
 
-    @Column()
+    @Column({ type: 'int' })
     sort: number;
 
     @ManyToOne(type => User, user => user.id)

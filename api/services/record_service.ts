@@ -7,6 +7,8 @@ import { Message } from "../common/message";
 import { Header } from "../models/header";
 
 export class RecordService {
+    private static _sort: number = 0;
+
     static async getByCollectionIds(collectionIds: string[]): Promise<{ [key: string]: Record[] }> {
         const connection = await ConnectionManager.getInstance();
 
@@ -37,6 +39,7 @@ export class RecordService {
     }
 
     static async create(record: Record): Promise<ResObject> {
+        record.sort = await RecordService.getMaxSort();
         return await RecordService.save(record);
     }
 
@@ -49,6 +52,19 @@ export class RecordService {
         }
 
         return await RecordService.save(record);
+    }
+
+    static async getMaxSort(): Promise<number> {
+        const connection = await ConnectionManager.getInstance();
+        const maxSortRecord = await connection.getRepository(Record)
+            .createQueryBuilder('record')
+            .addOrderBy('sort', 'DESC')
+            .getOne();
+        let maxSort = ++RecordService._sort;
+        if (maxSortRecord && maxSortRecord.sort) {
+            maxSort = Math.max(maxSort, maxSortRecord.sort + 1);
+        }
+        return maxSort;
     }
 
     private static async save(record: Record): Promise<ResObject> {

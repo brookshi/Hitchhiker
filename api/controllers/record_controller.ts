@@ -8,17 +8,17 @@ import { Runner } from "../run_engine/runner";
 export default class RecordController extends BaseController {
 
     @POST('/record')
-    async create(ctx: Koa.Context, @BodyParam record: Record): Promise<ResObject> {
+    async create( @BodyParam record: any): Promise<ResObject> {
         return await RecordService.create(Record.clone(record));
     }
 
     @PUT('/record')
-    async update( @BodyParam record: Record): Promise<ResObject> {
+    async update( @BodyParam record: any): Promise<ResObject> {
         return await RecordService.update(Record.clone(record));
     }
 
     @POST('/record/run')
-    async run(ctx: Koa.Context, @BodyParam data: { record: Record, env: string }) {
+    async run(ctx: Koa.Context, @BodyParam data: { record: any, env: string }) {
         const res = await Runner.runRecord(data.env, Record.clone(data.record), ctx.res);
         return res.body;
     }
