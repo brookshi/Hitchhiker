@@ -45,6 +45,19 @@ export class Record {
     @UpdateDateColumn()
     updateDate: Date;
 
+    static clone(target: Record): Record {
+        let r = new Record();
+        r.url = target.url;
+        r.body = target.body;
+        r.headers = target.headers;
+        r.test = target.test;
+        r.sort = target.sort;
+        r.method = target.method;
+        r.collection = target.collection;
+        r.name = target.name;
+        return r;
+    }
+
     async save() {
         if (!this.id) {
             this.id = shortid.generate();

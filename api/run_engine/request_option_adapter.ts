@@ -8,7 +8,6 @@ export class RequestOptionAdapter {
         record = await VariableService.applyVariableForRecord(envId, record);
         return {
             url: record.url,
-            baseUrl: record.url,
             method: record.method,
             headers: record.formatHeaders,
             body: record.body
