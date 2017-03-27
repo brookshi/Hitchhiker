@@ -63,6 +63,7 @@ export class RecordService {
         let maxSort = ++RecordService._sort;
         if (maxSortRecord && maxSortRecord.sort) {
             maxSort = Math.max(maxSort, maxSortRecord.sort + 1);
+            RecordService._sort = maxSort;
         }
         return maxSort;
     }
