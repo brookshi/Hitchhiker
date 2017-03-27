@@ -11,9 +11,12 @@ export class Runner {
 
     static request(option: request.Options, pipeRes?: ServerResponse): Promise<{ err: any, response: request.RequestResponse, body: any }> {
         return new Promise<{ err: any, response: request.RequestResponse, body: any }>((resolve, reject) => {
-            request(option, (err, res, body) => {
+            const req = request(option, (err, res, body) => {
                 resolve({ err: err, response: res, body: body });
-            }).pipe(pipeRes);
+            });
+            if (pipeRes) {
+                req.pipe(pipeRes)
+            }
         });
     }
 }

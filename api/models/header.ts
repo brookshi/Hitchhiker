@@ -13,7 +13,7 @@ export class Header {
     @Column()
     value: string;
 
-    @Column()
+    @Column({ default: true })
     isActive: boolean;
 
     @Column()

@@ -13,10 +13,10 @@ export class Variable {
     @Column()
     value: string;
 
-    @Column()
+    @Column({ default: false })
     isActive: boolean;
 
-    @Column()
+    @PrimaryColumn({ generated: true })
     sort: number;
 
     @ManyToOne(type => Environment, env => env.variables)

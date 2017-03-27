@@ -5,7 +5,7 @@ import { VariableService } from "../services/variable_service";
 
 export class RequestOptionAdapter {
     static async fromRecord(envId: string, record: Record): Promise<Options> {
-        record = await VariableService.applyVariableForRecord(envId, record);
+        //record = await VariableService.applyVariableForRecord(envId, record);
         return {
             url: record.url,
             method: record.method,
