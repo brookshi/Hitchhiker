@@ -68,6 +68,19 @@ export class RecordService {
         return maxSort;
     }
 
+    static async sort(recordId: string, collectionId: string, newSort: number): Promise<ResObject> {
+        const connection = await ConnectionManager.getInstance();
+        await connection.getRepository(Record).transaction(async rep => {
+            await rep.query('update record r set r.sort = r.sort+1 where r.sort >= ?', [newSort]);
+            await rep.createQueryBuilder('record')
+                .where('record.id=:id')
+                .addParameters({ 'id': recordId })
+                .update(Record, { 'collectionId': collectionId, 'sort': newSort })
+                .execute();
+        });
+        return { success: true, message: '' };
+    }
+
     private static async save(record: Record): Promise<ResObject> {
         if (!record.name) {
             return { success: false, message: Message.recordCreateFailedOnName };
