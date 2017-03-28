@@ -35,7 +35,7 @@ export class Collection {
     @UpdateDateColumn()
     updateDate: Date;
 
-    constructor(name: string, description: string, owner: User) {
+    constructor(name?: string, description?: string, owner?: User) {
         this.id = shortid.generate();
         this.name = name;
         this.description = description;

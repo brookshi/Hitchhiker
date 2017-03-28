@@ -5,6 +5,7 @@ import { User } from '../models/user';
 import { GET, POST, BodyParam, BaseController } from 'webapi-router';
 import { ResObject } from "../common/res_object";
 import * as Koa from 'koa';
+import { DtoCollection } from "../interfaces/dto_collection";
 
 export default class CollectionController extends BaseController {
 
@@ -15,7 +16,7 @@ export default class CollectionController extends BaseController {
     }
 
     @POST('/collection')
-    async create(ctx: Koa.Context, @BodyParam collection: { name: string, description: string }): Promise<ResObject> {
+    async create(ctx: Koa.Context, @BodyParam collection: DtoCollection): Promise<ResObject> {
         const user = <User>ctx.session.user;
         return await CollectionService.create(collection.name, collection.description, user);
     }

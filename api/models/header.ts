@@ -1,11 +1,12 @@
-import { Entity, PrimaryColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { User } from "./user";
 import { Record } from "./record";
+import { DtoHeader } from "../interfaces/dto_header";
 
 @Entity()
 export class Header {
-    @PrimaryColumn()
-    id: string;
+    @PrimaryGeneratedColumn()
+    id: number;
 
     @Column()
     key: string;
@@ -21,4 +22,13 @@ export class Header {
 
     @ManyToOne(type => User, user => user.id)
     record: Record;
+
+    static fromDto(dtoHeader: DtoHeader): Header {
+        let header = new Header();
+        header.key = dtoHeader.key;
+        header.value = dtoHeader.value;
+        header.isActive = dtoHeader.isActive;
+        header.sort = dtoHeader.sort;
+        return header;
+    }
 }

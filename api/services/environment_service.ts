@@ -3,6 +3,7 @@ import { Environment } from '../models/environment';
 import { User } from '../models/user';
 import { ConnectionManager } from "./connection_manager";
 import { Variable } from "../models/variable";
+import { DtoVariable } from "../interfaces/dto_variable";
 
 export class EnvironmentService {
 
@@ -15,14 +16,14 @@ export class EnvironmentService {
         return await rep.where('env.id=:id').addParameters({ 'id': id }).getOne();
     }
 
-    static async create(name: string, variables: Variable[], owner: User): Promise<ResObject> {
+    static async create(name: string, variables: DtoVariable[], owner: User): Promise<ResObject> {
         const env = new Environment(name, variables, owner);
         await env.save();
 
         return { success: true, message: '' };
     }
 
-    static async update(id: string, name: string, variables: Variable[]): Promise<ResObject> {
+    static async update(id: string, name: string, variables: DtoVariable[]): Promise<ResObject> {
         const connection = await ConnectionManager.getInstance();
         const env = await EnvironmentService.get(id, true);
         if (!env) {

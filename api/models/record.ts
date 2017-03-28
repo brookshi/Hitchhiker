@@ -3,6 +3,7 @@ import { ConnectionManager } from '../services/connection_manager';
 import { OneToMany, Entity, PrimaryColumn, Column, ManyToOne, UpdateDateColumn, CreateDateColumn } from 'typeorm';
 import { Collection } from './collection';
 import { Header } from "./header";
+import { DtoRecord } from "../interfaces/dto_record";
 
 @Entity()
 export class Record {
@@ -45,18 +46,26 @@ export class Record {
     @UpdateDateColumn()
     updateDate: Date;
 
-    static clone(target: any): Record {
-        let r = new Record();
-        r.url = target.url;
-        r.pid = target.pid;
-        r.body = target.body;
-        r.headers = target.headers;
-        r.test = target.test;
-        r.sort = target.sort;
-        r.method = target.method;
-        r.collection = target.collection;
-        r.name = target.name;
-        return r;
+    static fromDto(target: DtoRecord): Record {
+        let collection = new Collection();
+        collection.id = target.collectionId;
+
+        let record = new Record();
+        record.id = target.id;
+        record.url = target.url;
+        record.pid = target.pid;
+        record.body = target.body;
+        record.headers = target.headers.map(o => {
+            let header = Header.fromDto(o);
+            header.record = record;
+            return header;
+        });
+        record.test = target.test;
+        record.sort = target.sort;
+        record.method = target.method;
+        record.collection = collection;
+        record.name = target.name;
+        return record;
     }
 
     async save() {
