@@ -34,7 +34,7 @@ export class User {
     @UpdateDateColumn()
     updateDate: Date;
 
-    constructor(name: string, email: string, password: string) {
+    constructor(name?: string, email?: string, password?: string) {
         this.name = name;
         this.email = email;
         this.password = password;//TODO: md5, StringUtil.md5(password);
