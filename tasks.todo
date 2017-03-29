@@ -1,17 +1,20 @@
-☐ create/update/del team
-☐ record tree
-☐ test script
-☐ register's email
-☐ run time
-☐ run batch
-☐ share to user
-☐ share to team
-☐ invite user
-☐ invite to team
-☐ import postman
+0.1.0:
+    ☐ create/update/del team @today 
+    ☐ record tree
+    ☐ test script
+    ☐ register's email
+    ☐ run time
+    ☐ run batch
+    ☐ share to user
+    ☐ share to team
+    ☐ invite user
+    ☐ invite to team
+    ☐ import postman
+0.2.0:
+    ☐ body type
+    ☐ session maxage
+    ☐ record auth
+    ☐ schedule
+    ☐ team permission
 
-☐ body type
-☐ session maxage
-☐ record auth
-☐ schedule
 4a0a4b0cb56b86075a895be24d8eba06
