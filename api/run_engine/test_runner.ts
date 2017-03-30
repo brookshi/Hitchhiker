@@ -1,11 +1,12 @@
 import * as VM from 'vm';
 import * as Koa from 'koa';
+import * as request from "request";
 
 export class TestRunner {
 
-    static test(ctx: Koa.Context, code: string): { [key: string]: boolean } {
+    static test(res: request.RequestResponse, code: string): { [key: string]: boolean } {
         TestRunner.init();
-        TestRunner.setResponseData(ctx);
+        TestRunner.setResponseData(res);
         VM.runInThisContext(code);
 
         return global['tests'];
@@ -16,16 +17,16 @@ export class TestRunner {
         global['tests'] = tests;
     }
 
-    static setResponseData(ctx: Koa.Context) {
-        global['responseBody'] = ctx.response.body;
-        global['responseCode'] = ctx.response.status;
+    static setResponseData(res: request.RequestResponse) {
+        global['responseBody'] = res.body;
+        global['responseCode'] = res.statusCode;
         try {
-            global['responseObj'] = JSON.parse(ctx.response.body);
+            global['responseObj'] = JSON.parse(res.body);
         }
         catch (e) {
             global['responseObj'] = e;
         }
-        global['responseHeaders'] = ctx.response.headers;
+        global['responseHeaders'] = res.headers;
         global['responseTime'] = '';//TODO: set time
     }
 }

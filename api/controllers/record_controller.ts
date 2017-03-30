@@ -25,7 +25,7 @@ export default class RecordController extends BaseController {
     async run(ctx: Koa.Context, @BodyParam data: DtoRecordRun) {
         let record = Record.fromDto(data.record);
         const res = await RecordRunner.runRecord(data.environment, record, ctx.res);
-        const testRst = TestRunner.test(ctx, record.test);
+        const testRst = TestRunner.test(res.response, record.test);
         return { 'body': res.body, 'test': testRst };
     }
 

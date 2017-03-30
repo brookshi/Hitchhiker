@@ -6,6 +6,9 @@ export class VariableService {
 
     static async applyVariableForRecord(envId: string, record: Record): Promise<Record> {
         const env = await EnvironmentService.get(envId, true);
+        if (!env) {
+            return record;
+        }
         const variables = env.formatVariables;
         record.url = StringUtil.applyTemplate(record.url, variables);
         record.headers.forEach(header => {

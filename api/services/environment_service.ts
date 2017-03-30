@@ -11,7 +11,7 @@ export class EnvironmentService {
         const connection = await ConnectionManager.getInstance();
         let rep = await connection.getRepository(Environment).createQueryBuilder('env');
         if (needVars) {
-            rep = rep.innerJoinAndSelect('env.variables', 'variable');
+            rep = rep.leftJoinAndSelect('env.variables', 'variable');
         }
         return await rep.where('env.id=:id').addParameters({ 'id': id }).getOne();
     }
