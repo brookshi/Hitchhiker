@@ -3,10 +3,11 @@ import { POST, PUT, BodyParam, BaseController } from 'webapi-router';
 import { ResObject } from "../common/res_object";
 import * as Koa from 'koa';
 import { RecordService } from "../services/record_service";
-import { Runner } from "../run_engine/runner";
+import { RecordRunner } from "../run_engine/record_runner";
 import { DtoRecord } from "../interfaces/dto_record";
 import { DtoRecordRun } from "../interfaces/dto_record_run";
 import { DtoRecordSort } from "../interfaces/dto_record_sort";
+import { TestRunner } from "../run_engine/test_runner";
 
 export default class RecordController extends BaseController {
 
@@ -22,8 +23,10 @@ export default class RecordController extends BaseController {
 
     @POST('/record/run')
     async run(ctx: Koa.Context, @BodyParam data: DtoRecordRun) {
-        const res = await Runner.runRecord(data.environment, Record.fromDto(data.record), ctx.res);
-        return res.body;
+        let record = Record.fromDto(data.record);
+        const res = await RecordRunner.runRecord(data.environment, record, ctx.res);
+        const testRst = TestRunner.test(ctx, record.test);
+        return { 'body': res.body, 'test': testRst };
     }
 
     @POST('/record/sort')

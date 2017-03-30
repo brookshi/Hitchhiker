@@ -6,6 +6,7 @@ import { User } from "../models/user";
 import { DtoUser } from "../interfaces/dto_user";
 import { DtoTeamQuit } from "../interfaces/dto_team_quit";
 import { UserTeamService } from "../services/user_team_service";
+import { TestRunner } from "../run_engine/test_runner";
 
 export default class UserController extends BaseController {
 

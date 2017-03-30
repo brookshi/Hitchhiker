@@ -3,10 +3,10 @@ import { RequestOptionAdapter } from "./request_option_adapter";
 import * as request from "request";
 import { ServerResponse } from "http";
 
-export class Runner {
+export class RecordRunner {
     static async runRecord(envId: string, record: Record, pipeRes?: ServerResponse): Promise<{ err: any, response: request.RequestResponse, body: any }> {
         const option = await RequestOptionAdapter.fromRecord(envId, record);
-        return await Runner.request(option, pipeRes);
+        return await RecordRunner.request(option, pipeRes);
     }
 
     static request(option: request.Options, pipeRes?: ServerResponse): Promise<{ err: any, response: request.RequestResponse, body: any }> {
@@ -15,7 +15,7 @@ export class Runner {
                 resolve({ err: err, response: res, body: body });
             });
             if (pipeRes) {
-                req.pipe(pipeRes)
+                req.pipe(pipeRes);
             }
         });
     }
