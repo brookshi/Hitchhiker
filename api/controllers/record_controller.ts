@@ -28,6 +28,6 @@ export default class RecordController extends BaseController {
 
     @POST('/record/sort')
     async sort( @BodyParam info: DtoRecordSort) {
-        return await RecordService.sort(info.recordId, info.collectionId, info.newSort);
+        return await RecordService.sort(info.recordId, info.folderId, info.collectionId, info.newSort);
     }
 }

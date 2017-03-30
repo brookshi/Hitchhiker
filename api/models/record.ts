@@ -4,6 +4,7 @@ import { OneToMany, Entity, PrimaryColumn, Column, ManyToOne, UpdateDateColumn, 
 import { Collection } from './collection';
 import { Header } from "./header";
 import { DtoRecord } from "../interfaces/dto_record";
+import { RecordCategory } from "../common/record_category";
 
 @Entity()
 export class Record {
@@ -13,8 +14,11 @@ export class Record {
     @ManyToOne(type => Collection, collection => collection.records)
     collection: Collection;
 
-    @Column()
+    @Column({ default: '' })
     pid: string;
+
+    @Column({ type: 'int' })
+    category: RecordCategory;
 
     @Column()
     name: string;
@@ -45,6 +49,8 @@ export class Record {
 
     @UpdateDateColumn()
     updateDate: Date;
+
+    children: Record[] = [];
 
     static fromDto(target: DtoRecord): Record {
         let collection = new Collection();

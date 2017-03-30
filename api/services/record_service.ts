@@ -5,6 +5,7 @@ import * as _ from "lodash";
 import { ResObject } from "../common/res_object";
 import { Message } from "../common/message";
 import { Header } from "../models/header";
+import { RecordCategory } from "../common/record_category";
 
 export class RecordService {
     private static _sort: number = 0;
@@ -26,7 +27,12 @@ export class RecordService {
             .where(whereStr, parameters)
             .getMany();
 
-        return _.groupBy(records, o => o.collection.id);
+        let recordsList = _.groupBy(records, o => o.collection.id);
+        for (let key in recordsList) {
+            recordsList[key] = RecordService.toTree(recordsList[key]);
+        }
+
+        return recordsList;
     }
 
     static async getById(id: string, includeHeaders: boolean = false): Promise<Record> {
@@ -68,14 +74,14 @@ export class RecordService {
         return maxSort;
     }
 
-    static async sort(recordId: string, collectionId: string, newSort: number): Promise<ResObject> {
+    static async sort(recordId: string, folderId: string, collectionId: string, newSort: number): Promise<ResObject> {
         const connection = await ConnectionManager.getInstance();
         await connection.getRepository(Record).transaction(async rep => {
-            await rep.query('update record r set r.sort = r.sort+1 where r.sort >= ?', [newSort]);
+            await rep.query('update record r set r.sort = r.sort+1 where r.sort >= ? and r.collectionId = ? and pid = ?', [newSort, collectionId, folderId]);
             await rep.createQueryBuilder('record')
                 .where('record.id=:id')
                 .addParameters({ 'id': recordId })
-                .update(Record, { 'collectionId': collectionId, 'sort': newSort })
+                .update(Record, { 'collectionId': collectionId, 'pid': folderId, 'sort': newSort })
                 .execute();
         });
         return { success: true, message: '' };
@@ -87,5 +93,34 @@ export class RecordService {
         }
         await record.save();
         return { success: true, message: '' };
+    }
+
+    private static toTree(records: Record[], parent?: Record): Record[] {
+        let result = new Array<Record>();
+        let nonParentRecord = new Array<Record>();
+        const pushChild = (r, p) => {
+            p.children = p.children || [];
+            p.children.push(r);
+        };
+
+        records.forEach(r => {
+            if (r.category === RecordCategory.folder) {
+                if (!parent) {
+                    result.push(r);
+                }
+                else if (r.pid === parent.id) {
+                    pushChild(parent, r);
+                }
+                RecordService.toTree(records, r);
+            } else if (parent && r.pid === parent.id) {
+                pushChild(parent, r);
+            } else if (!parent) {
+                nonParentRecord.push(r);
+            }
+        });
+
+        result.push(...nonParentRecord);
+
+        return result;
     }
 }
