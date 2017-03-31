@@ -1,15 +1,15 @@
 import * as VM from 'vm';
-import * as Koa from 'koa';
 import * as request from "request";
+import * as _ from "lodash";
 
 export class TestRunner {
 
-    static test(res: request.RequestResponse, code: string): { [key: string]: boolean } {
+    static test(res: request.RequestResponse, code: string, elapsed: number): { [key: string]: boolean } {
         TestRunner.init();
-        TestRunner.setResponseData(res);
+        TestRunner.setResponseData(res, elapsed);
         VM.runInThisContext(code);
 
-        return global['tests'];
+        return _.clone(global['tests']);
     }
 
     static init() {
@@ -17,16 +17,16 @@ export class TestRunner {
         global['tests'] = tests;
     }
 
-    static setResponseData(res: request.RequestResponse) {
+    static setResponseData(res: request.RequestResponse, elapsed: number) {
         global['responseBody'] = res.body;
-        global['responseCode'] = res.statusCode;
+        global['responseCode'] = { code: res.statusCode, name: res.statusMessage };
         try {
-            global['responseObj'] = JSON.parse(res.body);
+            global['responseObj'] = JSON.parse(res.body); // TODO: more response type, xml, protobuf, zip, chunk...
         }
         catch (e) {
             global['responseObj'] = e;
         }
         global['responseHeaders'] = res.headers;
-        global['responseTime'] = '';//TODO: set time
+        global['responseTime'] = elapsed;
     }
 }

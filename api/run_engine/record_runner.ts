@@ -27,7 +27,7 @@ export class RecordRunner {
     }
 
     static handleRes(res: request.RequestResponse, record: Record, pipeRes: ServerResponse, elapsed: number): RunResult {
-        const testRst = TestRunner.test(res, record.test);
+        const testRst = TestRunner.test(res, record.test, elapsed);
         const body = { body: res.body, tests: testRst, elapsed: elapsed };
         const headers = res.headers;
 
