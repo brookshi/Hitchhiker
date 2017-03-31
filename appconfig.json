@@ -1,0 +1,13 @@
+{
+    "mail": {
+        "user": "",
+        "password": "",
+        "host": "smtp.live.com",
+        "port": "587",
+        "timeout": 60000,
+        "domain": "",
+        "tls": {
+            "ciphers": "SSLv3"
+        }
+    }
+}

@@ -7,7 +7,6 @@ import { RecordRunner } from "../run_engine/record_runner";
 import { DtoRecord } from "../interfaces/dto_record";
 import { DtoRecordRun } from "../interfaces/dto_record_run";
 import { DtoRecordSort } from "../interfaces/dto_record_sort";
-import { TestRunner } from "../run_engine/test_runner";
 
 export default class RecordController extends BaseController {
 

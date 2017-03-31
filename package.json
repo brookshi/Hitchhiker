@@ -4,6 +4,7 @@
   "description": "restful api test tool",
   "main": "index.js",
   "dependencies": {
+    "emailjs": "^1.0.8",
     "koa": "^2.0.0-alpha.7",
     "koa-bodyparser": "^3.2.0",
     "koa-query": "^0.0.6",
