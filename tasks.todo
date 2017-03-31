@@ -3,18 +3,23 @@
     ☐ record tree @today 
     ✔ test script @done (3/31/2017, 1:07:53 PM)
     ☐ register's email
-    ☐ run time
+    ☐ find password
+    ✔ run time @done (3/31/2017, 4:51:45 PM)
     ☐ run batch
     ☐ share to user
     ☐ share to team
     ☐ invite user
     ☐ invite to team
     ☐ import postman
+    ☐ session maxage
 0.2.0:
     ☐ body type
-    ☐ session maxage
     ☐ record auth
     ☐ schedule
+0.3.0:
+    ☐ data mock
+0.4.0:
+    ☐ api document
     ☐ team permission
 
 4a0a4b0cb56b86075a895be24d8eba06
