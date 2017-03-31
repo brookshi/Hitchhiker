@@ -11,13 +11,13 @@ export default class CollectionController extends BaseController {
 
     @GET('/collections')
     async getCollections(ctx: Koa.Context): Promise<Collection[]> {
-        const user = <User>ctx.session.user;
+        const user = <User>(<any>ctx).session.user;
         return await UserCollectionService.getUserCollections(user.id);
     }
 
     @POST('/collection')
     async create(ctx: Koa.Context, @BodyParam collection: DtoCollection): Promise<ResObject> {
-        const user = <User>ctx.session.user;
+        const user = <User>(<any>ctx).session.user;
         return await CollectionService.create(collection.name, collection.description, user);
     }
 }

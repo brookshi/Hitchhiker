@@ -9,7 +9,7 @@ export default class EnvironmentController extends BaseController {
 
     @POST('/environment')
     async create(ctx: Koa.Context, @BodyParam env: DtoEnvironment): Promise<ResObject> {
-        const user = <User>ctx.session.user;
+        const user = <User>(<any>ctx).session.user;
         return await EnvironmentService.create(env.name, env.variables, user);
     }
 

@@ -9,7 +9,7 @@ export default class TeamController extends BaseController {
 
     @POST('/team')
     async create(ctx: Koa.Context, @BodyParam info: DtoTeam): Promise<ResObject> {
-        const user = <User>ctx.session.user;
+        const user = <User>(<any>ctx).session.user;
         info.owner = user.id;
         return await TeamService.saveTeam(info);
     }

@@ -6,7 +6,6 @@ import { User } from "../models/user";
 import { DtoUser } from "../interfaces/dto_user";
 import { DtoTeamQuit } from "../interfaces/dto_team_quit";
 import { UserTeamService } from "../services/user_team_service";
-import { TestRunner } from "../run_engine/test_runner";
 
 export default class UserController extends BaseController {
 
@@ -22,8 +21,8 @@ export default class UserController extends BaseController {
             return checkLogin;
         }
 
-        ctx.sessionHandler.regenerateId();
-        ctx.session.user = checkLogin.result;
+        (<any>ctx).sessionHandler.regenerateId();
+        (<any>ctx).session = checkLogin.result;
 
         (<User>checkLogin.result).password = undefined;
 
