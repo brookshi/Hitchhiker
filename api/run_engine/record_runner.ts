@@ -4,12 +4,15 @@ import * as request from "request";
 import { ServerResponse } from "http";
 import { TestRunner } from "./test_runner";
 import { RunResult } from "../common/run_result";
+import * as _ from "lodash";
 
 export class RecordRunner {
     static async runRecord(envId: string, record: Record, serverRes: ServerResponse, needPipe?: boolean): Promise<RunResult> {
         const option = await RequestOptionAdapter.fromRecord(envId, record);
+        const start = process.hrtime();
         const res = await RecordRunner.request(option, serverRes, needPipe);
-        return RecordRunner.handleRes(res.response, record, serverRes);
+        const elapsed = process.hrtime(start)[0] * 1000 + _.toInteger(process.hrtime(start)[1] / 1000000);
+        return RecordRunner.handleRes(res.response, record, serverRes, elapsed);
     }
 
     static request(option: request.Options, serverRes: ServerResponse, needPipe?: boolean): Promise<{ err: any, response: request.RequestResponse, body: any }> {
@@ -23,9 +26,9 @@ export class RecordRunner {
         });
     }
 
-    static handleRes(res: request.RequestResponse, record: Record, pipeRes: ServerResponse): RunResult {
+    static handleRes(res: request.RequestResponse, record: Record, pipeRes: ServerResponse, elapsed: number): RunResult {
         const testRst = TestRunner.test(res, record.test);
-        const body = { body: res.body, tests: testRst };
+        const body = { body: res.body, tests: testRst, elapsed: elapsed };
         const headers = res.headers;
 
         headers['content-length'] = JSON.stringify(body).length;
