@@ -12,7 +12,7 @@ export class UserCollectionService {
         let collections = <Collection[]>_.unionWith(collectionArr[0], collectionArr[1], (a, b) => (<Collection>a).id === (<Collection>b).id);
 
         const collectionIds = collections.map(o => o.id);
-        const recordsList = await RecordService.getByCollectionIds(collectionIds);
+        const recordsList = await RecordService.getByCollectionIds(collectionIds, false);
 
         collections.forEach(o => o.records = recordsList[o.id]);
 

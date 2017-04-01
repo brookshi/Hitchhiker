@@ -17,10 +17,11 @@ export class CollectionService {
 
         return await connection.getRepository(Collection)
             .createQueryBuilder("collection")
-            .innerJoinAndSelect('collection.team', 'team')
+            .leftJoinAndSelect('collection.team', 'team')
             .innerJoinAndSelect('collection.owner', 'owner')
             .where('recycle = 0')
-            .setParameter('id', userId)
+            .andWhere('owner.id = :userId')
+            .setParameter('userId', userId)
             .getMany();
     }
 
@@ -29,8 +30,8 @@ export class CollectionService {
 
         return await connection.getRepository(Collection)
             .createQueryBuilder("collection")
-            .innerJoinAndSelect('collection.team', 'team')
-            .innerJoinAndSelect('collection.owner', 'owner')
+            .leftJoinAndSelect('collection.team', 'team')
+            .leftJoinAndSelect('collection.owner', 'owner')
             .where('recycle = 0')
             .andWhereInIds(ids)
             .getMany();
@@ -42,13 +43,17 @@ export class CollectionService {
         return await connection.getRepository(Collection)
             .createQueryBuilder("collection")
             .innerJoinAndSelect('collection.team', 'team', 'team.id=:id')
-            .innerJoinAndSelect('collection.owner', 'owner')
+            .leftJoinAndSelect('collection.owner', 'owner')
             .where('recycle = 0')
             .setParameter('id', teamid)
             .getMany();
     }
 
     static async getByTeamIds(teamIds: string[]): Promise<Collection[]> {
+        if (teamIds) {
+            return [];
+        }
+
         const connection = await ConnectionManager.getInstance();
         const parameters: ObjectLiteral = {};
         const whereStrs = teamIds.map((id, index) => {
@@ -60,7 +65,7 @@ export class CollectionService {
         return await connection.getRepository(Collection)
             .createQueryBuilder("collection")
             .innerJoinAndSelect('collection.team', 'team')
-            .innerJoinAndSelect('collection.owner', 'owner')
+            .leftJoinAndSelect('collection.owner', 'owner')
             .where('recycle = 0')
             .andWhere(whereStr, parameters)
             .getMany();

@@ -17,7 +17,7 @@ export class Record {
     @Column({ default: '' })
     pid: string;
 
-    @Column({ type: 'int' })
+    @Column({ type: 'int', default: 1 })
     category: RecordCategory;
 
     @Column()

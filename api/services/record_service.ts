@@ -10,7 +10,7 @@ import { RecordCategory } from "../common/record_category";
 export class RecordService {
     private static _sort: number = 0;
 
-    static async getByCollectionIds(collectionIds: string[]): Promise<{ [key: string]: Record[] }> {
+    static async getByCollectionIds(collectionIds: string[], needCollection?: boolean): Promise<{ [key: string]: Record[] }> {
         const connection = await ConnectionManager.getInstance();
 
         const parameters: ObjectLiteral = {};
@@ -20,15 +20,18 @@ export class RecordService {
         });
         const whereStr = whereStrs.length > 1 ? "(" + whereStrs.join(" OR ") + ")" : whereStrs[0];
 
-        let records = await connection.getRepository(Record)
-            .createQueryBuilder("record")
+        let records = await connection.getRepository(Record).createQueryBuilder("record")
             .innerJoinAndSelect("record.collection", "collection")
             .leftJoinAndSelect('record.headers', 'header')
             .where(whereStr, parameters)
             .getMany();
 
         let recordsList = _.groupBy(records, o => o.collection.id);
+
         for (let key in recordsList) {
+            if (!needCollection) {
+                recordsList[key].forEach(r => r.collection = undefined);
+            }
             recordsList[key] = RecordService.toTree(recordsList[key]);
         }
 
@@ -95,9 +98,10 @@ export class RecordService {
         return { success: true, message: '' };
     }
 
-    private static toTree(records: Record[], parent?: Record): Record[] {
+    private static toTree(records: Record[], parent?: Record, pushedRecord?: Array<string>): Record[] {
         let result = new Array<Record>();
         let nonParentRecord = new Array<Record>();
+        pushedRecord = pushedRecord || new Array<string>();
         const pushChild = (r, p) => {
             p.children = p.children || [];
             p.children.push(r);
@@ -105,16 +109,21 @@ export class RecordService {
 
         records.forEach(r => {
             if (r.category === RecordCategory.folder) {
-                if (!parent) {
+                if (!r.pid && !parent) {
                     result.push(r);
+                    pushedRecord.push(r.id);
+                    RecordService.toTree(records, r, pushedRecord);
                 }
-                else if (r.pid === parent.id) {
-                    pushChild(parent, r);
+                else if (parent && r.pid === parent.id) {
+                    pushChild(r, parent);
+                    pushedRecord.push(r.id);
+                    RecordService.toTree(records, r, pushedRecord);
                 }
-                RecordService.toTree(records, r);
-            } else if (parent && r.pid === parent.id) {
-                pushChild(parent, r);
-            } else if (!parent) {
+            }
+            else if (parent && r.pid === parent.id) {
+                pushChild(r, parent);
+            }
+            else if (!parent && !r.pid) {
                 nonParentRecord.push(r);
             }
         });
