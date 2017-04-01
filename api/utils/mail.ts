@@ -8,7 +8,7 @@ export class Mail {
     static send(target: string, subject: string, content: string) {
         Mail.server.send({
             text: content,
-            from: `${Setting.instance.mail.name}`,
+            from: `${Setting.instance.mail.user}`,
             to: `${target} <${target}>`,
             subject: subject
         }, function (err, message) { console.log(err || message); });

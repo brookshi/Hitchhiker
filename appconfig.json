@@ -1,13 +1,10 @@
 {
     "mail": {
-        "user": "",
-        "password": "",
-        "host": "smtp.live.com",
-        "port": "587",
-        "timeout": 60000,
-        "domain": "",
-        "tls": {
-            "ciphers": "SSLv3"
-        }
+        "user": "hitchhiker@yeah.net",
+        "password": "hitchhiker123",
+        "host": "smtp.yeah.net",
+        "timeout": 5000,
+        "ssl": true,
+        "domain": "yeah.net"
     }
 }
