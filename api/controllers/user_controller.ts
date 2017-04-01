@@ -25,6 +25,7 @@ export default class UserController extends BaseController {
 
         (<any>ctx).sessionHandler.regenerateId();
         (<any>ctx).session.user = checkLogin.result;
+        (<any>ctx).session.date = new Date();
 
         (<User>checkLogin.result).password = undefined;
 
