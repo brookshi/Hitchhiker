@@ -5,6 +5,7 @@ import * as Session from 'koa-session-minimal';
 import { WebApiRouter } from 'webapi-router';
 import sessionRolling from './session_rolling';
 import { SessionService } from "../services/session_service";
+import routeFailed from "./route_failed";
 
 export default function middleware(context: Koa) {
     let ctrlRouter = new WebApiRouter();
@@ -18,6 +19,7 @@ export default function middleware(context: Koa) {
             sessionRolling(),
             Bodyparser(),
             ctrlRouter.router('../bin/controllers', 'api'),
+            routeFailed(),
         ]
     );
 }

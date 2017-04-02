@@ -6,9 +6,6 @@ let app = new Koa();
 
 app.use(Middleware(app));
 
-app.use(ctx => {
-    ctx.body = "failed";
-});
-
 http.createServer(function (req, resp) { });
+
 app.listen(81);
