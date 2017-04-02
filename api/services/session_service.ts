@@ -1,5 +1,4 @@
 import * as Koa from 'koa';
-import { User } from "../models/user";
 import { DateUtil } from "../utils/date_util";
 
 export class SessionService {
@@ -8,9 +7,9 @@ export class SessionService {
         return DateUtil.DAY * 2;
     }
 
-    static login(ctx: Koa.Context, user: User) {
+    static login(ctx: Koa.Context, userId: string) {
         (<any>ctx).sessionHandler.regenerateId();
-        (<any>ctx).session.user = user;
+        (<any>ctx).session.userId = userId;
         (<any>ctx).session.date = new Date();
     }
 
@@ -34,5 +33,9 @@ export class SessionService {
 
     static getDate(ctx: Koa.Context): Date {
         return <Date>(<any>ctx).session.date;
+    }
+
+    static getUserId(ctx: Koa.Context): string {
+        return (<any>ctx).session.userId;
     }
 }

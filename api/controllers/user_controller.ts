@@ -1,4 +1,4 @@
-import { POST, BodyParam, BaseController } from 'webapi-router';
+import { GET, POST, BodyParam, BaseController } from 'webapi-router';
 import { ResObject } from "../common/res_object";
 import { UserService } from "../services/user_service";
 import * as Koa from 'koa';
@@ -24,11 +24,17 @@ export default class UserController extends BaseController {
             return checkLogin;
         }
 
-        SessionService.login(ctx, checkLogin.result);
+        SessionService.login(ctx, (<User>checkLogin.result).id);
 
         (<User>checkLogin.result).password = undefined;
 
         return checkLogin;
+    }
+
+    @GET()
+    logout(ctx: Koa.Context): ResObject {
+        SessionService.logout(ctx);
+        return { success: true, message: '' };
     }
 
     @POST('/user/quitteam')

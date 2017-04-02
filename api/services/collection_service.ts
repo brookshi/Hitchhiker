@@ -6,7 +6,9 @@ import { User } from "../models/user";
 
 export class CollectionService {
 
-    static async create(name: string, desc: string, owner: User): Promise<ResObject> {
+    static async create(name: string, desc: string, userId: string): Promise<ResObject> {
+        const owner = new User();
+        owner.id = userId;
         let collection = new Collection(name, desc, owner);
         await collection.save();
         return { success: true, message: '' };

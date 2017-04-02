@@ -3,14 +3,13 @@ import { ResObject } from "../common/res_object";
 import { DtoTeam } from "../interfaces/dto_team";
 import { TeamService } from "../services/team_service";
 import * as Koa from 'koa';
-import { User } from "../models/user";
+import { SessionService } from "../services/session_service";
 
 export default class TeamController extends BaseController {
 
     @POST('/team')
     async create(ctx: Koa.Context, @BodyParam info: DtoTeam): Promise<ResObject> {
-        const user = <User>(<any>ctx).session.user;
-        info.owner = user.id;
+        info.owner = SessionService.getUserId(ctx);
         return await TeamService.saveTeam(info);
     }
 

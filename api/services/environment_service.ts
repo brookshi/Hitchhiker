@@ -16,7 +16,9 @@ export class EnvironmentService {
         return await rep.where('env.id=:id').addParameters({ 'id': id }).getOne();
     }
 
-    static async create(name: string, variables: DtoVariable[], owner: User): Promise<ResObject> {
+    static async create(name: string, variables: DtoVariable[], userId: string): Promise<ResObject> {
+        const owner = new User();
+        owner.id = userId;
         const env = new Environment(name, variables, owner);
         await env.save();
 
