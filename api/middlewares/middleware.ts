@@ -3,7 +3,7 @@ import * as Compose from 'koa-compose';
 import * as Bodyparser from 'koa-bodyparser';
 import * as Session from 'koa-session-minimal';
 import { WebApiRouter } from 'webapi-router';
-import sessionRolling from './session_rolling';
+import sessionHandle from './session_handle';
 import { SessionService } from "../services/session_service";
 import routeFailed from "./route_failed";
 import errorHandle from "./error_handle";
@@ -18,7 +18,7 @@ export default function middleware(context: Koa) {
                     maxAge: SessionService.maxAge
                 }
             }),
-            sessionRolling(),
+            sessionHandle(),
             Bodyparser(),
             ctrlRouter.router('../bin/controllers', 'api'),
             routeFailed(),

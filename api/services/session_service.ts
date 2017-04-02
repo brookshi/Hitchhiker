@@ -3,6 +3,13 @@ import { DateUtil } from "../utils/date_util";
 
 export class SessionService {
 
+    static get bypass(): string[] {
+        return [
+            'api/user/login',
+            'api/user'
+        ];
+    }
+
     static get maxAge() {
         return DateUtil.DAY * 2;
     }
@@ -15,6 +22,10 @@ export class SessionService {
 
     static logout(ctx: Koa.Context) {
         (<any>ctx).session = null;
+    }
+
+    static isSessionValid(ctx: Koa.Context): boolean {
+        return !!(<any>ctx).session.userId || !!SessionService.bypass.find(o => ctx.request.url.endsWith(o));
     }
 
     static rollDate(ctx: Koa.Context) {
