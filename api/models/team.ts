@@ -4,6 +4,7 @@ import { User } from './user';
 import { DtoTeam } from "../interfaces/dto_team";
 import * as shortid from 'shortid';
 import { ConnectionManager } from "../services/connection_manager";
+import { Environment } from "./environment";
 
 @Entity()
 export class Team {
@@ -19,6 +20,9 @@ export class Team {
 
     @OneToMany(type => Collection, collection => collection.team)
     collections: Collection[] = [];
+
+    @OneToMany(type => Environment, environment => environment.team)
+    environments: Environment[] = [];
 
     @Column({ nullable: true })
     note: string;

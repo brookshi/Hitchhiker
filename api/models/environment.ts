@@ -4,6 +4,7 @@ import { ManyToOne, OneToMany, Entity, PrimaryColumn, Column, CreateDateColumn, 
 import { User } from './user';
 import { Variable } from "./variable";
 import { DtoVariable } from "../interfaces/dto_variable";
+import { Team } from "./team";
 
 @Entity()
 export class Environment {
@@ -21,6 +22,9 @@ export class Environment {
 
     @ManyToOne(type => User, user => user.environments)
     owner: User;
+
+    @ManyToOne(type => Team, team => team.environments)
+    team: Team;
 
     @CreateDateColumn()
     createDate: Date;
