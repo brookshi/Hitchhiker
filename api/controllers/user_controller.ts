@@ -7,6 +7,7 @@ import { DtoUser } from "../interfaces/dto_user";
 import { DtoTeamQuit } from "../interfaces/dto_team_quit";
 import { UserTeamService } from "../services/user_team_service";
 import { Mail } from "../utils/mail";
+import { SessionService } from "../services/session_service";
 
 export default class UserController extends BaseController {
 
@@ -23,9 +24,7 @@ export default class UserController extends BaseController {
             return checkLogin;
         }
 
-        (<any>ctx).sessionHandler.regenerateId();
-        (<any>ctx).session.user = checkLogin.result;
-        (<any>ctx).session.date = new Date();
+        SessionService.login(ctx, checkLogin.result);
 
         (<User>checkLogin.result).password = undefined;
 

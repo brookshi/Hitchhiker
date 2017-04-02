@@ -1,14 +1,8 @@
-import { DateUtil } from "../utils/date_util";
+import { SessionService } from "../services/session_service";
 
 export default function sessionRolling(): (ctx: any, next: Function) => Promise<void> {
     return async (ctx, next) => {
-        const date = ctx.session.date;
-        if (!date) {
-            return await next();
-        }
-        if (DateUtil.diff(date, new Date()) > 24) {
-            ctx.session.date = Date.now();
-        }
+        SessionService.rollDate(ctx);
         return await next();
     };
 }

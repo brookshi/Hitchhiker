@@ -4,7 +4,7 @@ import * as Bodyparser from 'koa-bodyparser';
 import * as Session from 'koa-session-minimal';
 import { WebApiRouter } from 'webapi-router';
 import sessionRolling from './session_rolling';
-import { DateUtil } from "../utils/date_util";
+import { SessionService } from "../services/session_service";
 
 export default function middleware(context: Koa) {
     let ctrlRouter = new WebApiRouter();
@@ -12,7 +12,7 @@ export default function middleware(context: Koa) {
         [
             Session({
                 cookie: {
-                    maxAge: DateUtil.DAY * 2
+                    maxAge: SessionService.maxAge
                 }
             }),
             sessionRolling(),
