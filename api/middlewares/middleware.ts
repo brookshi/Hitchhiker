@@ -6,11 +6,13 @@ import { WebApiRouter } from 'webapi-router';
 import sessionRolling from './session_rolling';
 import { SessionService } from "../services/session_service";
 import routeFailed from "./route_failed";
+import errorHandle from "./error_handle";
 
 export default function middleware(context: Koa) {
     let ctrlRouter = new WebApiRouter();
     return Compose(
         [
+            errorHandle(),
             Session({
                 cookie: {
                     maxAge: SessionService.maxAge
