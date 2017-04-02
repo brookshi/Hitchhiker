@@ -6,14 +6,12 @@ import { User } from "../models/user";
 import { DtoUser } from "../interfaces/dto_user";
 import { DtoTeamQuit } from "../interfaces/dto_team_quit";
 import { UserTeamService } from "../services/user_team_service";
-import { Mail } from "../utils/mail";
 import { SessionService } from "../services/session_service";
 
 export default class UserController extends BaseController {
 
     @POST('/user')
     async register( @BodyParam body: DtoUser): Promise<ResObject> {
-        Mail.send('iwxiaot@gmail.com', 'test', 'test');
         return await UserService.createUser(body.name, body.email, body.password);
     }
 
