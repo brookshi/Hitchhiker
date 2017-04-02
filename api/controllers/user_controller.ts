@@ -7,6 +7,7 @@ import { DtoUser } from "../interfaces/dto_user";
 import { DtoTeamQuit } from "../interfaces/dto_team_quit";
 import { UserTeamService } from "../services/user_team_service";
 import { SessionService } from "../services/session_service";
+import { Message } from "../common/message";
 
 export default class UserController extends BaseController {
 
@@ -24,6 +25,7 @@ export default class UserController extends BaseController {
 
         SessionService.login(ctx, (<User>checkLogin.result).id);
 
+        checkLogin.message = Message.userLoginSuccess;
         (<User>checkLogin.result).password = undefined;
 
         return checkLogin;
@@ -32,7 +34,7 @@ export default class UserController extends BaseController {
     @GET()
     logout(ctx: Koa.Context): ResObject {
         SessionService.logout(ctx);
-        return { success: true, message: '' };
+        return { success: true, message: Message.userLogout };
     }
 
     @POST('/user/quitteam')

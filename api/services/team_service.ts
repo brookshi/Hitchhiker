@@ -2,6 +2,7 @@ import { Team } from "../models/team";
 import { ConnectionManager } from "./connection_manager";
 import { DtoTeam } from "../interfaces/dto_team";
 import { ResObject } from "../common/res_object";
+import { Message } from "../common/message";
 
 export class TeamService {
     static async getTeam(id: string, needCollection: boolean = true, needUser: boolean = false): Promise<Team> {
@@ -39,6 +40,6 @@ export class TeamService {
     static async saveTeam(dtoTeam: DtoTeam): Promise<ResObject> {
         const team = Team.fromDto(dtoTeam);
         await team.save();
-        return { success: true, message: '' };
+        return { success: true, message: Message.teamSaveSuccess };
     }
 }

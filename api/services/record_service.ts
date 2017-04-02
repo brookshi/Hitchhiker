@@ -87,7 +87,7 @@ export class RecordService {
                 .update(Record, { 'collectionId': collectionId, 'pid': folderId, 'sort': newSort })
                 .execute();
         });
-        return { success: true, message: '' };
+        return { success: true, message: Message.recordSortSuccess };
     }
 
     private static async save(record: Record): Promise<ResObject> {
@@ -95,7 +95,7 @@ export class RecordService {
             return { success: false, message: Message.recordCreateFailedOnName };
         }
         await record.save();
-        return { success: true, message: '' };
+        return { success: true, message: Message.recordSaveSuccess };
     }
 
     private static toTree(records: Record[], parent?: Record, pushedRecord?: Array<string>): Record[] {

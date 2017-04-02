@@ -1,4 +1,3 @@
-
 import { Log } from "../utils/log";
 
 export default function errorHandle(): (ctx: any, next: Function) => Promise<void> {

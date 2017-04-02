@@ -1,6 +1,7 @@
 import { DtoTeamQuit } from "../interfaces/dto_team_quit";
 import { UserService } from "./user_service";
 import { ResObject } from "../common/res_object";
+import { Message } from "../common/message";
 
 export class UserTeamService {
 
@@ -11,6 +12,6 @@ export class UserTeamService {
             user.teams.splice(teamIndex, 1);
         }
         await user.save();
-        return { success: true, message: '' };
+        return { success: true, message: Message.teamQuitSuccess };
     }
 }

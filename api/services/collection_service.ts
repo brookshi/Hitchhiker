@@ -3,6 +3,7 @@ import { Collection } from '../models/collection';
 import { ConnectionManager } from "./connection_manager";
 import { ObjectLiteral } from "typeorm/common/ObjectLiteral";
 import { User } from "../models/user";
+import { Message } from "../common/message";
 
 export class CollectionService {
 
@@ -11,7 +12,7 @@ export class CollectionService {
         owner.id = userId;
         let collection = new Collection(name, desc, owner);
         await collection.save();
-        return { success: true, message: '' };
+        return { success: true, message: Message.collectionCreateSuccess };
     }
 
     static async getOwns(userId: string): Promise<Collection[]> {
