@@ -1,25 +1,29 @@
 0.1.0:
-    ✔ create/update/del team @today @done (3/30/2017, 9:31:31 AM)
-    ☐ record tree @today 
+    ✔ create/update/del team @today @done (3/30/2017, 9:31:31 PM)
+    ✔ record tree @today @done (2017/4/1 下午7:16:50)
     ✔ test script @done (3/31/2017, 1:07:53 PM)
     ☐ register's email
     ☐ find password
-    ✔ run time @done (3/31/2017, 4:51:45 PM)
-    ☐ run batch
+    ✔ run time @done (3/31/2017, 9:51:45 PM)
     ☐ share to user
     ☐ share to team
     ☐ invite user
     ☐ invite to team
     ☐ import postman
-    ☐ session maxage
+    ✔ session maxage(2d, rolling) @done (2017/4/2 上午12:11:25)
+    ✔ error handle @done (2017/4/2 下午3:04:54)
+    ✔ miss session @done (2017/4/2 下午6:48:35)
+    ☐ log
+    ✔ message @done (2017/4/2 下午10:11:44)
+    ☐ team permission
 0.2.0:
     ☐ body type
     ☐ record auth
     ☐ schedule
+    ☐ run batch
 0.3.0:
     ☐ data mock
 0.4.0:
     ☐ api document
-    ☐ team permission
 
 4a0a4b0cb56b86075a895be24d8eba06
