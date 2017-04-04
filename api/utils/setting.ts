@@ -8,7 +8,7 @@ export class Setting {
         this._setting = require('../../appconfig');
     }
 
-    get mail() {
-        return this._setting.mail;
+    get needRegisterMailCheck() {
+        return this._setting.registerMailCheck;
     }
 }
