@@ -28,6 +28,9 @@ export class User {
     @OneToMany(type => Environment, env => env.owner)
     environments: Environment[] = [];
 
+    @Column()
+    isActive: boolean;
+
     @CreateDateColumn()
     createDate: Date;
 

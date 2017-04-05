@@ -7,6 +7,7 @@ export class Message {
     static userCreateSuccess: string = 'create user success';
     static userCreateFailed: string = 'create user failed';
     static userCheckFailed: string = 'email or password error';
+    static accountNotActive: string = 'account is not active'
     static userLogout: string = 'logout success';
     static userLoginSuccess: string = 'login success';
 

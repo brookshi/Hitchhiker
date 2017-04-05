@@ -3,12 +3,17 @@ import { ConnectionManager } from "./connection_manager";
 import { Message } from "../common/message";
 import { ResObject } from "../common/res_object";
 import { ValidateUtil } from "../utils/validate_util";
+import { Setting } from "../utils/setting";
 
 export class UserService {
     static async checkUser(email: string, pwd: string): Promise<ResObject> {
         const user = await UserService.getUserByEmail(email, true, true);
         if (user && user.password === pwd) {//TODO: md5
-            return { success: true, message: '', result: user };
+            if (user.isActive) {
+                return { success: true, message: '', result: user };
+            } else {
+                return { success: false, message: Message.accountNotActive };
+            }
         }
         return { success: false, message: Message.userCheckFailed };
     }
@@ -27,6 +32,7 @@ export class UserService {
         }
 
         const user = new User(name, email, pwd);
+        user.isActive = !Setting.instance.needRegisterMailCheck;
         user.save();
 
         return { success: true, message: Message.userCreateSuccess };
