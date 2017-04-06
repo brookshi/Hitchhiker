@@ -6,7 +6,8 @@ export class SessionService {
     static get bypass(): string[] {
         return [
             'api/user/login',
-            'api/user'
+            'api/user',
+            'api/user/regconfirm'
         ];
     }
 
@@ -25,7 +26,7 @@ export class SessionService {
     }
 
     static isSessionValid(ctx: Koa.Context): boolean {
-        return !!(<any>ctx).session.userId || !!SessionService.bypass.find(o => ctx.request.url.endsWith(o));
+        return !!(<any>ctx).session.userId || !!SessionService.bypass.find(o => ctx.request.url.replace(`?${ctx.request.querystring}`, '').endsWith(o));
     }
 
     static rollDate(ctx: Koa.Context) {

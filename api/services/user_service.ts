@@ -82,6 +82,8 @@ export class UserService {
         await connection.getRepository(User)
             .createQueryBuilder("user")
             .update({ isActive: true })
+            .where('id=:id')
+            .setParameter('id', id)
             .execute();
     }
 }

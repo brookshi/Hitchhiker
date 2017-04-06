@@ -5,7 +5,7 @@ export class Log {
     private static logger: Logger;
 
     static init() {
-        Log4js.configure('../../logconfig.json');
+        Log4js.configure('logconfig.json');
         Log.logger = getLogger('default');
     }
 

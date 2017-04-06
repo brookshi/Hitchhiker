@@ -1,11 +1,11 @@
 {
     "app": {
-        "host": "http://localhost:81/",
+        "host": "http://localhost:81/api/",
         "language": "cn",
         "encrptykey": "hitchhikerapi"
     },
     "user": {
-        "registerMailCheck": false
+        "registerMailCheck": true
     },
     "mail": {
         "host": "http://localhost:82/api/mail/"

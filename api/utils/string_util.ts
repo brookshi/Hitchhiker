@@ -7,11 +7,17 @@ export class StringUtil {
     }
 
     static encrypt(str: string): string {
-        return crypto.createCipher('aes-256-cbc', Setting.instance.app.encrptykey).update(str, 'utf8', 'base64');
+        const cipher = crypto.createCipher('aes-256-cbc', Setting.instance.app.encrptykey);
+        let rst = cipher.update(str, 'utf8', 'base64');
+        rst += cipher.final('base64');
+        return rst;
     }
 
     static decrypt(str: string): string {
-        return crypto.createDecipher('aes-256-cbc', Setting.instance.app.encrptykey).update(str, 'base64', 'utf8');
+        const decipher = crypto.createDecipher('aes-256-cbc', Setting.instance.app.encrptykey);
+        let rst = decipher.update(str, 'base64', 'utf8');
+        rst += decipher.final('utf8');
+        return rst;
     }
 
     static applyTemplate(target: string, variables: { [key: string]: string }): string {

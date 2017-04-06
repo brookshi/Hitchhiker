@@ -6,16 +6,23 @@ import { RegToken } from "../interfaces/reg_token";
 
 export class MailService {
     static registerMail(user: User) {
-        const host = Setting.instance.mail.host;
-        const url = `${host}user/regconfirm?id=${user.id}&token=${MailService.buildToken()}`;
-        const mailReqUrl = `${host}register?target=${user.email}&name=${user.name}&url=${url}&lang=${Setting.instance.app.language}`;
+        const url = `${Setting.instance.app.host}user/regconfirm?id=${user.id}&token=${MailService.buildToken()}`;
+        const mailReqUrl = `${Setting.instance.mail.host}register?target=${user.email}&name=${user.name}&url=${encodeURIComponent(url)}&lang=${Setting.instance.app.language}`;
 
-        request.get(mailReqUrl);
+        console.log(mailReqUrl);
+
+        request.get(mailReqUrl, (err, res, body) => {
+            if (err) {
+                console.error(err);
+            } else {
+                console.log(body);
+            }
+        });
     }
 
     static buildToken(): string {
-        const info: RegToken = { host: Setting.instance.mail.host, date: new Date() };
+        const info: RegToken = { host: Setting.instance.app.host, date: new Date() };
         const text = JSON.stringify(info);
-        return StringUtil.encrypt(text);
+        return encodeURIComponent(StringUtil.encrypt(text));
     }
 }

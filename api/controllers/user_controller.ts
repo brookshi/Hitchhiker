@@ -11,6 +11,7 @@ import { Message } from "../common/message";
 import { RegToken } from "../interfaces/reg_token";
 import { DateUtil } from "../utils/date_util";
 import { Setting } from "../utils/setting";
+import { StringUtil } from "../utils/string_util";
 
 export default class UserController extends BaseController {
 
@@ -46,7 +47,10 @@ export default class UserController extends BaseController {
     }
 
     @GET('/user/regconfirm')
-    async regConfirm( @QueryParam('id') id: string, @QueryParam('token') token: string): Promise<ResObject> {
+    async regConfirm(ctx: Koa.Context, @QueryParam('id') id: string, @QueryParam('token') token: string): Promise<ResObject> {
+        console.log(ctx.request.url);
+        console.log(ctx.request.querystring);
+        console.log(ctx.request.query);
         const user = await UserService.getUserById(id);
         if (!user) {
             return { success: false, message: Message.regConfireFailed_userNotExist };
@@ -56,12 +60,13 @@ export default class UserController extends BaseController {
             return { success: false, message: Message.regConfireFailed_userConfirmed };
         }
 
-        const info = <RegToken>JSON.parse(token);
+        const json = StringUtil.decrypt(token);
+        const info = <RegToken>JSON.parse(json);
         if (!info || info.host !== Setting.instance.app.host) {
             return { success: false, message: Message.regConfireFailed_invalid };
         }
 
-        if (DateUtil.diff(info.date, new Date()) > 24) {
+        if (DateUtil.diff(new Date(info.date), new Date()) > 24) {
             return { success: false, message: Message.regConfireFailed_expired };
         }
 
