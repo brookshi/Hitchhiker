@@ -11,4 +11,12 @@ export class Setting {
     get needRegisterMailCheck() {
         return this._setting.registerMailCheck;
     }
+
+    get mail() {
+        return this._setting.mail;
+    }
+
+    get app() {
+        return this._setting.app;
+    }
 }

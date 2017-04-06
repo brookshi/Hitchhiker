@@ -4,6 +4,7 @@ import { Message } from "../common/message";
 import { ResObject } from "../common/res_object";
 import { ValidateUtil } from "../utils/validate_util";
 import { Setting } from "../utils/setting";
+import { MailService } from "./mail_service";
 
 export class UserService {
     static async checkUser(email: string, pwd: string): Promise<ResObject> {
@@ -34,6 +35,10 @@ export class UserService {
         const user = new User(name, email, pwd);
         user.isActive = !Setting.instance.needRegisterMailCheck;
         user.save();
+
+        if (!user.isActive) {
+            MailService.registerMail(user);
+        }
 
         return { success: true, message: Message.userCreateSuccess };
     }
@@ -70,5 +75,13 @@ export class UserService {
         if (needEnv) { rep = rep.leftJoinAndSelect('user.environments', 'env'); };
 
         return rep.getOne();
+    }
+
+    static async active(id: string) {
+        const connection = await ConnectionManager.getInstance();
+        await connection.getRepository(User)
+            .createQueryBuilder("user")
+            .update({ isActive: true })
+            .execute();
     }
 }

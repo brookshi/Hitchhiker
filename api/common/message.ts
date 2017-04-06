@@ -7,9 +7,15 @@ export class Message {
     static userCreateSuccess: string = 'create user success';
     static userCreateFailed: string = 'create user failed';
     static userCheckFailed: string = 'email or password error';
-    static accountNotActive: string = 'account is not active'
+    static accountNotActive: string = 'account is not active';
     static userLogout: string = 'logout success';
     static userLoginSuccess: string = 'login success';
+    static regConfireFailed_userNotExist: string = 'check failed, user does not exist';
+    static regConfireFailed_userConfirmed: string = 'user was confirmed';
+    static regConfireFailed_expired: string = 'verification url was expired';
+    static regConfireFailed_invalid: string = 'verification url was invalid';
+    static regConfirmSuccess: string = 'account is actived, you can use it to login now';
+
 
     static envCreateFailed: string = 'create environment failed';
     static envCreateSuccess: string = 'create environment success';

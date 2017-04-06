@@ -1,5 +1,13 @@
 {
+    "app": {
+        "host": "http://localhost:81/",
+        "language": "cn",
+        "encrptykey": "hitchhikerapi"
+    },
     "user": {
         "registerMailCheck": false
+    },
+    "mail": {
+        "host": "http://localhost:82/api/mail/"
     }
 }
