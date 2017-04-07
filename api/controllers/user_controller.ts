@@ -1,4 +1,4 @@
-import { GET, POST, QueryParam, BodyParam, BaseController } from 'webapi-router';
+import { GET, POST, QueryParam, BodyParam, PathParam, BaseController } from 'webapi-router';
 import { ResObject } from "../common/res_object";
 import { UserService } from "../services/user_service";
 import * as Koa from 'koa';
@@ -12,6 +12,7 @@ import { RegToken } from "../interfaces/reg_token";
 import { DateUtil } from "../utils/date_util";
 import { Setting } from "../utils/setting";
 import { StringUtil } from "../utils/string_util";
+import { MailService } from "../services/mail_service";
 
 export default class UserController extends BaseController {
 
@@ -47,10 +48,7 @@ export default class UserController extends BaseController {
     }
 
     @GET('/user/regconfirm')
-    async regConfirm(ctx: Koa.Context, @QueryParam('id') id: string, @QueryParam('token') token: string): Promise<ResObject> {
-        console.log(ctx.request.url);
-        console.log(ctx.request.querystring);
-        console.log(ctx.request.query);
+    async regConfirm( @QueryParam('id') id: string, @QueryParam('token') token: string): Promise<ResObject> {
         const user = await UserService.getUserById(id);
         if (!user) {
             return { success: false, message: Message.regConfireFailed_userNotExist };
@@ -62,6 +60,7 @@ export default class UserController extends BaseController {
 
         const json = StringUtil.decrypt(token);
         const info = <RegToken>JSON.parse(json);
+
         if (!info || info.host !== Setting.instance.app.host) {
             return { success: false, message: Message.regConfireFailed_invalid };
         }
@@ -73,5 +72,18 @@ export default class UserController extends BaseController {
         UserService.active(user.id);
 
         return { success: true, message: Message.regConfirmSuccess };
+    }
+
+    @GET('/user/invite/:emails')
+    async invite(ctx: Koa.Context, @PathParam('emails') emails: string): Promise<ResObject> {
+        const userId = SessionService.getUserId(ctx);
+        const user = await UserService.getUserById(userId);
+
+        if (!user) {
+            return { success: false, message: Message.invite_InviterNotExist };
+        }
+
+        const rst = await MailService.inviterMail(emails, user);
+        return { success: !rst.err, message: rst.err };
     }
 }

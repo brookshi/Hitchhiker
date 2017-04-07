@@ -16,6 +16,8 @@ export class Message {
     static regConfireFailed_invalid: string = 'verification url was invalid';
     static regConfirmSuccess: string = 'account is actived, you can use it to login now';
 
+    static invite_InviterNotExist: string = 'inviter does not exist';
+
 
     static envCreateFailed: string = 'create environment failed';
     static envCreateSuccess: string = 'create environment success';
