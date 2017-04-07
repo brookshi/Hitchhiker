@@ -10,6 +10,7 @@ export class Message {
     static accountNotActive: string = 'account is not active';
     static userLogout: string = 'logout success';
     static userLoginSuccess: string = 'login success';
+    static userNotExist: string = 'user does not exist';
     static regConfireFailed_userNotExist: string = 'check failed, user does not exist';
     static regConfireFailed_userConfirmed: string = 'user was confirmed';
     static regConfireFailed_expired: string = 'verification url was expired';
@@ -17,7 +18,6 @@ export class Message {
     static regConfirmSuccess: string = 'account is actived, you can use it to login now';
 
     static invite_InviterNotExist: string = 'inviter does not exist';
-
 
     static envCreateFailed: string = 'create environment failed';
     static envCreateSuccess: string = 'create environment success';

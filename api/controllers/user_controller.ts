@@ -8,7 +8,7 @@ import { DtoTeamQuit } from "../interfaces/dto_team_quit";
 import { UserTeamService } from "../services/user_team_service";
 import { SessionService } from "../services/session_service";
 import { Message } from "../common/message";
-import { RegToken } from "../interfaces/reg_token";
+import { RegToken } from "../common/reg_token";
 import { DateUtil } from "../utils/date_util";
 import { Setting } from "../utils/setting";
 import { StringUtil } from "../utils/string_util";
@@ -85,5 +85,17 @@ export default class UserController extends BaseController {
 
         const rst = await MailService.inviterMail(emails, user);
         return { success: !rst.err, message: rst.err };
+    }
+
+    @GET('/user/invitetoteam/:teamid/:emails')
+    async inviteToTeam(ctx: Koa.Context, @PathParam('teamid') teamId: string, @PathParam('emails') emails: string): Promise<ResObject> {
+        const userId = SessionService.getUserId(ctx);
+        const user = await UserService.getUserById(userId);
+
+        if (!user) {
+            return { success: false, message: Message.invite_InviterNotExist };
+        }
+
+
     }
 }

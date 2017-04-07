@@ -9,3 +9,6 @@
 
 [mail include: target, name, callback url and language]
 [callback url: ]
+
+[invite to team]
+[reject: invite's email, name; user's email, name]
