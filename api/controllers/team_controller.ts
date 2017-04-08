@@ -6,6 +6,9 @@ import * as Koa from 'koa';
 import { SessionService } from "../services/session_service";
 import { UserService } from "../services/user_service";
 import { Message } from "../common/message";
+import { TokenService } from "../services/token_service";
+import { MailService } from "../services/mail_service";
+import { InviteToTeamToken } from "../common/invite_team_token";
 
 export default class TeamController extends BaseController {
 
@@ -21,26 +24,64 @@ export default class TeamController extends BaseController {
     }
 
     @GET('/team/:teamid/user')
-    async join(ctx: Koa.Context, @PathParam('teamid') teamId: string, @QueryParam('token') token: string) {
+    async join(ctx: Koa.Context, @PathParam('teamid') teamId: string, @QueryParam('token') token: string): Promise<ResObject> {
+        if (!TokenService.isValidToken(token)) {
+            return { success: false, message: Message.tokenInvalid };
+        }
+
+        const info = TokenService.parseToken<InviteToTeamToken>(token);
         const userId = SessionService.getUserId(ctx);
-        const user = await UserService.getUserById(userId);
+        const user = await UserService.getUserById(userId, true, true);
 
         if (!user) {
             return { success: false, message: Message.userNotExist };
         }
 
+        if (user.email !== info.userEmail) {
+            return { success: false, message: Message.tokenInvalid };
+        }
 
+        if (user.teams.find(o => o.id === teamId)) {
+            return { success: false, message: Message.alreadyInTeam };
+        }
+
+        const team = await TeamService.getTeam(teamId);
+        if (!team) {
+            return { success: false, message: Message.teamNotExist };
+        }
+
+        TokenService.removeToken(token);
+
+        user.teams.push(team);
+        await user.save();
+
+        MailService.joinTeamMail(info.inviterEmail, info.userEmail);
+
+        return { success: true, message: Message.joinTeamSuccess };
     }
 
     @GET('/team/:teamid/reject')
     async reject(ctx: Koa.Context, @PathParam('teamid') teamId: string, @QueryParam('token') token: string) {
+        if (!TokenService.isValidToken(token)) {
+            return { success: false, message: Message.tokenInvalid };
+        }
+
+        const info = TokenService.parseToken<InviteToTeamToken>(token);
         const userId = SessionService.getUserId(ctx);
-        const user = await UserService.getUserById(userId);
+        const user = await UserService.getUserById(userId, true, true);
 
         if (!user) {
             return { success: false, message: Message.userNotExist };
         }
 
+        if (user.email !== info.userEmail) {
+            return { success: false, message: Message.tokenInvalid };
+        }
 
+        MailService.rejectTeamMail(info.inviterEmail, info.userEmail);
+
+        TokenService.removeToken(token);
+
+        return { success: true, message: Message.rejectTeamSuccess };
     }
 }

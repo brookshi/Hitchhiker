@@ -12,6 +12,10 @@ export class TokenService {
         return !!TokenService.tokens[token];
     }
 
+    static removeToken(token: string) {
+        Reflect.deleteProperty(TokenService.tokens, token);
+    }
+
     static buildRegToken(): string {
         const info: RegToken = { host: Setting.instance.app.host, date: new Date(), uid: uuid.v1() };
         const token = TokenService.buildToken(info);
@@ -20,12 +24,19 @@ export class TokenService {
         return token;
     }
 
-    static buildInviteToTeamToken(userId: string): string {
-        const info: InviteToTeamToken = { userId: userId, date: new Date(), uid: uuid.v1() };
+    static buildInviteToTeamToken(userEmail: string, inviterId: string, inviterEmail: string): string {
+        const info: InviteToTeamToken = { userEmail: userEmail, inviterId: inviterId, inviterEmail: inviterEmail, date: new Date(), uid: uuid.v1() };
         const token = TokenService.buildToken(info);
         TokenService.tokens[token] = 1;
 
         return token;
+    }
+
+    static parseToken<T extends RegToken | InviteToTeamToken>(token: string): T {
+        const json = StringUtil.decrypt(token);
+        const info = <T>JSON.parse(json);
+        info.date = new Date(info.date);
+        return info;
     }
 
     private static buildToken(info: any): string {

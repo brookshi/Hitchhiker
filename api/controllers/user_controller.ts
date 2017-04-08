@@ -13,6 +13,9 @@ import { DateUtil } from "../utils/date_util";
 import { Setting } from "../utils/setting";
 import { StringUtil } from "../utils/string_util";
 import { MailService } from "../services/mail_service";
+import { TeamService } from "../services/team_service";
+import { ValidateUtil } from "../utils/validate_util";
+import * as _ from "lodash";
 
 export default class UserController extends BaseController {
 
@@ -87,8 +90,25 @@ export default class UserController extends BaseController {
         return { success: !rst.err, message: rst.err };
     }
 
-    @GET('/user/invitetoteam/:teamid/:emails')
-    async inviteToTeam(ctx: Koa.Context, @PathParam('teamid') teamId: string, @PathParam('emails') emails: string): Promise<ResObject> {
+    @GET('/user/invitetoteam')
+    async inviteToTeam(ctx: Koa.Context, @QueryParam('teamid') teamId: string, @QueryParam('emails') emails: string): Promise<ResObject> {
+        const checkEmailsRst = ValidateUtil.checkEmails(emails);
+        if (!checkEmailsRst.success) {
+            return checkEmailsRst;
+        }
+        let emailArr = <Array<string>>checkEmailsRst.result;
+
+        const team = await TeamService.getTeam(teamId, false, true);
+
+        if (!team) {
+            return { success: false, message: Message.teamNotExist };
+        }
+
+        emailArr = _.difference(emailArr, team.members.map(t => t.email));
+        if (emailArr.length === 0) {
+            return { success: false, message: Message.emailsAllInTeam };
+        }
+
         const userId = SessionService.getUserId(ctx);
         const user = await UserService.getUserById(userId);
 
@@ -96,6 +116,8 @@ export default class UserController extends BaseController {
             return { success: false, message: Message.invite_InviterNotExist };
         }
 
+        const rsts = await Promise.all(emailArr.map(email => MailService.teamInviterMail(email, user, team)));
 
+        return { success: rsts.every(rst => !rst.err), message: rsts.map(rst => rst.err).join(';') };
     }
 }

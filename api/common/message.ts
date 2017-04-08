@@ -18,6 +18,7 @@ export class Message {
     static regConfirmSuccess: string = 'account is actived, you can use it to login now';
 
     static invite_InviterNotExist: string = 'inviter does not exist';
+    static emailsAtLeastOne: string = 'at least one email';
 
     static envCreateFailed: string = 'create environment failed';
     static envCreateSuccess: string = 'create environment success';
@@ -27,6 +28,11 @@ export class Message {
 
     static teamSaveSuccess: string = 'team save success';
     static teamQuitSuccess: string = 'quit team success';
+    static teamNotExist: string = 'team does not exist';
+    static emailsAllInTeam: string = 'emails are all in this team already';
+    static alreadyInTeam: string = 'already in this team';
+    static joinTeamSuccess: string = 'join team success';
+    static rejectTeamSuccess: string = 'reject invite success';
 
     static collectionCreateFailed: string = 'create collection failed';
     static collectionCreateSuccess: string = 'create collection success';
@@ -39,5 +45,7 @@ export class Message {
     static apiNotExist: string = 'this api does not exist';
 
     static sessionInvalid: string = 'session is invalid';
+
+    static tokenInvalid: string = 'token is invalid';
 
 }    

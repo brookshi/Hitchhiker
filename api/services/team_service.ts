@@ -5,6 +5,7 @@ import { ResObject } from "../common/res_object";
 import { Message } from "../common/message";
 
 export class TeamService {
+
     static async getTeam(id: string, needCollection: boolean = true, needUser: boolean = false): Promise<Team> {
         const connection = await ConnectionManager.getInstance();
 

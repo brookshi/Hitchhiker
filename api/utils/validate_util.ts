@@ -9,6 +9,21 @@ export class ValidateUtil {
         return { success: pattern.test(email), message: Message.userEmailFormatError };
     }
 
+    static checkEmails(emails: string): ResObject {
+        const separater = ';';
+        const emailArr = emails.split(separater);
+        if (!emailArr || emailArr.length === 0) {
+            return { success: false, message: Message.emailsAtLeastOne };
+        }
+
+        const invalidEmailArr = emailArr.filter(e => !ValidateUtil.checkEmail(e));
+        return {
+            success: invalidEmailArr.length === 0,
+            message: `${Message.userEmailFormatError}: ${invalidEmailArr.join(';')}`,
+            result: emailArr.filter(e => ValidateUtil.checkEmail(e))
+        };
+    }
+
     static checkPassword(password: string): ResObject {
         const pattern = /^[\da-zA-Z]{6,16}$/;
 

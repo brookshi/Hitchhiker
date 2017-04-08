@@ -1,5 +1,9 @@
 export interface InviteToTeamToken {
-    userId: string;
+    userEmail: string;
+
+    inviterId: string;
+
+    inviterEmail: string;
 
     date: Date;
 
