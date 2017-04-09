@@ -46,4 +46,8 @@ export class Collection {
         const connection = await ConnectionManager.getInstance();
         await connection.getRepository(Collection).persist(this);
     }
+
+    async redefineId() {
+        this.id = shortid.generate();
+    }
 }
