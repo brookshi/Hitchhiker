@@ -14,10 +14,10 @@ export class TeamService {
             rep = rep.leftJoinAndSelect('team.collections', 'collection');
         }
         if (needUser) {
-            rep = rep.leftJoinAndSelect('team.users', 'user');
+            rep = rep.leftJoinAndSelect('team.members', 'members');
         }
 
-        return await rep.where('id=:id')
+        return await rep.where('team.id=:id')
             .setParameter('id', id)
             .getOne();
     }
