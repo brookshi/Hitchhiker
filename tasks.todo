@@ -15,7 +15,7 @@
     ✔ miss session @done (2017/4/2 下午6:48:35)
     ☐ log
     ✔ message @done (2017/4/2 下午10:11:44)
-    ☐ auto generate accout for invite user
+    ✔ auto generate accout for invite user @done (2017/4/9 下午10:59:31) // TODO: need mail password??
 0.2.0:
     ☐ body type
     ☐ record auth
