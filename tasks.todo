@@ -4,18 +4,18 @@
     ✔ test script @done (3/31/2017, 1:07:53 PM)
     ✔ register's email @done (4/7/2017, 10:43:51 AM)
     ☐ find password
+    ☐ change password
     ✔ run time @done (3/31/2017, 9:51:45 PM)
-    ☐ share to user
     ☐ share to team
-    ☐ invite user
-    ☐ invite to team
+    ✔ invite user @done (2017/4/9 下午4:55:51)
+    ✔ invite to team @done (2017/4/9 下午4:55:52)
     ☐ import postman
     ✔ session maxage(2d, rolling) @done (2017/4/2 上午12:11:25)
     ✔ error handle @done (2017/4/2 下午3:04:54)
     ✔ miss session @done (2017/4/2 下午6:48:35)
     ☐ log
     ✔ message @done (2017/4/2 下午10:11:44)
-    ☐ team permission
+    ☐ auto generate accout for invite user
 0.2.0:
     ☐ body type
     ☐ record auth
@@ -23,6 +23,7 @@
     ☐ run batch
 0.3.0:
     ☐ data mock
+    ☐ team permission
 0.4.0:
     ☐ api document
 

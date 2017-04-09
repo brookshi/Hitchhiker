@@ -2,7 +2,9 @@
     "app": {
         "host": "http://localhost:81/api/",
         "language": "cn",
-        "encrptykey": "hitchhikerapi"
+        "encrptykey": "hitchhikerapi",
+        "autoGeneraterAccount": true,
+        "defaultPassword": "123456"
     },
     "user": {
         "registerMailCheck": true

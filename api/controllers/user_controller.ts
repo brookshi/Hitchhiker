@@ -79,6 +79,12 @@ export default class UserController extends BaseController {
 
     @GET('/user/invite/:emails')
     async invite(ctx: Koa.Context, @PathParam('emails') emails: string): Promise<ResObject> {
+        const checkEmailsRst = ValidateUtil.checkEmails(emails);
+        if (!checkEmailsRst.success) {
+            return checkEmailsRst;
+        }
+        let emailArr = <Array<string>>checkEmailsRst.result;
+
         const userId = SessionService.getUserId(ctx);
         const user = await UserService.getUserById(userId);
 
@@ -86,8 +92,8 @@ export default class UserController extends BaseController {
             return { success: false, message: Message.invite_InviterNotExist };
         }
 
-        const rst = await MailService.inviterMail(emails, user);
-        return { success: !rst.err, message: rst.err };
+        const rsts = await Promise.all(emailArr.map(email => MailService.inviterMail(email, user)));
+        return { success: rsts.every(rst => !rst.err), message: rsts.map(rst => rst.err).join(';') };
     }
 
     @GET('/user/invitetoteam')
@@ -118,6 +124,11 @@ export default class UserController extends BaseController {
 
         const rsts = await Promise.all(emailArr.map(email => MailService.teamInviterMail(email, user, team)));
 
-        return { success: rsts.every(rst => !rst.err), message: rsts.map(rst => rst.err).join(';') };
+        const success = rsts.every(rst => !rst.err);
+        if (success) { //TODO: add in trancation is the better way
+            await Promise.all(emailArr.map(email => UserService.createUserByEmail(email)));
+        }
+
+        return { success: success, message: rsts.map(rst => rst.err).join(';') };
     }
 }

@@ -43,6 +43,17 @@ export class UserService {
         return { success: true, message: Message.userCreateSuccess };
     }
 
+    static async createUserByEmail(email: string): Promise<ResObject> {
+        let checkRst = ValidateUtil.checkEmail(email);
+        if (!checkRst.success) {
+            return checkRst;
+        }
+
+        const name = email.substr(0, email.indexOf('@'));
+        const password = Setting.instance.app.defaultPassword;
+        return await UserService.createUser(name, email, password);
+    }
+
     static async IsUserEmailExist(email: string): Promise<boolean> {
         const user = await UserService.getUserByEmail(email);
 
