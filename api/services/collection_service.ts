@@ -4,7 +4,6 @@ import { ConnectionManager } from "./connection_manager";
 import { ObjectLiteral } from "typeorm/common/ObjectLiteral";
 import { User } from "../models/user";
 import { Message } from "../common/message";
-import { StringUtil } from "../utils/string_util";
 import { Team } from "../models/team";
 
 export class CollectionService {

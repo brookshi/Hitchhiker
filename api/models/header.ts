@@ -2,7 +2,6 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { User } from "./user";
 import { Record } from "./record";
 import { DtoHeader } from "../interfaces/dto_header";
-import { StringUtil } from "../utils/string_util";
 
 @Entity()
 export class Header {

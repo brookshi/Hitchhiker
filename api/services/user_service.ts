@@ -19,6 +19,11 @@ export class UserService {
         return { success: false, message: Message.userCheckFailed };
     }
 
+    static async checkUserById(userId: string): Promise<ResObject> {
+        const user = await UserService.getUserById(userId, false, false);
+        return { success: !!user, message: Message.userNotExist };
+    }
+
     static async createUser(name: string, email: string, pwd: string): Promise<ResObject> {
         let checkRst = ValidateUtil.checkEmail(email);
         if (checkRst.success) { checkRst = ValidateUtil.checkPassword(pwd); }
@@ -96,5 +101,16 @@ export class UserService {
             .where('id=:id')
             .setParameter('id', id)
             .execute();
+    }
+
+    static async changePwd(id: string, newPwd: string): Promise<ResObject> {
+        const connection = await ConnectionManager.getInstance();
+        await connection.getRepository(User)
+            .createQueryBuilder("user")
+            .update({ password: newPwd })
+            .where('id=:id')
+            .setParameter('id', id)
+            .execute();
+        return { success: true, message: Message.userChangePwdSuccess };
     }
 }

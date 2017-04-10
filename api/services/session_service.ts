@@ -1,5 +1,6 @@
 import * as Koa from 'koa';
 import { DateUtil } from "../utils/date_util";
+import { UserService } from "./user_service";
 
 export class SessionService {
 
@@ -26,7 +27,10 @@ export class SessionService {
     }
 
     static isSessionValid(ctx: Koa.Context): boolean {
-        return !!(<any>ctx).session.userId || !!SessionService.bypass.find(o => ctx.request.url.replace(`?${ctx.request.querystring}`, '').endsWith(o));
+        const userId = (<any>ctx).session.userId;
+        const user = UserService.checkUserById(userId);
+        (<any>ctx).session.user = user;
+        return !!user || !!SessionService.bypass.find(o => ctx.request.url.replace(`?${ctx.request.querystring}`, '').endsWith(o));
     }
 
     static rollDate(ctx: Koa.Context) {

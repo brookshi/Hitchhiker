@@ -1,4 +1,4 @@
-import { GET, POST, QueryParam, BodyParam, PathParam, BaseController } from 'webapi-router';
+import { GET, POST, PUT, QueryParam, BodyParam, PathParam, BaseController } from 'webapi-router';
 import { ResObject } from "../common/res_object";
 import { UserService } from "../services/user_service";
 import * as Koa from 'koa';
@@ -16,6 +16,7 @@ import { MailService } from "../services/mail_service";
 import { TeamService } from "../services/team_service";
 import { ValidateUtil } from "../utils/validate_util";
 import * as _ from "lodash";
+import { Password } from "../interfaces/password";
 
 export default class UserController extends BaseController {
 
@@ -39,10 +40,24 @@ export default class UserController extends BaseController {
         return checkLogin;
     }
 
-    @GET()
+    @GET('/logout')
     logout(ctx: Koa.Context): ResObject {
         SessionService.logout(ctx);
         return { success: true, message: Message.userLogout };
+    }
+
+    @PUT('/password')
+    async changePwd(ctx: Koa.Context, @BodyParam info: Password): Promise<ResObject> {
+        const rst = ValidateUtil.checkPassword(info.newPwd);
+        if (!rst.success) {
+            return rst;
+        }
+
+        const user = <User>(<any>ctx).session.user;
+        if (user.password !== info.oldPwd) {
+            return { success: false, message: Message.userOldPwdIncorrect };
+        }
+        await UserService.changePwd(user.id, info.newPwd);
     }
 
     @POST('/user/quitteam')
@@ -83,16 +98,11 @@ export default class UserController extends BaseController {
         if (!checkEmailsRst.success) {
             return checkEmailsRst;
         }
-        let emailArr = <Array<string>>checkEmailsRst.result;
 
-        const userId = SessionService.getUserId(ctx);
-        const user = await UserService.getUserById(userId);
-
-        if (!user) {
-            return { success: false, message: Message.invite_InviterNotExist };
-        }
-
+        const emailArr = <Array<string>>checkEmailsRst.result;
+        const user = (<any>ctx).session.user;
         const rsts = await Promise.all(emailArr.map(email => MailService.inviterMail(email, user)));
+
         return { success: rsts.every(rst => !rst.err), message: rsts.map(rst => rst.err).join(';') };
     }
 
@@ -115,16 +125,10 @@ export default class UserController extends BaseController {
             return { success: false, message: Message.emailsAllInTeam };
         }
 
-        const userId = SessionService.getUserId(ctx);
-        const user = await UserService.getUserById(userId);
-
-        if (!user) {
-            return { success: false, message: Message.invite_InviterNotExist };
-        }
-
+        const user = (<any>ctx).session.user;
         const rsts = await Promise.all(emailArr.map(email => MailService.teamInviterMail(email, user, team)));
-
         const success = rsts.every(rst => !rst.err);
+
         if (success) { //TODO: add in trancation is the better way
             await Promise.all(emailArr.map(email => UserService.createUserByEmail(email)));
         }

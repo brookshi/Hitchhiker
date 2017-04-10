@@ -11,6 +11,8 @@ export class Message {
     static userLogout: string = 'logout success';
     static userLoginSuccess: string = 'login success';
     static userNotExist: string = 'user does not exist';
+    static userOldPwdIncorrect: string = 'old password is incorrect';
+    static userChangePwdSuccess: string = 'change password success';
     static regConfireFailed_userNotExist: string = 'check failed, user does not exist';
     static regConfireFailed_userConfirmed: string = 'user was confirmed';
     static regConfireFailed_expired: string = 'verification url was expired';
