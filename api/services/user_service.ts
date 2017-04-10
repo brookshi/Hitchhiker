@@ -21,7 +21,7 @@ export class UserService {
 
     static async checkUserById(userId: string): Promise<ResObject> {
         const user = await UserService.getUserById(userId, false, false);
-        return { success: !!user, message: Message.userNotExist };
+        return { success: !!user, message: !!user ? '' : Message.userNotExist, result: user };
     }
 
     static async createUser(name: string, email: string, pwd: string): Promise<ResObject> {

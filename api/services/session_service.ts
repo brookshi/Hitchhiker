@@ -26,11 +26,17 @@ export class SessionService {
         (<any>ctx).session = null;
     }
 
-    static isSessionValid(ctx: Koa.Context): boolean {
+    static async isSessionValid(ctx: Koa.Context): Promise<boolean> {
         const userId = (<any>ctx).session.userId;
-        const user = UserService.checkUserById(userId);
-        (<any>ctx).session.user = user;
-        return !!user || !!SessionService.bypass.find(o => ctx.request.url.replace(`?${ctx.request.querystring}`, '').endsWith(o));
+        let validUser = !!userId;
+        if (validUser) {
+            const checkRst = await UserService.checkUserById(userId);
+            validUser = checkRst.success;
+            if (validUser) {
+                (<any>ctx).session.user = checkRst.result;
+            }
+        }
+        return validUser || !!SessionService.bypass.find(o => ctx.request.url.replace(`?${ctx.request.querystring}`, '').endsWith(o));
     }
 
     static rollDate(ctx: Koa.Context) {
