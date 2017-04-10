@@ -4,6 +4,7 @@ import { Entity, PrimaryColumn, Column, CreateDateColumn, OneToOne, OneToMany, J
 import { Record } from './record';
 import { User } from './user';
 import { Team } from './team';
+import { StringUtil } from "../utils/string_util";
 
 @Entity()
 export class Collection {
@@ -13,7 +14,9 @@ export class Collection {
     @Column()
     name: string;
 
-    @OneToMany(type => Record, record => record.collection)
+    @OneToMany(type => Record, record => record.collection, {
+        cascadeInsert: true
+    })
     records: Record[];
 
     @Column({ nullable: true })
@@ -47,7 +50,11 @@ export class Collection {
         await connection.getRepository(Collection).persist(this);
     }
 
-    async redefineId() {
-        this.id = shortid.generate();
+    clone(): Collection {
+        const target = <Collection>Object.create(this);
+        target.id = StringUtil.generateUID();
+        target.records = target.records.map(r => r.clone());
+        target.createDate = new Date();
+        return target;
     }
 }

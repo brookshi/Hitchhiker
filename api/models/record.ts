@@ -5,6 +5,7 @@ import { Collection } from './collection';
 import { Header } from "./header";
 import { DtoRecord } from "../interfaces/dto_record";
 import { RecordCategory } from "../common/record_category";
+import { StringUtil } from "../utils/string_util";
 
 @Entity()
 export class Record {
@@ -90,5 +91,13 @@ export class Record {
             }
         });
         return headers;
+    }
+
+    clone(): Record {
+        const target = <Record>Object.create(this);
+        target.id = StringUtil.generateUID();
+        target.headers = target.headers.map(h => h.clone());
+        target.createDate = new Date();
+        return target;
     }
 }

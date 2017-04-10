@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { User } from "./user";
 import { Record } from "./record";
 import { DtoHeader } from "../interfaces/dto_header";
+import { StringUtil } from "../utils/string_util";
 
 @Entity()
 export class Header {
@@ -30,5 +31,11 @@ export class Header {
         header.isActive = dtoHeader.isActive;
         header.sort = dtoHeader.sort;
         return header;
+    }
+
+    clone(): Header {
+        const target = <Header>Object.create(this);
+        target.id = undefined;
+        return target;
     }
 }

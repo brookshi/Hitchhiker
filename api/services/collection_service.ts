@@ -4,6 +4,8 @@ import { ConnectionManager } from "./connection_manager";
 import { ObjectLiteral } from "typeorm/common/ObjectLiteral";
 import { User } from "../models/user";
 import { Message } from "../common/message";
+import { StringUtil } from "../utils/string_util";
+import { Team } from "../models/team";
 
 export class CollectionService {
 
@@ -21,11 +23,29 @@ export class CollectionService {
         return await connection.getRepository(Collection)
             .createQueryBuilder("collection")
             .leftJoinAndSelect('collection.team', 'team')
-            .innerJoinAndSelect('collection.owner', 'owner')
+            .leftJoinAndSelect('collection.owner', 'owner')
             .where('recycle = 0')
             .andWhere('owner.id = :userId')
             .setParameter('userId', userId)
             .getMany();
+    }
+
+    static async getById(id: string, needRecords: boolean = false): Promise<Collection> {
+        const connection = await ConnectionManager.getInstance();
+
+        let rep = connection.getRepository(Collection)
+            .createQueryBuilder("collection")
+            .leftJoinAndSelect('collection.team', 'team')
+            .leftJoinAndSelect('collection.owner', 'owner');
+
+        if (needRecords) {
+            rep = rep.leftJoinAndSelect('collection.records', 'records');
+        }
+
+        return await rep.where('recycle = 0')
+            .andWhere('collection.id = :id')
+            .setParameter('id', id)
+            .getOne();
     }
 
     static async getByIds(ids: string[]): Promise<Collection[]> {
@@ -72,5 +92,17 @@ export class CollectionService {
             .where('recycle = 0')
             .andWhere(whereStr, parameters)
             .getMany();
+    }
+
+    static async shareCollection(collectionId: string, teamId: string): Promise<ResObject> {
+        const origin = await CollectionService.getById(collectionId, true);
+        if (!origin) {
+            return { success: false, message: Message.collectionNotExist };
+        }
+
+        const target = origin.clone();
+        target.team = new Team();
+        target.team.id = teamId;
+        await origin.save();
     }
 }

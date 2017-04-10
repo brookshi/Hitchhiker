@@ -23,6 +23,6 @@ export default class CollectionController extends BaseController {
 
     @GET('/collection/share/:collectionid/to/:teamid')
     async share(ctx: Koa.Context, @PathParam('collectionid') collectionId: string, @PathParam('teamid') teamId: string): Promise<ResObject> {
-
+        return await CollectionService.shareCollection(collectionId, teamId);
     }
 }

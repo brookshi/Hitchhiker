@@ -4,6 +4,7 @@
   "description": "restful api test tool",
   "main": "index.js",
   "dependencies": {
+    "@types/uuid": "^2.0.29",
     "emailjs": "^1.0.8",
     "koa": "^2.0.0-alpha.7",
     "koa-bodyparser": "^3.2.0",
@@ -17,6 +18,7 @@
     "request": "^2.81.0",
     "shortid": "^2.2.6",
     "typeorm": "^0.0.9",
+    "uuid": "^3.0.1",
     "webapi-router": "^1.0.2"
   },
   "devDependencies": {

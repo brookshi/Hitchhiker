@@ -36,6 +36,7 @@ export class Message {
 
     static collectionCreateFailed: string = 'create collection failed';
     static collectionCreateSuccess: string = 'create collection success';
+    static collectionNotExist: string = 'collection does not exist';
 
     static recordCreateFailed: string = 'create record failed';
     static recordCreateFailedOnName: string = 'record name is incorrect';
