@@ -48,9 +48,9 @@ export default class UserController extends BaseController {
 
     @PUT('/user/password')
     async changePwd(ctx: Koa.Context, @BodyParam info: Password): Promise<ResObject> {
-        const rst = ValidateUtil.checkPassword(info.newPwd);
-        if (!rst.success) {
-            return rst;
+        const checkRst = ValidateUtil.checkPassword(info.newPwd);
+        if (!checkRst.success) {
+            return checkRst;
         }
 
         const user = <User>(<any>ctx).session.user;
@@ -59,6 +59,30 @@ export default class UserController extends BaseController {
         }
 
         return await UserService.changePwd(user.id, info.newPwd);
+    }
+
+    @GET('/user/findpwd')
+    async findPwd( @QueryParam('email') email: string): Promise<ResObject> {
+        let checkRst = ValidateUtil.checkEmail(email);
+        if (!checkRst.success) {
+            return checkRst;
+        }
+
+        const user = await UserService.getUserByEmail(email);
+        if (!user) {
+            return { success: false, message: Message.userNotExist };
+        }
+
+        const newPwd = StringUtil.generateShortId();
+        checkRst = await UserService.changePwd(user.id, newPwd);
+        if (!checkRst.success) {
+            return checkRst;
+        }
+
+        const mailRst = await MailService.findPwdMail(email, newPwd);
+        const success = !mailRst.err;
+
+        return { success: success, message: success ? Message.findPwdSuccess : mailRst.err };
     }
 
     @POST('/user/quitteam')

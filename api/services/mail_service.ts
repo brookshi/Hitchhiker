@@ -29,14 +29,19 @@ export class MailService {
         return await MailService.sendMail(mailReqUrl);
     }
 
-    static async rejectTeamMail(inviterEmail: string, userEmail: string, team: string) {
+    static rejectTeamMail(inviterEmail: string, userEmail: string, team: string) {
         const mailReqUrl = `${Setting.instance.mail.host}rejectinvite?target=${inviterEmail}&useremail=${userEmail}&team=${team}&lang=${Setting.instance.app.language}`;
         MailService.sendMail(mailReqUrl);
     }
 
-    static async joinTeamMail(inviterEmail: string, userEmail: string, team: string) {
+    static joinTeamMail(inviterEmail: string, userEmail: string, team: string) {
         const mailReqUrl = `${Setting.instance.mail.host}acceptinvite?target=${inviterEmail}&useremail=${userEmail}}&team=${team}&lang=${Setting.instance.app.language}`;
         MailService.sendMail(mailReqUrl);
+    }
+
+    static async findPwdMail(target: string, pwd: string): Promise<{ err: any, body: any }> {
+        const mailReqUrl = `${Setting.instance.mail.host}findpwd?target=${target}&pwd=${pwd}&lang=${Setting.instance.app.language}`;
+        return await MailService.sendMail(mailReqUrl);
     }
 
     private static sendMail(url: string): Promise<{ err: any, body: any }> {

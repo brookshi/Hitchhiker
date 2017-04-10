@@ -13,6 +13,7 @@ export class Message {
     static userNotExist: string = 'user does not exist';
     static userOldPwdIncorrect: string = 'old password is incorrect';
     static userChangePwdSuccess: string = 'change password success';
+    static findPwdSuccess: string = 'a new password have send to your mail';
     static regConfireFailed_userNotExist: string = 'check failed, user does not exist';
     static regConfireFailed_userConfirmed: string = 'user was confirmed';
     static regConfireFailed_expired: string = 'verification url was expired';

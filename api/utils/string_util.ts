@@ -1,6 +1,7 @@
 import * as crypto from 'crypto';
 import { Setting } from "./setting";
 import * as uuid from 'uuid';
+import * as shortid from 'shortid';
 
 export class StringUtil {
     static md5(str: string): string {
@@ -45,5 +46,9 @@ export class StringUtil {
 
     static generateUID(): string {
         return uuid.v1();
+    }
+
+    static generateShortId(): string {
+        return shortid.generate();
     }
 }

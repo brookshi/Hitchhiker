@@ -8,7 +8,8 @@ export class SessionService {
         return [
             'api/user/login',
             'api/user',
-            'api/user/regconfirm'
+            'api/user/regconfirm',
+            'api/user/findpwd'
         ];
     }
 
