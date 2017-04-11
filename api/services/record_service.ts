@@ -14,11 +14,11 @@ export class RecordService {
         const connection = await ConnectionManager.getInstance();
 
         const parameters: ObjectLiteral = {};
-        const whereStrs = collectionIds.map((id, index) => {
+        const whereStrings = collectionIds.map((id, index) => {
             parameters[`id_${index}`] = id;
             return `collection.id=:id_${index}`;
         });
-        const whereStr = whereStrs.length > 1 ? "(" + whereStrs.join(" OR ") + ")" : whereStrs[0];
+        const whereStr = whereStrings.length > 1 ? "(" + whereStrings.join(" OR ") + ")" : whereStrings[0];
 
         let records = await connection.getRepository(Record).createQueryBuilder("record")
             .innerJoinAndSelect("record.collection", "collection")

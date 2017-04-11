@@ -2,9 +2,9 @@ import { OneToOne, JoinColumn, OneToMany, Entity, PrimaryColumn, Column, ManyToM
 import { Collection } from './collection';
 import { User } from './user';
 import { DtoTeam } from "../interfaces/dto_team";
-import * as shortid from 'shortid';
 import { ConnectionManager } from "../services/connection_manager";
 import { Environment } from "./environment";
+import { StringUtil } from "../utils/string_util";
 
 @Entity()
 export class Team {
@@ -34,9 +34,12 @@ export class Team {
     @CreateDateColumn()
     createDate: Date;
 
+    constructor(id: string) {
+        this.id = id;
+    }
+
     static fromDto(dtoTeam: DtoTeam): Team {
-        let team = new Team();
-        team.id = dtoTeam.id || shortid.generate();
+        let team = new Team(dtoTeam.id || StringUtil.generateUID());
         team.name = dtoTeam.name;
 
         team.members = [];

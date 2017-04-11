@@ -62,11 +62,13 @@ export class Record {
         record.url = target.url;
         record.pid = target.pid;
         record.body = target.body;
-        record.headers = target.headers.map(o => {
-            let header = Header.fromDto(o);
-            header.record = record;
-            return header;
-        });
+        if (target.headers instanceof Array) {
+            record.headers = target.headers.map(o => {
+                let header = Header.fromDto(o);
+                header.record = record;
+                return header;
+            });
+        }
         record.test = target.test;
         record.sort = target.sort;
         record.method = target.method;

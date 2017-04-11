@@ -3,10 +3,10 @@
     ✔ record tree @today @done (2017/4/1 下午7:16:50)
     ✔ test script @done (3/31/2017, 1:07:53 PM)
     ✔ register's email @done (4/7/2017, 10:43:51 AM)
-    ☐ find password
-    ☐ change password
+    ✔ find password @done (4/11/2017, 10:22:32 AM)
+    ✔ change password @done (4/11/2017, 10:22:33 AM)
     ✔ run time @done (3/31/2017, 9:51:45 PM)
-    ☐ share to team
+    ✔ share to team @done (4/11/2017, 10:22:36 AM)
     ✔ invite user @done (2017/4/9 下午4:55:51)
     ✔ invite to team @done (2017/4/9 下午4:55:52)
     ☐ import postman

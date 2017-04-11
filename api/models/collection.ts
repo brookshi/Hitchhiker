@@ -5,6 +5,7 @@ import { Record } from './record';
 import { User } from './user';
 import { Team } from './team';
 import { StringUtil } from "../utils/string_util";
+import { DtoCollection } from "../interfaces/dto_collection";
 
 @Entity()
 export class Collection {
@@ -56,5 +57,13 @@ export class Collection {
         target.records = target.records.map(r => r.clone());
         target.createDate = new Date();
         return target;
+    }
+
+    static fromDto(dtoCollection: DtoCollection): Collection {
+        const collection = new Collection();
+        collection.id = dtoCollection.id || StringUtil.generateUID();
+        collection.name = dtoCollection.name;
+        collection.description = dtoCollection.description;
+        return collection;
     }
 }

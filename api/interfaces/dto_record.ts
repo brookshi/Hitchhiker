@@ -14,7 +14,7 @@ export interface DtoRecord {
 
     method: string;
 
-    headers: DtoHeader[];
+    headers: DtoHeader[] | string;
 
     body: string;
 

@@ -6,6 +6,7 @@ import { ResObject } from "../common/res_object";
 import * as Koa from 'koa';
 import { DtoCollection } from "../interfaces/dto_collection";
 import { SessionService } from "../services/session_service";
+import { PostmanV1 } from "../interfaces/postman_v1";
 
 export default class CollectionController extends BaseController {
 
@@ -24,5 +25,10 @@ export default class CollectionController extends BaseController {
     @GET('/collection/share/:collectionid/to/:teamid')
     async share(ctx: Koa.Context, @PathParam('collectionid') collectionId: string, @PathParam('teamid') teamId: string): Promise<ResObject> {
         return await CollectionService.shareCollection(collectionId, teamId);
+    }
+
+    @POST('/collection/import/postman')
+    async importFromPostman( @BodyParam info: PostmanV1) {
+
     }
 }
