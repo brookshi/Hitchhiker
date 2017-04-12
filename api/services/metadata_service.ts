@@ -1,4 +1,4 @@
-import { PostmanCollectionV1, PostmanRecord, PostmanAllV1, PostmanEnvironments } from "../interfaces/postman_v1";
+import { PostmanCollectionV1, PostmanRecord, PostmanAllV1 } from "../interfaces/postman_v1";
 import { MetadataType } from "../common/metadata_type";
 import { Collection } from "../models/collection";
 import { Record } from "../models/record";
@@ -12,6 +12,7 @@ import { RecordCategory } from "../common/record_category";
 import { Environment } from "../models/environment";
 import { DtoEnvironment } from "../interfaces/dto_environment";
 import { DtoVariable } from "../interfaces/dto_variable";
+import { Variable } from "../models/variable";
 
 export class MetadataService {
 
@@ -37,26 +38,33 @@ export class MetadataService {
         return await Promise.all(data.collections.map(c => MetadataService.convertPostmanCollectionV1(owner, teamId, c)));
     }
 
-    static async convertPostmanEvnV1(owner: User, teamId: string, data: PostmanAllV1): Promise<Environment[]> {
-        if (!data.environments) {
+    static async convertPostmanEnvV1(owner: User, teamId: string, data: any): Promise<Environment[]> {
+        const type = MetadataService.getMetadataCategory(data);
+        if (type !== MetadataType.PostmanAllV1 || !data.environments) {
             return [];
         }
 
-        data.environments.map(e => {
-            const dtoEnv = <DtoEnvironment>e;
+        return data.environments.map(e => {
+            const env = new Environment(e.name, [], owner);
+            env.team = new Team(teamId);
+
             let sort = 0;
             if (e.values) {
                 e.values.forEach(v => {
-                    const variable = <DtoVariable>v;
-                    variable.isActive = v.enabled;
-                    variable.sort = sort++;
+                    const dtoVariable = <DtoVariable>v;
+                    dtoVariable.isActive = v.enabled;
+                    dtoVariable.sort = sort++;
+                    const variable = Variable.fromDto(dtoVariable);
+                    variable.environment = env;
+                    env.variables.push(variable);
                 });
             }
+            return env;
         });
     }
 
     static async convertPostmanCollectionV1(owner: User, teamId: string, data: PostmanCollectionV1): Promise<Collection> {
-        let sort = 1;//await RecordService.getMaxSort();
+        let sort = await RecordService.getMaxSort();
         const dtoCollection = <DtoCollection>data;
         const collection = Collection.fromDto(dtoCollection);
 

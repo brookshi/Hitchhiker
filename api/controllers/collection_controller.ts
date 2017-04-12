@@ -32,7 +32,9 @@ export default class CollectionController extends BaseController {
     async importFromPostman(ctx: Koa.Context, @PathParam('teamid') teamId: string, @BodyParam info: any): Promise<ResObject> {
         const user = SessionService.getUser(ctx);
         const collections = await MetadataService.convertPostmanCollection(user, teamId, info);
+        const environments = await MetadataService.convertPostmanEnvV1(user, teamId, info);
         collections.forEach(c => c.save());
+        environments.forEach(e => e.save());
         return { success: true, message: Message.importPostmanSuccess };
     }
 }

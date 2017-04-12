@@ -1,5 +1,4 @@
 import { ConnectionManager } from '../services/connection_manager';
-import * as shortid from 'shortid';
 import { ManyToOne, OneToMany, Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { User } from './user';
 import { Variable } from "./variable";
@@ -35,8 +34,7 @@ export class Environment {
     updateDate: Date;
 
     constructor(name: string, variables?: DtoVariable[], owner?: User, id: string = undefined) {
-        id = id || shortid.generate();
-        this.id = id;
+        this.id = id || StringUtil.generateUID();
         this.name = name;
         this.owner = owner;
         if (variables) {
@@ -49,6 +47,7 @@ export class Environment {
     static fromDto(dtoEnv: DtoEnvironment): Environment {
         const env = new Environment(dtoEnv.name);
         env.id = dtoEnv.id || StringUtil.generateUID();
+        env.variables = [];
         return env;
     }
 
