@@ -1,4 +1,5 @@
 import { DtoHeader } from "./dto_header";
+import { RecordCategory } from "../common/record_category";
 
 export interface DtoRecord {
 
@@ -7,6 +8,8 @@ export interface DtoRecord {
     collectionId: string;
 
     pid: string;
+
+    category: RecordCategory;
 
     name: string;
 

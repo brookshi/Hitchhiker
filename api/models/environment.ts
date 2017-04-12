@@ -5,6 +5,8 @@ import { User } from './user';
 import { Variable } from "./variable";
 import { DtoVariable } from "../interfaces/dto_variable";
 import { Team } from "./team";
+import { DtoEnvironment } from "../interfaces/dto_environment";
+import { StringUtil } from "../utils/string_util";
 
 @Entity()
 export class Environment {
@@ -32,7 +34,7 @@ export class Environment {
     @UpdateDateColumn()
     updateDate: Date;
 
-    constructor(name: string, variables: DtoVariable[], owner: User, id: string = undefined) {
+    constructor(name: string, variables?: DtoVariable[], owner?: User, id: string = undefined) {
         id = id || shortid.generate();
         this.id = id;
         this.name = name;
@@ -42,6 +44,12 @@ export class Environment {
                 this.variables.push(new Variable(v.key, v.value, v.isActive, v.sort, this));
             });
         }
+    }
+
+    static fromDto(dtoEnv: DtoEnvironment): Environment {
+        const env = new Environment(dtoEnv.name);
+        env.id = dtoEnv.id || StringUtil.generateUID();
+        return env;
     }
 
     async update(name: string, variables: DtoVariable[]) {

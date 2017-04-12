@@ -1,4 +1,6 @@
 import { DtoRecord } from "./dto_record";
+import { DtoEnvironment } from "./dto_environment";
+import { DtoVariable } from "./dto_variable";
 
 export interface PostmanAllV1 {
     collections: PostmanCollectionV1[];
@@ -19,7 +21,6 @@ export interface PostmanCollectionV1 {
     requests: PostmanRecord[];
 }
 
-
 export interface PostmanRecord extends DtoRecord {
 
     tests: string;
@@ -28,23 +29,19 @@ export interface PostmanRecord extends DtoRecord {
 
     rawModeData: string;
 
-    data: string;
+    data: any;
+
+    dataMode: string;
+
+    order: string[];
 }
 
-export interface PostmanEnvironments {
-    id: string;
-
-    name: string;
-
+export interface PostmanEnvironments extends DtoEnvironment {
     values: PostmanEnv[];
 }
 
-export interface PostmanEnv {
+export interface PostmanEnv extends DtoVariable {
     enabled: boolean;
-
-    key: string;
-
-    value: string;
 
     type: string;
 }

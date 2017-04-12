@@ -6,6 +6,7 @@ import { Header } from "./header";
 import { DtoRecord } from "../interfaces/dto_record";
 import { RecordCategory } from "../common/record_category";
 import { StringUtil } from "../utils/string_util";
+import { DataMode } from "../common/data_mode";
 
 @Entity()
 export class Record {
@@ -38,6 +39,9 @@ export class Record {
 
     @Column({ nullable: true, type: "text" })
     body: string;
+
+    @Column({ default: 1, type: 'int' })
+    dataMode: DataMode;
 
     @Column({ nullable: true, type: "text" })
     test: string;
@@ -74,6 +78,7 @@ export class Record {
         record.method = target.method;
         record.collection = collection;
         record.name = target.name;
+        record.category = target.category;
         return record;
     }
 

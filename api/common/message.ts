@@ -52,4 +52,5 @@ export class Message {
 
     static tokenInvalid: string = 'token is invalid';
 
+    static importPostmanSuccess: string = 'import postman data success';
 }    

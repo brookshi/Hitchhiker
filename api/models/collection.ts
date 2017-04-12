@@ -64,6 +64,7 @@ export class Collection {
         collection.id = dtoCollection.id || StringUtil.generateUID();
         collection.name = dtoCollection.name;
         collection.description = dtoCollection.description;
+        collection.records = [];
         return collection;
     }
 }

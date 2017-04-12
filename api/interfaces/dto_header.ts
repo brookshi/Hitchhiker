@@ -1,7 +1,5 @@
 export interface DtoHeader {
 
-    id: string;
-
     key: string;
 
     value: string;

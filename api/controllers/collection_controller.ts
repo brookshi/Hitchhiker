@@ -6,7 +6,8 @@ import { ResObject } from "../common/res_object";
 import * as Koa from 'koa';
 import { DtoCollection } from "../interfaces/dto_collection";
 import { SessionService } from "../services/session_service";
-import { PostmanV1 } from "../interfaces/postman_v1";
+import { MetadataService } from "../services/metadata_service";
+import { Message } from "../common/message";
 
 export default class CollectionController extends BaseController {
 
@@ -27,8 +28,11 @@ export default class CollectionController extends BaseController {
         return await CollectionService.shareCollection(collectionId, teamId);
     }
 
-    @POST('/collection/import/postman')
-    async importFromPostman( @BodyParam info: PostmanV1) {
-
+    @POST('/collection/import/postman/to/:teamid')
+    async importFromPostman(ctx: Koa.Context, @PathParam('teamid') teamId: string, @BodyParam info: any): Promise<ResObject> {
+        const user = SessionService.getUser(ctx);
+        const collections = await MetadataService.convertPostmanCollection(user, teamId, info);
+        collections.forEach(c => c.save());
+        return { success: true, message: Message.importPostmanSuccess };
     }
 }

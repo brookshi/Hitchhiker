@@ -3,8 +3,8 @@ import { Message } from "../common/message";
 
 export default function sessionHandle(): (ctx: any, next: Function) => Promise<void> {
     return async (ctx, next) => {
-        const isSessioValid = await SessionService.isSessionValid(ctx);
-        if (!isSessioValid) {
+        const isSessionValid = await SessionService.isSessionValid(ctx);
+        if (!isSessionValid) {
             ctx.body = { success: false, message: Message.sessionInvalid };
             return;
         }

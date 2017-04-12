@@ -1,4 +1,4 @@
-import { PostmanCollectionV1 } from "../interfaces/postman_v1";
+import { PostmanCollectionV1, PostmanRecord, PostmanAllV1, PostmanEnvironments } from "../interfaces/postman_v1";
 import { MetadataType } from "../common/metadata_type";
 import { Collection } from "../models/collection";
 import { Record } from "../models/record";
@@ -7,21 +7,74 @@ import { User } from "../models/user";
 import { Team } from "../models/team";
 import { DtoRecord } from "../interfaces/dto_record";
 import { RecordService } from "./record_service";
+import { DtoHeader } from "../interfaces/dto_header";
+import { RecordCategory } from "../common/record_category";
+import { Environment } from "../models/environment";
+import { DtoEnvironment } from "../interfaces/dto_environment";
+import { DtoVariable } from "../interfaces/dto_variable";
 
 export class MetadataService {
+
+    static async convertPostmanCollection(owner: User, teamId: string, data: any): Promise<Collection[]> {
+        if (!data) {
+            return [];
+        }
+        const type = MetadataService.getMetadataCategory(data);
+        switch (type) {
+            case MetadataType.PostmanCollectionV1:
+                return [await MetadataService.convertPostmanCollectionV1(owner, teamId, data)];
+            case MetadataType.PostmanAllV1:
+                return await MetadataService.convertPostmanAllCollectionV1(owner, teamId, data);
+            default:
+                throw new Error(`not support this type: ${type}`);
+        }
+    }
+
+    static async convertPostmanAllCollectionV1(owner: User, teamId: string, data: PostmanAllV1): Promise<Collection[]> {
+        if (!data.collections) {
+            return [];
+        }
+        return await Promise.all(data.collections.map(c => MetadataService.convertPostmanCollectionV1(owner, teamId, c)));
+    }
+
+    static async convertPostmanEvnV1(owner: User, teamId: string, data: PostmanAllV1): Promise<Environment[]> {
+        if (!data.environments) {
+            return [];
+        }
+
+        data.environments.map(e => {
+            const dtoEnv = <DtoEnvironment>e;
+            let sort = 0;
+            if (e.values) {
+                e.values.forEach(v => {
+                    const variable = <DtoVariable>v;
+                    variable.isActive = v.enabled;
+                    variable.sort = sort++;
+                });
+            }
+        });
+    }
+
     static async convertPostmanCollectionV1(owner: User, teamId: string, data: PostmanCollectionV1): Promise<Collection> {
-        let sort = await RecordService.getMaxSort();
+        let sort = 1;//await RecordService.getMaxSort();
         const dtoCollection = <DtoCollection>data;
         const collection = Collection.fromDto(dtoCollection);
 
         collection.owner = owner;
         collection.team = new Team(teamId);
+        if (data.folders) {
+            data.folders.forEach(f => {
+                const dtoRecord = MetadataService.convertFolder(f, collection.id, ++sort);
+                collection.records.push(Record.fromDto(dtoRecord));
+            });
+        }
 
-        data.folders.forEach(f => {
-            const dtoRecord = <DtoRecord>f;
-            dtoRecord.sort = sort++;
-            collection.records.push(Record.fromDto(dtoRecord));
-        });
+        if (data.requests) {
+            data.requests.forEach(r => {
+                const dtoRecord = MetadataService.convertRequest(r, collection.id, data.folders, ++sort);
+                collection.records.push(Record.fromDto(dtoRecord));
+            });
+        }
 
         return collection;
     }
@@ -36,5 +89,60 @@ export class MetadataService {
         else {
             return MetadataType.PostmanCollectionV1;
         }
+    }
+
+    private static convertFolder(f: PostmanRecord, cid: string, sort: number): DtoRecord {
+        const dtoRecord = <DtoRecord>f;
+        dtoRecord.collectionId = cid;
+        dtoRecord.sort = sort;
+        dtoRecord.category = RecordCategory.folder;
+        return dtoRecord;
+    }
+
+    private static convertRequest(r: PostmanRecord, cid: string, folders: PostmanRecord[], sort: number): DtoRecord {
+        const dtoRecord = <DtoRecord>r;
+        dtoRecord.collectionId = cid;
+        dtoRecord.sort = sort;
+        dtoRecord.headers = MetadataService.convertHeaders(r.headers);
+        dtoRecord.body = MetadataService.convertBody(r);
+        dtoRecord.test = r.tests;
+        dtoRecord.category = RecordCategory.record;
+        const folder = folders ? folders.find(f => f.order && !!f.order.find(o => o === dtoRecord.id)) : undefined;
+        dtoRecord.pid = folder ? folder.id : '';
+        return dtoRecord;
+    }
+
+    private static convertBody(data: PostmanRecord): string {
+        return data.rawModeData || data.data;
+    }
+
+    private static convertHeaders(headers: string | DtoHeader[]): DtoHeader[] {
+        let sort = 0;
+        if (headers instanceof Array) {
+            return headers;
+        }
+        let rst = new Array<DtoHeader>();
+        const headerArr = headers.split('\n');
+        if (!headerArr) {
+            return rst;
+        }
+        headerArr.forEach(header => {
+            const keyValue = header.split(':');
+            if (keyValue && keyValue.length > 1) {
+                let key = keyValue[0].trim();
+                let isActive = true;
+                if (key.startsWith('//')) {
+                    isActive = false;
+                    key = key.substr(2);
+                }
+                rst.push({
+                    key: key,
+                    value: keyValue[1].trim(),
+                    isActive: isActive,
+                    sort: sort++
+                });
+            }
+        });
+        return rst;
     }
 }

@@ -78,11 +78,11 @@ export class CollectionService {
 
         const connection = await ConnectionManager.getInstance();
         const parameters: ObjectLiteral = {};
-        const whereStrs = teamIds.map((id, index) => {
+        const whereStrings = teamIds.map((id, index) => {
             parameters[`id_${index}`] = id;
             return `team.id=:id_${index}`;
         });
-        const whereStr = whereStrs.length > 1 ? "(" + whereStrs.join(" OR ") + ")" : whereStrs[0];
+        const whereStr = whereStrings.length > 1 ? "(" + whereStrings.join(" OR ") + ")" : whereStrings[0];
 
         return await connection.getRepository(Collection)
             .createQueryBuilder("collection")
@@ -100,8 +100,7 @@ export class CollectionService {
         }
 
         const target = origin.clone();
-        target.team = new Team();
-        target.team.id = teamId;
+        target.team = new Team(teamId);
         await origin.save();
     }
 }
