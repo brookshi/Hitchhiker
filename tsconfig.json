@@ -4,7 +4,7 @@
         "emitDecoratorMetadata": true,
         "module": "commonjs",
         "target": "ES6",
-        "outDir": "bin",
+        "outDir": "build",
         "rootDir": "api",
         "sourceMap": true,
         "watch": true

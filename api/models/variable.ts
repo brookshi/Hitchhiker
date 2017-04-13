@@ -1,4 +1,3 @@
-import * as shortid from 'shortid';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Environment } from "./environment";
 import { DtoVariable } from "../interfaces/dto_variable";

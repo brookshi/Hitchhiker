@@ -10,7 +10,6 @@ import { RecordService } from "./record_service";
 import { DtoHeader } from "../interfaces/dto_header";
 import { RecordCategory } from "../common/record_category";
 import { Environment } from "../models/environment";
-import { DtoEnvironment } from "../interfaces/dto_environment";
 import { DtoVariable } from "../interfaces/dto_variable";
 import { Variable } from "../models/variable";
 

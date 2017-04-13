@@ -9,11 +9,15 @@
             "request": "launch",
             "args": [],
             "cwd": "${workspaceRoot}",
-            "env": { "NODE_ENV": "development" },
+            "env": {
+                "NODE_ENV": "development"
+            },
             "name": "启动程序",
-            "outDir": "${workspaceRoot}/bin",
-            "program": "${workspaceRoot}/bin/index.js",
-            "runtimeArgs": ["--nolazy"],
+            "outDir": "${workspaceRoot}/build",
+            "program": "${workspaceRoot}/build/index.js",
+            "runtimeArgs": [
+                "--nolazy"
+            ],
             "sourceMaps": true,
             "stopOnEntry": false
         },
