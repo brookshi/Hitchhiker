@@ -4,13 +4,14 @@ import './index.css';
 import { Provider } from "react-redux";
 import { configureStore } from "./store";
 //import TodoList from "./components/todo_list";
-import { Button } from 'antd';
+import App from './App';
+import 'rxjs';
 
 const store = configureStore();
 
 ReactDOM.render(
   <Provider store={store}>
-    <Button type="primary">Button</Button>
+    <App />
   </Provider>,
   document.getElementById('root') as HTMLElement
 );

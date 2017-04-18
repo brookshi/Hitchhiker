@@ -5,6 +5,7 @@ import { addTodo } from '../actions/add_todo';
 import { connect } from "react-redux";
 import { TodoState } from '../reducer/todos';
 import { Dispatch } from "redux";
+import { Button } from 'antd';
 
 interface TodoProps {
     todos: TodoItem[];
@@ -28,7 +29,7 @@ class TodoList extends React.Component<TodoProps & TodoDispatchProps, any>{
                 <span>
                     <input ref={node => { input = node; }} />
                 </span>
-                <button onClick={() => this.props.add(input.value)} />
+                <Button type="primary" onClick={() => this.props.add(input.value)}>add</Button>
                 <ul>
                     {
                         this.props.todos ?
