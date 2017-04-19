@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { Tree } from 'antd';
-import { DtoCollection } from "../../../api/interfaces/dto_collection";
+import { DtoResCollection } from "../../../api/interfaces/dto_res";
 
 const TreeNode = Tree.TreeNode;
 
 interface CollectionListStateProps {
-    collections: DtoCollection[];
+    collections: DtoResCollection[];
 }
 
 interface CollectionListDispatchProps { }
@@ -25,7 +25,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             // if (item.children && item.children.length) {
             //     return <TreeNode key={item.id} title={item.name}>{loop(item.children)}</TreeNode>;
             // }
-            return <TreeNode key={item.key} title={item.key} />;
+            return <TreeNode key={item.id} title={item.name} />;
         });
         return (
             loop(this.props.collections)
