@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { Collection } from "../../../api/models/collection";
 import { Tree } from 'antd';
+import { DtoCollection } from "../../../api/interfaces/dto_collection";
 
 const TreeNode = Tree.TreeNode;
 
 interface CollectionListStateProps {
-    collections: Collection[];
+    collections: DtoCollection[];
 }
 
 interface CollectionListDispatchProps { }
@@ -35,7 +35,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
 
 const mapStateToProps = (state: any): CollectionListStateProps => {
     return {
-        collections: [...state.collections]
+        collections: [...state.payload.collections]
     };
 };
 

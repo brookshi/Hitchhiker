@@ -1,7 +1,7 @@
 import React from 'react';
-import { Record } from '../../../api/models/record';
+import { DtoRecord } from "../../../api/interfaces/dto_record";
 
-interface IRecordItemProps extends Record { }
+interface IRecordItemProps extends DtoRecord { }
 
 interface IRecordItemState { }
 
