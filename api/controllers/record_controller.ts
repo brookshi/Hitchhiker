@@ -12,17 +12,17 @@ export default class RecordController extends BaseController {
 
     @POST('/record')
     async create( @BodyParam record: DtoRecord): Promise<ResObject> {
-        return await RecordService.create(Record.fromDto(record));
+        return await RecordService.create(RecordService.fromDto(record));
     }
 
     @PUT('/record')
     async update( @BodyParam record: DtoRecord): Promise<ResObject> {
-        return await RecordService.update(Record.fromDto(record));
+        return await RecordService.update(RecordService.fromDto(record));
     }
 
     @POST('/record/run')
     async run(ctx: Koa.Context, @BodyParam data: DtoRecordRun) {
-        let record = Record.fromDto(data.record);
+        let record = RecordService.fromDto(data.record);
         return await RecordRunner.runRecord(data.environment, record, ctx.res);
     }
 

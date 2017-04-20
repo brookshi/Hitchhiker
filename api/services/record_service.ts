@@ -6,9 +6,64 @@ import { ResObject } from "../common/res_object";
 import { Message } from "../common/message";
 import { Header } from "../models/header";
 import { RecordCategory } from "../common/record_category";
+import { DtoRecord } from "../interfaces/dto_record";
+import { Collection } from "../models/collection";
+import { HeaderService } from "./header_service";
+import { StringUtil } from "../utils/string_util";
 
 export class RecordService {
     private static _sort: number = 0;
+
+    static fromDto(target: DtoRecord): Record {
+        let collection = new Collection();
+        collection.id = target.collectionId;
+
+        let record = new Record();
+        record.id = target.id;
+        record.url = target.url;
+        record.pid = target.pid;
+        record.body = target.body;
+        if (target.headers instanceof Array) {
+            record.headers = target.headers.map(o => {
+                let header = HeaderService.fromDto(o);
+                header.record = record;
+                return header;
+            });
+        }
+        record.test = target.test;
+        record.sort = target.sort;
+        record.method = target.method;
+        record.collection = collection;
+        record.name = target.name;
+        record.category = target.category;
+        return record;
+    }
+
+    async save(record: Record) {
+        if (!record.id) {
+            record.id = StringUtil.generateUID();
+        }
+        const connection = await ConnectionManager.getInstance();
+        await connection.getRepository(Record).persist(record);
+    }
+
+    static formatHeaders(record: Record): { [key: string]: string } {
+        let headers: { [key: string]: string } = {};
+        record.headers.forEach(o => {
+            if (o.isActive) {
+                headers[o.key] = o.value;
+            }
+        });
+        return headers;
+    }
+
+    static clone(record: Record): Record {
+        const target = <Record>Object.create(record);
+        target.id = StringUtil.generateUID();
+        target.headers = target.headers.map(h => HeaderService.clone(h));
+        target.createDate = new Date();
+        return target;
+    }
 
     static async getByCollectionIds(collectionIds: string[], needCollection?: boolean): Promise<{ [key: string]: Record[] }> {
         const connection = await ConnectionManager.getInstance();
@@ -94,7 +149,7 @@ export class RecordService {
         if (!record.name) {
             return { success: false, message: Message.recordCreateFailedOnName };
         }
-        await record.save();
+        await RecordService.save(record);
         return { success: true, message: Message.recordSaveSuccess };
     }
 

@@ -1,7 +1,7 @@
 import React from 'react';
-import { DtoResCollection } from '../../../api/interfaces/dto_res';
+//import { DtoResCollection } from '../../../api/interfaces/dto_res';
 
-interface ICollectionItemProps extends DtoResCollection { }
+interface ICollectionItemProps { }// extends DtoResCollection { }
 
 interface ICollectionItemState { }
 

@@ -42,7 +42,7 @@ export default class TeamController extends BaseController {
         }
 
         data.user.teams.push(data.team);
-        await data.user.save();
+        await UserService.save(data.user);
 
         MailService.joinTeamMail(data.info.inviterEmail, data.info.userEmail, data.team.name);
 

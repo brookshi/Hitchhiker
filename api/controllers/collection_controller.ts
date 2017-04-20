@@ -8,6 +8,7 @@ import { DtoCollection } from "../interfaces/dto_collection";
 import { SessionService } from "../services/session_service";
 import { MetadataService } from "../services/metadata_service";
 import { Message } from "../common/message";
+import { EnvironmentService } from "../services/environment_service";
 
 export default class CollectionController extends BaseController {
 
@@ -33,8 +34,8 @@ export default class CollectionController extends BaseController {
         const user = SessionService.getUser(ctx);
         const collections = await MetadataService.convertPostmanCollection(user, teamId, info);
         const environments = await MetadataService.convertPostmanEnvV1(user, teamId, info);
-        collections.forEach(c => c.save());
-        environments.forEach(e => e.save());
+        collections.forEach(c => CollectionService.save(c));
+        environments.forEach(e => EnvironmentService.save(e));
         return { success: true, message: Message.importPostmanSuccess };
     }
 }

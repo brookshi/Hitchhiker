@@ -5,14 +5,46 @@ import { ObjectLiteral } from "typeorm/common/ObjectLiteral";
 import { User } from "../models/user";
 import { Message } from "../common/message";
 import { Team } from "../models/team";
+import { StringUtil } from "../utils/string_util";
+import { DtoCollection } from "../interfaces/dto_collection";
+import { RecordService } from "./record_service";
+import { TeamService } from "./team_service";
 
 export class CollectionService {
+
+    static async save(collection: Collection) {
+        const connection = await ConnectionManager.getInstance();
+        await connection.getRepository(Collection).persist(collection);
+    }
+
+    static clone(collection: Collection): Collection {
+        const target = <Collection>Object.create(collection);
+        target.id = StringUtil.generateUID();
+        target.records = target.records.map(r => RecordService.clone(r));
+        target.createDate = new Date();
+        return target;
+    }
+
+    static fromDto(dtoCollection: DtoCollection): Collection {
+        const collection = new Collection();
+        collection.id = dtoCollection.id || StringUtil.generateUID();
+        collection.name = dtoCollection.name;
+        collection.description = dtoCollection.description;
+        collection.records = [];
+        return collection;
+    }
 
     static async create(name: string, desc: string, userId: string): Promise<ResObject> {
         const owner = new User();
         owner.id = userId;
-        let collection = new Collection(name, desc, owner);
-        await collection.save();
+
+        const collection = new Collection();
+        collection.id = StringUtil.generateUID();
+        collection.name = name;
+        collection.description = desc;
+        collection.owner = owner;
+
+        await CollectionService.save(collection);
         return { success: true, message: Message.collectionCreateSuccess };
     }
 
@@ -99,8 +131,8 @@ export class CollectionService {
             return { success: false, message: Message.collectionNotExist };
         }
 
-        const target = origin.clone();
-        target.team = new Team(teamId);
-        await origin.save();
+        const target = CollectionService.clone(origin);
+        target.team = TeamService.create(teamId);
+        await CollectionService.save(origin);
     }
 }

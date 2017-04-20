@@ -12,6 +12,9 @@ import { RecordCategory } from "../common/record_category";
 import { Environment } from "../models/environment";
 import { DtoVariable } from "../interfaces/dto_variable";
 import { Variable } from "../models/variable";
+import { TeamService } from "./team_service";
+import { VariableService } from "./variable_service";
+import { CollectionService } from "./collection_service";
 
 export class MetadataService {
 
@@ -44,8 +47,11 @@ export class MetadataService {
         }
 
         return data.environments.map(e => {
-            const env = new Environment(e.name, [], owner);
-            env.team = new Team(teamId);
+            const env = new Environment();
+            env.name = e.name;
+            env.variables = [];
+            env.owner = owner;
+            env.team = TeamService.create(teamId);
 
             let sort = 0;
             if (e.values) {
@@ -53,7 +59,7 @@ export class MetadataService {
                     const dtoVariable = <DtoVariable>v;
                     dtoVariable.isActive = v.enabled;
                     dtoVariable.sort = sort++;
-                    const variable = Variable.fromDto(dtoVariable);
+                    const variable = VariableService.fromDto(dtoVariable);
                     variable.environment = env;
                     env.variables.push(variable);
                 });
@@ -65,21 +71,21 @@ export class MetadataService {
     static async convertPostmanCollectionV1(owner: User, teamId: string, data: PostmanCollectionV1): Promise<Collection> {
         let sort = await RecordService.getMaxSort();
         const dtoCollection = <DtoCollection>data;
-        const collection = Collection.fromDto(dtoCollection);
+        const collection = CollectionService.fromDto(dtoCollection);
 
         collection.owner = owner;
-        collection.team = new Team(teamId);
+        collection.team = TeamService.create(teamId);
         if (data.folders) {
             data.folders.forEach(f => {
                 const dtoRecord = MetadataService.convertFolder(f, collection.id, ++sort);
-                collection.records.push(Record.fromDto(dtoRecord));
+                collection.records.push(RecordService.fromDto(dtoRecord));
             });
         }
 
         if (data.requests) {
             data.requests.forEach(r => {
                 const dtoRecord = MetadataService.convertRequest(r, collection.id, data.folders, ++sort);
-                collection.records.push(Record.fromDto(dtoRecord));
+                collection.records.push(RecordService.fromDto(dtoRecord));
             });
         }
 

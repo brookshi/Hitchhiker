@@ -5,8 +5,24 @@ import { ResObject } from "../common/res_object";
 import { ValidateUtil } from "../utils/validate_util";
 import { Setting } from "../utils/setting";
 import { MailService } from "./mail_service";
+import { StringUtil } from "../utils/string_util";
 
 export class UserService {
+
+    static create(name: string, email: string, password: string) {
+        const user = new User();
+        user.name = name;
+        user.email = email;
+        user.password = password;//TODO: md5, StringUtil.md5(password);
+        user.id = StringUtil.generateUID();
+        return user;
+    }
+
+    static async save(user: User) {
+        const connection = await ConnectionManager.getInstance();
+        await connection.getRepository(User).persist(user);
+    }
+
     static async checkUser(email: string, pwd: string): Promise<ResObject> {
         const user = await UserService.getUserByEmail(email, true, true);
         if (user && user.password === pwd) {//TODO: md5
@@ -37,9 +53,9 @@ export class UserService {
             return { success: false, message: Message.userEmailRepeat };
         }
 
-        const user = new User(name, email, pwd);
+        const user = UserService.create(name, email, pwd);
         user.isActive = !Setting.instance.needRegisterMailCheck;
-        user.save();
+        UserService.save(user);
 
         if (!user.isActive) {
             MailService.registerMail(user);

@@ -1,11 +1,10 @@
 import { Environment } from './environment';
-import * as shortid from 'shortid';
 import { JoinColumn, OneToMany, Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, ManyToMany } from 'typeorm';
 import { Team } from './team';
-import { ConnectionManager } from "../services/connection_manager";
 
 @Entity()
 export class User {
+
     @PrimaryColumn()
     id: string;
 
@@ -36,16 +35,4 @@ export class User {
 
     @UpdateDateColumn()
     updateDate: Date;
-
-    constructor(name?: string, email?: string, password?: string) {
-        this.name = name;
-        this.email = email;
-        this.password = password;//TODO: md5, StringUtil.md5(password);
-        this.id = shortid.generate();
-    }
-
-    async save() {
-        const connection = await ConnectionManager.getInstance();
-        await connection.getRepository(User).persist(this);
-    }
 }

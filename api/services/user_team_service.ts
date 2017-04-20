@@ -11,7 +11,7 @@ export class UserTeamService {
         if (teamIndex > -1) {
             user.teams.splice(teamIndex, 1);
         }
-        await user.save();
+        await UserService.save(user);
         return { success: true, message: Message.teamQuitSuccess };
     }
 }

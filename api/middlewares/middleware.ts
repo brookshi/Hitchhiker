@@ -20,7 +20,7 @@ export default function middleware(context: Koa) {
             }),
             sessionHandle(),
             Bodyparser(),
-            ctrlRouter.router('../bin/controllers', 'api'),
+            ctrlRouter.router('../build/controllers', 'api'),
             routeFailed(),
         ]
     );

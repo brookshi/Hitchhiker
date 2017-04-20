@@ -8,5 +8,9 @@
         "rootDir": "api",
         "sourceMap": true,
         "watch": true
-    }
+    },
+    "exclude": [
+        "./client/**/*",
+        "node_modules"
+    ]
 }
