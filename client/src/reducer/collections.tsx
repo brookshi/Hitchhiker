@@ -1,11 +1,11 @@
-//import { DtoCollection } from "../../../api/interfaces/dto_collection";
-import { Fetch_Collection_Fulfilled } from "../actions/collections";
+import { Fetch_Collection_Fulfilled } from '../actions/collections';
+import { DtoResCollection } from '../../../api/interfaces/dto_res';
 
-export function collections(state: {} = {}, action: any): any {
+export function collections(state: DtoResCollection[] = [], action: any): DtoResCollection[] {
     switch (action.type) {
 
         case Fetch_Collection_Fulfilled:
-            return { ...state, 'collections': action.payload };
+            return action.payload;
         default:
             return state;
     }

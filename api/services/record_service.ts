@@ -66,6 +66,9 @@ export class RecordService {
     }
 
     static async getByCollectionIds(collectionIds: string[], needCollection?: boolean): Promise<{ [key: string]: Record[] }> {
+        if (!collectionIds || collectionIds.length === 0) {
+            return {};
+        }
         const connection = await ConnectionManager.getInstance();
 
         const parameters: ObjectLiteral = {};

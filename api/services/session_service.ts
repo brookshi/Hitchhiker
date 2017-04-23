@@ -1,6 +1,7 @@
 import * as Koa from 'koa';
 import { DateUtil } from "../utils/date_util";
 import { User } from "../models/user";
+import { UserService } from "./user_service";
 
 export class SessionService {
 
@@ -28,18 +29,17 @@ export class SessionService {
     }
 
     static async isSessionValid(ctx: Koa.Context): Promise<boolean> {
-        return true;
-
-        // const userId = (<any>ctx).session.userId;
-        // let validUser = !!userId;
-        // if (validUser) {
-        //     const checkRst = await UserService.checkUserById(userId);
-        //     validUser = checkRst.success;
-        //     if (validUser) {
-        //         (<any>ctx).session.user = checkRst.result;
-        //     }
-        // }
-        // return validUser || !!SessionService.bypass.find(o => ctx.request.url.replace(`?${ctx.request.querystring}`, '').endsWith(o));
+        (<any>ctx).session.userId = 'Hk3wQ60ix';
+        const userId = 'Hk3wQ60ix';//(<any>ctx).session.userId;
+        let validUser = !!userId;
+        if (validUser) {
+            const checkRst = await UserService.checkUserById(userId);
+            validUser = checkRst.success;
+            if (validUser) {
+                (<any>ctx).session.user = checkRst.result;
+            }
+        }
+        return validUser || !!SessionService.bypass.find(o => ctx.request.url.replace(`?${ctx.request.querystring}`, '').endsWith(o));
     }
 
     static rollDate(ctx: Koa.Context) {

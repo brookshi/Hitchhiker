@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
-//import { Tree } from 'antd';
-import { DtoResCollection } from "../../../api/interfaces/dto_res";
-import { fetchCollection } from "../actions/collections";
+import { Menu, Icon } from 'antd';
+import { DtoResCollection, DtoResRecord } from '../../../api/interfaces/dto_res';
+import { fetchCollection } from '../actions/collections';
+import { State } from '../state';
+import './collection_tree/index.less';
 
-//const TreeNode = Tree.TreeNode;
+const SubMenu = Menu.SubMenu;
 
 interface CollectionListStateProps {
     collections: DtoResCollection[];
@@ -16,7 +18,9 @@ interface CollectionListDispatchProps {
 
 type CollectionListProps = CollectionListStateProps & CollectionListDispatchProps;
 
-interface CollectionListState { }
+interface CollectionListState {
+    openKeys: string[];
+}
 
 class CollectionList extends React.Component<CollectionListProps, CollectionListState> {
     refresh: Function;
@@ -24,30 +28,60 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     constructor(props: CollectionListProps) {
         super(props);
         this.refresh = props.refresh;
+        this.state = {
+            openKeys: [],
+        };
     }
 
-    public componentWillMount() {
+    componentWillMount() {
         this.refresh();
     }
 
+    onOpenChanged = (openKeys: string[]) => {
+        this.setState({ openKeys: openKeys });
+    }
 
-    public render() {
-        // const loop = data => data.map((item) => {
-        //     // if (item.children && item.children.length) {
-        //     //     return <TreeNode key={item.id} title={item.name}>{loop(item.children)}</TreeNode>;
-        //     // }
-        //     return <TreeNode key={item.id} title={item.name} />;
-        // });
+    render() {
+        const { collections } = this.props;
+
+        const loopRecords = (data: DtoResRecord[]) => data.map(r => {
+            if (r.children && r.children.length) {
+                return <SubMenu key={r.id} title={<span><Icon className="c-icon" type={this.state.openKeys.indexOf(r.id) > -1 ? "folder-open" : "folder"} /><span>{r.name}</span></span>}>{loopRecords(r.children)}</SubMenu>;
+            }
+            return <Menu.Item key={r.id}>{r.name}</Menu.Item>;
+        });
+
+        const subMenuStyle = {
+            padding: '0px'
+        }
+
         return (
-            //!!this.props.collections ? loop(this.props.collections) :
-            <body>no data</body>
+            <Menu
+                className="collection-tree"
+                style={{ width: 240 }}
+                /*defaultSelectedKeys={['1']}
+                defaultOpenKeys={['sub1']}*/
+                onOpenChange={this.onOpenChanged}
+                mode="inline"
+                inlineIndent={0}
+            >
+                {
+                    collections.map(c => {
+                        return (
+                            <SubMenu style={subMenuStyle} key={c.id} title={<span><Icon type="wallet" className="c-icon" /><span>{c.name}</span></span>}>
+                                {loopRecords(c.records)}
+                            </SubMenu>
+                        );
+                    })
+                }
+            </Menu>
         );
     }
 }
 
-const mapStateToProps = (state: any): CollectionListStateProps => {
+const mapStateToProps = (state: State): CollectionListStateProps => {
     return {
-        collections: []
+        collections: state.collections
     };
 };
 
