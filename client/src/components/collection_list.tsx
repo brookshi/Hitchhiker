@@ -41,19 +41,18 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         this.setState({ openKeys: openKeys });
     }
 
+
     render() {
         const { collections } = this.props;
 
+        const itemStyle = { height: '30px', 'line-height': '30px' };
+
         const loopRecords = (data: DtoResRecord[]) => data.map(r => {
             if (r.children && r.children.length) {
-                return <SubMenu key={r.id} title={<span><Icon className="c-icon" type={this.state.openKeys.indexOf(r.id) > -1 ? "folder-open" : "folder"} /><span>{r.name}</span></span>}>{loopRecords(r.children)}</SubMenu>;
+                return <SubMenu key={r.id} title={<span><Icon className="c-icon" type={this.state.openKeys.indexOf(r.id) > -1 ? 'folder-open' : 'folder'} /><span>{r.name}</span></span>}>{loopRecords(r.children)}</SubMenu>;
             }
-            return <Menu.Item key={r.id}>{r.name}</Menu.Item>;
+            return <Menu.Item style={itemStyle} key={r.id}>{<span><Icon className="c-icon sub-record" type={r.method === 'get' ? 'folder-open' : 'folder'} /><span>{r.name}</span></span>}</Menu.Item>;
         });
-
-        const subMenuStyle = {
-            padding: '0px'
-        }
 
         return (
             <Menu
@@ -68,7 +67,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                 {
                     collections.map(c => {
                         return (
-                            <SubMenu style={subMenuStyle} key={c.id} title={<span><Icon type="wallet" className="c-icon" /><span>{c.name}</span></span>}>
+                            <SubMenu key={c.id} title={<span><Icon type="wallet" className="c-icon" /><span>{c.name}</span></span>}>
                                 {loopRecords(c.records)}
                             </SubMenu>
                         );
