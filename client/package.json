@@ -19,6 +19,7 @@
     "less-loader": "^4.0.3",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
+    "react-perfect-scrollbar": "^0.2.0",
     "react-redux": "^5.0.4",
     "redux": "^3.6.0",
     "redux-observable": "^0.14.1",

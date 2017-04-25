@@ -1,11 +1,36 @@
 import * as React from 'react';
-import './App.less';
+import './style/App.less';
 import CollectionList from './components/collection_list';
 import { Layout, Menu, Icon } from 'antd';
+import { ClickParam } from 'antd/lib/menu';
+import PerfectScrollbar from 'react-perfect-scrollbar';
+import './style/perfect-scrollbar.min.css';
 
 const { Header, Content, Sider } = Layout;
 
-class App extends React.Component<{}, null> {
+class App extends React.Component<{}, any> {
+  state = {
+    collapsed: false,
+    mode: 'inline',
+    selectedKeys: ['1']
+  };
+
+  onCollapse = (collapsed) => {
+    this.setState({
+      collapsed,
+      mode: collapsed ? 'vertical' : 'inline',
+      selectedKeys: collapsed ? [] : this.state.selectedKeys
+    });
+  }
+
+  onClick = (param: ClickParam) => {
+    const { collapsed, selectedKeys } = this.state;
+    if (this.state.selectedKeys.findIndex(o => o === param.key) > -1) {
+      this.setState({ ...this.state, collapsed: !collapsed, selectedKeys: collapsed ? selectedKeys : [] });
+    } else {
+      this.setState({ ...this.state, collapsed: false, selectedKeys: [param.key] });
+    }
+  }
 
   render() {
     return (
@@ -14,7 +39,13 @@ class App extends React.Component<{}, null> {
         </Header>
         <Layout>
           <Sider style={{ 'max-width': 50 }}>
-            <Menu className="sider-menu" mode="vertical" theme="dark" defaultSelectedKeys={['1']}>
+            <Menu
+              className="sider-menu"
+              mode="vertical"
+              theme="dark"
+              selectedKeys={this.state.selectedKeys}
+              onClick={this.onClick}
+            >
               <Menu.Item key="1">
                 <Icon type="wallet" />
               </Menu.Item>
@@ -36,11 +67,18 @@ class App extends React.Component<{}, null> {
             </Menu>
           </Sider>
           <Layout>
-            <Sider style={{ 'min-width': 300 }}>
-              <CollectionList />
+            <Sider
+              style={{ 'min-width': this.state.collapsed ? 0 : 300 }}
+              collapsible
+              collapsedWidth="0.1"
+              collapsed={this.state.collapsed}
+              onCollapse={this.onCollapse}>
+              <PerfectScrollbar style={{ position: 'relative', height: '100%' }}>
+                <CollectionList />
+              </PerfectScrollbar>
             </Sider>
             <Content>
-
+              <div>test</div>
             </Content>
           </Layout>
         </Layout>
