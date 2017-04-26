@@ -1,11 +1,11 @@
 import * as React from 'react';
 import './style/App.less';
-import CollectionList from './components/collection_list';//tree/index';
+import CollectionList from './components/collection_tree/index';
 import { Layout, Menu, Icon } from 'antd';
 import { ClickParam } from 'antd/lib/menu';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import './style/perfect-scrollbar.min.css';
-// import HttpMethodIcon from './components/font_icon/http_method_icon';
+import HttpMethodIcon from './components/font_icon/http_method_icon';
 
 const { Header, Content, Sider } = Layout;
 
@@ -79,7 +79,7 @@ class App extends React.Component<{}, any> {
               </PerfectScrollbar>
             </Sider>
             <Content>
-              {/*<div style={{ width: 100, height: 200, display: 'flex' }}>
+              <div style={{ width: 100, height: 200, display: 'flex' }}>
                 <HttpMethodIcon httpMethod="GET" />
                 <br />
                 <HttpMethodIcon httpMethod='POST' />
@@ -91,7 +91,7 @@ class App extends React.Component<{}, any> {
                 <HttpMethodIcon httpMethod='DELETE' />
                 <br />
                 <HttpMethodIcon httpMethod='123' />
-              </div>*/}
+              </div>
             </Content>
           </Layout>
         </Layout>

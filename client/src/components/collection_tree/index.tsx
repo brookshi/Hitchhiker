@@ -75,7 +75,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                 {
                     collections.map(c => {
                         return (
-                            <SubMenu key={c.id} title={<CollectionItem name={c.name} />}>
+                            <SubMenu className="collection-item" key={c.id} title={<CollectionItem name={c.name} />}>
                                 {loopRecords(c.records)}
                             </SubMenu>
                         );
