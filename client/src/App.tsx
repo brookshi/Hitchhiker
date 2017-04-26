@@ -1,15 +1,15 @@
 import * as React from 'react';
 import './App.less';
-import CollectionList from './components/collection_list';
-import { Layout, Menu, Icon } from 'antd';
+// import CollectionList from './components/collection_list';
+// import { Layout, Menu, Icon } from 'antd';
 
-const { Header, Content, Sider } = Layout;
-
+// const { Header, Content, Sider } = Layout;
+import HttpMethodIcon from './components/font_icon/http_method_icon';
 class App extends React.Component<{}, null> {
 
   render() {
     return (
-      <Layout className="layout">
+      /*<Layout className="layout">
         <Header>
         </Header>
         <Layout>
@@ -44,7 +44,20 @@ class App extends React.Component<{}, null> {
             </Content>
           </Layout>
         </Layout>
-      </Layout>
+      </Layout>*/
+      <div style={{ width: 100, height: 200 }}>
+        <HttpMethodIcon httpMethod='GET' />
+        <br />
+        <HttpMethodIcon httpMethod='POST' />
+        <br />
+        <HttpMethodIcon httpMethod='PUT' />
+        <br />
+        <HttpMethodIcon httpMethod='PATCH' />
+        <br />
+        <HttpMethodIcon httpMethod='DELETE' />
+        <br />
+        <HttpMethodIcon httpMethod='123' />
+      </div>
     );
   }
 }
