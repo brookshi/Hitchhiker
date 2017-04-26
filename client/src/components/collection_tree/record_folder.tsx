@@ -1,6 +1,7 @@
 import React from 'react';
 import { Menu, Icon } from 'antd';
 import { DtoResRecord } from '../../../../api/interfaces/dto_res';
+import './style/index.less';
 
 const SubMenu = Menu.SubMenu;
 

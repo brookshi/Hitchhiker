@@ -46,7 +46,7 @@ class App extends React.Component<{}, null> {
         </Layout>
       </Layout>*/
       <div style={{ width: 100, height: 200, display: 'flex' }}>
-        <HttpMethodIcon httpMethod='GET' />
+        <HttpMethodIcon httpMethod="GET" />
         {/*<br />
         <HttpMethodIcon httpMethod='POST' />
         <br />

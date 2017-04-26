@@ -36,7 +36,6 @@
             "static-before-instance",
             "variables-before-functions"
         ],
-        "no-any": true,
         "no-arg": true,
         "no-bitwise": true,
         "no-console": [
@@ -79,7 +78,9 @@
             "always"
         ],
         "switch-default": true,
-        "trailing-comma": false,
+        "trailing-comma": [
+            false
+        ],
         "triple-equals": [
             true,
             "allow-null-check"

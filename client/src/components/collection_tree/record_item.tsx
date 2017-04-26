@@ -2,6 +2,7 @@ import React from 'react';
 import { Menu } from 'antd';
 import { DtoResRecord } from '../../../../api/interfaces/dto_res';
 import HttpMethodIcon from '../font_icon/http_method_icon';
+import './style/index.less';
 
 interface RecordItemProps {
     record: DtoResRecord;

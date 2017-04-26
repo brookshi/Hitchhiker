@@ -41,7 +41,6 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         this.setState({ openKeys: openKeys });
     }
 
-
     render() {
         const { collections } = this.props;
 
