@@ -2,24 +2,25 @@
 
 .collection-tree{
     text-align: left;
-    > li{
-       > div[aria-expanded]{
-            border-bottom: @border-color 1px solid;
-            z-index: 10;
-            padding-left: 16px;
-            height: 60px;
-            line-height: 60px;
-            span{
-                font-size: 16px;
-            }
-        }
-        > div[aria-expanded="true"]{
-            box-shadow: -1px 0px 4px rgba(0, 0, 0, 0.45);
-        }
+}
 
-        > ul > li > span > i{
-            margin-left: 16px;
+.collection-item{
+    > div[aria-expanded]{
+        border-bottom: @border-color 1px solid;
+        z-index: 10;
+        padding-left: 16px;
+        height: 60px;
+        line-height: 60px;
+        span{
+            font-size: 16px;
         }
+    }
+    > div[aria-expanded="true"]{
+        box-shadow: -1px 0px 4px rgba(0, 0, 0, 0.45);
+    }
+
+    > ul > li > span > i{
+        margin-left: 16px;
     }
 }
 
