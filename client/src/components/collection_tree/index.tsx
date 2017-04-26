@@ -7,7 +7,10 @@ import { State } from '../../state';
 import RecordFolder from './record_folder';
 import RecordItem from './record_item';
 import CollectionItem from './collection_item';
-import './collection_tree/index.less';
+import './style/index.less';
+
+const SubMenu = Menu.SubMenu;
+const MenuItem = Menu.Item;
 
 interface CollectionListStateProps {
     collections: DtoResCollection[];
@@ -47,15 +50,17 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
 
         const loopRecords = (data: DtoResRecord[]) => data.map(r => {
             if (r.children && r.children.length) {
+                const isOpen = this.state.openKeys.indexOf(r.id) > -1;
                 return (
-                    <RecordFolder
-                        record={r}
-                        isOpen={this.state.openKeys.indexOf(r.id) > -1}
-                        children={loopRecords(r.children)} />
+                    <SubMenu key={r.id} title={<RecordFolder name={r.name} isOpen={isOpen} />}>
+                        {loopRecords(r.children)}
+                    </SubMenu>
                 );
             }
             return (
-                <RecordItem record={r} />
+                <MenuItem key={r.id} style={{ height: 30, 'line-height': 30 }}>
+                    {<RecordItem name={r.name} url={r.url} method={r.method} />}
+                </MenuItem>
             );
         });
 
@@ -70,7 +75,9 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                 {
                     collections.map(c => {
                         return (
-                            <CollectionItem collection={c} children={loopRecords(c.records)} />
+                            <SubMenu key={c.id} title={<CollectionItem name={c.name} />}>
+                                {loopRecords(c.records)}
+                            </SubMenu>
                         );
                     })
                 }
