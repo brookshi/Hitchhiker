@@ -41,7 +41,6 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         this.setState({ openKeys: openKeys });
     }
 
-
     render() {
         const { collections } = this.props;
 
@@ -58,8 +57,6 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             <Menu
                 className="collection-tree"
                 style={{ width: '100%' }}
-                /*defaultSelectedKeys={['1']}
-                defaultOpenKeys={['sub1']}*/
                 onOpenChange={this.onOpenChanged}
                 mode="inline"
                 inlineIndent={0}
