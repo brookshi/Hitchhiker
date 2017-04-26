@@ -45,9 +45,9 @@ class App extends React.Component<{}, null> {
           </Layout>
         </Layout>
       </Layout>*/
-      <div style={{ width: 100, height: 200 }}>
+      <div style={{ width: 100, height: 200, display: 'flex' }}>
         <HttpMethodIcon httpMethod='GET' />
-        <br />
+        {/*<br />
         <HttpMethodIcon httpMethod='POST' />
         <br />
         <HttpMethodIcon httpMethod='PUT' />
@@ -56,7 +56,7 @@ class App extends React.Component<{}, null> {
         <br />
         <HttpMethodIcon httpMethod='DELETE' />
         <br />
-        <HttpMethodIcon httpMethod='123' />
+        <HttpMethodIcon httpMethod='123' />*/}
       </div>
     );
   }
