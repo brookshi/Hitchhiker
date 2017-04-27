@@ -1,5 +1,6 @@
 import React from 'react';
-import { Icon } from 'antd';
+import { Icon, Menu } from 'antd';
+import ItemWithMenu from './menu_item';
 import './style/index.less';
 
 interface CollectionItemProps {
@@ -8,19 +9,31 @@ interface CollectionItemProps {
 
 interface CollectionItemState { }
 
+
 class CollectionItem extends React.Component<CollectionItemProps, CollectionItemState> {
 
     public render() {
-
+        const menu = (
+            <Menu>
+                <Menu.Item>
+                    <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">1st menu item</a>
+                </Menu.Item>
+                <Menu.Item>
+                    <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">2nd menu item</a>
+                </Menu.Item>
+                <Menu.Item>
+                    <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">3d menu item</a>
+                </Menu.Item>
+            </Menu>
+        );
         return (
-            <span>
-                <Icon className="c-icon" type="wallet" />
-                <span>
-                    {this.props.name}
-                </span>
-            </span>
+            <ItemWithMenu
+                icon={<Icon className="c-icon" type="wallet" />}
+                name={this.props.name}
+                menu={menu}
+            />
         );
     }
 }
- 
+
 export default CollectionItem;
