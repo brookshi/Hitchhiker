@@ -3762,6 +3762,10 @@ pbkdf2-compat@2.0.1:
   version "2.0.1"
   resolved "http://registry.npm.taobao.org/pbkdf2-compat/download/pbkdf2-compat-2.0.1.tgz#b6e0c8fa99494d94e0511575802a59a5c142f288"
 
+perfect-scrollbar@^0.6.12:
+  version "0.6.16"
+  resolved "http://registry.npm.taobao.org/perfect-scrollbar/download/perfect-scrollbar-0.6.16.tgz#b1d61a5245cf3962bb9a8407a3fc669d923212fc"
+
 performance-now@^0.2.0:
   version "0.2.0"
   resolved "http://registry.npm.taobao.org/performance-now/download/performance-now-0.2.0.tgz#33ef30c5c77d4ea21c5a53869d91b56d8f2555e5"
@@ -4500,6 +4504,12 @@ react-lazy-load@^3.0.10:
     eventlistener "0.0.1"
     lodash.debounce "^4.0.0"
     lodash.throttle "^4.0.0"
+
+react-perfect-scrollbar@^0.2.0:
+  version "0.2.0"
+  resolved "http://registry.npm.taobao.org/react-perfect-scrollbar/download/react-perfect-scrollbar-0.2.0.tgz#d49e33c27e9dc8339eea1f7e50e7587f73250450"
+  dependencies:
+    perfect-scrollbar "^0.6.12"
 
 react-redux@^5.0.4:
   version "5.0.4"

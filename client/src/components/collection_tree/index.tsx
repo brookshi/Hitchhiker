@@ -47,19 +47,20 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
 
     render() {
         const { collections } = this.props;
+        const recordStyle = { height: 30, 'line-height': 30 };
 
-        const loopRecords = (data: DtoResRecord[]) => data.map(r => {
+        const loopRecords = (data: DtoResRecord[], inFolder: boolean = false) => data.map(r => {
             if (r.children && r.children.length) {
                 const isOpen = this.state.openKeys.indexOf(r.id) > -1;
                 return (
-                    <SubMenu key={r.id} title={<RecordFolder name={r.name} isOpen={isOpen} />}>
-                        {loopRecords(r.children)}
+                    <SubMenu className="folder" key={r.id} title={<RecordFolder name={r.name} isOpen={isOpen} />}>
+                        {loopRecords(r.children, true)}
                     </SubMenu>
                 );
             }
             return (
-                <MenuItem key={r.id} style={{ height: 30, 'line-height': 30 }}>
-                    {<RecordItem name={r.name} url={r.url} method={r.method} />}
+                <MenuItem key={r.id} style={recordStyle}>
+                    {<RecordItem name={r.name} url={r.url} method={r.method} inFolder={inFolder} />}
                 </MenuItem>
             );
         });

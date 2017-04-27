@@ -6,6 +6,7 @@ interface RecordItemProps {
     name: string;
     method: string;
     url: string;
+    inFolder: boolean;
 }
 
 interface RecordItemState { }
@@ -14,11 +15,11 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
     static defaultHeight: number = 30;
 
     public render() {
-        let { name, method } = this.props;
+        let { name, method, inFolder } = this.props;
 
         return (
-            <span>
-                <span className="c-icon folder_record">
+            <span className="record">
+                <span className={'record-icon' + (inFolder ? ' record-in-folder' : '')}>
                     <HttpMethodIcon httpMethod={method.toUpperCase()} />
                 </span>
                 <span>

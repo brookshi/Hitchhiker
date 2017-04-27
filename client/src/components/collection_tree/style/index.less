@@ -9,6 +9,7 @@
         border-bottom: @border-color 1px solid;
         z-index: 10;
         padding-left: 16px;
+        margin-bottom: 4px;
         height: 60px;
         line-height: 60px;
         span{
@@ -19,16 +20,37 @@
         box-shadow: -1px 0px 4px rgba(0, 0, 0, 0.45);
     }
 
-    > ul > li > span > i{
-        margin-left: 16px;
+    > ul > li  {
+        > span{
+            //margin-left: -16px;
+        }
     }
 }
 
 .c-icon{
     font-size: 18px;
     margin-left: 16px;
+    width: 24px;
 }
 
-.folder_record{
+.record{
+    //margin-left: 32px;
+    display: flex;
+    .record-icon{
+        display: flex;
+        width: 48px;
+    }
+}
+
+.record[data-in-folder="true"]{
+    margin-left: 16px;
+}
+
+.record-in-folder{
     margin-left: 32px;
+}
+
+.folder > div[aria-expanded]{
+    height: 30px !important;
+    line-height: 30px !important;
 }

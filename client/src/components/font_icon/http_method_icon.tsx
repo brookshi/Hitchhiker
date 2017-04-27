@@ -20,9 +20,17 @@ class HttpMethodIcon extends React.Component<HttpMethodIconProps, HttpMethodIcon
         PATCH: '#fbc02d'
     };
 
+    static textMapping: { [key: string]: string } = {
+        DELETE: 'DEL'
+    };
+
+    get method() {
+        return HttpMethodIcon.textMapping[this.props.httpMethod] || this.props.httpMethod;
+    }
+
     public render() {
         return (
-            <FontIcon color={this.color()} text={this.props.httpMethod} />
+            <FontIcon color={this.color()} text={this.method} />
         );
     }
 
