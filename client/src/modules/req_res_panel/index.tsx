@@ -3,9 +3,9 @@ import { connect, Dispatch } from 'react-redux';
 import { Tabs } from 'antd';
 import { DtoResRecord } from '../../../../api/interfaces/dto_res';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
-import { RecordCategory } from "../../../../api/common/record_category";
-import { StringUtil } from "../../../../api/utils/string_util";
+import { RecordCategory } from "../../common/record_category";
 import { activeTabAction } from "./action";
+import { StringUtil } from "../../utils/string_util";
 
 interface ReqResPanelStateProps {
     activeKey: string;
@@ -27,11 +27,12 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         return {
             id: StringUtil.generateUID(),
             category: RecordCategory.record,
+            name: 'new request',
             collectionId: ''
         };
     }
 
-    constructor(props: any) {
+    constructor(props: ReqResPanelProps) {
         super(props);
         this.state = {
             displayRecords: []
@@ -55,10 +56,12 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 
     remove = (key) => {
+        let activeKey = this.props.activeKey;
         let index = this.state.displayRecords.findIndex(r => r.id = key);
         const displayRecords = this.state.displayRecords.slice(index, 1);
+
         this.setState({ displayRecords: displayRecords });
-        let activeKey = this.props.activeKey;
+
         if (activeKey === key) {
             index = index < displayRecords.length ? index : index - 1;
             if (index > -1) {
@@ -78,7 +81,9 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                 onChange={this.onChange}
                 onEdit={this.onEdit}
             >
-
+                {
+                    this.state.displayRecords.map(r => <Tabs.TabPane key={r.id} tab={r.name} closable={true}>121</Tabs.TabPane>)
+                }
             </Tabs>
 
         );

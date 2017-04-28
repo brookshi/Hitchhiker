@@ -4,6 +4,7 @@ import CollectionList from './modules/collection_tree';
 import { Layout, Menu, Icon } from 'antd';
 import { ClickParam } from 'antd/lib/menu';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import ReqResPanel from './modules/req_res_panel';
 import './style/perfect-scrollbar.min.css';
 
 const { Header, Content, Sider } = Layout;
@@ -78,7 +79,7 @@ class App extends React.Component<{}, any> {
               </PerfectScrollbar>
             </Sider>
             <Content>
-
+              <ReqResPanel />
             </Content>
           </Layout>
         </Layout>

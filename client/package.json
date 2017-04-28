@@ -24,7 +24,8 @@
     "redux": "^3.6.0",
     "redux-observable": "^0.14.1",
     "reflect-metadata": "^0.1.10",
-    "rxjs": "^5.3.0"
+    "rxjs": "^5.3.0",
+    "uuid": "^3.0.1"
   },
   "devDependencies": {
     "app-root-path": "^2.0.1",
