@@ -7,21 +7,21 @@ export interface DtoRecord {
 
     collectionId: string;
 
-    pid: string;
+    pid?: string;
 
     category: RecordCategory;
 
-    name: string;
+    name?: string;
 
-    url: string;
+    url?: string;
 
-    method: string;
+    method?: string;
 
-    headers: DtoHeader[] | string;
+    headers?: DtoHeader[] | string;
 
-    body: string;
+    body?: string;
 
-    test: string;
+    test?: string;
 
-    sort: number;
+    sort?: number;
 }

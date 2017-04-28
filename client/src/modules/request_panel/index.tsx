@@ -1,7 +1,10 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
+import { DtoResRecord } from "../../../../api/interfaces/dto_res";
 
-interface RequestPanelStateProps { }
+interface RequestPanelStateProps {
+    record: DtoResRecord;
+}
 
 interface RequestPanelDispatchProps { }
 

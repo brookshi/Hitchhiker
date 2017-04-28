@@ -1,5 +1,5 @@
 import React from 'react';
-import HttpMethodIcon from '../font_icon/http_method_icon';
+import HttpMethodIcon from '../../components/font_icon/http_method_icon';
 import './style/index.less';
 
 interface RecordItemProps {

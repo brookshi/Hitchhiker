@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon, Menu } from 'antd';
-import ItemWithMenu from './menu_item';
+import ItemWithMenu from '../../components/item_with_menu';
 import './style/index.less';
 
 interface CollectionItemProps {
@@ -8,7 +8,6 @@ interface CollectionItemProps {
 }
 
 interface CollectionItemState { }
-
 
 class CollectionItem extends React.Component<CollectionItemProps, CollectionItemState> {
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Icon, Dropdown } from 'antd';
+import './style/index.less';
 
 interface ItemWithMenuProps {
     name: string;
@@ -26,7 +27,7 @@ class ItemWithMenu extends React.Component<ItemWithMenuProps, ItemWithMenuState>
 
     public render() {
         const { icon, name, menu } = this.props;
-        const className = 'c-icon item-with-menu-icon' + (this.state.isVisible ? ' item-with-menu-icon-visible' : '');
+        const className = 'item-with-menu-icon' + (this.state.isVisible ? ' item-with-menu-icon-visible' : '');
 
         return (
             <span className="item-with-menu">

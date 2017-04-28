@@ -1,6 +1,6 @@
 import * as React from 'react';
 import './style/App.less';
-import CollectionList from './components/collection_tree/index';
+import CollectionList from './modules/collection_tree';
 import { Layout, Menu, Icon } from 'antd';
 import { ClickParam } from 'antd/lib/menu';
 import PerfectScrollbar from 'react-perfect-scrollbar';

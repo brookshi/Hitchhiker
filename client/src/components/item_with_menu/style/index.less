@@ -1,0 +1,22 @@
+.item-with-menu {
+    width: 100%;
+    display: inline-block;
+    .item-with-menu-icon-visible,
+    &:hover .item-with-menu-icon {
+        display: inline;
+        position: absolute;
+        top: calc(50% - 12px);
+        right: 24px;
+        font-size: 18px;
+        margin-left: 16px;
+        vertical-align: text-bottom;
+    }
+}
+
+.item-with-menu-icon {
+    display: none;
+    font-weight: bold;
+    &:hover {
+        background: rgba(89, 89, 89, 0.1);
+    }
+}
