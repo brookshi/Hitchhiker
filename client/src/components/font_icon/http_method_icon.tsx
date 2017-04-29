@@ -1,7 +1,7 @@
 import React from 'react';
 import FontIcon from './font_icon';
+import { HttpMethodType } from "../../common/http_method";
 
-export type HttpMethodType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | string;
 
 interface HttpMethodIconProps {
     httpMethod: HttpMethodType;
