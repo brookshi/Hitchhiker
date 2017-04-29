@@ -3,17 +3,16 @@ import { connect, Dispatch } from 'react-redux';
 import { Tabs } from 'antd';
 import { DtoResRecord } from '../../../../api/interfaces/dto_res';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
-import { RecordCategory } from "../../common/record_category";
 import { activeTabAction } from "./action";
-import { StringUtil } from "../../utils/string_util";
 import './style/index.less';
+import { getDefaultRecord, State } from "../../state";
 
 interface ReqResPanelStateProps {
-    activeKey: string;
+    activeRecord: DtoRecord | DtoResRecord;
 }
 
 interface ReqResPanelDispatchProps {
-    activeTab(key: string);
+    activeTab(activeRecord: DtoRecord | DtoResRecord);
 }
 
 type ReqResPanelProps = ReqResPanelStateProps & ReqResPanelDispatchProps;
@@ -23,19 +22,12 @@ interface ReqResPanelState {
 }
 
 class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
-    static get defaultRecord(): DtoRecord {
-        return {
-            id: StringUtil.generateUID(),
-            category: RecordCategory.record,
-            name: 'new request',
-            collectionId: ''
-        };
-    }
+
 
     constructor(props: ReqResPanelProps) {
         super(props);
         this.state = {
-            displayRecords: []
+            displayRecords: [this.props.activeRecord]
         };
     }
 
@@ -48,36 +40,43 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 
     add = () => {
-        const defaultRecord = ReqResPanel.defaultRecord;
+        const defaultRecord = getDefaultRecord();
         this.setState({
             displayRecords: [...this.state.displayRecords, defaultRecord]
         });
-        this.props.activeTab(defaultRecord.id);
+        this.props.activeTab(defaultRecord);
+    }
+
+    addActiveRecord = (record) => {
+        const isExist = !!this.state.displayRecords.find(r => r.id === record.id);
+        if (!isExist) {
+            this.setState({
+                displayRecords: [...this.state.displayRecords, record]
+            });
+        }
     }
 
     remove = (key) => {
-        let activeKey = this.props.activeKey;
-        let index = this.state.displayRecords.findIndex(r => r.id = key);
-        const displayRecords = this.state.displayRecords.slice(index, 1);
+        let records = this.state.displayRecords;
+        let activeKey = this.props.activeRecord.id;
+        let index = records.findIndex(r => r.id = key);
+        records.splice(index, 1);
 
-        this.setState({ displayRecords: displayRecords });
+        this.setState({ displayRecords: records });
 
         if (activeKey === key) {
-            index = index < displayRecords.length ? index : index - 1;
-            if (index > -1) {
-                activeKey = displayRecords[index].id;
-                this.props.activeTab(activeKey);
-            }
+            index = index === 0 ? index : index - 1;
+            this.props.activeTab(records[index]);
         }
     }
 
     public render() {
-        const { activeKey } = this.props;
-
+        const { activeRecord } = this.props;
+        this.addActiveRecord(activeRecord);
         return (
             <Tabs
                 className="request-tab"
-                activeKey={activeKey}
+                activeKey={activeRecord.id}
                 type="editable-card"
                 onChange={this.onChange}
                 onEdit={this.onEdit}
@@ -91,15 +90,15 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 }
 
-const mapStateToProps = (state: any): ReqResPanelStateProps => {
+const mapStateToProps = (state: State): ReqResPanelStateProps => {
     return {
-        activeKey: state.activeKey
+        activeRecord: state.activeRecord
     };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): ReqResPanelDispatchProps => {
     return {
-        activeTab: (key: string) => dispatch(activeTabAction(key))
+        activeTab: (activeRecord: DtoResRecord | DtoRecord) => dispatch(activeTabAction(activeRecord))
     };
 };
 

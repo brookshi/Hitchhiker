@@ -78,7 +78,7 @@ class App extends React.Component<{}, any> {
                 <CollectionList />
               </PerfectScrollbar>
             </Sider>
-            <Content>
+            <Content style={{ 'margin-top': 4 }}>
               <ReqResPanel />
             </Content>
           </Layout>

@@ -1,12 +1,14 @@
 import { combineEpics } from 'redux-observable';
-import { fetchCollectionEpic } from '../actions/collections';
-import { collections } from './collections';
+import reqResPanel from '../modules/req_res_panel/reducer';
 import { combineReducers } from 'redux';
+import { fetchCollectionEpic } from '../modules/collection_tree/action';
+import { collections } from '../modules/collection_tree/reducer';
 
 export const rootEpic = combineEpics(
     fetchCollectionEpic
 );
 
 export const rootReducer = combineReducers({
-    collections: collections
-})
+    collectionsState: collections,
+    activeRecord: reqResPanel
+});

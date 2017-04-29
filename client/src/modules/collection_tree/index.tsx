@@ -2,22 +2,27 @@ import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { Menu } from 'antd';
 import { DtoResCollection, DtoResRecord } from '../../../../api/interfaces/dto_res';
-import { fetchCollection } from '../../actions/collections';
+import { fetchCollection } from './action';
 import { State } from '../../state';
 import RecordFolder from './record_folder';
 import RecordItem from './record_item';
 import CollectionItem from './collection_item';
 import './style/index.less';
+import { activeTabAction } from '../req_res_panel/action';
+import { DtoRecord } from '../../../../api/interfaces/dto_record';
+import { SelectParam } from 'antd/lib/menu';
 
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
 
 interface CollectionListStateProps {
     collections: DtoResCollection[];
+    activeKey: string;
 }
 
 interface CollectionListDispatchProps {
     refresh: Function;
+    activeRecord: (record: DtoRecord | DtoResRecord) => void;
 }
 
 type CollectionListProps = CollectionListStateProps & CollectionListDispatchProps;
@@ -45,8 +50,12 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         this.setState({ openKeys: openKeys });
     }
 
+    onSelectChanged = (param: SelectParam) => {
+        this.props.activeRecord(param.item.props.data);
+    }
+
     render() {
-        const { collections } = this.props;
+        const { collections, activeKey } = this.props;
         const recordStyle = { height: 30, 'line-height': 30 };
 
         const loopRecords = (data: DtoResRecord[], inFolder: boolean = false) => data.map(r => {
@@ -59,7 +68,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                 );
             }
             return (
-                <MenuItem key={r.id} style={recordStyle}>
+                <MenuItem key={r.id} style={recordStyle} data={r}>
                     {<RecordItem name={r.name} url={r.url} method={r.method} inFolder={inFolder} />}
                 </MenuItem>
             );
@@ -72,6 +81,8 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                 onOpenChange={this.onOpenChanged}
                 mode="inline"
                 inlineIndent={0}
+                selectedKeys={[activeKey]}
+                onSelect={this.onSelectChanged}
             >
                 {
                     collections.map(c => {
@@ -88,14 +99,13 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
 }
 
 const mapStateToProps = (state: State): CollectionListStateProps => {
-    return {
-        collections: state.collections
-    };
+    return state.collectionsState;
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps => {
     return {
-        refresh: () => dispatch(fetchCollection())
+        refresh: () => dispatch(fetchCollection()),
+        activeRecord: (key) => dispatch(activeTabAction(key))
     };
 };
 

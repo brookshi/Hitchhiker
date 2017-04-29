@@ -1,9 +1,11 @@
+import { DtoResRecord } from '../../../../api/interfaces/dto_res';
+import { DtoRecord } from '../../../../api/interfaces/dto_record';
 
-export const activeTabType = 'active_tab_type';
+export const ActiveTabType = 'active_tab_type';
 
-export const activeTabAction = (key: string) => {
+export const activeTabAction = (activeRecord: DtoResRecord | DtoRecord) => {
     return {
-        type: activeTabType,
-        key: key
+        type: ActiveTabType,
+        activeRecord: activeRecord
     }
 }
