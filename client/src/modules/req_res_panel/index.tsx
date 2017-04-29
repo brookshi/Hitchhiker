@@ -32,7 +32,10 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 
     onChange = (key) => {
-        this.props.activeTab(key);
+        const activeRecord = this.state.displayRecords.find(r => r.id === key);
+        if (activeRecord) {
+            this.props.activeTab(activeRecord);
+        }
     }
 
     onEdit = (key, action) => {
@@ -59,13 +62,13 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     remove = (key) => {
         let records = this.state.displayRecords;
         let activeKey = this.props.activeRecord.id;
-        let index = records.findIndex(r => r.id = key);
+        let index = records.findIndex(r => r.id === key);
         records.splice(index, 1);
 
         this.setState({ displayRecords: records });
 
         if (activeKey === key) {
-            index = index === 0 ? index : index - 1;
+            index = (index === records.length - 1) ? index : index - 1;
             this.props.activeTab(records[index]);
         }
     }
@@ -80,6 +83,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                 type="editable-card"
                 onChange={this.onChange}
                 onEdit={this.onEdit}
+                animated={false}
             >
                 {
                     this.state.displayRecords.map(r => <Tabs.TabPane key={r.id} tab={r.name} closable={true}>121</Tabs.TabPane>)
