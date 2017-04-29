@@ -67,7 +67,7 @@ class App extends React.Component<{}, any> {
               </Menu.Item>
             </Menu>
           </Sider>
-          <Layout>
+          <Layout style={{ background: 'white' }}>
             <Sider
               style={{ 'min-width': this.state.collapsed ? 0 : 300, background: 'white' }}
               collapsible

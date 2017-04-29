@@ -6,6 +6,7 @@ import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { RecordCategory } from "../../common/record_category";
 import { activeTabAction } from "./action";
 import { StringUtil } from "../../utils/string_util";
+import './style/index.less';
 
 interface ReqResPanelStateProps {
     activeKey: string;
@@ -22,7 +23,6 @@ interface ReqResPanelState {
 }
 
 class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
-
     static get defaultRecord(): DtoRecord {
         return {
             id: StringUtil.generateUID(),
@@ -76,6 +76,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
         return (
             <Tabs
+                className="request-tab"
                 activeKey={activeKey}
                 type="editable-card"
                 onChange={this.onChange}
