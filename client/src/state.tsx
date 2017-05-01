@@ -3,9 +3,9 @@ import { DtoRecord } from '../../api/interfaces/dto_record';
 import { StringUtil } from './utils/string_util';
 import { RecordCategory } from './common/record_category';
 
-export function getDefaultRecord(): DtoRecord {
+export function getDefaultRecord(isInit: boolean = false): DtoRecord {
     return {
-        id: StringUtil.generateUID(),
+        id: isInit ? '@init' : StringUtil.generateUID(),
         category: RecordCategory.record,
         name: 'new request',
         collectionId: ''
@@ -27,5 +27,5 @@ export const initialState: State = {
         collections: [],
         activeKey: ''
     },
-    activeRecord: getDefaultRecord()
+    activeRecord: getDefaultRecord(true)
 };

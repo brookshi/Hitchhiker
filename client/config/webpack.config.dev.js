@@ -85,13 +85,11 @@ module.exports = {
   module: {
     // First, run the linter.
     // It's important to do this before Babel processes the JS.
-    preLoaders: [
-      {
-        test: /\.(ts|tsx)$/,
-        loader: 'tslint',
-        include: paths.appSrc,
-      }
-    ],
+    preLoaders: [{
+      test: /\.(ts|tsx)$/,
+      loader: 'tslint',
+      include: paths.appSrc,
+    }],
     loaders: [
       // ** ADDING/UPDATING LOADERS **
       // The "url" loader handles all assets unless explicitly excluded.
@@ -140,7 +138,7 @@ module.exports = {
       },
       {
         test: /\.less$/,
-        loader: 'style!css!less'
+        loader: 'style!css!less?strictMath=true'
       },
       // JSON is not enabled by default in Webpack but both Node and Browserify
       // allow it implicitly so we also enable it.

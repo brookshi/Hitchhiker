@@ -6,6 +6,7 @@ import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { activeTabAction } from "./action";
 import './style/index.less';
 import { getDefaultRecord, State } from "../../state";
+import RequestPanel from './request_panel';
 
 interface ReqResPanelStateProps {
     activeRecord: DtoRecord | DtoResRecord;
@@ -51,8 +52,8 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 
     addActiveRecord = (record) => {
-        const isExist = !!this.state.displayRecords.find(r => r.id === record.id);
-        if (!isExist) {
+        const isNotExist = !this.state.displayRecords.find(r => r.id === record.id);
+        if (isNotExist) {
             this.setState({
                 displayRecords: [...this.state.displayRecords, record]
             });
@@ -73,9 +74,13 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         }
     }
 
+    componentDidUpdate() {
+        this.addActiveRecord(this.props.activeRecord);
+    }
+
     public render() {
         const { activeRecord } = this.props;
-        this.addActiveRecord(activeRecord);
+
         return (
             <Tabs
                 className="request-tab"
@@ -86,7 +91,11 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                 animated={false}
             >
                 {
-                    this.state.displayRecords.map(r => <Tabs.TabPane key={r.id} tab={r.name} closable={true}>121</Tabs.TabPane>)
+                    this.state.displayRecords.map(r =>
+                        <Tabs.TabPane key={r.id} tab={r.name} closable={true}>
+                            <RequestPanel activeRecord={r} />
+                        </Tabs.TabPane>
+                    )
                 }
             </Tabs>
 

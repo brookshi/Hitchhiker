@@ -8,6 +8,6 @@ export default function reqResPanel(state: {} = {}, action: any): DtoRecord | Dt
         case ActiveTabType:
             return action.activeRecord;
         default:
-            return getDefaultRecord();
+            return getDefaultRecord(true);
     }
 }
