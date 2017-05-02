@@ -1,10 +1,10 @@
 export interface DtoHeader {
 
-    key: string;
+    key?: string;
 
-    value: string;
+    value?: string;
 
     isActive: boolean;
 
-    sort: number;
+    sort?: number;
 }

@@ -3,15 +3,17 @@ import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { DtoResRecord } from '../../../../api/interfaces/dto_res';
 import { Form, Select, Input, Dropdown, Menu, Button, Tabs } from 'antd';
 import { HttpMethod } from '../../common/http_method';
-import brace from 'brace';
 import AceEditor from 'react-ace';
+import KeyValueItem from '../../components/key_value';
 
 import 'brace/mode/javascript';
+import 'brace/mode/json';
 import 'brace/theme/xcode';
 import 'brace/ext/language_tools';
 import 'brace/snippets/javascript';
 
 import './style/index.less';
+import { DtoHeader } from "../../../../api/interfaces/dto_header";
 
 const FItem = Form.Item;
 const Option = Select.Option;
@@ -24,7 +26,7 @@ interface RequestPanelStateProps {
     activeRecord: DtoRecord | DtoResRecord;
     form?: any;
     sendRequest?: (record: DtoRecord) => void;
-    changeBodyType?:(bodyType: string) => void;
+    changeBodyType?: (bodyType: string) => void;
 }
 
 interface RequestPanelState {
@@ -47,8 +49,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
 
     constructor(props: RequestPanelStateProps) {
         super(props);
-        this.state = {};
-        brace.acequire("ace/ext/language_tools");
+        this.state = { bodyType: 'json' };
     }
 
     onNameChanged = (eventHandler) => {
@@ -108,12 +109,16 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                     </FItem>
                 </Form>
                 <div>
-                    <Tabs className="req-tabs" defaultActiveKey="headers">
+                    <Tabs
+                        className="req-tabs"
+                        defaultActiveKey="headers"
+                        animated={false}>
                         <TabPane tab="Headers" key="headers">
-
+                            <KeyValueItem headers={this.props.activeRecord.headers as DtoHeader[]} />
                         </TabPane>
                         <TabPane tab="Body" key="body">
                             <AceEditor
+                                className="body-editor"
                                 mode={this.state.bodyType}
                                 theme="xcode"
                                 highlightActiveLine={true}
@@ -122,10 +127,12 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                                 tabSize={4}
                                 fontSize={14}
                                 showGutter={true}
+                                showPrintMargin={false}
                             />
                         </TabPane>
                         <TabPane tab="Test" key="test">
                             <AceEditor
+                                className="body-editor"
                                 mode="javascript"
                                 theme="xcode"
                                 enableBasicAutocompletion={true}
@@ -136,7 +143,8 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                                 tabSize={4}
                                 fontSize={14}
                                 showGutter={true}
-                                enableSnippets={true}
+                                showPrintMargin={false}
+                                setOptions={{ enableSnippets: true }}
                             />
                         </TabPane>
                     </Tabs>
