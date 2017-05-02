@@ -1,14 +1,10 @@
 
 import React from 'react';
-import {
-    SortableContainer,
-    SortableElement,
-    SortableHandle,
-    arrayMove,
-} from 'react-sortable-hoc';
+import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
 import { DtoResHeader } from "../../../../api/interfaces/dto_res";
 import { DtoHeader } from "../../../../api/interfaces/dto_header";
-import { Input, Checkbox } from "antd";
+import { Input, Checkbox, Icon } from "antd";
+import './style/index.less';
 
 type Header = DtoHeader | DtoResHeader;
 
@@ -25,15 +21,19 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
     private DragHandle = SortableHandle(() => <span>☰</span>);
 
     private SortableItem = SortableElement(({ header, hIndex }) => {
+        const visibility = { visibility: (hIndex === this.state.headers.length - 1 ? 'hidden' : 'visible') };
         return (
-            <li>
-                <this.DragHandle />
-                <Checkbox key={`cb_${hIndex}`} checked={header.isActive} />
-                <Input key={`key_${hIndex}`} value={header.key} placeholder="key" />
-                <Input id={`value_${hIndex}`} key={`value_${hIndex}`} onChange={this.onValueChange} value={header.value} placeholder="value" />
+            <li className="keyvalue-item">
+                <div style={visibility}>
+                    <this.DragHandle />
+                    <Checkbox key={`cb_${hIndex}`} defaultChecked={header.isActive} />
+                </div>
+                <Input name={`key_${hIndex}`} key={`key_${hIndex}`} onChange={this.onValueChange} placeholder="key">{header.key}</Input>
+                <Input name={`value_${hIndex}`} key={`value_${hIndex}`} onChange={this.onValueChange} placeholder="value" >{header.value}</Input>
+                <Icon style={visibility} type="close" onClick={(event) => this.onDelItem(hIndex)} />
             </li>
         );
-    })
+    });
 
     private SortableList = SortableContainer(({ headers }) => {
         return (
@@ -45,7 +45,7 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
         );
     });
 
-    constructor(props) {
+    constructor(props: KeyValueComponentProps) {
         super(props);
         this.state = {
             headers: [
@@ -63,25 +63,19 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
         });
     }
 
-    onKeyChange = (eventHandler) => {
+    onValueChange = (eventHandler) => {
         const { headers } = this.state;
-        if ((eventHandler.target.id as string).endsWith(`_${headers.length - 1}`)) {
-
+        if ((eventHandler.target.name as string).endsWith(`_${headers.length - 1}`)) {
             if ((eventHandler.target.value as string).trim() !== '') {
                 headers.push({ isActive: true });
                 this.setState({ ...this.state, headers });
             }
         }
     }
-    onValueChange = (eventHandler) => {
-        const { headers } = this.state;
-        if ((eventHandler.target.id as string).endsWith(`_${headers.length - 1}`)) {
 
-            if ((eventHandler.target.value as string).trim() !== '') {
-                headers.push({ isActive: true });
-                this.setState({ ...this.state, headers });
-            }
-        }
+    onDelItem = (index: number) => {
+        const { headers } = this.state;
+        this.setState({ ...this.state, headers: headers.splice(index, 1) });
     }
 
     public render() {
