@@ -3,14 +3,8 @@ import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { DtoResRecord } from '../../../../api/interfaces/dto_res';
 import { Form, Select, Input, Dropdown, Menu, Button, Tabs } from 'antd';
 import { HttpMethod } from '../../common/http_method';
-import AceEditor from 'react-ace';
 import KeyValueItem from '../../components/key_value';
-
-import 'brace/mode/javascript';
-import 'brace/mode/json';
-import 'brace/theme/xcode';
-import 'brace/ext/language_tools';
-import 'brace/snippets/javascript';
+import Editor from '../../components/editor';
 
 import './style/index.less';
 import { DtoHeader } from "../../../../api/interfaces/dto_header";
@@ -117,35 +111,10 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                             <KeyValueItem headers={this.props.activeRecord.headers as DtoHeader[]} />
                         </TabPane>
                         <TabPane tab="Body" key="body">
-                            <AceEditor
-                                className="body-editor"
-                                mode={this.state.bodyType}
-                                theme="xcode"
-                                highlightActiveLine={true}
-                                height="300px"
-                                width="100%"
-                                tabSize={4}
-                                fontSize={14}
-                                showGutter={true}
-                                showPrintMargin={false}
-                            />
+                            <Editor type={this.state.bodyType} />
                         </TabPane>
                         <TabPane tab="Test" key="test">
-                            <AceEditor
-                                className="body-editor"
-                                mode="javascript"
-                                theme="xcode"
-                                enableBasicAutocompletion={true}
-                                enableLiveAutocompletion={true}
-                                highlightActiveLine={true}
-                                height="300px"
-                                width="100%"
-                                tabSize={4}
-                                fontSize={14}
-                                showGutter={true}
-                                showPrintMargin={false}
-                                setOptions={{ enableSnippets: true }}
-                            />
+                            <Editor type="javascript" />
                         </TabPane>
                     </Tabs>
                 </div>
