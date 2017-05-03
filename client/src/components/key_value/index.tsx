@@ -29,7 +29,7 @@ interface SortableElementParam {
 
 class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValueComponentState> {
 
-    private DragHandle = SortableHandle(() => <span>☰</span>);
+    private DragHandle = SortableHandle(() => <span className="keyvalue-dragicon">☰</span>);
 
     private SortableItem = SortableElement(({ hIndex, header }: SortableElementParam) => {
         const visibility = { visibility: (hIndex === this.state.headers.length - 1 ? 'hidden' : 'visible') };

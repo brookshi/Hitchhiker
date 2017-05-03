@@ -69,6 +69,7 @@ class App extends React.Component<{}, any> {
           </Sider>
           <Layout style={{ background: 'white' }}>
             <Sider
+              className="collection-sider"
               style={{ 'min-width': this.state.collapsed ? 0 : 300, background: 'white' }}
               collapsible
               collapsedWidth="0.1"

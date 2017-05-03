@@ -1,13 +1,10 @@
+@import '../../../style/app.less';
+
 .keyvalue-item {
     list-style:none;
     margin-bottom:4px;
     >div {
         display: inline-block;
-        >span {
-            margin-right: 4px;
-            font-size: 14px;
-            cursor: move;
-        }
         >label {
             margin-right: 4px;
             >span{
@@ -26,5 +23,14 @@
         &:hover{
             color: red;
         }
+    }
+}
+
+.keyvalue-dragicon{
+    margin-right: 4px;
+    font-size: 14px;
+    cursor: move;
+    &:hover{
+        color: @primary-color;
     }
 }

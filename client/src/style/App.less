@@ -1,39 +1,43 @@
-
-html,body{
-    margin:0px;
+@primary-color: #108ee9;
+@panel-color: #fafafa;
+html,
+body {
+  margin: 0px;
+  font-family: "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", Helvetica, Arial, "Helvetica Neue For Number", sans-serif;
 }
 
-#root{
+#root {
   height: 100%
 }
 
-.layout{
-   height: 100%
+.layout {
+  height: 100%
 }
 
-.sider-menu{
-    flex: auto;
-    width: 50px;
-    margin-top: 10px;
-    i{
-      font-size: 22px;
-      vertical-align: text-bottom;
-    }
-    li[role="menuitem"]{
-      height: 50px;
-      line-height: 50px;
-      padding: 0px 13px;
-    }
+.sider-menu {
+  flex: auto;
+  width: 50px;
+  margin-top: 10px;
+  i {
+    font-size: 22px;
+    vertical-align: text-bottom;
+  }
+  li[role="menuitem"] {
+    height: 50px;
+    line-height: 50px;
+    padding: 0px 13px;
+  }
 }
 
-.scrollbar-container{
+.scrollbar-container {
   position: relative;
   height: 100%;
-  > div{
+  >div {
     z-index: 20;
   }
 }
 
-body{
-  font-family: "Microsoft YaHei",  -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", Helvetica, Arial,"Helvetica Neue For Number", sans-serif;
+.collection-sider {
+  border-right: #cbcbcb 1px solid;
+  box-shadow: 1px 2px 7px 0px #cbcbcb;
 }

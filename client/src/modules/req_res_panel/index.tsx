@@ -7,6 +7,7 @@ import { activeTabAction } from "./action";
 import './style/index.less';
 import { getDefaultRecord, State } from "../../state";
 import RequestPanel from './request_panel';
+import ResPanel from './response_panel';
 
 interface ReqResPanelStateProps {
     activeRecord: DtoRecord | DtoResRecord;
@@ -93,7 +94,10 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                 {
                     this.state.displayRecords.map(r =>
                         <Tabs.TabPane key={r.id} tab={r.name} closable={true}>
-                            <RequestPanel activeRecord={r} />
+                            <div className="req-res-panel">
+                                <RequestPanel activeRecord={r} />
+                                <ResPanel />
+                            </div>
                         </Tabs.TabPane>
                     )
                 }

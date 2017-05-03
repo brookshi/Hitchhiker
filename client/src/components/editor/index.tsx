@@ -11,13 +11,16 @@ import './style/index.less';
 
 interface EditorProps {
     type?: 'javascript' | 'xml' | 'json' | '';
+    value?: string;
+
+    readOnly?: boolean;
 }
 
 interface EditorState { }
 
 class Editor extends React.Component<EditorProps, EditorState> {
     public render() {
-        const { type } = this.props;
+        const { type, value, readOnly } = this.props;
         let props = {
             className: "req-editor",
             mode: type,
@@ -27,7 +30,9 @@ class Editor extends React.Component<EditorProps, EditorState> {
             width: "100%",
             fontSize: 12,
             showGutter: true,
-            showPrintMargin: false
+            showPrintMargin: false,
+            value: value,
+            readOnly: readOnly
         };
         if (type === 'javascript') {
             props = {
