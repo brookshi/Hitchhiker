@@ -1,12 +1,18 @@
 
 import React from 'react';
 import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
-import { DtoResHeader } from "../../../../api/interfaces/dto_res";
+//import { DtoResHeader } from "../../../../api/interfaces/dto_res";
 import { DtoHeader } from "../../../../api/interfaces/dto_header";
 import { Input, Checkbox, Icon } from "antd";
 import './style/index.less';
+import { StringUtil } from "../../utils/string_util";
 
-type Header = DtoHeader | DtoResHeader;
+type Header = DtoHeader;
+
+const generateDefaultHeader: () => Header = () => ({
+    id: StringUtil.generateUID(),
+    isActive: true
+});
 
 interface KeyValueComponentProps {
     headers?: Array<Header>;
@@ -16,20 +22,25 @@ interface KeyValueComponentState {
     headers: Array<Header>;
 }
 
+interface SortableElementParam {
+    header: Header;
+    hIndex: number;
+}
+
 class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValueComponentState> {
 
     private DragHandle = SortableHandle(() => <span>☰</span>);
 
-    private SortableItem = SortableElement(({ header, hIndex }) => {
+    private SortableItem = SortableElement(({ hIndex, header }: SortableElementParam) => {
         const visibility = { visibility: (hIndex === this.state.headers.length - 1 ? 'hidden' : 'visible') };
         return (
             <li className="keyvalue-item">
                 <div style={visibility}>
                     <this.DragHandle />
-                    <Checkbox key={`cb_${hIndex}`} defaultChecked={header.isActive} />
+                    <Checkbox key={`cb${header.id}`} defaultChecked={header.isActive} />
                 </div>
-                <Input name={`key_${hIndex}`} key={`key_${hIndex}`} onChange={this.onValueChange} placeholder="key">{header.key}</Input>
-                <Input name={`value_${hIndex}`} key={`value_${hIndex}`} onChange={this.onValueChange} placeholder="value" >{header.value}</Input>
+                <Input key={`key${header.id}`} onChange={(e) => this.onValueChange('key', hIndex, e)} placeholder="key" value={header.key} />
+                <Input key={`value${header.id}`} onChange={(e) => this.onValueChange('value', hIndex, e)} placeholder="value" value={header.value} />
                 <Icon style={visibility} type="close" onClick={(event) => this.onDelItem(hIndex)} />
             </li>
         );
@@ -49,33 +60,37 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
         super(props);
         this.state = {
             headers: [
-                { isActive: true }
+                generateDefaultHeader()
             ],
         };
     }
 
-    onSortEnd = (oldIndex, newIndex) => {
-        const { headers } = this.state;
-
+    onSortEnd = ({ oldIndex, newIndex }) => {
+        let { headers } = this.state;
+        headers = arrayMove(headers, oldIndex, newIndex);
         this.setState({
             ...this.state,
-            headers: arrayMove(headers, oldIndex, newIndex),
+            headers
         });
     }
 
-    onValueChange = (eventHandler) => {
+    onValueChange = (type: 'key' | 'value', index: number, event) => {
         const { headers } = this.state;
-        if ((eventHandler.target.name as string).endsWith(`_${headers.length - 1}`)) {
-            if ((eventHandler.target.value as string).trim() !== '') {
-                headers.push({ isActive: true });
-                this.setState({ ...this.state, headers });
-            }
+        if (type === 'key') {
+            headers[index].key = event.target.value;
+        } else {
+            headers[index].value = event.target.value;
         }
+        if (index === headers.length - 1 && event.target.value !== '') {
+            headers.push(generateDefaultHeader());
+        }
+        this.setState({ ...this.state, headers });
     }
 
     onDelItem = (index: number) => {
         const { headers } = this.state;
-        this.setState({ ...this.state, headers: headers.splice(index, 1) });
+        headers.splice(index, 1);
+        this.setState({ ...this.state, headers });
     }
 
     public render() {

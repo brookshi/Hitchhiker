@@ -5,14 +5,26 @@
         display: inline-block;
         >span {
             margin-right: 4px;
+            font-size: 14px;
+            cursor: move;
         }
         >label {
             margin-right: 4px;
+            >span{
+                margin-bottom: 1px;
+            }
         }
     }
     >input {
         width: calc(50% - 30px);
         margin-right: 4px;
         border-radius: 0px;
+    }
+    >i{
+        font-weight: bold;
+        cursor: pointer;
+        &:hover{
+            color: red;
+        }
     }
 }
