@@ -54,14 +54,25 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         })
     }
 
-
     onNameChanged = (eventHandler) => {
-        if ((eventHandler.target.value as string).trim() === '') {
-            this.setState({ ...this.state, nameValidateStatus: 'warning' });
+    }
+
+    onInputChanged = (event, name: string) => {
+        const { record } = this.state;
+        const value = event.target.value;
+        record[name] = value;
+        let state = { ...this.state, record };
+
+        if (name === 'name') {
+            if ((value as string).trim() === '') {
+                state = { ...this.state, nameValidateStatus: 'warning' };
+            }
+            else if (this.state.nameValidateStatus) {
+                state = { ...this.state, nameValidateStatus: undefined };
+            }
         }
-        else if (this.state.nameValidateStatus) {
-            this.setState({ ...this.state, nameValidateStatus: undefined });
-        }
+
+        this.setState(state);
     }
 
     handleMenuClick = (e) => {
@@ -99,7 +110,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                     <Input
                         placeholder="please enter name for this request"
                         spellCheck={false}
-                        onChange={this.onNameChanged}
+                        onChange={(e) => this.onInputChanged(e, 'name')}
                         value={record.name} />
                 </FItem>
                 <Form layout="inline" >
@@ -108,6 +119,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                             placeholder="please enter url of this request"
                             size="large"
                             spellCheck={false}
+                            onChange={(e) => this.onInputChanged(e, 'url')}
                             addonBefore={RequestPanel.methods}
                             value={record.url} />
                     </FItem>

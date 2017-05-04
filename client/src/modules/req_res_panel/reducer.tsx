@@ -6,7 +6,7 @@ import { getDefaultRecord } from "../../state";
 export default function reqResPanel(state: {} = {}, action: any): DtoRecord | DtoResRecord {
     switch (action.type) {
         case ActiveTabType:
-            return action.activeRecord;
+            return { ...action.activeRecord };
         default:
             return getDefaultRecord(true);
     }
