@@ -113,7 +113,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                         onChange={(e) => this.onInputChanged(e, 'name')}
                         value={record.name} />
                 </FItem>
-                <Form layout="inline" >
+                <Form className="url-panel" layout="inline" >
                     <FItem className="req-url" hasFeedback validateStatus={urlValidateStatus}>
                         <Input
                             placeholder="please enter url of this request"

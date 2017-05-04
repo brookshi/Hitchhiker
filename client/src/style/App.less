@@ -1,5 +1,5 @@
-@primary-color: #108ee9;
-@panel-color: #fafafa;
+@import './colors.less';
+
 html,
 body {
   margin: 0px;
@@ -29,6 +29,10 @@ body {
   }
 }
 
+.main-panel{
+  background: @panel-background;
+}
+
 .scrollbar-container {
   position: relative;
   height: 100%;
@@ -38,6 +42,8 @@ body {
 }
 
 .collection-sider {
-  border-right: #cbcbcb 1px solid;
-  box-shadow: 1px 2px 7px 0px #cbcbcb;
+  border-right: @border-color-dark 1px solid;
+  box-shadow: 1px 2px 5px 0px @border-color-dark;
+  z-index: 20;
+  background: @panel-background;
 }

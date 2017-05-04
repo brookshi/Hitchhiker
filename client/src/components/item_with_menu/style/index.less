@@ -1,11 +1,14 @@
+@import '../../../style/colors.less';
+
 .item-with-menu {
     width: 100%;
     display: inline-block;
+    background: @panel-background;
     .item-with-menu-icon-visible,
     &:hover .item-with-menu-icon {
         display: inline;
         position: absolute;
-        top: calc(50% - 12px);
+        top: calc(50% - 8px);
         right: 24px;
         font-size: 18px;
         margin-left: 16px;
