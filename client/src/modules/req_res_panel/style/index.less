@@ -1,5 +1,15 @@
+@import '../../../style/colors.less';
+
 @button-width: 88px;
 @url-height: 36px;
+
+.ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab{
+    background: white;
+}
+
+.ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active{
+    background: @panel-background;
+}
 
 .ant-tabs-nav{
     padding-left: 8px;
@@ -8,6 +18,7 @@
 .req-panel{
     padding: 0px 8px;
     margin-top: -8px;
+    background: @panel-background;
 }
 
 .req-url{
@@ -35,11 +46,11 @@
 
 .req-name{
     input{
-        border-left: 0px;
-        border-top: 0px;
-        border-right: 0px;
+        background: @panel-background;
+        border-width: 0px 0px 1px 0px;
         font-weight: 500;
         font-size: 16px;
+        border-radius: 0px;
     }
 }
 
@@ -54,7 +65,7 @@
 }
 
 .req-save{
-    button{
+    .ant-btn{
         height: @url-height;
         background: #eee;
     }
