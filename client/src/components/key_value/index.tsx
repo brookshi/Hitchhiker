@@ -50,7 +50,7 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
         return (
             <ul>
                 {
-                    headers.map((header, index) => <this.SortableItem key={`item_${index}`} index={index} hIndex={index} header={header} />)
+                    headers.map((header, index) => <this.SortableItem key={`item_${index}`} index={index} hIndex={index} header={header} disabled={index === this.state.headers.length - 1} />)
                 }
             </ul>
         );

@@ -18,9 +18,8 @@ type validateType = 'success' | 'warning' | 'error' | 'validating';
 
 interface RequestPanelStateProps {
     activeRecord: DtoRecord | DtoResRecord;
-    form?: any;
-    sendRequest?: (record: DtoRecord) => void;
-    changeBodyType?: (bodyType: string) => void;
+    sendRequest?: (id: string, record: DtoRecord) => void;
+    cancelRequest?: (id: string) => void;
 }
 
 interface RequestPanelState {
@@ -28,6 +27,8 @@ interface RequestPanelState {
     urlValidateStatus?: validateType;
     isSending?: boolean;
     bodyType?: 'json' | 'xml' | '';
+    headersEditMode?: 'keyvalue' | 'bulk';
+    record: DtoRecord;
 }
 
 class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelState> {
@@ -43,16 +44,35 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
 
     constructor(props: RequestPanelStateProps) {
         super(props);
-        this.state = { bodyType: 'json' };
+        this.state = { bodyType: 'json', record: props.activeRecord as DtoRecord };
+    }
+
+    public componentWillReceiveProps(nextProps: RequestPanelStateProps) {
+        this.setState({
+            ...this.state,
+            record: nextProps.activeRecord as DtoRecord
+        })
     }
 
     onNameChanged = (eventHandler) => {
-        if ((eventHandler.target.value as string).trim() === '') {
-            this.setState({ ...this.state, nameValidateStatus: 'warning' });
+    }
+
+    onInputChanged = (event, name: string) => {
+        const { record } = this.state;
+        const value = event.target.value;
+        record[name] = value;
+        let state = { ...this.state, record };
+
+        if (name === 'name') {
+            if ((value as string).trim() === '') {
+                state = { ...this.state, nameValidateStatus: 'warning' };
+            }
+            else if (this.state.nameValidateStatus) {
+                state = { ...this.state, nameValidateStatus: undefined };
+            }
         }
-        else if (this.state.nameValidateStatus) {
-            this.setState({ ...this.state, nameValidateStatus: undefined });
-        }
+
+        this.setState(state);
     }
 
     handleMenuClick = (e) => {
@@ -70,29 +90,41 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
             </Menu>
         );
 
+        const {
+            nameValidateStatus,
+            urlValidateStatus,
+            isSending,
+            bodyType,
+            //headersEditMode,
+            record
+        } = this.state;
+
         return (
             <Form className="req-panel">
                 <FItem
                     className="req-name"
                     style={{ 'margin-bottom': 8 }}
                     hasFeedback
-                    validateStatus={this.state.nameValidateStatus}
+                    validateStatus={nameValidateStatus}
                 >
                     <Input
                         placeholder="please enter name for this request"
                         spellCheck={false}
-                        onChange={this.onNameChanged} />
+                        onChange={(e) => this.onInputChanged(e, 'name')}
+                        value={record.name} />
                 </FItem>
                 <Form layout="inline" >
-                    <FItem className="req-url" hasFeedback validateStatus={this.state.urlValidateStatus}>
+                    <FItem className="req-url" hasFeedback validateStatus={urlValidateStatus}>
                         <Input
                             placeholder="please enter url of this request"
                             size="large"
                             spellCheck={false}
-                            addonBefore={RequestPanel.methods} />
+                            onChange={(e) => this.onInputChanged(e, 'url')}
+                            addonBefore={RequestPanel.methods}
+                            value={record.url} />
                     </FItem>
                     <FItem className="req-send">
-                        <Button type="primary" icon="rocket" loading={this.state.isSending} onClick={this.sendRequest}>
+                        <Button type="primary" icon="rocket" loading={isSending} onClick={this.sendRequest}>
                             Send
                         </Button>
                     </FItem>
@@ -108,10 +140,10 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                         defaultActiveKey="headers"
                         animated={false}>
                         <TabPane tab="Headers" key="headers">
-                            <KeyValueItem headers={this.props.activeRecord.headers as DtoHeader[]} />
+                            <KeyValueItem headers={record.headers as DtoHeader[]} />
                         </TabPane>
                         <TabPane tab="Body" key="body">
-                            <Editor type={this.state.bodyType} />
+                            <Editor type={bodyType} />
                         </TabPane>
                         <TabPane tab="Test" key="test">
                             <Editor type="javascript" />
