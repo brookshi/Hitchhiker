@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { DtoResRecord } from '../../../../api/interfaces/dto_res';
 import { Form, Select, Input, Dropdown, Menu, Button, Tabs } from 'antd';
@@ -9,6 +9,8 @@ import Editor from '../../components/editor';
 import './style/index.less';
 import { DtoHeader } from "../../../../api/interfaces/dto_header";
 import { SelectValue } from "antd/lib/select";
+import { StringUtil } from "../../utils/string_util";
+import { KeyValuePair } from "../../common/key_value_pair";
 
 const FItem = Form.Item;
 const Option = Select.Option;
@@ -33,6 +35,7 @@ interface RequestPanelState {
 }
 
 class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelState> {
+
 
     constructor(props: RequestPanelStateProps) {
         super(props);
@@ -70,10 +73,28 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         );
     }
 
+    getHeadersCtrl = () => {
+        return this.state.headersEditMode === 'Bulk Edit' ?
+            <Input
+                className="req-header"
+                type="textarea"
+                value={StringUtil.headersToString(this.state.record.headers as KeyValuePair[])} onChange={(e) => this.onHeadersChanged(e)}
+            /> :
+            <KeyValueItem headers={this.state.record.headers as DtoHeader[]} />;
+    }
+
     isBulkEditMode = () => this.state.headersEditMode === 'Bulk Edit';
 
     onHeaderModeChanged = () => {
         this.setState({ ...this.state, headersEditMode: this.state.headersEditMode === 'Bulk Edit' ? 'Key Value Edit' : 'Bulk Edit' });
+    }
+
+    onHeadersChanged = (data: SyntheticEvent<any> | DtoHeader[]) => {
+        let rst: DtoHeader[] = [];
+        if (!(data instanceof Array)) {
+            rst = StringUtil.stringToKeyValues(data.currentTarget.value) as DtoHeader[];
+        }
+        this.setState({ ...this.state, record: { ...this.state.record, headers: rst } });
     }
 
     onMethodChanged = (selectedValue: SelectValue) => {
@@ -109,11 +130,6 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
 
     }
 
-    headersToString = () => {
-        const headers = this.state.record.headers as DtoHeader[];
-        return headers ? headers.map(r => r.key + ': ' + r.value).join('\n') : '';
-    }
-
     public render() {
         const menu = (
             <Menu onClick={this.handleMenuClick}>
@@ -126,7 +142,6 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
             urlValidateStatus,
             isSending,
             bodyType,
-            headersEditMode,
             record
         } = this.state;
 
@@ -172,11 +187,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                         animated={false}
                         tabBarExtraContent={this.getTabExtraFunc()}>
                         <TabPane tab="Headers" key="headers">
-                            {
-                                headersEditMode === 'Bulk Edit' ?
-                                    <Input className="req-header" type="textarea" value={this.headersToString()} /> :
-                                    <KeyValueItem headers={record.headers as DtoHeader[]} />
-                            }
+                            {this.getHeadersCtrl()}
                         </TabPane>
                         <TabPane tab="Body" key="body">
                             <Editor type={bodyType} />
