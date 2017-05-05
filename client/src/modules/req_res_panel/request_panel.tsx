@@ -8,6 +8,7 @@ import Editor from '../../components/editor';
 
 import './style/index.less';
 import { DtoHeader } from "../../../../api/interfaces/dto_header";
+import { SelectValue } from "antd/lib/select";
 
 const FItem = Form.Item;
 const Option = Select.Option;
@@ -27,34 +28,59 @@ interface RequestPanelState {
     urlValidateStatus?: validateType;
     isSending?: boolean;
     bodyType?: 'json' | 'xml' | '';
-    headersEditMode?: 'keyvalue' | 'bulk';
+    headersEditMode?: 'Key Value Edit' | 'Bulk Edit';
     record: DtoRecord;
 }
 
 class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelState> {
 
-    static methods = (
-        <Select defaultValue={HttpMethod.GET} style={{ width: 100 }}>
-            {
-                Object.keys(HttpMethod).map(k =>
-                    <Option value={k}>{k}</Option>)
-            }
-        </Select>
-    );
-
     constructor(props: RequestPanelStateProps) {
         super(props);
-        this.state = { bodyType: 'json', record: props.activeRecord as DtoRecord };
+        this.state = {
+            bodyType: 'json',
+            headersEditMode: 'Key Value Edit',
+            record: props.activeRecord as DtoRecord
+        };
     }
 
     public componentWillReceiveProps(nextProps: RequestPanelStateProps) {
         this.setState({
             ...this.state,
             record: nextProps.activeRecord as DtoRecord
-        })
+        });
     }
 
-    onNameChanged = (eventHandler) => {
+    getMethods = (defaultValue?: string) => {
+        const value = (defaultValue || HttpMethod.GET).toUpperCase();
+        return (
+            <Select defaultValue={value} onChange={this.onMethodChanged} style={{ width: 100 }}>
+                {
+                    Object.keys(HttpMethod).map(k =>
+                        <Option value={k}>{k}</Option>)
+                }
+            </Select>
+        );
+    }
+
+    getTabExtraFunc = () => {
+        return (
+            <Button className="tab-extra-button" onClick={this.onHeaderModeChanged}>
+                {this.isBulkEditMode() ? 'Key Value Edit' : 'Bulk Edit'}
+            </Button>
+        );
+    }
+
+    isBulkEditMode = () => this.state.headersEditMode === 'Bulk Edit';
+
+    onHeaderModeChanged = () => {
+        this.setState({ ...this.state, headersEditMode: this.state.headersEditMode === 'Bulk Edit' ? 'Key Value Edit' : 'Bulk Edit' });
+    }
+
+    onMethodChanged = (selectedValue: SelectValue) => {
+        this.setState({
+            ...this.state,
+            record: { ...this.state.record, method: selectedValue.toString() }
+        });
     }
 
     onInputChanged = (event, name: string) => {
@@ -83,6 +109,11 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
 
     }
 
+    headersToString = () => {
+        const headers = this.state.record.headers as DtoHeader[];
+        return headers ? headers.map(r => r.key + ': ' + r.value).join('\n') : '';
+    }
+
     public render() {
         const menu = (
             <Menu onClick={this.handleMenuClick}>
@@ -95,7 +126,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
             urlValidateStatus,
             isSending,
             bodyType,
-            //headersEditMode,
+            headersEditMode,
             record
         } = this.state;
 
@@ -120,7 +151,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                             size="large"
                             spellCheck={false}
                             onChange={(e) => this.onInputChanged(e, 'url')}
-                            addonBefore={RequestPanel.methods}
+                            addonBefore={this.getMethods(record.method)}
                             value={record.url} />
                     </FItem>
                     <FItem className="req-send">
@@ -138,9 +169,14 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                     <Tabs
                         className="req-tabs"
                         defaultActiveKey="headers"
-                        animated={false}>
+                        animated={false}
+                        tabBarExtraContent={this.getTabExtraFunc()}>
                         <TabPane tab="Headers" key="headers">
-                            <KeyValueItem headers={record.headers as DtoHeader[]} />
+                            {
+                                headersEditMode === 'Bulk Edit' ?
+                                    <Input className="req-header" type="textarea" value={this.headersToString()} /> :
+                                    <KeyValueItem headers={record.headers as DtoHeader[]} />
+                            }
                         </TabPane>
                         <TabPane tab="Body" key="body">
                             <Editor type={bodyType} />
