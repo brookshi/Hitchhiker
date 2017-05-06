@@ -74,13 +74,18 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     }
 
     getHeadersCtrl = () => {
+        const headers = this.state.record.headers as KeyValuePair[];
         return this.state.headersEditMode === 'Bulk Edit' ?
             <Input
                 className="req-header"
                 type="textarea"
-                value={StringUtil.headersToString(this.state.record.headers as KeyValuePair[])} onChange={(e) => this.onHeadersChanged(e)}
+                spellCheck={false}
+                value={StringUtil.headersToString(headers)} onChange={(e) => this.onHeadersChanged(e)}
             /> :
-            <KeyValueItem headers={this.state.record.headers as DtoHeader[]} />;
+            <KeyValueItem
+                headers={this.state.record.headers as DtoHeader[]}
+                onChanged={this.onHeadersChanged}
+            />;
     }
 
     isBulkEditMode = () => this.state.headersEditMode === 'Bulk Edit';
@@ -90,7 +95,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     }
 
     onHeadersChanged = (data: SyntheticEvent<any> | DtoHeader[]) => {
-        let rst: DtoHeader[] = [];
+        let rst = data as DtoHeader[];
         if (!(data instanceof Array)) {
             rst = StringUtil.stringToKeyValues(data.currentTarget.value) as DtoHeader[];
         }

@@ -8,7 +8,8 @@ export class StringUtil {
 
     static stringToKeyValues(str: string): Array<KeyValuePair> {
         return str.split('\n').map(k => {
-            let [key, value] = k.split(':').map(v => v.trim());
+            let [key, ...values] = k.split(':');
+            const value: string | undefined = values.length === 0 ? undefined : values.join(':');
             const isActive = !key.startsWith('//');
 
             if (!isActive) {
@@ -19,7 +20,18 @@ export class StringUtil {
         });
     }
 
-    static headersToString(headers: Array<KeyValuePair>) {
-        return headers ? headers.map(r => `${r.isActive ? '' : '//'}${r.key || ''}${r.key && r.value ? ': ' + r.value : ''}`).join('\n') : '';
+    static headersToString(headers: Array<KeyValuePair>): string {
+        return headers ? headers.map(r => this.headerToString(r)).join('\n') : '';
+    }
+
+    static headerToString(header: KeyValuePair): string {
+        const prefix = header.isActive ? '' : '//';
+        const key = StringUtil.undefinedToString(header.key);
+        const value = header.value === undefined ? '' : `:${header.value}`;
+        return `${prefix}${key}${value}`;
+    }
+
+    static undefinedToString(str: string): string {
+        return str === undefined ? '' : str;
     }
 }

@@ -8,7 +8,8 @@ export function getDefaultRecord(isInit: boolean = false): DtoRecord {
         id: isInit ? '@init' : StringUtil.generateUID(),
         category: RecordCategory.record,
         name: 'new request',
-        collectionId: ''
+        collectionId: '',
+        headers: []
     };
 }
 
