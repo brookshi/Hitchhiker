@@ -3,14 +3,16 @@ import { connect, Dispatch } from 'react-redux';
 import { Tabs } from 'antd';
 import { DtoResRecord } from '../../../../api/interfaces/dto_res';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
-import { activeTabAction } from "./action";
+import { RunResult } from '../../../../api/interfaces/dto_run_result';
+import { activeTabAction } from './action';
 import './style/index.less';
-import { getDefaultRecord, State } from "../../state";
+import { getDefaultRecord, State } from '../../state';
 import RequestPanel from './request_panel';
-import ResPanel from './response_panel';
+import ResPanel, { nonResPanel } from './response_panel';
 
 interface ReqResPanelStateProps {
     activeRecord: DtoRecord | DtoResRecord;
+    respones?: RunResult;
 }
 
 interface ReqResPanelDispatchProps {
@@ -21,10 +23,18 @@ type ReqResPanelProps = ReqResPanelStateProps & ReqResPanelDispatchProps;
 
 interface ReqResPanelState {
     displayRecords: Array<DtoResRecord | DtoRecord>;
+    respones?: RunResult;
 }
+
+
 
 class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
+    responsePanel = (
+        this.state && this.state.respones ?
+            <ResPanel /> :
+            nonResPanel
+    );
 
     constructor(props: ReqResPanelProps) {
         super(props);
@@ -96,7 +106,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                         <Tabs.TabPane key={r.id} tab={r.name} closable={true}>
                             <div className="req-res-panel">
                                 <RequestPanel activeRecord={r} />
-                                <ResPanel />
+                                {this.responsePanel}
                             </div>
                         </Tabs.TabPane>
                     )

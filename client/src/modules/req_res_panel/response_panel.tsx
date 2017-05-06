@@ -1,6 +1,6 @@
 import React from 'react';
-import { DtoResHeader } from "../../../../api/interfaces/dto_res";
-import { Tabs } from "antd";
+import { DtoResHeader } from '../../../../api/interfaces/dto_res';
+import { Tabs, Icon } from 'antd';
 import Editor from '../../components/editor';
 
 import './style/index.less';
@@ -60,3 +60,15 @@ class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
 }
 
 export default ResPanel;
+
+export const nonResPanel = (
+    <div>
+        <div className="nonres-header">Response</div>
+        <div className="nonres-content">Hit
+            <span>
+                <Icon type="rocket" />
+                Send
+            </span>
+            to get a response.</div>
+    </div>
+);

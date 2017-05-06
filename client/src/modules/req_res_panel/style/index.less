@@ -29,6 +29,10 @@
     background: @panel-background;
 }
 
+.req-panel{
+    padding-bottom: 8px;
+}
+
 .url-panel{
     padding: 4px 0px;
 }
@@ -113,5 +117,33 @@ textarea.req-header[type="textarea"]{
 
     &:focus{
         background: @panel-background;
+    }
+}
+
+.nonres-header{
+    margin-left: -10px;
+    padding-left: 14px;
+    line-height: 36px;
+    font-size: 15px;
+    color: @place-holder-color;
+    border-top: 1px solid @border-color;
+    border-bottom: 1px solid @border-color;
+}
+
+.nonres-content{
+    height: 600px;  //TODO: dynamic height
+    margin-top: 100px;
+    text-align: center;
+    font-size: 20px;
+    color: @place-holder-color;
+
+    span{
+        margin: 0px 8px;
+        padding: 8px 12px;
+        color: white;
+        background: @primary-color-light;
+        font-size: 14px;
+        border-radius: 4px;
+        margin-right: 4px;
     }
 }

@@ -12,27 +12,28 @@ import './style/index.less';
 interface EditorProps {
     type?: 'javascript' | 'xml' | 'json' | '';
     value?: string;
-
     readOnly?: boolean;
+    onChange?: (value: string) => void;
 }
 
 interface EditorState { }
 
 class Editor extends React.Component<EditorProps, EditorState> {
     public render() {
-        const { type, value, readOnly } = this.props;
+        const { type, value, readOnly, onChange } = this.props;
         let props = {
-            className: "req-editor",
+            className: 'req-editor',
             mode: type,
-            theme: "xcode",
+            theme: 'xcode',
             highlightActiveLine: true,
-            height: "300px",
-            width: "100%",
+            height: '300px',
+            width: '100%',
             fontSize: 12,
             showGutter: true,
             showPrintMargin: false,
             value: value,
-            readOnly: readOnly
+            readOnly: readOnly,
+            onChange: onChange
         };
         if (type === 'javascript') {
             props = {
@@ -40,7 +41,7 @@ class Editor extends React.Component<EditorProps, EditorState> {
                 enableBasicAutocompletion: true,
                 enableLiveAutocompletion: true,
                 setOptions: { enableSnippets: true }
-            }
+            };
         }
 
         return (

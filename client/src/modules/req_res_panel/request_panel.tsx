@@ -7,10 +7,10 @@ import KeyValueItem from '../../components/key_value';
 import Editor from '../../components/editor';
 
 import './style/index.less';
-import { DtoHeader } from "../../../../api/interfaces/dto_header";
-import { SelectValue } from "antd/lib/select";
-import { StringUtil } from "../../utils/string_util";
-import { KeyValuePair } from "../../common/key_value_pair";
+import { DtoHeader } from '../../../../api/interfaces/dto_header';
+import { SelectValue } from 'antd/lib/select';
+import { StringUtil } from '../../utils/string_util';
+import { KeyValuePair } from '../../common/key_value_pair';
 
 const FItem = Form.Item;
 const Option = Select.Option;
@@ -35,7 +35,6 @@ interface RequestPanelState {
 }
 
 class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelState> {
-
 
     constructor(props: RequestPanelStateProps) {
         super(props);
@@ -109,17 +108,15 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         });
     }
 
-    onInputChanged = (event, name: string) => {
+    onInputChanged = (value: string, name: string) => {
         const { record } = this.state;
-        const value = event.target.value;
         record[name] = value;
         let state = { ...this.state, record };
 
         if (name === 'name') {
             if ((value as string).trim() === '') {
                 state = { ...this.state, nameValidateStatus: 'warning' };
-            }
-            else if (this.state.nameValidateStatus) {
+            } else if (this.state.nameValidateStatus) {
                 state = { ...this.state, nameValidateStatus: undefined };
             }
         }
@@ -161,7 +158,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                     <Input
                         placeholder="please enter name for this request"
                         spellCheck={false}
-                        onChange={(e) => this.onInputChanged(e, 'name')}
+                        onChange={(e) => this.onInputChanged(e.currentTarget.value, 'name')}
                         value={record.name} />
                 </FItem>
                 <Form className="url-panel" layout="inline" >
@@ -170,7 +167,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                             placeholder="please enter url of this request"
                             size="large"
                             spellCheck={false}
-                            onChange={(e) => this.onInputChanged(e, 'url')}
+                            onChange={(e) => this.onInputChanged(e.currentTarget.value, 'url')}
                             addonBefore={this.getMethods(record.method)}
                             value={record.url} />
                     </FItem>
@@ -195,10 +192,10 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                             {this.getHeadersCtrl()}
                         </TabPane>
                         <TabPane tab="Body" key="body">
-                            <Editor type={bodyType} />
+                            <Editor type={bodyType} value={record.body} onChange={v => this.onInputChanged(v, 'body')} />
                         </TabPane>
                         <TabPane tab="Test" key="test">
-                            <Editor type="javascript" />
+                            <Editor type="javascript" value={record.test} onChange={v => this.onInputChanged(v, 'test')} />
                         </TabPane>
                     </Tabs>
                 </div>

@@ -3,8 +3,8 @@ import { RequestOptionAdapter } from "./request_option_adapter";
 import * as request from "request";
 import { ServerResponse } from "http";
 import { TestRunner } from "./test_runner";
-import { RunResult } from "../common/run_result";
 import * as _ from "lodash";
+import { RunResult } from "../interfaces/dto_run_result";
 
 export class RecordRunner {
     static async runRecord(envId: string, record: Record, serverRes: ServerResponse, needPipe?: boolean): Promise<RunResult> {
@@ -28,12 +28,20 @@ export class RecordRunner {
 
     static handleRes(res: request.RequestResponse, record: Record, pipeRes: ServerResponse, elapsed: number): RunResult {
         const testRst = TestRunner.test(res, record.test, elapsed);
-        const body = { body: res.body, tests: testRst, elapsed: elapsed };
+        const finalRes: RunResult = {
+            body: res.body,
+            tests: testRst,
+            elapsed: elapsed,
+            headers: res.headers,
+            cookies: res.headers['Set-Cookie'],
+            status: res.statusCode,
+            statusMessage: res.statusMessage
+        };
         const headers = res.headers;
 
-        headers['content-length'] = JSON.stringify(body).length;
+        headers['content-length'] = JSON.stringify(finalRes).length;
         pipeRes.writeHead(res.statusCode, res.statusMessage, headers);
 
-        return body;
+        return finalRes;
     }
 }

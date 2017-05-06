@@ -1,10 +1,9 @@
 import React from 'react';
 import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
-//import { DtoResHeader } from "../../../../api/interfaces/dto_res";
-import { DtoHeader } from "../../../../api/interfaces/dto_header";
-import { Input, Checkbox, Icon } from "antd";
+import { DtoHeader } from '../../../../api/interfaces/dto_header';
+import { Input, Checkbox, Icon } from 'antd';
 import './style/index.less';
-import { StringUtil } from "../../utils/string_util";
+import { StringUtil } from '../../utils/string_util';
 
 type Header = DtoHeader;
 
@@ -69,7 +68,6 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
         }
         this.setState({ ...this.state, headers: headers });
     }
-
 
     public componentWillReceiveProps(nextProps: KeyValueComponentProps) {
         this.setState({ ...this.state, headers: this.getInitedHeaders(nextProps) });
