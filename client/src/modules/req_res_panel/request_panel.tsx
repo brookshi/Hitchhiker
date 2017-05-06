@@ -22,7 +22,6 @@ type validateType = 'success' | 'warning' | 'error' | 'validating';
 interface RequestPanelStateProps {
     activeRecord: DtoRecord | DtoResRecord;
     sendRequest?: (id: string, record: DtoRecord) => void;
-    cancelRequest?: (id: string) => void;
 }
 
 interface RequestPanelState {
@@ -124,7 +123,11 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         this.setState(state);
     }
 
-    handleMenuClick = (e) => {
+    onSaveAs = (e) => {
+        console.log('click', e);
+    }
+
+    onSave = (e) => {
         console.log('click', e);
     }
 
@@ -134,7 +137,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
 
     public render() {
         const menu = (
-            <Menu onClick={this.handleMenuClick}>
+            <Menu onClick={this.onSaveAs}>
                 <Menu.Item key="save_as">Save As</Menu.Item>
             </Menu>
         );
@@ -177,7 +180,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                         </Button>
                     </FItem>
                     <FItem className="req-save" style={{ marginRight: 0 }}>
-                        <DButton overlay={menu}>
+                        <DButton overlay={menu} onClick={this.onSave}>
                             Save
                         </DButton>
                     </FItem>

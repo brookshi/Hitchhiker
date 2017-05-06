@@ -1,19 +1,14 @@
 import React from 'react';
-import { DtoResHeader } from '../../../../api/interfaces/dto_res';
 import { Tabs, Icon } from 'antd';
 import Editor from '../../components/editor';
 
 import './style/index.less';
+import { RunResult } from "../../../../api/interfaces/dto_run_result";
 
 const TabPane = Tabs.TabPane;
 
 interface ResPanelProps {
-    response?: any;
-    time?: number;
-    status?: string;
-    cookie?: string;
-    headers?: DtoResHeader[];
-    test?: string;
+    res: RunResult;
 }
 
 interface ResPanelState {
@@ -31,9 +26,9 @@ interface ResPanelState {
 
 class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
     public render() {
-        const { response, time, status, cookie, headers, test } = this.props;
+        const { body, elapsed, status, statusMessage, cookies, headers, tests } = this.props.res;
         const resStatus = (
-            <div><span>Status:{status}</span><span>Time:{time}</span></div>
+            <div><span>Status:{status} {statusMessage}</span><span>Time:{elapsed}ms</span></div>
         );
 
         return (
@@ -43,16 +38,16 @@ class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
                 animated={false}
                 tabBarExtraContent={resStatus}>
                 <TabPane tab="Content" key="content">
-                    <Editor type="json" value={response} readOnly={true} />
+                    <Editor type="json" value={body} readOnly={true} />
                 </TabPane>
                 <TabPane tab="Headers" key="headers">
                     {headers}
                 </TabPane>
                 <TabPane tab="Cookies" key="cookies">
-                    {cookie}
+                    {cookies}
                 </TabPane>
                 <TabPane tab="Test" key="test">
-                    {test}
+                    {tests}
                 </TabPane>
             </Tabs>
         );
@@ -63,8 +58,8 @@ export default ResPanel;
 
 export const nonResPanel = (
     <div>
-        <div className="nonres-header">Response</div>
-        <div className="nonres-content">Hit
+        <div className="res-non-header">Response</div>
+        <div className="res-non-content">Hit
             <span>
                 <Icon type="rocket" />
                 Send

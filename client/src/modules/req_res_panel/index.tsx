@@ -9,10 +9,12 @@ import './style/index.less';
 import { getDefaultRecord, State } from '../../state';
 import RequestPanel from './request_panel';
 import ResPanel, { nonResPanel } from './response_panel';
+import ResponseLoadingPanel from './res_loading_panel';
 
 interface ReqResPanelStateProps {
     activeRecord: DtoRecord | DtoResRecord;
-    respones?: RunResult;
+    isRequesting?: boolean;
+    response?: RunResult;
 }
 
 interface ReqResPanelDispatchProps {
@@ -23,17 +25,18 @@ type ReqResPanelProps = ReqResPanelStateProps & ReqResPanelDispatchProps;
 
 interface ReqResPanelState {
     displayRecords: Array<DtoResRecord | DtoRecord>;
-    respones?: RunResult;
+    response?: RunResult;
 }
-
-
 
 class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
     responsePanel = (
-        this.state && this.state.respones ?
-            <ResPanel /> :
-            nonResPanel
+        this.props.isRequesting ?
+            <ResponseLoadingPanel /> : (
+                this.state && this.state.response ?
+                    <ResPanel res={this.state.response} /> :
+                    nonResPanel
+            )
     );
 
     constructor(props: ReqResPanelProps) {

@@ -120,7 +120,7 @@ textarea.req-header[type="textarea"]{
     }
 }
 
-.nonres-header{
+.res-non-header{
     margin-left: -10px;
     padding-left: 14px;
     line-height: 36px;
@@ -130,11 +130,11 @@ textarea.req-header[type="textarea"]{
     border-bottom: 1px solid @border-color;
 }
 
-.nonres-content{
+.res-non-content{
     height: 600px;  //TODO: dynamic height
     margin-top: 100px;
     text-align: center;
-    font-size: 20px;
+    font-size: 18px;
     color: @place-holder-color;
 
     span{
@@ -145,5 +145,21 @@ textarea.req-header[type="textarea"]{
         font-size: 14px;
         border-radius: 4px;
         margin-right: 4px;
+        i{
+            margin-right:4px;
+        }
+    }
+}
+
+.res-loading-content{
+    border-top: 1px solid @border-color;
+    height: 600px;  //TODO: dynamic height
+    padding-top: 100px;
+    text-align: center;
+    >div{
+        margin-bottom: 12px;
+    }
+    span.ant-spin-dot{
+        display: inline-block;
     }
 }
