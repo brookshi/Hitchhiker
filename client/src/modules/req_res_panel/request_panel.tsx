@@ -21,7 +21,7 @@ type validateType = 'success' | 'warning' | 'error' | 'validating';
 
 interface RequestPanelStateProps {
     activeRecord: DtoRecord | DtoResRecord;
-    sendRequest?: (id: string, record: DtoRecord) => void;
+    sendRequest: (record: DtoRecord) => void;
 }
 
 interface RequestPanelState {
@@ -132,7 +132,8 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     }
 
     sendRequest = () => {
-
+        const r = this.state.record;
+        this.props.sendRequest(r);
     }
 
     public render() {

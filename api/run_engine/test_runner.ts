@@ -7,8 +7,11 @@ export class TestRunner {
     static test(res: request.RequestResponse, code: string, elapsed: number): { [key: string]: boolean } {
         TestRunner.init();
         TestRunner.setResponseData(res, elapsed);
-        VM.runInThisContext(code);
-
+        try {
+            VM.runInThisContext(code);
+        } catch (err) {
+            return { ['error']: err };
+        }
         return _.clone(global['tests']);
     }
 

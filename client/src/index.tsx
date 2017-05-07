@@ -3,9 +3,8 @@ import * as ReactDOM from 'react-dom';
 import './index.css';
 import { Provider } from 'react-redux';
 import { configureStore } from './store';
-//import TodoList from "./components/todo_list";
 import App from './App';
-import 'rxjs';
+import "regenerator-runtime/runtime";
 
 const store = configureStore();
 

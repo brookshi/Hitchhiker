@@ -7,12 +7,12 @@ import * as _ from "lodash";
 import { RunResult } from "../interfaces/dto_run_result";
 
 export class RecordRunner {
-    static async runRecord(envId: string, record: Record, serverRes: ServerResponse, needPipe?: boolean): Promise<RunResult> {
+    static async runRecord(envId: string, record: Record, serverRes: ServerResponse, needPipe?: boolean): Promise<RunResult | Error> {
         const option = await RequestOptionAdapter.fromRecord(envId, record);
         const start = process.hrtime();
         const res = await RecordRunner.request(option, serverRes, needPipe);
         const elapsed = process.hrtime(start)[0] * 1000 + _.toInteger(process.hrtime(start)[1] / 1000000);
-        return RecordRunner.handleRes(res.response, record, serverRes, elapsed);
+        return RecordRunner.handleRes(res.response, res.err, record, serverRes, elapsed, needPipe);
     }
 
     static request(option: request.Options, serverRes: ServerResponse, needPipe?: boolean): Promise<{ err: any, response: request.RequestResponse, body: any }> {
@@ -26,21 +26,26 @@ export class RecordRunner {
         });
     }
 
-    static handleRes(res: request.RequestResponse, record: Record, pipeRes: ServerResponse, elapsed: number): RunResult {
-        const testRst = TestRunner.test(res, record.test, elapsed);
+    static handleRes(res: request.RequestResponse, err: Error, record: Record, pipeRes: ServerResponse, elapsed: number, needPipe?: boolean): RunResult | Error {
+        if (err) {
+            return err;
+        }
+
+        const testRst = record.test ? TestRunner.test(res, record.test, elapsed) : {};
         const finalRes: RunResult = {
             body: res.body,
             tests: testRst,
             elapsed: elapsed,
-            headers: res.headers,
-            cookies: res.headers['Set-Cookie'],
+            headers: [],
+            cookies: '',
             status: res.statusCode,
             statusMessage: res.statusMessage
         };
-        const headers = res.headers;
-
-        headers['content-length'] = JSON.stringify(finalRes).length;
-        pipeRes.writeHead(res.statusCode, res.statusMessage, headers);
+        if (needPipe) {
+            const headers = res.headers;
+            headers['content-length'] = JSON.stringify(finalRes).length;
+            pipeRes.writeHead(res.statusCode, res.statusMessage, headers);
+        }
 
         return finalRes;
     }

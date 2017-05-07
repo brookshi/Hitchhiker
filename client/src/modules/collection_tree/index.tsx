@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { Menu } from 'antd';
 import { DtoResCollection, DtoResRecord } from '../../../../api/interfaces/dto_res';
-import { fetchCollection } from './action';
+import { refreshCollectionAction } from './action';
 import { State } from '../../state';
 import RecordFolder from './record_folder';
 import RecordItem from './record_item';
@@ -99,12 +99,12 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
 }
 
 const mapStateToProps = (state: State): CollectionListStateProps => {
-    return state.collectionsState;
+    return state.collections;
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps => {
     return {
-        refresh: () => dispatch(fetchCollection()),
+        refresh: () => dispatch(refreshCollectionAction()),
         activeRecord: (key) => dispatch(activeTabAction(key))
     };
 };

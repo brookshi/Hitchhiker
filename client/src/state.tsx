@@ -2,6 +2,7 @@ import { DtoResCollection, DtoResRecord } from '../../api/interfaces/dto_res';
 import { DtoRecord } from '../../api/interfaces/dto_record';
 import { StringUtil } from './utils/string_util';
 import { RecordCategory } from './common/record_category';
+import { RunResult } from '../../api/interfaces/dto_run_result';
 
 export function getDefaultRecord(isInit: boolean = false): DtoRecord {
     return {
@@ -18,15 +19,25 @@ export interface CollectionsState {
     activeKey: string;
 }
 
-export interface State {
-    collectionsState: CollectionsState;
+export interface ActiveRecordState {
     activeRecord: DtoRecord | DtoResRecord;
 }
 
+export interface ResponseState {
+    [id: string]: RunResult | Error;
+}
+
+export interface State {
+    collections: CollectionsState;
+    activeRecord: ActiveRecordState;
+    responses: ResponseState;
+}
+
 export const initialState: State = {
-    collectionsState: {
+    collections: {
         collections: [],
         activeKey: ''
     },
-    activeRecord: getDefaultRecord(true)
+    activeRecord: { activeRecord: getDefaultRecord(true) },
+    responses: {}
 };

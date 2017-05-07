@@ -1,14 +1,19 @@
-import { combineEpics } from 'redux-observable';
-import reqResPanel from '../modules/req_res_panel/reducer';
+import { activeRecord, responses } from '../modules/req_res_panel/reducer';
 import { combineReducers } from 'redux';
-import { fetchCollectionEpic } from '../modules/collection_tree/action';
 import { collections } from '../modules/collection_tree/reducer';
+import { spawn } from 'redux-saga/effects';
+import { refreshCollection } from '../modules/collection_tree/action';
+import { sendRequest } from "../modules/req_res_panel/action";
 
-export const rootEpic = combineEpics(
-    fetchCollectionEpic
-);
+export function* rootSaga() {
+    yield [
+        spawn(refreshCollection),
+        spawn(sendRequest)
+    ];
+};
 
 export const rootReducer = combineReducers({
-    collectionsState: collections,
-    activeRecord: reqResPanel
+    collections,
+    activeRecord,
+    responses,
 });

@@ -4,9 +4,9 @@ import { Tabs } from 'antd';
 import { DtoResRecord } from '../../../../api/interfaces/dto_res';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
-import { activeTabAction } from './action';
+import { activeTabAction, sendRequestAction } from './action';
 import './style/index.less';
-import { getDefaultRecord, State } from '../../state';
+import { getDefaultRecord, ResponseState, State } from '../../state';
 import RequestPanel from './request_panel';
 import ResPanel, { nonResPanel } from './response_panel';
 import ResponseLoadingPanel from './res_loading_panel';
@@ -14,11 +14,12 @@ import ResponseLoadingPanel from './res_loading_panel';
 interface ReqResPanelStateProps {
     activeRecord: DtoRecord | DtoResRecord;
     isRequesting?: boolean;
-    response?: RunResult;
+    responses?: ResponseState;
 }
 
 interface ReqResPanelDispatchProps {
     activeTab(activeRecord: DtoRecord | DtoResRecord);
+    sendRequest(record: DtoRecord);
 }
 
 type ReqResPanelProps = ReqResPanelStateProps & ReqResPanelDispatchProps;
@@ -108,7 +109,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                     this.state.displayRecords.map(r =>
                         <Tabs.TabPane key={r.id} tab={r.name} closable={true}>
                             <div className="req-res-panel">
-                                <RequestPanel activeRecord={r} />
+                                <RequestPanel activeRecord={r} sendRequest={this.props.sendRequest} />
                                 {this.responsePanel}
                             </div>
                         </Tabs.TabPane>
@@ -122,13 +123,15 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
 const mapStateToProps = (state: State): ReqResPanelStateProps => {
     return {
-        activeRecord: state.activeRecord
+        activeRecord: state.activeRecord.activeRecord,
+        responses: state.responses
     };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): ReqResPanelDispatchProps => {
     return {
-        activeTab: (activeRecord: DtoResRecord | DtoRecord) => dispatch(activeTabAction(activeRecord))
+        activeTab: (activeRecord: DtoResRecord | DtoRecord) => dispatch(activeTabAction(activeRecord)),
+        sendRequest: (record: DtoRecord) => dispatch(sendRequestAction({ record, environment: '' }))
     };
 };
 

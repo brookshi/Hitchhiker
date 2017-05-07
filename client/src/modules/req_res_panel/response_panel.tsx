@@ -1,9 +1,8 @@
 import React from 'react';
 import { Tabs, Icon } from 'antd';
 import Editor from '../../components/editor';
-
 import './style/index.less';
-import { RunResult } from "../../../../api/interfaces/dto_run_result";
+import { RunResult } from '../../../../api/interfaces/dto_run_result';
 
 const TabPane = Tabs.TabPane;
 

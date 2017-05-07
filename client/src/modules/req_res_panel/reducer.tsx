@@ -1,13 +1,20 @@
-import { DtoRecord } from '../../../../api/interfaces/dto_record';
-import { DtoResRecord } from '../../../../api/interfaces/dto_res';
-import { ActiveTabType } from './action';
-import { getDefaultRecord } from "../../state";
+import { ActiveTabType, SendRequestFulfilledType } from './action';
+import { initialState, ActiveRecordState, ResponseState } from '../../state';
 
-export default function reqResPanel(state: {} = {}, action: any): DtoRecord | DtoResRecord {
+export function activeRecord(state: ActiveRecordState = initialState.activeRecord, action: any): ActiveRecordState {
     switch (action.type) {
         case ActiveTabType:
-            return { ...action.activeRecord };
+            return { ...state, activeRecord: action.activeRecord };
         default:
-            return getDefaultRecord(true);
+            return state;
+    }
+}
+
+export function responses(state: ResponseState = initialState.responses, action: any): ResponseState {
+    switch (action.type) {
+        case SendRequestFulfilledType:
+            return { ...state, responseState: { ...state.responseState, [action.result.id]: action.result.runResult } };
+        default:
+            return state;
     }
 }
