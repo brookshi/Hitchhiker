@@ -39,7 +39,7 @@ class App extends React.Component<{}, any> {
         <Header>
         </Header>
         <Layout>
-          <Sider style={{ 'max-width': 50 }}>
+          <Sider style={{ maxWidth: 50 }}>
             <Menu
               className="sider-menu"
               mode="vertical"
@@ -70,7 +70,7 @@ class App extends React.Component<{}, any> {
           <Layout className="main-panel">
             <Sider
               className="collection-sider"
-              style={{ 'min-width': this.state.collapsed ? 0 : 300 }}
+              style={{ minWidth: this.state.collapsed ? 0 : 300 }}
               collapsible
               collapsedWidth="0.1"
               collapsed={this.state.collapsed}
@@ -79,7 +79,7 @@ class App extends React.Component<{}, any> {
                 <CollectionList />
               </PerfectScrollbar>
             </Sider>
-            <Content style={{ 'margin-top': 4 }}>
+            <Content style={{ marginTop: 4 }}>
               <ReqResPanel />
             </Content>
           </Layout>

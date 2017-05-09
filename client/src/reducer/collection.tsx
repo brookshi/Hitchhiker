@@ -17,7 +17,7 @@ export function reqResPanel(state: CollectionState = initialState.collectionStat
         case ActiveTabType:
             return {
                 ...state,
-                activeKey: action.activeRecord.id
+                activeKey: action.key
             };
         case ActiveRecordType:
             const isNotExist = !recordState.find(r => r.record.id === action.record.id);

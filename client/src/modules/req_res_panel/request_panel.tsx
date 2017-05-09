@@ -57,7 +57,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
             <Select defaultValue={value} onChange={this.onMethodChanged} style={{ width: 100 }}>
                 {
                     Object.keys(HttpMethod).map(k =>
-                        <Option value={k}>{k}</Option>)
+                        <Option key={k} value={k}>{k}</Option>)
                 }
             </Select>
         );
@@ -74,16 +74,20 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     getHeadersCtrl = () => {
         const headers = this.state.record.headers as KeyValuePair[];
         return this.state.headersEditMode === 'Bulk Edit' ?
-            <Input
-                className="req-header"
-                type="textarea"
-                spellCheck={false}
-                value={StringUtil.headersToString(headers)} onChange={(e) => this.onHeadersChanged(e)}
-            /> :
-            <KeyValueItem
-                headers={this.state.record.headers as DtoHeader[]}
-                onChanged={this.onHeadersChanged}
-            />;
+            (
+                <Input
+                    className="req-header"
+                    type="textarea"
+                    spellCheck={false}
+                    value={StringUtil.headersToString(headers)} onChange={(e) => this.onHeadersChanged(e)}
+                />
+            ) :
+            (
+                <KeyValueItem
+                    headers={this.state.record.headers as DtoHeader[]}
+                    onChanged={this.onHeadersChanged}
+                />
+            );
     }
 
     isBulkEditMode = () => this.state.headersEditMode === 'Bulk Edit';
@@ -155,8 +159,8 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
             <Form className="req-panel">
                 <FItem
                     className="req-name"
-                    style={{ 'margin-bottom': 8 }}
-                    hasFeedback
+                    style={{ marginBottom: 8 }}
+                    hasFeedback={true}
                     validateStatus={nameValidateStatus}
                 >
                     <Input
@@ -166,7 +170,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                         value={record.name} />
                 </FItem>
                 <Form className="url-panel" layout="inline" >
-                    <FItem className="req-url" hasFeedback validateStatus={urlValidateStatus}>
+                    <FItem className="req-url" hasFeedback={true} validateStatus={urlValidateStatus}>
                         <Input
                             placeholder="please enter url of this request"
                             size="large"

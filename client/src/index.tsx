@@ -4,7 +4,6 @@ import './index.css';
 import { Provider } from 'react-redux';
 import { configureStore } from './store';
 import App from './App';
-import "regenerator-runtime/runtime";
 
 const store = configureStore();
 

@@ -55,7 +55,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
 
     render() {
         const { collections, activeKey } = this.props;
-        const recordStyle = { height: 30, 'line-height': 30 };
+        const recordStyle = { height: 30, lineHeight: 30 };
 
         const loopRecords = (data: DtoResRecord[], inFolder: boolean = false) => data.map(r => {
             if (r.children && r.children.length) {

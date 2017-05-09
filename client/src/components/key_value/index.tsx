@@ -63,7 +63,7 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
     public componentWillMount() {
         const headers = this.getInitedHeaders(this.props);
         const lastHeader = headers[headers.length - 1];
-        if (lastHeader.key || headers.values) {
+        if (lastHeader.key || lastHeader.value) {
             headers.push(generateDefaultHeader());
         }
         this.setState({ ...this.state, headers: headers });

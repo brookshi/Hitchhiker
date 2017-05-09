@@ -19,13 +19,13 @@ export const sendRequestAction = (recordRun: DtoRecordRun) => ({ type: SendReque
 
 export const sendRequestFulfilledAction = (result: { id: string, runResult: RunResult | Error }) => ({ type: SendRequestFulfilledType, result });
 
-export const activeTabAction = (key: string) => ({ type: key });
+export const activeTabAction = (key: string) => ({ type: ActiveTabType, key });
 
 export function* sendRequest() {
     yield takeEvery(SendRequestType, sendRequestFulfilled);
 }
 
-function* sendRequestFulfilled(action) {
+function* sendRequestFulfilled(action: any) {
     try {
         const res = yield call(HttpClient.post, 'http://localhost:3000/api/record/run', action.recordRun);
         const runResult = yield res.json();

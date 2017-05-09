@@ -9,7 +9,7 @@
     "@types/react-dom": "^0.14.23",
     "@types/react-redux": "^4.4.38",
     "@types/reflect-metadata": "0.0.5",
-    "antd": "^2.9.1",
+    "antd": "^2.10.0",
     "babel-core": "^6.24.1",
     "babel-loader": "^6.4.1",
     "babel-plugin-import": "^1.1.1",
@@ -26,10 +26,8 @@
     "react-redux": "^5.0.4",
     "react-sortable-hoc": "^0.6.3",
     "redux": "^3.6.0",
-    "redux-observable": "^0.14.1",
     "redux-saga": "^0.15.3",
     "reflect-metadata": "^0.1.10",
-    "rxjs": "^5.3.0",
     "uuid": "^3.0.1"
   },
   "devDependencies": {
