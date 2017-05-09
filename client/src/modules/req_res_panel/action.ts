@@ -1,26 +1,25 @@
-import { DtoResRecord } from '../../../../api/interfaces/dto_res';
-import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { DtoRecordRun } from '../../../../api/interfaces/dto_record_run';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
 import { takeEvery, call, put } from 'redux-saga/effects';
 import HttpClient from '../../utils/http_client';
 import { errorAction } from '../../common/action';
 
+export const AddRecordType = 'add_record_type';
+export const RemoveRecordType = 'remove_record_type';
 export const ActiveTabType = 'active_tab_type';
 export const SendRequestType = 'send_request_type';
 export const SendRequestFulfilledType = 'send_request_fulfilled_type';
 export const SendRequestFailedType = 'send_request_failed_type';
 
+export const addTabAction = () => ({ type: AddRecordType });
+
+export const removeTabAction = (key) => ({ type: RemoveRecordType, key });
+
 export const sendRequestAction = (recordRun: DtoRecordRun) => ({ type: SendRequestType, recordRun });
 
 export const sendRequestFulfilledAction = (result: { id: string, runResult: RunResult | Error }) => ({ type: SendRequestFulfilledType, result });
 
-export const activeTabAction = (activeRecord: DtoResRecord | DtoRecord) => {
-    return {
-        type: ActiveTabType,
-        activeRecord: activeRecord
-    };
-};
+export const activeTabAction = (key: string) => ({ type: key });
 
 export function* sendRequest() {
     yield takeEvery(SendRequestType, sendRequestFulfilled);

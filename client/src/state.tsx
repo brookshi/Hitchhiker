@@ -14,13 +14,20 @@ export function getDefaultRecord(isInit: boolean = false): DtoRecord {
     };
 }
 
-export interface CollectionsState {
-    collections: DtoResCollection[];
-    activeKey: string;
+export interface RecordState {
+    record: DtoRecord | DtoResRecord;
+
+    isChanged: boolean;
+
+    isRequesting: boolean;
 }
 
-export interface ActiveRecordState {
-    activeRecord: DtoRecord | DtoResRecord;
+export interface CollectionState {
+    activeKey: string;
+
+    recordState: RecordState[];
+
+    responseState: ResponseState;
 }
 
 export interface ResponseState {
@@ -28,16 +35,30 @@ export interface ResponseState {
 }
 
 export interface State {
-    collections: CollectionsState;
-    activeRecord: ActiveRecordState;
-    responses: ResponseState;
+    collections: DtoResCollection[];
+
+    collectionState: CollectionState;
+
+    // teamState: TeamState;
+
+    // documentState: DocumentState;
+
+    // mockState: MockState;
+
+    // stressTestState: StressTestState;
 }
 
 export const initialState: State = {
-    collections: {
-        collections: [],
-        activeKey: ''
+    collections: [],
+    collectionState: {
+        activeKey: '@init',
+        recordState: [
+            {
+                record: getDefaultRecord(true),
+                isChanged: false,
+                isRequesting: false
+            }
+        ],
+        responseState: {}
     },
-    activeRecord: { activeRecord: getDefaultRecord(true) },
-    responses: {}
 };

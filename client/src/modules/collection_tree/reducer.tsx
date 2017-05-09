@@ -1,15 +1,16 @@
-import { FetchCollection } from './action';
-import { CollectionsState, initialState } from '../../state';
-import { ActiveTabType } from '../req_res_panel/action';
+// import { FetchCollectionType } from './action';
+// import { initialState, State } from '../../state';
+// import { ActiveTabType } from '../req_res_panel/action';
+// import { DtoResCollection } from "../../../../api/interfaces/dto_res";
 
-export function collections(state: CollectionsState = initialState.collections, action: any): CollectionsState {
-    switch (action.type) {
+// export function collectionTree(state: State = initialState, action: any): State {
+//     switch (action.type) {
 
-        case FetchCollection:
-            return { ...state, collections: action.collections };
-        case ActiveTabType:
-            return { ...state, activeKey: action.activeRecord.id };
-        default:
-            return state;
-    }
-};
+//         case FetchCollectionType:
+//             return { ...state, collections: action.collections };
+//         case ActiveTabType:
+//             return { ...state, activeKey: action.activeRecord.id };
+//         default:
+//             return state;
+//     }
+// };

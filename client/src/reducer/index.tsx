@@ -1,9 +1,8 @@
-import { activeRecord, responses } from '../modules/req_res_panel/reducer';
 import { combineReducers } from 'redux';
-import { collections } from '../modules/collection_tree/reducer';
 import { spawn } from 'redux-saga/effects';
 import { refreshCollection } from '../modules/collection_tree/action';
-import { sendRequest } from "../modules/req_res_panel/action";
+import { sendRequest } from '../modules/req_res_panel/action';
+import { reqResPanel, tree } from './collection';
 
 export function* rootSaga() {
     yield [
@@ -12,8 +11,17 @@ export function* rootSaga() {
     ];
 };
 
-export const rootReducer = combineReducers({
-    collections,
-    activeRecord,
-    responses,
-});
+const reduceReducers = (...reducers) => {
+    return (state, action) =>
+        reducers.reduce(
+            (p, r) => r(p, action),
+            state
+        );
+};
+
+export const rootReducer = reduceReducers(
+    combineReducers({
+        collections: tree,
+        collectionState: reqResPanel
+    })
+);

@@ -1,19 +1,23 @@
-import { DtoResCollection } from '../../../../api/interfaces/dto_res';
+import { DtoResCollection, DtoResRecord } from '../../../../api/interfaces/dto_res';
 import { takeLatest } from 'redux-saga';
 import HttpClient from '../../utils/http_client';
 import { call, put } from 'redux-saga/effects';
 import { errorAction } from '../../common/action';
+import { DtoRecord } from "../../../../api/interfaces/dto_record";
 
-export const RefreshCollection = 'refresh_collection';
-export const FetchCollection: string = 'fetch_collection';
-export const FetchCollectionFailed: string = 'fetch_collection_failed';
+export const ActiveRecordType = 'active_record_type';
+export const RefreshCollectionType = 'refresh_collection';
+export const FetchCollectionType = 'fetch_collection';
+export const FetchCollectionFailedType = 'fetch_collection_failed';
 
-export const fetchCollectionAction = (collections: DtoResCollection[]) => ({ type: FetchCollection, collections });
+export const activeRecordAction = (record: DtoRecord | DtoResRecord) => ({ type: ActiveRecordType, record });
 
-export const refreshCollectionAction = () => ({ type: RefreshCollection });
+export const fetchCollectionAction = (collections: DtoResCollection[]) => ({ type: FetchCollectionType, collections });
+
+export const refreshCollectionAction = () => ({ type: RefreshCollectionType });
 
 export function* refreshCollection() {
-    yield* takeLatest(RefreshCollection, fetchCollection);
+    yield* takeLatest(RefreshCollectionType, fetchCollection);
 }
 
 function* fetchCollection() {
@@ -22,6 +26,6 @@ function* fetchCollection() {
         const body = yield res.json();
         yield put(fetchCollectionAction(body));
     } catch (err) {
-        yield put(errorAction(FetchCollectionFailed, err));
+        yield put(errorAction(FetchCollectionFailedType, err));
     }
 }

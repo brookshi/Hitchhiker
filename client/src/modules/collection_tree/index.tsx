@@ -2,13 +2,12 @@ import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { Menu } from 'antd';
 import { DtoResCollection, DtoResRecord } from '../../../../api/interfaces/dto_res';
-import { refreshCollectionAction } from './action';
+import { refreshCollectionAction, activeRecordAction } from './action';
 import { State } from '../../state';
 import RecordFolder from './record_folder';
 import RecordItem from './record_item';
 import CollectionItem from './collection_item';
 import './style/index.less';
-import { activeTabAction } from '../req_res_panel/action';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { SelectParam } from 'antd/lib/menu';
 
@@ -99,13 +98,16 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
 }
 
 const mapStateToProps = (state: State): CollectionListStateProps => {
-    return state.collections;
+    return {
+        collections: state.collections,
+        activeKey: state.collectionState.activeKey
+    };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps => {
     return {
         refresh: () => dispatch(refreshCollectionAction()),
-        activeRecord: (key) => dispatch(activeTabAction(key))
+        activeRecord: (record) => dispatch(activeRecordAction(record))
     };
 };
 

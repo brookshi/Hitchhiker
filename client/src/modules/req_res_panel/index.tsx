@@ -4,35 +4,41 @@ import { Tabs } from 'antd';
 import { DtoResRecord } from '../../../../api/interfaces/dto_res';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
-import { activeTabAction, sendRequestAction } from './action';
+import { activeTabAction, sendRequestAction, addTabAction, removeTabAction } from './action';
 import './style/index.less';
-import { getDefaultRecord, ResponseState, State } from '../../state';
+import { ResponseState, State, RecordState } from '../../state';
 import RequestPanel from './request_panel';
 import ResPanel, { nonResPanel } from './response_panel';
 import ResponseLoadingPanel from './res_loading_panel';
 
 interface ReqResPanelStateProps {
-    activeRecord: DtoRecord | DtoResRecord;
-    isRequesting?: boolean;
-    responses?: ResponseState;
+    activeKey: string;
+
+    recordState: RecordState[];
+
+    responseState: ResponseState;
 }
 
 interface ReqResPanelDispatchProps {
-    activeTab(activeRecord: DtoRecord | DtoResRecord);
+    addTab();
+
+    removeTab(key: string);
+
+    activeTab(key: string);
+
     sendRequest(record: DtoRecord);
 }
 
 type ReqResPanelProps = ReqResPanelStateProps & ReqResPanelDispatchProps;
 
 interface ReqResPanelState {
-    displayRecords: Array<DtoResRecord | DtoRecord>;
     response?: RunResult;
 }
 
 class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
     responsePanel = (
-        this.props.isRequesting ?
+        this.activeRecordState && this.activeRecordState.isRequesting ?
             <ResponseLoadingPanel /> : (
                 this.state && this.state.response ?
                     <ResPanel res={this.state.response} /> :
@@ -40,17 +46,26 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
             )
     );
 
+    get activeRecordState(): RecordState {
+        const recordState = this.props.recordState.find(r => r.record.id === this.props.activeKey);
+        if (recordState) {
+            return recordState;
+        }
+        throw new Error('miss active record state');
+    }
+
+    get activeRecord(): DtoRecord | DtoResRecord {
+        return this.activeRecordState.record;
+    }
+
     constructor(props: ReqResPanelProps) {
         super(props);
-        this.state = {
-            displayRecords: [this.props.activeRecord]
-        };
     }
 
     onChange = (key) => {
-        const activeRecord = this.state.displayRecords.find(r => r.id === key);
-        if (activeRecord) {
-            this.props.activeTab(activeRecord);
+        const recordState = this.props.recordState.find(r => r.record.id === key);
+        if (recordState) {
+            this.props.activeTab(recordState.record.id);
         }
     }
 
@@ -59,61 +74,36 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 
     add = () => {
-        const defaultRecord = getDefaultRecord();
-        this.setState({
-            displayRecords: [...this.state.displayRecords, defaultRecord]
-        });
-        this.props.activeTab(defaultRecord);
-    }
-
-    addActiveRecord = (record) => {
-        const isNotExist = !this.state.displayRecords.find(r => r.id === record.id);
-        if (isNotExist) {
-            this.setState({
-                displayRecords: [...this.state.displayRecords, record]
-            });
-        }
+        this.props.addTab();
     }
 
     remove = (key) => {
-        let records = this.state.displayRecords;
-        let activeKey = this.props.activeRecord.id;
-        let index = records.findIndex(r => r.id === key);
-        records.splice(index, 1);
-
-        this.setState({ displayRecords: records });
-
-        if (activeKey === key) {
-            index = (index === records.length - 1) ? index : index - 1;
-            this.props.activeTab(records[index]);
-        }
-    }
-
-    componentDidUpdate() {
-        this.addActiveRecord(this.props.activeRecord);
+        this.props.removeTab(key);
     }
 
     public render() {
-        const { activeRecord } = this.props;
 
         return (
             <Tabs
                 className="request-tab"
-                activeKey={activeRecord.id}
+                activeKey={this.activeRecord.id}
                 type="editable-card"
                 onChange={this.onChange}
                 onEdit={this.onEdit}
                 animated={false}
             >
                 {
-                    this.state.displayRecords.map(r =>
-                        <Tabs.TabPane key={r.id} tab={r.name} closable={true}>
-                            <div className="req-res-panel">
-                                <RequestPanel activeRecord={r} sendRequest={this.props.sendRequest} />
-                                {this.responsePanel}
-                            </div>
-                        </Tabs.TabPane>
-                    )
+                    this.props.recordState.map(recordState => {
+                        const record = recordState.record;
+                        return (
+                            <Tabs.TabPane key={record.id} tab={record.name} closable={true}>
+                                <div className="req-res-panel">
+                                    <RequestPanel activeRecord={record} sendRequest={this.props.sendRequest} />
+                                    {this.responsePanel}
+                                </div>
+                            </Tabs.TabPane>
+                        )
+                    })
                 }
             </Tabs>
 
@@ -122,16 +112,15 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 }
 
 const mapStateToProps = (state: State): ReqResPanelStateProps => {
-    return {
-        activeRecord: state.activeRecord.activeRecord,
-        responses: state.responses
-    };
+    return state.collectionState;
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): ReqResPanelDispatchProps => {
     return {
-        activeTab: (activeRecord: DtoResRecord | DtoRecord) => dispatch(activeTabAction(activeRecord)),
-        sendRequest: (record: DtoRecord) => dispatch(sendRequestAction({ record, environment: '' }))
+        activeTab: (key) => dispatch(activeTabAction(key)),
+        sendRequest: (record: DtoRecord) => dispatch(sendRequestAction({ record, environment: '' })),
+        addTab: () => dispatch(addTabAction()),
+        removeTab: (key) => dispatch(removeTabAction(key))
     };
 };
 

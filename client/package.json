@@ -30,11 +30,9 @@
     "redux-saga": "^0.15.3",
     "reflect-metadata": "^0.1.10",
     "rxjs": "^5.3.0",
-    "uuid": "^3.0.1",
-    "whatwg-fetch": "^2.0.2"
+    "uuid": "^3.0.1"
   },
   "devDependencies": {
-    "@types/whatwg-fetch": "0.0.33",
     "app-root-path": "^2.0.1",
     "autoprefixer": "6.7.2",
     "case-sensitive-paths-webpack-plugin": "1.1.4",
@@ -65,8 +63,7 @@
     "url-loader": "0.5.7",
     "webpack": "1.14.0",
     "webpack-dev-server": "1.16.2",
-    "webpack-manifest-plugin": "1.1.0",
-    "whatwg-fetch": "2.0.2"
+    "webpack-manifest-plugin": "1.1.0"
   },
   "scripts": {
     "start": "node scripts/start.js",
