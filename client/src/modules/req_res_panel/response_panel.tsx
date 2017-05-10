@@ -3,6 +3,7 @@ import { Tabs, Icon } from 'antd';
 import Editor from '../../components/editor';
 import './style/index.less';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
+import { StringUtil } from "../../utils/string_util";
 
 const TabPane = Tabs.TabPane;
 
@@ -30,6 +31,7 @@ class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
             <div><span>Status:{status} {statusMessage}</span><span>Time:{elapsed}ms</span></div>
         );
 
+        const value = StringUtil.beautify(body, headers['Content-Type'])
         return (
             <Tabs
                 className="req-tabs"
@@ -37,7 +39,7 @@ class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
                 animated={false}
                 tabBarExtraContent={resStatus}>
                 <TabPane tab="Content" key="content">
-                    <Editor type="json" value={body} readOnly={true} />
+                    <Editor type="json" value={value} readOnly={true} />
                 </TabPane>
                 <TabPane tab="Headers" key="headers">
                     {headers}

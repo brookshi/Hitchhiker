@@ -21,6 +21,7 @@ interface EditorState { }
 class Editor extends React.Component<EditorProps, EditorState> {
     public render() {
         const { type, value, readOnly, onChange } = this.props;
+
         let props = {
             className: 'req-editor',
             mode: type,
