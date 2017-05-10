@@ -31,6 +31,7 @@ class Editor extends React.Component<EditorProps, EditorState> {
             fontSize: 12,
             showGutter: true,
             showPrintMargin: false,
+            wrapEnabled: true,
             value: value,
             readOnly: readOnly,
             onChange: onChange

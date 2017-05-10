@@ -27,7 +27,12 @@ class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
     public render() {
         const { body, elapsed, status, statusMessage, cookies, headers, tests } = this.props.res;
         const resStatus = (
-            <div><span>Status:{status} {statusMessage}</span><span>Time:{elapsed}ms</span></div>
+            <div>
+                <span>Status:</span>
+                <span className="res-status">{status} {statusMessage}</span>
+                <span style={{ marginLeft: '16px' }}>Time:</span>
+                <span className="res-status">{elapsed}ms</span>
+            </div>
         );
 
         return (
