@@ -3,7 +3,7 @@ import { FetchCollectionType, ActiveRecordType } from '../modules/collection_tre
 import { ActiveTabType, SendRequestFulfilledType, AddRecordType, RemoveRecordType } from '../modules/req_res_panel/action';
 import { DtoResCollection } from '../../../api/interfaces/dto_res';
 
-export function tree(state: DtoResCollection[] = initialState.collections, action: any): DtoResCollection[] {
+export function collections(state: DtoResCollection[] = initialState.collections, action: any): DtoResCollection[] {
     switch (action.type) {
         case FetchCollectionType:
             return action.collections;
@@ -11,7 +11,7 @@ export function tree(state: DtoResCollection[] = initialState.collections, actio
     }
 }
 
-export function reqResPanel(state: CollectionState = initialState.collectionState, action: any): CollectionState {
+export function collectionState(state: CollectionState = initialState.collectionState, action: any): CollectionState {
     let { recordState, activeKey } = state;
     switch (action.type) {
         case ActiveTabType:
@@ -41,12 +41,13 @@ export function reqResPanel(state: CollectionState = initialState.collectionStat
             };
         case RemoveRecordType:
             let index = recordState.findIndex(r => r.record.id === action.key);
+            const activeIndex = recordState.findIndex(r => r.record.id === activeKey);
             recordState.splice(index, 1);
-            if (activeKey === action.key) {
-                index = (index === recordState.length - 1) ? index : index - 1;
+            if (index === activeIndex) {
+                index = index === recordState.length ? index - 1 : index;
                 activeKey = recordState[index].record.id;
             }
-            return { ...state, requestState: recordState, activeKey: activeKey };
+            return { ...state, recordState: [...recordState], activeKey: activeKey };
         case SendRequestFulfilledType:
             return {
                 ...state,
