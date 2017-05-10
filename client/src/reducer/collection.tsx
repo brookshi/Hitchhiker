@@ -1,6 +1,6 @@
 import { initialState, getDefaultRecord, CollectionState } from '../state';
 import { FetchCollectionType, ActiveRecordType } from '../modules/collection_tree/action';
-import { ActiveTabType, SendRequestFulfilledType, AddRecordType, RemoveRecordType } from '../modules/req_res_panel/action';
+import { ActiveTabType, SendRequestFulfilledType, AddRecordType, RemoveRecordType, UpdateRecordType, SendRequestType } from '../modules/req_res_panel/action';
 import { DtoResCollection } from '../../../api/interfaces/dto_res';
 
 export function collections(state: DtoResCollection[] = initialState.collections, action: any): DtoResCollection[] {
@@ -19,6 +19,14 @@ export function collectionState(state: CollectionState = initialState.collection
                 ...state,
                 activeKey: action.key
             };
+        case SendRequestType: {
+            let index = recordState.findIndex(r => r.record.id === action.recordRun.record.id);
+            recordState[index].isRequesting = true;
+            return {
+                ...state,
+                recordState: [...recordState]
+            }
+        }
         case ActiveRecordType:
             const isNotExist = !recordState.find(r => r.record.id === action.record.id);
             if (isNotExist) {
@@ -39,7 +47,7 @@ export function collectionState(state: CollectionState = initialState.collection
                 ],
                 activeKey: newRecord.id
             };
-        case RemoveRecordType:
+        case RemoveRecordType: {
             let index = recordState.findIndex(r => r.record.id === action.key);
             const activeIndex = recordState.findIndex(r => r.record.id === activeKey);
             recordState.splice(index, 1);
@@ -48,14 +56,24 @@ export function collectionState(state: CollectionState = initialState.collection
                 activeKey = recordState[index].record.id;
             }
             return { ...state, recordState: [...recordState], activeKey: activeKey };
-        case SendRequestFulfilledType:
+        }
+        case UpdateRecordType: {
+            let index = recordState.findIndex(r => r.record.id === action.record.id);
+            recordState[index] = { ...action.record };
+            return { ...state, recordState: [...recordState] };
+        }
+        case SendRequestFulfilledType: {
+            let index = recordState.findIndex(r => r.record.id === action.result.id);
+            recordState[index].isRequesting = false;
             return {
                 ...state,
+                recordState: [...recordState],
                 responseState: {
                     ...state.responseState,
                     [action.result.id]: action.result.runResult
                 }
             };
+        }
         default:
             return state;
     }

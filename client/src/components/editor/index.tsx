@@ -10,7 +10,7 @@ import 'brace/snippets/javascript';
 import './style/index.less';
 
 interface EditorProps {
-    type?: 'javascript' | 'xml' | 'json' | '';
+    type?: 'javascript' | 'xml' | 'json' | 'text';
     value?: string;
     readOnly?: boolean;
     onChange?: (value: string) => void;

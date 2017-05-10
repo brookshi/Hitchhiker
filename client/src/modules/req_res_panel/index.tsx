@@ -4,7 +4,7 @@ import { Tabs } from 'antd';
 import { DtoResRecord } from '../../../../api/interfaces/dto_res';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
-import { activeTabAction, sendRequestAction, addTabAction, removeTabAction } from './action';
+import { activeTabAction, sendRequestAction, addTabAction, removeTabAction, updateRecordAction } from './action';
 import './style/index.less';
 import { ResponseState, State, RecordState } from '../../state';
 import RequestPanel from './request_panel';
@@ -27,6 +27,8 @@ interface ReqResPanelDispatchProps {
     activeTab(key: string);
 
     sendRequest(record: DtoRecord);
+
+    onChanged(record: DtoRecord);
 }
 
 type ReqResPanelProps = ReqResPanelStateProps & ReqResPanelDispatchProps;
@@ -37,14 +39,17 @@ interface ReqResPanelState {
 
 class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
-    responsePanel = (
-        this.activeRecordState && this.activeRecordState.isRequesting ?
+    get responsePanel() {
+        return this.activeRecordState && this.activeRecordState.isRequesting ?
             <ResponseLoadingPanel /> : (
-                this.state && this.state.response ?
-                    <ResPanel res={this.state.response} /> :
+                this.activeResponse ? (
+                    this.activeResponse instanceof Error ?
+                        'error' :
+                        <ResPanel res={this.activeResponse} />
+                ) :
                     nonResPanel
-            )
-    );
+            );
+    }
 
     get activeRecordState(): RecordState {
         const recordState = this.props.recordState.find(r => r.record.id === this.props.activeKey);
@@ -56,6 +61,10 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
     get activeRecord(): DtoRecord | DtoResRecord {
         return this.activeRecordState.record;
+    }
+
+    get activeResponse(): RunResult | Error | undefined {
+        return this.props.responseState[this.props.activeKey];
     }
 
     constructor(props: ReqResPanelProps) {
@@ -94,15 +103,20 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
             >
                 {
                     this.props.recordState.map(recordState => {
-                        const record = recordState.record;
+                        const { record, isRequesting } = recordState;
                         return (
                             <Tabs.TabPane key={record.id} tab={record.name} closable={true}>
                                 <div className="req-res-panel">
-                                    <RequestPanel activeRecord={record} sendRequest={this.props.sendRequest} />
+                                    <RequestPanel
+                                        activeRecord={record}
+                                        sendRequest={this.props.sendRequest}
+                                        isRequesting={isRequesting}
+                                        onChanged={this.props.onChanged}
+                                    />
                                     {this.responsePanel}
                                 </div>
                             </Tabs.TabPane>
-                        )
+                        );
                     })
                 }
             </Tabs>
@@ -120,7 +134,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): ReqResPanelDispatchProps =
         activeTab: (key) => dispatch(activeTabAction(key)),
         sendRequest: (record: DtoRecord) => dispatch(sendRequestAction({ record, environment: '' })),
         addTab: () => dispatch(addTabAction()),
-        removeTab: (key) => dispatch(removeTabAction(key))
+        removeTab: (key) => dispatch(removeTabAction(key)),
+        onChanged: (record) => dispatch(updateRecordAction(record))
     };
 };
 

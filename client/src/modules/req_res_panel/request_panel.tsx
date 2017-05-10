@@ -1,16 +1,14 @@
 import React, { SyntheticEvent } from 'react';
-import { DtoRecord } from '../../../../api/interfaces/dto_record';
-import { DtoResRecord } from '../../../../api/interfaces/dto_res';
 import { Form, Select, Input, Dropdown, Menu, Button, Tabs } from 'antd';
 import { HttpMethod } from '../../common/http_method';
 import KeyValueItem from '../../components/key_value';
 import Editor from '../../components/editor';
-
-import './style/index.less';
-import { DtoHeader } from '../../../../api/interfaces/dto_header';
 import { SelectValue } from 'antd/lib/select';
 import { StringUtil } from '../../utils/string_util';
 import { KeyValuePair } from '../../common/key_value_pair';
+import { DtoRecord } from '../../../../api/interfaces/dto_record';
+import { DtoHeader } from '../../../../api/interfaces/dto_header';
+import './style/index.less';
 
 const FItem = Form.Item;
 const Option = Select.Option;
@@ -20,17 +18,16 @@ const TabPane = Tabs.TabPane;
 type validateType = 'success' | 'warning' | 'error' | 'validating';
 
 interface RequestPanelStateProps {
-    activeRecord: DtoRecord | DtoResRecord;
+    isRequesting: boolean;
+    activeRecord: DtoRecord;
     sendRequest: (record: DtoRecord) => void;
+    onChanged: (record: DtoRecord) => void;
 }
 
 interface RequestPanelState {
     nameValidateStatus?: validateType;
     urlValidateStatus?: validateType;
-    isSending?: boolean;
-    bodyType?: 'json' | 'xml' | '';
     headersEditMode?: 'Key Value Edit' | 'Bulk Edit';
-    record: DtoRecord;
 }
 
 class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelState> {
@@ -38,9 +35,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     constructor(props: RequestPanelStateProps) {
         super(props);
         this.state = {
-            bodyType: 'json',
             headersEditMode: 'Key Value Edit',
-            record: props.activeRecord as DtoRecord
         };
     }
 
@@ -72,7 +67,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     }
 
     getHeadersCtrl = () => {
-        const headers = this.state.record.headers as KeyValuePair[];
+        const headers = this.props.activeRecord.headers as KeyValuePair[];
         return this.state.headersEditMode === 'Bulk Edit' ?
             (
                 <Input
@@ -84,7 +79,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
             ) :
             (
                 <KeyValueItem
-                    headers={this.state.record.headers as DtoHeader[]}
+                    headers={this.props.activeRecord.headers as DtoHeader[]}
                     onChanged={this.onHeadersChanged}
                 />
             );
@@ -101,30 +96,30 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         if (!(data instanceof Array)) {
             rst = StringUtil.stringToKeyValues(data.currentTarget.value) as DtoHeader[];
         }
-        this.setState({ ...this.state, record: { ...this.state.record, headers: rst } });
+        this.onRecordChanged({ ...this.props.activeRecord, headers: rst });
     }
 
     onMethodChanged = (selectedValue: SelectValue) => {
-        this.setState({
-            ...this.state,
-            record: { ...this.state.record, method: selectedValue.toString() }
-        });
+        this.onRecordChanged({ ...this.props.activeRecord, method: selectedValue.toString() });
     }
 
     onInputChanged = (value: string, name: string) => {
-        const { record } = this.state;
-        record[name] = value;
-        let state = { ...this.state, record };
+        this.onRecordChanged({ ...this.props.activeRecord, name: value });
 
+        let nameValidateStatus = this.state.nameValidateStatus;
         if (name === 'name') {
             if ((value as string).trim() === '') {
-                state = { ...this.state, nameValidateStatus: 'warning' };
+                nameValidateStatus = 'warning';
             } else if (this.state.nameValidateStatus) {
-                state = { ...this.state, nameValidateStatus: undefined };
+                nameValidateStatus = undefined;
             }
         }
 
-        this.setState(state);
+        this.setState({ ...this.state, nameValidateStatus: nameValidateStatus });
+    }
+
+    onRecordChanged = (record: DtoRecord) => {
+        this.props.onChanged(record);
     }
 
     onSaveAs = (e) => {
@@ -136,7 +131,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     }
 
     sendRequest = () => {
-        const r = this.state.record;
+        const r = this.props.activeRecord;
         this.props.sendRequest(r);
     }
 
@@ -147,13 +142,8 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
             </Menu>
         );
 
-        const {
-            nameValidateStatus,
-            urlValidateStatus,
-            isSending,
-            bodyType,
-            record
-        } = this.state;
+        const { nameValidateStatus, urlValidateStatus } = this.state;
+        const { activeRecord, isRequesting } = this.props;
 
         return (
             <Form className="req-panel">
@@ -167,7 +157,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                         placeholder="please enter name for this request"
                         spellCheck={false}
                         onChange={(e) => this.onInputChanged(e.currentTarget.value, 'name')}
-                        value={record.name} />
+                        value={activeRecord.name} />
                 </FItem>
                 <Form className="url-panel" layout="inline" >
                     <FItem className="req-url" hasFeedback={true} validateStatus={urlValidateStatus}>
@@ -176,11 +166,11 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                             size="large"
                             spellCheck={false}
                             onChange={(e) => this.onInputChanged(e.currentTarget.value, 'url')}
-                            addonBefore={this.getMethods(record.method)}
-                            value={record.url} />
+                            addonBefore={this.getMethods(activeRecord.method)}
+                            value={activeRecord.url} />
                     </FItem>
                     <FItem className="req-send">
-                        <Button type="primary" icon="rocket" loading={isSending} onClick={this.sendRequest}>
+                        <Button type="primary" icon="rocket" loading={isRequesting} onClick={this.sendRequest}>
                             Send
                         </Button>
                     </FItem>
@@ -200,10 +190,10 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                             {this.getHeadersCtrl()}
                         </TabPane>
                         <TabPane tab="Body" key="body">
-                            <Editor type={bodyType} value={record.body} onChange={v => this.onInputChanged(v, 'body')} />
+                            <Editor type={activeRecord.bodyType} value={activeRecord.body} onChange={v => this.onInputChanged(v, 'body')} />
                         </TabPane>
                         <TabPane tab="Test" key="test">
-                            <Editor type="javascript" value={record.test} onChange={v => this.onInputChanged(v, 'test')} />
+                            <Editor type="javascript" value={activeRecord.test} onChange={v => this.onInputChanged(v, 'test')} />
                         </TabPane>
                     </Tabs>
                 </div>

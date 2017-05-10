@@ -1,28 +1,26 @@
 import React from 'react';
 import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
-import { DtoHeader } from '../../../../api/interfaces/dto_header';
 import { Input, Checkbox, Icon } from 'antd';
 import './style/index.less';
 import { StringUtil } from '../../utils/string_util';
+import { DtoHeader } from '../../../../api/interfaces/dto_header';
 
-type Header = DtoHeader;
-
-const generateDefaultHeader: () => Header = () => ({
+const generateDefaultHeader: () => DtoHeader = () => ({
     id: StringUtil.generateUID(),
     isActive: true
 });
 
 interface KeyValueComponentProps {
-    headers: Array<Header>;
-    onChanged: (headers: Header[]) => void;
+    headers: Array<DtoHeader>;
+    onChanged: (headers: DtoHeader[]) => void;
 }
 
 interface KeyValueComponentState {
-    headers: Array<Header>;
+    headers: Array<DtoHeader>;
 }
 
 interface SortableElementParam {
-    header: Header;
+    header: DtoHeader;
     hIndex: number;
 }
 
@@ -73,7 +71,7 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
         this.setState({ ...this.state, headers: this.getInitedHeaders(nextProps) });
     }
 
-    getInitedHeaders(props: KeyValueComponentProps): Header[] {
+    getInitedHeaders(props: KeyValueComponentProps): DtoHeader[] {
         let headers = props.headers;
         if (!headers || headers.length === 0) {
             headers = [generateDefaultHeader()];
@@ -103,7 +101,7 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
         this.onChanged(headers);
     }
 
-    onChanged(headers: Header[]) {
+    onChanged(headers: DtoHeader[]) {
         const { onChanged } = this.props;
         if (onChanged) {
             onChanged(headers);

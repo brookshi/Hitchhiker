@@ -19,3 +19,6 @@ export interface DtoResEnvironment extends Environment { }
 export interface DtoResHeader extends Header { }
 
 export interface DtoResVariable extends Variable { }
+
+export type DtoRecord = Partial<DtoResRecord>;
+export type DtoHeader = Partial<DtoResHeader>;
