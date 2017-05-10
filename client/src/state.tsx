@@ -1,4 +1,4 @@
-import { DtoResCollection, DtoResRecord } from '../../api/interfaces/dto_res';
+import { DtoResCollection } from '../../api/interfaces/dto_res';
 import { DtoRecord } from '../../api/interfaces/dto_record';
 import { StringUtil } from './utils/string_util';
 import { RecordCategory } from './common/record_category';
@@ -15,7 +15,7 @@ export function getDefaultRecord(isInit: boolean = false): DtoRecord {
 }
 
 export interface RecordState {
-    record: DtoRecord | DtoResRecord;
+    record: DtoRecord;
 
     isChanged: boolean;
 

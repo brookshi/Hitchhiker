@@ -10,7 +10,7 @@ import 'brace/snippets/javascript';
 import './style/index.less';
 
 interface EditorProps {
-    type?: 'javascript' | 'xml' | 'json' | '';
+    type?: 'javascript' | 'xml' | 'json' | 'text';
     value?: string;
     readOnly?: boolean;
     onChange?: (value: string) => void;
@@ -32,6 +32,7 @@ class Editor extends React.Component<EditorProps, EditorState> {
             fontSize: 12,
             showGutter: true,
             showPrintMargin: false,
+            wrapEnabled: true,
             value: value,
             readOnly: readOnly,
             onChange: onChange

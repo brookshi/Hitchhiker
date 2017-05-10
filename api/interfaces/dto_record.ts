@@ -1,5 +1,6 @@
 import { DtoHeader } from "./dto_header";
 import { RecordCategory } from "../common/record_category";
+import { BodyType } from "../common/body_type";
 
 export interface DtoRecord {
 
@@ -20,6 +21,8 @@ export interface DtoRecord {
     headers?: DtoHeader[] | string;
 
     body?: string;
+
+    bodyType?: BodyType;
 
     test?: string;
 

@@ -131,7 +131,8 @@ textarea.req-header[type="textarea"]{
 }
 
 .res-non-content{
-    height: 600px;  //TODO: dynamic height
+    height: calc(100% - 350px); 
+    min-height: 300px;
     margin-top: 100px;
     text-align: center;
     font-size: 18px;
@@ -153,7 +154,8 @@ textarea.req-header[type="textarea"]{
 
 .res-loading-content{
     border-top: 1px solid @border-color;
-    height: 600px;  //TODO: dynamic height
+    height: calc(100% - 350px); 
+    min-height: 300px;
     padding-top: 100px;
     text-align: center;
     >div{
@@ -162,4 +164,8 @@ textarea.req-header[type="textarea"]{
     span.ant-spin-dot{
         display: inline-block;
     }
+}
+
+.res-status{
+    color: @primary-color;
 }

@@ -3,6 +3,7 @@ import { Collection } from './collection';
 import { Header } from "./header";
 import { RecordCategory } from "../common/record_category";
 import { DataMode } from "../common/data_mode";
+import { BodyType } from '../common/body_type';
 
 @Entity()
 export class Record {
@@ -36,6 +37,9 @@ export class Record {
 
     @Column({ nullable: true, type: "text" })
     body: string;
+
+    @Column({ nullable: true, type: 'string' })
+    bodyType: BodyType;
 
     @Column({ default: 1, type: 'int' })
     dataMode: DataMode;

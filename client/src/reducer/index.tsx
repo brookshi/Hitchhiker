@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import { spawn } from 'redux-saga/effects';
 import { refreshCollection } from '../modules/collection_tree/action';
 import { sendRequest } from '../modules/req_res_panel/action';
-import { reqResPanel, tree } from './collection';
+import { collectionState, collections } from './collection';
 
 export function* rootSaga() {
     yield [
@@ -21,7 +21,7 @@ const reduceReducers = (...reducers) => {
 
 export const rootReducer = reduceReducers(
     combineReducers({
-        collections: tree,
-        collectionState: reqResPanel
+        collections,
+        collectionState
     })
 );
