@@ -53,12 +53,12 @@ class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
                 <span className="res-status">{status} {statusMessage}</span>
                 <span style={{ marginLeft: '16px' }}>Time:</span>
                 <span className="res-status">{elapsed}ms</span>
-                <Button className="res-toggle-size-btn" icon={this.state.panelStatus} onClick={this.toggleMaximize} />
+                <span><Button className="res-toggle-size-btn" icon={this.state.panelStatus} onClick={this.toggleMaximize} /></span>
             </div>
         );
 
         const value = StringUtil.beautify(body, headers['Content-Type']);
-        const height = this.props.height ? this.props.height + 'px' : '300px';
+        const height = '300px';
         return (
             <Tabs
                 className="req-res-tabs res-tab"

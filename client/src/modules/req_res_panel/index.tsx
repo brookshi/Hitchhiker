@@ -102,7 +102,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         const status = resPanelStatus === 'up' ? true : false;
         this.setState({
             ...this.state,
-            ReqPanelVisible: {
+            reqPanelVisible: {
                 ...this.state.reqPanelVisible,
                 [this.props.activeKey]: status
             }
@@ -146,7 +146,9 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                     {
                         this.props.recordState.map(recordState => {
                             const { name, record, isRequesting } = recordState;
-                            const reqStyle = Object.keys(this.state.reqPanelVisible).indexOf(record.id) > -1 && !this.state.reqPanelVisible[record.id] ? { display: 'none' } : {};
+                            console.log(Object.keys(this.state.reqPanelVisible));
+                            const includeKey = Object.keys(this.state.reqPanelVisible).indexOf(record.id) > -1;
+                            const reqStyle = (includeKey && !this.state.reqPanelVisible[record.id]) ? { display: 'none' } : {};
                             return (
                                 <Tabs.TabPane key={record.id} tab={name} closable={true}>
                                     <div className="req-res-panel">

@@ -21,15 +21,16 @@ interface EditorState { }
 
 class Editor extends React.Component<EditorProps, EditorState> {
     public render() {
-        const { type, value, readOnly, height, onChange } = this.props;
+        const { type, value, readOnly, onChange } = this.props;
 
         let props = {
             className: 'req-editor',
             mode: type,
             theme: 'xcode',
             highlightActiveLine: true,
-            height: height || '300px',
             width: '100%',
+            height: '100%',
+            maxLines: Infinity,
             fontSize: 12,
             showGutter: true,
             showPrintMargin: false,
