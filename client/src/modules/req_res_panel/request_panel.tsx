@@ -20,8 +20,10 @@ type validateType = 'success' | 'warning' | 'error' | 'validating';
 interface RequestPanelStateProps {
     isRequesting: boolean;
     activeRecord: DtoRecord;
+    style?: any;
     sendRequest: (record: DtoRecord) => void;
     onChanged: (record: DtoRecord) => void;
+    onResize: (height: number) => void;
 }
 
 interface RequestPanelState {
@@ -31,6 +33,8 @@ interface RequestPanelState {
 }
 
 class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelState> {
+
+    reqPanel: any;
 
     constructor(props: RequestPanelStateProps) {
         super(props);
@@ -44,6 +48,21 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
             ...this.state,
             record: nextProps.activeRecord as DtoRecord
         });
+    }
+
+    public componentDidMount() {
+        this.onResize();
+    }
+
+    public componentDidUpdate(prevProps: RequestPanelStateProps, prevState: RequestPanelState) {
+        this.onResize();
+    }
+
+    onResize() {
+        if (!this.reqPanel) {
+            return;
+        }
+        this.props.onResize(this.reqPanel.clientHeight);
     }
 
     getMethods = (defaultValue?: string) => {
@@ -103,19 +122,20 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         this.onRecordChanged({ ...this.props.activeRecord, method: selectedValue.toString() });
     }
 
-    onInputChanged = (value: string, name: string) => {
-        this.onRecordChanged({ ...this.props.activeRecord, name: value });
+    onInputChanged = (value: string, type: string) => {
+        let record = this.props.activeRecord;
+        record[type] = value;
+        this.onRecordChanged({ ...record });
 
         let nameValidateStatus = this.state.nameValidateStatus;
-        if (name === 'name') {
+        if (type === 'name') {
             if ((value as string).trim() === '') {
                 nameValidateStatus = 'warning';
             } else if (this.state.nameValidateStatus) {
                 nameValidateStatus = undefined;
             }
+            this.setState({ ...this.state, nameValidateStatus: nameValidateStatus });
         }
-
-        this.setState({ ...this.state, nameValidateStatus: nameValidateStatus });
     }
 
     onRecordChanged = (record: DtoRecord) => {
@@ -135,6 +155,10 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         this.props.sendRequest(r);
     }
 
+    setReqPanel = (ele: any) => {
+        this.reqPanel = ele;
+    }
+
     public render() {
         const menu = (
             <Menu onClick={this.onSaveAs}>
@@ -143,61 +167,63 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         );
 
         const { nameValidateStatus, urlValidateStatus } = this.state;
-        const { activeRecord, isRequesting } = this.props;
+        const { activeRecord, isRequesting, style } = this.props;
 
         return (
-            <Form className="req-panel">
-                <FItem
-                    className="req-name"
-                    style={{ marginBottom: 8 }}
-                    hasFeedback={true}
-                    validateStatus={nameValidateStatus}
-                >
-                    <Input
-                        placeholder="please enter name for this request"
-                        spellCheck={false}
-                        onChange={(e) => this.onInputChanged(e.currentTarget.value, 'name')}
-                        value={activeRecord.name} />
-                </FItem>
-                <Form className="url-panel" layout="inline" >
-                    <FItem className="req-url" hasFeedback={true} validateStatus={urlValidateStatus}>
+            <div ref={this.setReqPanel}>
+                <Form className="req-panel" style={style}>
+                    <FItem
+                        className="req-name"
+                        style={{ marginBottom: 8 }}
+                        hasFeedback={true}
+                        validateStatus={nameValidateStatus}
+                    >
                         <Input
-                            placeholder="please enter url of this request"
-                            size="large"
+                            placeholder="please enter name for this request"
                             spellCheck={false}
-                            onChange={(e) => this.onInputChanged(e.currentTarget.value, 'url')}
-                            addonBefore={this.getMethods(activeRecord.method)}
-                            value={activeRecord.url} />
+                            onChange={(e) => this.onInputChanged(e.currentTarget.value, 'name')}
+                            value={activeRecord.name} />
                     </FItem>
-                    <FItem className="req-send">
-                        <Button type="primary" icon="rocket" loading={isRequesting} onClick={this.sendRequest}>
-                            Send
+                    <Form className="url-panel" layout="inline" >
+                        <FItem className="req-url" hasFeedback={true} validateStatus={urlValidateStatus}>
+                            <Input
+                                placeholder="please enter url of this request"
+                                size="large"
+                                spellCheck={false}
+                                onChange={(e) => this.onInputChanged(e.currentTarget.value, 'url')}
+                                addonBefore={this.getMethods(activeRecord.method)}
+                                value={activeRecord.url} />
+                        </FItem>
+                        <FItem className="req-send">
+                            <Button type="primary" icon="rocket" loading={isRequesting} onClick={this.sendRequest}>
+                                Send
                         </Button>
-                    </FItem>
-                    <FItem className="req-save" style={{ marginRight: 0 }}>
-                        <DButton overlay={menu} onClick={this.onSave}>
-                            Save
+                        </FItem>
+                        <FItem className="req-save" style={{ marginRight: 0 }}>
+                            <DButton overlay={menu} onClick={this.onSave}>
+                                Save
                         </DButton>
-                    </FItem>
+                        </FItem>
+                    </Form>
+                    <div>
+                        <Tabs
+                            className="req-res-tabs"
+                            defaultActiveKey="headers"
+                            animated={false}
+                            tabBarExtraContent={this.getTabExtraFunc()}>
+                            <TabPane tab="Headers" key="headers">
+                                {this.getHeadersCtrl()}
+                            </TabPane>
+                            <TabPane tab="Body" key="body">
+                                <Editor type={activeRecord.bodyType} value={activeRecord.body} onChange={v => this.onInputChanged(v, 'body')} />
+                            </TabPane>
+                            <TabPane tab="Test" key="test">
+                                <Editor type="javascript" value={activeRecord.test} onChange={v => this.onInputChanged(v, 'test')} />
+                            </TabPane>
+                        </Tabs>
+                    </div>
                 </Form>
-                <div>
-                    <Tabs
-                        className="req-tabs"
-                        defaultActiveKey="headers"
-                        animated={false}
-                        tabBarExtraContent={this.getTabExtraFunc()}>
-                        <TabPane tab="Headers" key="headers">
-                            {this.getHeadersCtrl()}
-                        </TabPane>
-                        <TabPane tab="Body" key="body">
-                            <Editor type={activeRecord.bodyType} value={activeRecord.body} onChange={v => this.onInputChanged(v, 'body')} />
-                        </TabPane>
-                        <TabPane tab="Test" key="test">
-                            <Editor type="javascript" value={activeRecord.test} onChange={v => this.onInputChanged(v, 'test')} />
-                        </TabPane>
-                    </Tabs>
-                </div>
-            </Form>
+            </div>
         );
     }
 }

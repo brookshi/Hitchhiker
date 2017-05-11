@@ -10,6 +10,7 @@ import './style/perfect-scrollbar.min.css';
 const { Header, Content, Sider } = Layout;
 
 class App extends React.Component<{}, any> {
+
   state = {
     collapsed: false,
     mode: 'inline',

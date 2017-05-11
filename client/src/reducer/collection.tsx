@@ -30,7 +30,7 @@ export function collectionState(state: CollectionState = initialState.collection
         case ActiveRecordType:
             const isNotExist = !recordState.find(r => r.record.id === action.record.id);
             if (isNotExist) {
-                recordState = [...recordState, { record: action.record, isChanged: false, isRequesting: false }];
+                recordState = [...recordState, { name: action.record.name, record: action.record, isChanged: false, isRequesting: false }];
             }
             return {
                 ...state,
@@ -43,7 +43,7 @@ export function collectionState(state: CollectionState = initialState.collection
                 ...state,
                 recordState: [
                     ...recordState,
-                    { record: newRecord, isChanged: false, isRequesting: false }
+                    { name: newRecord.name || 'new request', record: newRecord, isChanged: false, isRequesting: false }
                 ],
                 activeKey: newRecord.id
             };
@@ -59,7 +59,7 @@ export function collectionState(state: CollectionState = initialState.collection
         }
         case UpdateRecordType: {
             let index = recordState.findIndex(r => r.record.id === action.record.id);
-            recordState[index] = { ...action.record };
+            recordState[index].record = { ...action.record };
             return { ...state, recordState: [...recordState] };
         }
         case SendRequestFulfilledType: {

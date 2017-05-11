@@ -34,10 +34,15 @@ interface ReqResPanelDispatchProps {
 type ReqResPanelProps = ReqResPanelStateProps & ReqResPanelDispatchProps;
 
 interface ReqResPanelState {
-    response?: RunResult;
+    reqPanelVisible: { [id: string]: boolean };
+
+    resHeights: { [id: string]: number };
 }
 
 class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
+
+
+    reqResPanel: any;
 
     get responsePanel() {
         return this.activeRecordState && this.activeRecordState.isRequesting ?
@@ -45,7 +50,11 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                 this.activeResponse ? (
                     this.activeResponse instanceof Error ?
                         'error' :
-                        <ResPanel res={this.activeResponse} />
+                        <ResPanel
+                            height={this.state.resHeights[this.props.activeKey]}
+                            res={this.activeResponse}
+                            toggleResPanelMaximize={this.toggleReqPanelVisible}
+                        />
                 ) :
                     nonResPanel
             );
@@ -69,6 +78,35 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
     constructor(props: ReqResPanelProps) {
         super(props);
+        this.state = {
+            reqPanelVisible: {},
+            resHeights: {}
+        };
+    }
+
+    updateReqPanelHeight = (reqHeight: number) => {
+        this.adjustResPanelHeight(reqHeight);
+    }
+
+    adjustResPanelHeight = (reqHeight: number) => {
+        if (!this.reqResPanel || !reqHeight) {
+            return;
+        }
+        const resHeight = this.reqResPanel.clientHeight - reqHeight - 100;
+        if (resHeight !== this.state.resHeights[this.props.activeKey]) {
+            this.setState({ ...this.state, resHeights: { ...this.state.resHeights, [this.props.activeKey]: resHeight } });
+        }
+    }
+
+    toggleReqPanelVisible = (resPanelStatus: 'up' | 'down') => {
+        const status = resPanelStatus === 'up' ? true : false;
+        this.setState({
+            ...this.state,
+            ReqPanelVisible: {
+                ...this.state.reqPanelVisible,
+                [this.props.activeKey]: status
+            }
+        });
     }
 
     onChange = (key) => {
@@ -90,37 +128,44 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         this.props.removeTab(key);
     }
 
+    setReqResPanel = (ele: any) => {
+        this.reqResPanel = ele;
+    }
+
     public render() {
 
         return (
-            <Tabs
-                className="request-tab"
-                activeKey={this.activeRecord.id}
-                type="editable-card"
-                onChange={this.onChange}
-                onEdit={this.onEdit}
-                animated={false}
-            >
-                {
-                    this.props.recordState.map(recordState => {
-                        const { record, isRequesting } = recordState;
-                        return (
-                            <Tabs.TabPane key={record.id} tab={record.name} closable={true}>
-                                <div className="req-res-panel">
-                                    <RequestPanel
-                                        activeRecord={record}
-                                        sendRequest={this.props.sendRequest}
-                                        isRequesting={isRequesting}
-                                        onChanged={this.props.onChanged}
-                                    />
-                                    {this.responsePanel}
-                                </div>
-                            </Tabs.TabPane>
-                        );
-                    })
-                }
-            </Tabs>
-
+            <div className="request-tab" ref={this.setReqResPanel}>
+                <Tabs
+                    activeKey={this.activeRecord.id}
+                    type="editable-card"
+                    onChange={this.onChange}
+                    onEdit={this.onEdit}
+                    animated={false}
+                >
+                    {
+                        this.props.recordState.map(recordState => {
+                            const { name, record, isRequesting } = recordState;
+                            const reqStyle = Object.keys(this.state.reqPanelVisible).indexOf(record.id) > -1 && !this.state.reqPanelVisible[record.id] ? { display: 'none' } : {};
+                            return (
+                                <Tabs.TabPane key={record.id} tab={name} closable={true}>
+                                    <div className="req-res-panel">
+                                        <RequestPanel
+                                            style={reqStyle}
+                                            activeRecord={record}
+                                            sendRequest={this.props.sendRequest}
+                                            isRequesting={isRequesting}
+                                            onChanged={this.props.onChanged}
+                                            onResize={this.updateReqPanelHeight}
+                                        />
+                                        {this.responsePanel}
+                                    </div>
+                                </Tabs.TabPane>
+                            );
+                        })
+                    }
+                </Tabs>
+            </div>
         );
     }
 }

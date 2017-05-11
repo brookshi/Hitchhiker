@@ -15,6 +15,8 @@ export function getDefaultRecord(isInit: boolean = false): DtoRecord {
 }
 
 export interface RecordState {
+    name: string;
+
     record: DtoRecord;
 
     isChanged: boolean;
@@ -54,6 +56,7 @@ export const initialState: State = {
         activeKey: '@init',
         recordState: [
             {
+                name: 'new request',
                 record: getDefaultRecord(true),
                 isChanged: false,
                 isRequesting: false

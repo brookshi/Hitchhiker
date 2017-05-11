@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tabs, Icon } from 'antd';
+import { Tabs, Icon, Button } from 'antd';
 import Editor from '../../components/editor';
 import './style/index.less';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
@@ -8,13 +8,19 @@ import { StringUtil } from "../../utils/string_util";
 const TabPane = Tabs.TabPane;
 
 interface ResPanelProps {
+    height?: number;
+
     res: RunResult;
+
+    toggleResPanelMaximize: (status: 'up' | 'down') => void;
 }
 
 interface ResPanelState {
     contentType?: 'json' | 'xml' | 'text';
 
     testFilter?: 'all' | 'success' | 'failed';
+
+    panelStatus: 'up' | 'down';
 }
 
 /*const contentExtra = (
@@ -25,26 +31,42 @@ interface ResPanelState {
 );*/
 
 class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
+
+    constructor(props: ResPanelProps) {
+        super(props);
+        this.state = {
+            panelStatus: 'up'
+        };
+    }
+
+    toggleMaximize = () => {
+        const status = this.state.panelStatus === 'up' ? 'down' : 'up';
+        this.setState({ ...this.state, panelStatus: status });
+        this.props.toggleResPanelMaximize(status);
+    }
+
     public render() {
         const { body, elapsed, status, statusMessage, cookies, headers, tests } = this.props.res;
-        const resStatus = (
+        const extraContent = (
             <div>
                 <span>Status:</span>
                 <span className="res-status">{status} {statusMessage}</span>
                 <span style={{ marginLeft: '16px' }}>Time:</span>
                 <span className="res-status">{elapsed}ms</span>
+                <Button className="res-toggle-size-btn" icon={this.state.panelStatus} onClick={this.toggleMaximize} />
             </div>
         );
 
-        const value = StringUtil.beautify(body, headers['Content-Type'])
+        const value = StringUtil.beautify(body, headers['Content-Type']);
+        const height = this.props.height ? this.props.height + 'px' : '300px';
         return (
             <Tabs
-                className="req-tabs"
+                className="req-res-tabs res-tab"
                 defaultActiveKey="content"
                 animated={false}
-                tabBarExtraContent={resStatus}>
+                tabBarExtraContent={extraContent}>
                 <TabPane tab="Content" key="content">
-                    <Editor type="json" value={value} readOnly={true} />
+                    <Editor type="json" value={value} height={height} readOnly={true} />
                 </TabPane>
                 <TabPane tab="Headers" key="headers">
                     {headers}

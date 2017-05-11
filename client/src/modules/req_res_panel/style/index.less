@@ -17,6 +17,7 @@
 }
 
 .request-tab{
+    height: 100%;
     .ant-tabs-bar{
         margin-bottom: 8px;
     }
@@ -90,7 +91,7 @@
     }
 }
 
-.req-tabs {
+.req-res-tabs {
     div[role="tablist"]{
         margin-bottom: 8px;
     }
@@ -118,6 +119,10 @@ textarea.req-header[type="textarea"]{
     &:focus{
         background: @panel-background;
     }
+}
+
+.res-tab{
+    height: 600px;
 }
 
 .res-non-header{
@@ -168,4 +173,13 @@ textarea.req-header[type="textarea"]{
 
 .res-status{
     color: @primary-color;
+}
+
+.res-toggle-size-btn{
+    margin-left: 16px;
+    margin-right: 4px;
+    height: 20px;
+    margin-top: 12px;
+    border-bottom: 0px;
+    border-radius: 0px;
 }

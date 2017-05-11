@@ -59,16 +59,11 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
     }
 
     public componentWillMount() {
-        const headers = this.getInitedHeaders(this.props);
-        const lastHeader = headers[headers.length - 1];
-        if (lastHeader.key || lastHeader.value) {
-            headers.push(generateDefaultHeader());
-        }
-        this.setState({ ...this.state, headers: headers });
+        this.appendIfNeed(this.props);
     }
 
     public componentWillReceiveProps(nextProps: KeyValueComponentProps) {
-        this.setState({ ...this.state, headers: this.getInitedHeaders(nextProps) });
+        this.appendIfNeed(nextProps);
     }
 
     getInitedHeaders(props: KeyValueComponentProps): DtoHeader[] {
@@ -77,6 +72,15 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
             headers = [generateDefaultHeader()];
         }
         return headers;
+    }
+
+    appendIfNeed = (props: KeyValueComponentProps) => {
+        const headers = this.getInitedHeaders(props);
+        const lastHeader = headers[headers.length - 1];
+        if (lastHeader.key || lastHeader.value) {
+            headers.push(generateDefaultHeader());
+        }
+        this.setState({ ...this.state, headers: headers });
     }
 
     onSortEnd = ({ oldIndex, newIndex }) => {
