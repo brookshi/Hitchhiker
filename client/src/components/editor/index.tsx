@@ -13,31 +13,45 @@ interface EditorProps {
     type?: 'javascript' | 'xml' | 'json' | 'text';
     value?: string;
     readOnly?: boolean;
-    height?: string;
+    height?: number;
     onChange?: (value: string) => void;
 }
 
 interface EditorState { }
 
+const markers = [];
+//     startRow: 0,
+//     startCol: 1,
+//     endRow: 0,
+//     endCol: Infinity,
+//     type: "screenLine",
+//     className: "ace_active-line"
+// }];
+
 class Editor extends React.Component<EditorProps, EditorState> {
+
     public render() {
-        const { type, value, readOnly, onChange } = this.props;
+        const { type, value, height, readOnly, onChange } = this.props;
+        const activeHeight = height || 500;
+        const maxLines = (activeHeight / 15) + 1;
+        const heightPx = activeHeight + 'px';
 
         let props = {
             className: 'req-editor',
             mode: type,
             theme: 'xcode',
-            highlightActiveLine: true,
             width: '100%',
-            height: '100%',
-            maxLines: Infinity,
+            height: heightPx,
+            maxLines: maxLines,
+            minLines: maxLines,
             fontSize: 12,
             showGutter: true,
             showPrintMargin: false,
             wrapEnabled: true,
             value: value,
             readOnly: readOnly,
-            onChange: onChange
+            onChange: onChange,
+            markers: markers
         };
         if (type === 'javascript') {
             props = {

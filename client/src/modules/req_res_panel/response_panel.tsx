@@ -58,7 +58,6 @@ class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
         );
 
         const value = StringUtil.beautify(body, headers['Content-Type']);
-        const height = '300px';
         return (
             <Tabs
                 className="req-res-tabs res-tab"
@@ -66,7 +65,7 @@ class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
                 animated={false}
                 tabBarExtraContent={extraContent}>
                 <TabPane tab="Content" key="content">
-                    <Editor type="json" value={value} height={height} readOnly={true} />
+                    <Editor type="json" value={value} height={this.props.height} readOnly={true} />
                 </TabPane>
                 <TabPane tab="Headers" key="headers">
                     {headers}

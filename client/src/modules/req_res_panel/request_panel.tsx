@@ -59,7 +59,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     }
 
     onResize() {
-        if (!this.reqPanel) {
+        if (!this.reqPanel || !this.reqPanel.clientHeight) {
             return;
         }
         this.props.onResize(this.reqPanel.clientHeight);
@@ -150,6 +150,10 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         console.log('click', e);
     }
 
+    onTabChanged = (e) => {
+        this.onResize();
+    }
+
     sendRequest = () => {
         const r = this.props.activeRecord;
         this.props.sendRequest(r);
@@ -210,15 +214,16 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                             className="req-res-tabs"
                             defaultActiveKey="headers"
                             animated={false}
+                            onChange={this.onTabChanged}
                             tabBarExtraContent={this.getTabExtraFunc()}>
                             <TabPane tab="Headers" key="headers">
                                 {this.getHeadersCtrl()}
                             </TabPane>
                             <TabPane tab="Body" key="body">
-                                <Editor type={activeRecord.bodyType} value={activeRecord.body} onChange={v => this.onInputChanged(v, 'body')} />
+                                <Editor type={activeRecord.bodyType} height={300} value={activeRecord.body} onChange={v => this.onInputChanged(v, 'body')} />
                             </TabPane>
                             <TabPane tab="Test" key="test">
-                                <Editor type="javascript" value={activeRecord.test} onChange={v => this.onInputChanged(v, 'test')} />
+                                <Editor type="javascript" height={300} value={activeRecord.test} onChange={v => this.onInputChanged(v, 'test')} />
                             </TabPane>
                         </Tabs>
                     </div>
