@@ -33,15 +33,14 @@ class Editor extends React.Component<EditorProps, EditorState> {
     public render() {
         const { type, value, height, readOnly, onChange } = this.props;
         const activeHeight = height || 500;
-        const maxLines = (activeHeight / 15) + 1;
-        const heightPx = activeHeight + 'px';
+        const maxLines = activeHeight / 15;
 
         let props = {
             className: 'req-editor',
             mode: type,
             theme: 'xcode',
             width: '100%',
-            height: heightPx,
+            height: activeHeight + 'px',
             maxLines: maxLines,
             minLines: maxLines,
             fontSize: 12,

@@ -41,7 +41,6 @@ interface ReqResPanelState {
 
 class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
-
     reqResPanel: any;
 
     get responsePanel() {
@@ -92,7 +91,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         if (!this.reqResPanel || !reqHeight) {
             return;
         }
-        const resHeight = this.reqResPanel.clientHeight - reqHeight - 100;
+        const resHeight = this.reqResPanel.clientHeight - reqHeight - 88;
         if (resHeight !== this.state.resHeights[this.props.activeKey]) {
             this.setState({ ...this.state, resHeights: { ...this.state.resHeights, [this.props.activeKey]: resHeight } });
         }

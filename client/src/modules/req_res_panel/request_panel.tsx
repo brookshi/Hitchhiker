@@ -151,7 +151,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     }
 
     onTabChanged = (e) => {
-        this.onResize();
+        this.setState({ ...this.state });
     }
 
     sendRequest = () => {
