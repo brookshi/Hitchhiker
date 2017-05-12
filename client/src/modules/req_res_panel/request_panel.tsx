@@ -220,10 +220,10 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                                 {this.getHeadersCtrl()}
                             </TabPane>
                             <TabPane tab="Body" key="body">
-                                <Editor type={activeRecord.bodyType} height={300} value={activeRecord.body} onChange={v => this.onInputChanged(v, 'body')} />
+                                <Editor type={activeRecord.bodyType} fixHeight={true} height={300} value={activeRecord.body} onChange={v => this.onInputChanged(v, 'body')} />
                             </TabPane>
                             <TabPane tab="Test" key="test">
-                                <Editor type="javascript" height={300} value={activeRecord.test} onChange={v => this.onInputChanged(v, 'test')} />
+                                <Editor type="javascript" height={300} fixHeight={true} value={activeRecord.test} onChange={v => this.onInputChanged(v, 'test')} />
                             </TabPane>
                         </Tabs>
                     </div>

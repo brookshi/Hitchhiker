@@ -15,6 +15,7 @@ interface EditorProps {
     readOnly?: boolean;
     height?: number;
     onChange?: (value: string) => void;
+    fixHeight?: boolean;
 }
 
 interface EditorState { }
@@ -33,7 +34,6 @@ class Editor extends React.Component<EditorProps, EditorState> {
     public render() {
         const { type, value, height, readOnly, onChange } = this.props;
         const activeHeight = height || 500;
-        const maxLines = activeHeight / 15;
 
         let props = {
             className: 'req-editor',
@@ -41,8 +41,6 @@ class Editor extends React.Component<EditorProps, EditorState> {
             theme: 'xcode',
             width: '100%',
             height: activeHeight + 'px',
-            maxLines: maxLines,
-            minLines: maxLines,
             fontSize: 12,
             showGutter: true,
             showPrintMargin: false,
@@ -52,6 +50,14 @@ class Editor extends React.Component<EditorProps, EditorState> {
             onChange: onChange,
             markers: markers
         };
+        if (!this.props.fixHeight) {
+            const maxLines = activeHeight / 15 | 0;
+            props = {
+                ...props,
+                maxLines: maxLines,
+                minLines: maxLines,
+            };
+        }
         if (type === 'javascript') {
             props = {
                 ...props,
