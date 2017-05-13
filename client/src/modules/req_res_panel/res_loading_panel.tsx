@@ -1,19 +1,28 @@
 import React from 'react';
 import { Spin, Button } from 'antd';
+import RequestManager from '../../utils/request_manager';
 
 interface ResponseLoadingPanelProps {
-    cancelRequest?: (id: string) => void;
+    activeKey: string;
+    cancelRequest: (id: string) => void;
 }
 
 interface ResponseLoadingPanelState { }
 
 class ResponseLoadingPanel extends React.Component<ResponseLoadingPanelProps, ResponseLoadingPanelState> {
+
+    cancelRequest = () => {
+        const { activeKey } = this.props;
+        RequestManager.cancelRequest(activeKey);
+        this.props.cancelRequest(activeKey);
+    }
+
     public render() {
         return (
             <div className="res-loading-content">
                 <Spin tip="Loading..." />
                 <div>
-                    <Button>Cancel Request</Button>
+                    <Button onClick={this.cancelRequest}>Cancel Request</Button>
                 </div>
             </div>
         );

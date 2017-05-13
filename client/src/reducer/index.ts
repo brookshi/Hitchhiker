@@ -11,7 +11,7 @@ export function* rootSaga() {
     ];
 };
 
-const reduceReducers = (...reducers) => {
+export const reduceReducers = (...reducers) => {
     return (state, action) =>
         reducers.reduce(
             (p, r) => r(p, action),
@@ -19,9 +19,7 @@ const reduceReducers = (...reducers) => {
         );
 };
 
-export const rootReducer = reduceReducers(
-    combineReducers({
-        collections,
-        collectionState
-    })
-);
+export const rootReducer = combineReducers({
+    collections,
+    collectionState
+});

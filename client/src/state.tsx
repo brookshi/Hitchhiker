@@ -33,7 +33,7 @@ export interface CollectionState {
 }
 
 export interface ResponseState {
-    [id: string]: RunResult | Error;
+    [id: string]: RunResult;
 }
 
 export interface State {

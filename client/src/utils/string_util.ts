@@ -1,6 +1,6 @@
 import * as uuid from 'uuid';
 import { KeyValuePair } from '../common/key_value_pair';
-import { Beautify } from "./beautify";
+import { Beautify } from './beautify';
 
 export class StringUtil {
     static generateUID(): string {

@@ -7,7 +7,7 @@ import * as _ from "lodash";
 import { RunResult } from "../interfaces/dto_run_result";
 
 export class RecordRunner {
-    static async runRecord(envId: string, record: Record, serverRes: ServerResponse, needPipe?: boolean): Promise<RunResult | Error> {
+    static async runRecord(envId: string, record: Record, serverRes: ServerResponse, needPipe?: boolean): Promise<RunResult> {
         const option = await RequestOptionAdapter.fromRecord(envId, record);
         const start = process.hrtime();
         const res = await RecordRunner.request(option, serverRes, needPipe);
@@ -26,25 +26,24 @@ export class RecordRunner {
         });
     }
 
-    static handleRes(res: request.RequestResponse, err: Error, record: Record, pipeRes: ServerResponse, elapsed: number, needPipe?: boolean): RunResult | Error {
-        if (err) {
-            return err;
-        }
+    static handleRes(res: request.RequestResponse, err: Error, record: Record, pipeRes: ServerResponse, elapsed: number, needPipe?: boolean): RunResult {
 
-        const testRst = record.test ? TestRunner.test(res, record.test, elapsed) : {};
+        const testRst = !err || record.test ? TestRunner.test(res, record.test, elapsed) : {};
+        const pRes: Partial<request.RequestResponse> = res || {};
         const finalRes: RunResult = {
-            body: res.body,
+            error: err,
+            body: pRes.body,
             tests: testRst,
             elapsed: elapsed,
-            headers: [],
-            cookies: '',
-            status: res.statusCode,
-            statusMessage: res.statusMessage
+            headers: pRes.headers,
+            cookies: pRes.headers ? pRes.headers['set-cookie'] : '',
+            status: pRes.statusCode,
+            statusMessage: pRes.statusMessage
         };
         if (needPipe) {
-            const headers = res.headers;
+            const headers = pRes.headers;
             headers['content-length'] = JSON.stringify(finalRes).length;
-            pipeRes.writeHead(res.statusCode, res.statusMessage, headers);
+            pipeRes.writeHead(pRes.statusCode, pRes.statusMessage, headers);
         }
 
         return finalRes;

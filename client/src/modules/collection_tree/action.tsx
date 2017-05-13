@@ -1,9 +1,9 @@
 import { DtoResCollection, DtoResRecord } from '../../../../api/interfaces/dto_res';
 import { takeLatest } from 'redux-saga/effects';
-import HttpClient from '../../utils/http_client';
 import { call, put } from 'redux-saga/effects';
 import { errorAction } from '../../common/action';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
+import RequestManager from '../../utils/request_manager';
 
 export const ActiveRecordType = 'active_record_type';
 export const RefreshCollectionType = 'refresh_collection';
@@ -22,7 +22,7 @@ export function* refreshCollection() {
 
 function* fetchCollection() {
     try {
-        const res = yield call(HttpClient.get, 'http://localhost:3000/api/collections');
+        const res = yield call(RequestManager.get, 'http://localhost:3000/api/collections');
         const body = yield res.json();
         yield put(fetchCollectionAction(body));
     } catch (err) {

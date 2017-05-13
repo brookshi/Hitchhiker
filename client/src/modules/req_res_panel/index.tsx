@@ -4,12 +4,13 @@ import { Tabs } from 'antd';
 import { DtoResRecord } from '../../../../api/interfaces/dto_res';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
-import { activeTabAction, sendRequestAction, addTabAction, removeTabAction, updateRecordAction } from './action';
+import { activeTabAction, sendRequestAction, addTabAction, removeTabAction, updateRecordAction, cancelRequestAction } from './action';
 import './style/index.less';
 import { ResponseState, State, RecordState } from '../../state';
 import RequestPanel from './request_panel';
 import ResPanel, { nonResPanel } from './response_panel';
 import ResponseLoadingPanel from './res_loading_panel';
+import ResErrorPanel from '../../components/res_error_panel';
 
 interface ReqResPanelStateProps {
     activeKey: string;
@@ -29,6 +30,8 @@ interface ReqResPanelDispatchProps {
     sendRequest(record: DtoRecord);
 
     onChanged(record: DtoRecord);
+
+    cancelRequest(id: string);
 }
 
 type ReqResPanelProps = ReqResPanelStateProps & ReqResPanelDispatchProps;
@@ -45,15 +48,17 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
     get responsePanel() {
         return this.activeRecordState && this.activeRecordState.isRequesting ?
-            <ResponseLoadingPanel /> : (
+            <ResponseLoadingPanel activeKey={this.props.activeKey} cancelRequest={this.props.cancelRequest} /> : (
                 this.activeResponse ? (
-                    this.activeResponse instanceof Error ?
-                        'error' :
-                        <ResPanel
-                            height={this.state.resHeights[this.props.activeKey]}
-                            res={this.activeResponse}
-                            toggleResPanelMaximize={this.toggleReqPanelVisible}
-                        />
+                    this.activeResponse.error ?
+                        <ResErrorPanel url={this.activeRecord.url} error={this.activeResponse.error} /> :
+                        (
+                            <ResPanel
+                                height={this.state.resHeights[this.props.activeKey]}
+                                res={this.activeResponse}
+                                toggleResPanelMaximize={this.toggleReqPanelVisible}
+                            />
+                        )
                 ) :
                     nonResPanel
             );
@@ -71,7 +76,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         return this.activeRecordState.record;
     }
 
-    get activeResponse(): RunResult | Error | undefined {
+    get activeResponse(): RunResult | undefined {
         return this.props.responseState[this.props.activeKey];
     }
 
@@ -145,7 +150,6 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                     {
                         this.props.recordState.map(recordState => {
                             const { name, record, isRequesting } = recordState;
-                            console.log(Object.keys(this.state.reqPanelVisible));
                             const includeKey = Object.keys(this.state.reqPanelVisible).indexOf(record.id) > -1;
                             const reqStyle = (includeKey && !this.state.reqPanelVisible[record.id]) ? { display: 'none' } : {};
                             return (
@@ -181,7 +185,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): ReqResPanelDispatchProps =
         sendRequest: (record: DtoRecord) => dispatch(sendRequestAction({ record, environment: '' })),
         addTab: () => dispatch(addTabAction()),
         removeTab: (key) => dispatch(removeTabAction(key)),
-        onChanged: (record) => dispatch(updateRecordAction(record))
+        onChanged: (record) => dispatch(updateRecordAction(record)),
+        cancelRequest: (id) => dispatch(cancelRequestAction(id))
     };
 };
 

@@ -10,7 +10,7 @@ export class TestRunner {
         try {
             VM.runInThisContext(code);
         } catch (err) {
-            return { ['error']: err };
+            return { ['$error$']: err };
         }
         return _.clone(global['tests']);
     }

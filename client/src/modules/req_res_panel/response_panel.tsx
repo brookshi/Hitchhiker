@@ -3,7 +3,7 @@ import { Tabs, Icon, Button } from 'antd';
 import Editor from '../../components/editor';
 import './style/index.less';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
-import { StringUtil } from "../../utils/string_util";
+import { StringUtil } from '../../utils/string_util';
 
 const TabPane = Tabs.TabPane;
 
@@ -47,6 +47,9 @@ class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
 
     public render() {
         const { body, elapsed, status, statusMessage, cookies, headers, tests } = this.props.res;
+        if (!body) {
+            return <div />;
+        }
         const extraContent = (
             <div>
                 <span>Status:</span>

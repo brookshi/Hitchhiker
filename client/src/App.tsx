@@ -37,8 +37,7 @@ class App extends React.Component<{}, any> {
   render() {
     return (
       <Layout className="layout">
-        <Header>
-        </Header>
+        <Header />
         <Layout>
           <Sider style={{ maxWidth: 50 }}>
             <Menu
@@ -72,7 +71,7 @@ class App extends React.Component<{}, any> {
             <Sider
               className="collection-sider"
               style={{ minWidth: this.state.collapsed ? 0 : 300 }}
-              collapsible
+              collapsible={true}
               collapsedWidth="0.1"
               collapsed={this.state.collapsed}
               onCollapse={this.onCollapse}>
