@@ -12,14 +12,14 @@ interface ResPanelProps {
 
     res: RunResult;
 
+    activeTab: string;
+
     toggleResPanelMaximize: (status: 'up' | 'down') => void;
+
+    onTabChanged: (key: string) => void;
 }
 
 interface ResPanelState {
-    contentType?: 'json' | 'xml' | 'text';
-
-    testFilter?: 'all' | 'success' | 'failed';
-
     panelStatus: 'up' | 'down';
 }
 
@@ -95,6 +95,8 @@ class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
             <Tabs
                 className="req-res-tabs res-tab"
                 defaultActiveKey="content"
+                activeKey={this.props.activeTab}
+                onChange={this.props.onTabChanged}
                 animated={false}
                 tabBarExtraContent={extraContent}>
                 <TabPane tab="Content" key="content">

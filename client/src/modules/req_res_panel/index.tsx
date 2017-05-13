@@ -40,6 +40,8 @@ interface ReqResPanelState {
     reqPanelVisible: { [id: string]: boolean };
 
     resHeights: { [id: string]: number };
+
+    activeResTab: string;
 }
 
 class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
@@ -54,6 +56,8 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                         <ResErrorPanel url={this.activeRecord.url} error={this.activeResponse.error} /> :
                         (
                             <ResPanel
+                                activeTab={this.state.activeResTab}
+                                onTabChanged={this.onResTabChanged}
                                 height={this.state.resHeights[this.props.activeKey]}
                                 res={this.activeResponse}
                                 toggleResPanelMaximize={this.toggleReqPanelVisible}
@@ -84,8 +88,13 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         super(props);
         this.state = {
             reqPanelVisible: {},
-            resHeights: {}
+            resHeights: {},
+            activeResTab: 'content'
         };
+    }
+
+    onResTabChanged = (key: string) => {
+        this.setState({ ...this.state, activeResTab: key });
     }
 
     updateReqPanelHeight = (reqHeight: number) => {
