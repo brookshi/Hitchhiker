@@ -4,6 +4,7 @@ import Editor from '../../components/editor';
 import './style/index.less';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
 import { StringUtil } from '../../utils/string_util';
+import { nameWithTag } from '../../components/name_with_tag';
 
 const TabPane = Tabs.TabPane;
 
@@ -91,6 +92,10 @@ class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
         );
 
         const value = StringUtil.beautify(body, headers['Content-Type']);
+        const testKeys = Object.keys(tests);
+        const succTestLen = Object.keys(tests).filter(t => tests[t]).length;
+        const testsTag = testKeys.length > 0 ? `${succTestLen}/${Object.keys(tests).length}` : '';
+
         return (
             <Tabs
                 className="req-res-tabs res-tab"
@@ -102,17 +107,17 @@ class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
                 <TabPane tab="Content" key="content">
                     <Editor type="json" value={value} height={this.props.height} readOnly={true} />
                 </TabPane>
-                <TabPane className="display-tab-panel" tab="Headers" key="headers">
+                <TabPane className="display-tab-panel" tab={nameWithTag('Headers', Object.keys(headers).length.toString())} key="headers">
                     {
                         tabPanelHeaders(headers)
                     }
                 </TabPane>
-                <TabPane className="display-tab-panel" tab="Cookies" key="cookies">
+                <TabPane className="display-tab-panel" tab={nameWithTag('Cookies', cookies.length.toString())} key="cookies">
                     {
                         tabPanelCookie(cookies)
                     }
                 </TabPane>
-                <TabPane className="display-tab-panel" tab="Test" key="test">
+                <TabPane className="display-tab-panel" tab={nameWithTag('Test', testsTag, succTestLen === testKeys.length ? 'normal' : 'warning')} key="test">
                     {
                         tabPanelTest(tests)
                     }

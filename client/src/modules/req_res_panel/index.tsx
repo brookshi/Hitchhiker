@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { Tabs } from 'antd';
+import { Tabs, Badge } from 'antd';
 import { DtoResRecord } from '../../../../api/interfaces/dto_res';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
@@ -122,7 +122,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         });
     }
 
-    onChange = (key) => {
+    onTabChanged = (key) => {
         const recordState = this.props.recordState.find(r => r.record.id === key);
         if (recordState) {
             this.props.activeTab(recordState.record.id);
@@ -146,13 +146,12 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 
     public render() {
-
         return (
             <div className="request-tab" ref={this.setReqResPanel}>
                 <Tabs
                     activeKey={this.activeRecord.id}
                     type="editable-card"
-                    onChange={this.onChange}
+                    onChange={this.onTabChanged}
                     onEdit={this.onEdit}
                     animated={false}
                 >
@@ -162,7 +161,11 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                             const includeKey = Object.keys(this.state.reqPanelVisible).indexOf(record.id) > -1;
                             const reqStyle = (includeKey && !this.state.reqPanelVisible[record.id]) ? { display: 'none' } : {};
                             return (
-                                <Tabs.TabPane key={record.id} tab={name} closable={true}>
+                                <Tabs.TabPane
+                                    key={record.id}
+                                    tab={<Badge count={0} dot={recordState.isChanged}>{name}</Badge>}
+                                    closable={true}
+                                >
                                     <div className="req-res-panel">
                                         <RequestPanel
                                             style={reqStyle}

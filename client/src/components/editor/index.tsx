@@ -3,7 +3,7 @@ import AceEditor from 'react-ace';
 
 import 'brace/mode/javascript';
 import 'brace/mode/json';
-import 'brace/theme/xcode';
+import 'brace/theme/eclipse';
 import 'brace/ext/language_tools';
 import 'brace/snippets/javascript';
 
@@ -38,7 +38,7 @@ class Editor extends React.Component<EditorProps, EditorState> {
         let props = {
             className: 'req-editor',
             mode: type,
-            theme: 'xcode',
+            theme: 'eclipse',
             width: '100%',
             height: activeHeight + 'px',
             fontSize: 12,

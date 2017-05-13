@@ -45,6 +45,7 @@ function recordState(states: RecordState[] = initialState.collectionState.record
         case UpdateRecordType: {
             const index = states.findIndex(r => r.record.id === action.record.id);
             states[index].record = { ...action.record };
+            states[index].isChanged = true;
             return [...states];
         }
         case CancelRequestType: {

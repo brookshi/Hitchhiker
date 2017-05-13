@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from 'react';
-import { Form, Select, Input, Dropdown, Menu, Button, Tabs } from 'antd';
+import { Form, Select, Input, Dropdown, Menu, Button, Tabs, Badge } from 'antd';
 import { HttpMethod } from '../../common/http_method';
 import KeyValueItem from '../../components/key_value';
 import Editor from '../../components/editor';
@@ -8,6 +8,8 @@ import { StringUtil } from '../../utils/string_util';
 import { KeyValuePair } from '../../common/key_value_pair';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { DtoHeader } from '../../../../api/interfaces/dto_header';
+import { nameWithTag } from '../../components/name_with_tag/index';
+import { normalBadgeStyle } from '../../style/theme';
 import './style/index.less';
 
 const FItem = Form.Item;
@@ -216,13 +218,13 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                             animated={false}
                             onChange={this.onTabChanged}
                             tabBarExtraContent={this.getTabExtraFunc()}>
-                            <TabPane tab="Headers" key="headers">
+                            <TabPane tab={nameWithTag('Headers', activeRecord.headers ? (Math.max(0, activeRecord.headers.length - 1)).toString() : '')} key="headers">
                                 {this.getHeadersCtrl()}
                             </TabPane>
-                            <TabPane tab="Body" key="body">
+                            <TabPane tab={<Badge style={normalBadgeStyle} dot={!!activeRecord.body && activeRecord.body.length > 0} count={0}>Body</Badge>} key="body">
                                 <Editor type={activeRecord.bodyType} fixHeight={true} height={300} value={activeRecord.body} onChange={v => this.onInputChanged(v, 'body')} />
                             </TabPane>
-                            <TabPane tab="Test" key="test">
+                            <TabPane tab={<Badge style={normalBadgeStyle} dot={!!activeRecord.test && activeRecord.test.length > 0} count={0}>Test</Badge>} key="test">
                                 <Editor type="javascript" height={300} fixHeight={true} value={activeRecord.test} onChange={v => this.onInputChanged(v, 'test')} />
                             </TabPane>
                         </Tabs>
