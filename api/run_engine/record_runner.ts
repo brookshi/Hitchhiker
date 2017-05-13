@@ -36,7 +36,7 @@ export class RecordRunner {
             tests: testRst,
             elapsed: elapsed,
             headers: pRes.headers,
-            cookies: pRes.headers ? pRes.headers['set-cookie'] : '',
+            cookies: pRes.headers ? pRes.headers['set-cookie'] : [],
             status: pRes.statusCode,
             statusMessage: pRes.statusMessage
         };

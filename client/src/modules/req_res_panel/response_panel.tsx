@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tabs, Icon, Button } from 'antd';
+import { Tabs, Icon, Button, Tag } from 'antd';
 import Editor from '../../components/editor';
 import './style/index.less';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
@@ -29,6 +29,36 @@ interface ResPanelState {
         <Icon type="search" />
     </div>
 );*/
+
+const tabPanelCookie = (cookies: string[]) => (
+    cookies.map((cookie, index) => <div key={`res-cookie-${index}`}> {cookie} </div>)
+);
+
+const tabPanelHeaders = (headers: { [key: string]: string; }) => (
+    <ul className="res-tabpanel-list">
+        {
+            headers ? Object.keys(headers).map(key => (
+                <li key={`res-header-${key}`}>
+                    <span className="tabpanel-headers-key">{key}: </span>
+                    <span>{headers[key]}</span>
+                </li>)
+            ) : ''
+        }
+    </ul>
+);
+
+const tabPanelTest = (tests: { [key: string]: boolean }) => (
+    <ul className="res-tabpanel-list">
+        {
+            tests ? Object.keys(tests).map(key => (
+                <li key={`res-test-${key}`}>
+                    <Tag color={tests[key] ? '#87d068' : '#f50'}>{tests[key] ? 'PASS' : 'FAIL'}</Tag>
+                    <span>{key}</span>
+                </li>)
+            ) : ''
+        }
+    </ul>
+);
 
 class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
 
@@ -70,14 +100,20 @@ class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
                 <TabPane tab="Content" key="content">
                     <Editor type="json" value={value} height={this.props.height} readOnly={true} />
                 </TabPane>
-                <TabPane tab="Headers" key="headers">
-                    {headers}
+                <TabPane className="display-tab-panel" tab="Headers" key="headers">
+                    {
+                        tabPanelHeaders(headers)
+                    }
                 </TabPane>
-                <TabPane tab="Cookies" key="cookies">
-                    {cookies}
+                <TabPane className="display-tab-panel" tab="Cookies" key="cookies">
+                    {
+                        tabPanelCookie(cookies)
+                    }
                 </TabPane>
-                <TabPane tab="Test" key="test">
-                    {tests}
+                <TabPane className="display-tab-panel" tab="Test" key="test">
+                    {
+                        tabPanelTest(tests)
+                    }
                 </TabPane>
             </Tabs>
         );

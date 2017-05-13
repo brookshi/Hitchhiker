@@ -20,7 +20,7 @@
     "less": "^2.7.2",
     "less-loader": "^4.0.3",
     "react": "^15.5.4",
-    "react-ace": "^4.2.1",
+    "react-ace": "^4.2.2",
     "react-dom": "^15.5.4",
     "react-perfect-scrollbar": "^0.2.0",
     "react-redux": "^5.0.4",

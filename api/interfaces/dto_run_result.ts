@@ -1,4 +1,3 @@
-import { DtoHeader } from "../interfaces/dto_header";
 
 export interface RunResult {
 
@@ -14,7 +13,7 @@ export interface RunResult {
 
     elapsed: number;
 
-    headers: DtoHeader[];
+    headers: { [key: string]: string };
 
-    cookies: string;
+    cookies: string[];
 }
