@@ -12,14 +12,14 @@ export function collections(state: DtoResCollection[] = initialState.collections
     }
 }
 
-export function collectionState(state: CollectionState = initialState.collectionState, action: any): CollectionState {
+export function root(state: CollectionState = initialState.collectionState, action: any): CollectionState {
     const intermediateState = combineReducers<CollectionState>({
         activeKey,
         recordState,
         responseState: (s = initialState.collectionState.responseState, a) => s
     })(state, action);
 
-    const finalState = root(intermediateState, action);
+    const finalState = collectionState(intermediateState, action);
 
     return finalState;
 }
@@ -64,7 +64,7 @@ function recordState(states: RecordState[] = initialState.collectionState.record
     }
 }
 
-function root(state: CollectionState = initialState.collectionState, action: any): CollectionState {
+function collectionState(state: CollectionState = initialState.collectionState, action: any): CollectionState {
     let { recordState, activeKey } = state;
     switch (action.type) {
         case AddRecordType:

@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import { spawn } from 'redux-saga/effects';
 import { refreshCollection } from '../modules/collection_tree/action';
 import { sendRequest } from '../modules/req_res_panel/action';
-import { collectionState, collections } from './collection';
+import { root as collectionState, collections } from './collection';
 
 export function* rootSaga() {
     yield [
