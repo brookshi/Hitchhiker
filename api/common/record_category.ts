@@ -1,5 +1,5 @@
 
 export enum RecordCategory {
-    record = 1,
-    folder = 2
+    folder = 10,
+    record = 20,
 }

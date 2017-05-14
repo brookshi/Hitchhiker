@@ -1,13 +1,34 @@
 import { initialState, getDefaultRecord, CollectionState, RecordState } from '../state';
 import { FetchCollectionType, ActiveRecordType } from '../modules/collection_tree/action';
-import { ActiveTabType, SendRequestFulfilledType, AddRecordType, RemoveRecordType, UpdateRecordType, SendRequestType, CancelRequestType } from '../modules/req_res_panel/action';
-import { DtoResCollection } from '../../../api/interfaces/dto_res';
+import { ActiveTabType, SendRequestFulfilledType, AddTabType, RemoveTabType, UpdateTabType, SendRequestType, CancelRequestType, SaveRecordType } from '../modules/req_res_panel/action';
 import { combineReducers } from 'redux';
+import * as _ from 'lodash';
+import { DtoCollectionWithRecord } from '../../../api/interfaces/dto_collection';
+import { StringUtil } from '../utils/string_util';
 
-export function collections(state: DtoResCollection[] = initialState.collections, action: any): DtoResCollection[] {
+export function collectionsInfo(state: DtoCollectionWithRecord = initialState.collectionsInfo, action: any): DtoCollectionWithRecord {
     switch (action.type) {
-        case FetchCollectionType:
-            return action.collections;
+        case FetchCollectionType: {
+            console.log(action.collections);
+            return _.cloneDeep(action.collections);
+        }
+        case SaveRecordType: {
+            const record = action.record;
+            if (record.id.startsWith('@new')) {
+                record.id = StringUtil.generateUID();
+                let collectionRecords = _.values(state.records[record.collectionId]);
+                collectionRecords.push(record);
+                collectionRecords = _.sortBy(collectionRecords, r => r.name);
+                return { ...state, [record.collectionId]: { ..._.keyBy(collectionRecords) } };
+
+            } else {
+                const originRecord = state.records[record.collectionId][record.id];
+                if (originRecord) {
+                    return { ...state, [record.collectionId]: { ...state.records[record.collectionId], [record.id]: record } };
+                }
+            }
+            return state;
+        }
         default: return state;
     }
 }
@@ -42,10 +63,16 @@ function recordState(states: RecordState[] = initialState.collectionState.record
             states[index].isRequesting = true;
             return [...states];
         }
-        case UpdateRecordType: {
+        case UpdateTabType: {
             const index = states.findIndex(r => r.record.id === action.record.id);
             states[index].record = { ...action.record };
             states[index].isChanged = true;
+            return [...states];
+        }
+        case SaveRecordType: {
+            const index = states.findIndex(r => r.record.id === action.record.id);
+            states[index].record = { ...action.record };
+            states[index].isChanged = false;
             return [...states];
         }
         case CancelRequestType: {
@@ -56,6 +83,7 @@ function recordState(states: RecordState[] = initialState.collectionState.record
         case ActiveRecordType: {
             const isNotExist = !states.find(r => r.record.id === action.record.id);
             if (isNotExist) {
+                action.record.collectionId = action.record.collection.id;
                 states = [...states, { name: action.record.name, record: action.record, isChanged: false, isRequesting: false }];
             }
             return [...states];
@@ -68,7 +96,7 @@ function recordState(states: RecordState[] = initialState.collectionState.record
 function collectionState(state: CollectionState = initialState.collectionState, action: any): CollectionState {
     let { recordState, activeKey } = state;
     switch (action.type) {
-        case AddRecordType:
+        case AddTabType:
             const newRecord = getDefaultRecord();
             return {
                 ...state,
@@ -78,7 +106,7 @@ function collectionState(state: CollectionState = initialState.collectionState, 
                 ],
                 activeKey: newRecord.id
             };
-        case RemoveRecordType: {
+        case RemoveTabType: {
             let index = recordState.findIndex(r => r.record.id === action.key);
             const activeIndex = recordState.findIndex(r => r.record.id === activeKey);
             recordState.splice(index, 1);

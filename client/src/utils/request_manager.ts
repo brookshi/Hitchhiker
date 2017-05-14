@@ -1,28 +1,48 @@
+import { HttpMethod, HttpMethodType } from '../common/http_method';
+
+export enum SyncType {
+    updateRecord = 0,
+    addRecord = 1,
+    delRecord = 2,
+    addCollection = 3,
+    delCollection = 4,
+}
+
+export interface SyncItem {
+    type: SyncType;
+    method: HttpMethodType;
+    url: string;
+    body?: any;
+}
+
+const jsonHeaders = { 'Content-Type': 'application/json' };
+
 export default class RequestManager {
     private static requestCanceledPool: { [key: string]: boolean } = {};
 
+    static sync(syncItem: SyncItem): Promise<Response> {
+        const { url, method, body } = syncItem;
+        return RequestManager.request(url, method, body);
+    }
+
     static get(url: string): Promise<Response> {
-        return fetch(url);
+        return RequestManager.request(url, HttpMethod.GET);
     }
 
     static post(url: string, body: any): Promise<Response> {
-        return fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        });
+        return RequestManager.request(url, HttpMethod.POST, body);
     }
 
     static put(url: string, body: any): Promise<Response> {
-        return fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        });
+        return RequestManager.request(url, HttpMethod.PUT, body);
+    }
+
+    static delete(url: string): Promise<Response> {
+        return RequestManager.request(url, HttpMethod.DELETE);
+    }
+
+    static request(url: string, method: HttpMethodType, body?: any): Promise<Response> {
+        return fetch(url, { method: method, headers: jsonHeaders, body: body ? JSON.stringify(body) : undefined });
     }
 
     static cancelRequest(id: string) {

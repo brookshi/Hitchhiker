@@ -75,7 +75,7 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
     }
 
     getInitedHeaders(props: KeyValueComponentProps): DtoHeader[] {
-        let headers = props.headers;
+        let headers = [...props.headers];
         if (!headers || headers.length === 0) {
             headers = [generateDefaultHeader()];
         }
@@ -100,10 +100,6 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
     onValueChange = (type: 'key' | 'value' | 'isActive', index: number, event) => {
         const { headers } = this.state;
         headers[index][type] = event.target.value;
-
-        if (index === headers.length - 1 && event.target.value !== '') {
-            headers.push(generateDefaultHeader());
-        }
         this.onChanged(headers);
     }
 

@@ -8,7 +8,7 @@ import { Record } from "../models/record";
 
 export interface DtoResCollection extends Collection { }
 
-export interface DtoResRecord extends Record { }
+export interface DtoResRecord extends Partial<Record> { }
 
 export interface DtoResUser extends User { }
 

@@ -1,15 +1,6 @@
 import { combineReducers } from 'redux';
-import { spawn } from 'redux-saga/effects';
-import { refreshCollection } from '../modules/collection_tree/action';
-import { sendRequest } from '../modules/req_res_panel/action';
-import { root as collectionState, collections } from './collection';
-
-export function* rootSaga() {
-    yield [
-        spawn(refreshCollection),
-        spawn(sendRequest)
-    ];
-};
+import { root as collectionState, collectionsInfo } from './collection';
+import { State, initialState } from '../state';
 
 export const reduceReducers = (...reducers) => {
     return (state, action) =>
@@ -20,6 +11,23 @@ export const reduceReducers = (...reducers) => {
 };
 
 export const rootReducer = combineReducers({
-    collections,
+    collectionsInfo,
     collectionState
 });
+
+export function rootReducer1(state: State = initialState, action: any): State {
+    const intermediateState = combineReducers<State>({
+        collectionsInfo,
+        collectionState
+    })(state, action);
+
+    const finalState = root(intermediateState, action);
+
+    return finalState;
+};
+
+function root(state: State = initialState, action: any): State {
+    switch (action.type) {
+        default: return state;
+    }
+}

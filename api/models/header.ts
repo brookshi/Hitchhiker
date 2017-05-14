@@ -6,10 +6,10 @@ export class Header {
     @PrimaryColumn()
     id: string;
 
-    @Column()
+    @Column({ nullable: true })
     key: string;
 
-    @Column()
+    @Column({ nullable: true })
     value: string;
 
     @Column({ default: true })

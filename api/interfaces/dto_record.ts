@@ -6,13 +6,13 @@ export interface DtoRecord {
 
     id: string;
 
-    collectionId: string;
+    collectionId?: string;
 
     pid?: string;
 
     category: RecordCategory;
 
-    name?: string;
+    name: string;
 
     url?: string;
 

@@ -4,7 +4,6 @@ import { ConnectionManager } from "./connection_manager";
 import { ObjectLiteral } from "typeorm/common/ObjectLiteral";
 import { User } from "../models/user";
 import { Message } from "../common/message";
-import { Team } from "../models/team";
 import { StringUtil } from "../utils/string_util";
 import { DtoCollection } from "../interfaces/dto_collection";
 import { RecordService } from "./record_service";
@@ -34,6 +33,10 @@ export class CollectionService {
         return collection;
     }
 
+    static toDto(collection: Collection): DtoCollection {
+        return <DtoCollection>collection;
+    }
+
     static async create(name: string, desc: string, userId: string): Promise<ResObject> {
         const owner = new User();
         owner.id = userId;
@@ -57,6 +60,7 @@ export class CollectionService {
             .leftJoinAndSelect('collection.owner', 'owner')
             .where('recycle = 0')
             .andWhere('owner.id = :userId')
+            .orderBy('collection.name')
             .setParameter('userId', userId)
             .getMany();
     }
@@ -122,6 +126,7 @@ export class CollectionService {
             .leftJoinAndSelect('collection.owner', 'owner')
             .where('recycle = 0')
             .andWhere(whereStr, parameters)
+            .orderBy('collection.name')
             .getMany();
     }
 

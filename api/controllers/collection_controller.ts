@@ -1,21 +1,29 @@
 import { CollectionService } from '../services/collection_service';
-import { Collection } from '../models/collection';
 import { UserCollectionService } from '../services/user_collection_service';
 import { GET, POST, BodyParam, PathParam, BaseController } from 'webapi-router';
 import { ResObject } from "../common/res_object";
 import * as Koa from 'koa';
-import { DtoCollection } from "../interfaces/dto_collection";
+import { DtoCollection, DtoCollectionWithRecord } from "../interfaces/dto_collection";
 import { SessionService } from "../services/session_service";
 import { MetadataService } from "../services/metadata_service";
 import { Message } from "../common/message";
 import { EnvironmentService } from "../services/environment_service";
+import * as _ from 'lodash';
+import { RecordService } from "../services/record_service";
+import { DtoRecord } from "../interfaces/dto_record";
 
 export default class CollectionController extends BaseController {
 
     @GET('/collections')
-    async getCollections(ctx: Koa.Context): Promise<Collection[]> {
+    async getCollections(ctx: Koa.Context): Promise<DtoCollectionWithRecord> {
         const userId = SessionService.getUserId(ctx);
-        return await UserCollectionService.getUserCollections(userId);
+        const { collections, recordsList } = await UserCollectionService.getUserCollections(userId);
+        let records: _.Dictionary<_.Dictionary<DtoRecord>> = {};
+        _.keys(recordsList).forEach(k => records[k] = _.chain(recordsList[k]).map(r => RecordService.toDto(r)).keyBy('id').value());
+        return {
+            collections: _.keyBy<DtoCollection>(collections.map(c => CollectionService.toDto(c)), 'id'),
+            records
+        };
     }
 
     @POST('/collection')

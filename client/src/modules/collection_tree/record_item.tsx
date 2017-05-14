@@ -4,8 +4,8 @@ import './style/index.less';
 
 interface RecordItemProps {
     name: string;
-    method: string;
-    url: string;
+    method?: string;
+    url?: string;
     inFolder: boolean;
 }
 
@@ -16,7 +16,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
 
     public render() {
         let { name, method, inFolder } = this.props;
-
+        method = method || 'GET';
         return (
             <span className="record">
                 <span className={'record-icon' + (inFolder ? ' record-in-folder' : '')}>

@@ -39,12 +39,10 @@ export class RecordService {
         return record;
     }
 
-    async save(record: Record) {
-        if (!record.id) {
-            record.id = StringUtil.generateUID();
-        }
-        const connection = await ConnectionManager.getInstance();
-        await connection.getRepository(Record).persist(record);
+    static toDto(target: Record): DtoRecord {
+        let record: DtoRecord = target;
+        record.collectionId = target.collection.id;
+        return record;
     }
 
     static formatHeaders(record: Record): { [key: string]: string } {
@@ -82,16 +80,10 @@ export class RecordService {
             .innerJoinAndSelect("record.collection", "collection")
             .leftJoinAndSelect('record.headers', 'header')
             .where(whereStr, parameters)
+            .orderBy('record.name')
             .getMany();
 
         let recordsList = _.groupBy(records, o => o.collection.id);
-
-        for (let key in recordsList) {
-            if (!needCollection) {
-                recordsList[key].forEach(r => r.collection = undefined);
-            }
-            recordsList[key] = RecordService.toTree(recordsList[key]);
-        }
 
         return recordsList;
     }
@@ -112,13 +104,20 @@ export class RecordService {
 
     static async update(record: Record): Promise<ResObject> {
         const connection = await ConnectionManager.getInstance();
-        const recordInDB = await RecordService.getById(record.id);
+        const recordInDB = await RecordService.getById(record.id, true);
 
         if (recordInDB && recordInDB.headers.length > 0) {
             await connection.getRepository(Header).remove(recordInDB.headers);
         }
-
+        RecordService.adjustHeaders(record);
         return await RecordService.save(record);
+    }
+
+    private static adjustHeaders(record: Record) {
+        record.headers.forEach((header, index) => {
+            header.id = header.id || StringUtil.generateUID();
+            header.sort = index;
+        });
     }
 
     static async getMaxSort(): Promise<number> {
@@ -152,7 +151,11 @@ export class RecordService {
         if (!record.name) {
             return { success: false, message: Message.recordCreateFailedOnName };
         }
-        await RecordService.save(record);
+        if (!record.id) {
+            record.id = StringUtil.generateUID();
+        }
+        const connection = await ConnectionManager.getInstance();
+        await connection.getRepository(Record).persist(record);
         return { success: true, message: Message.recordSaveSuccess };
     }
 

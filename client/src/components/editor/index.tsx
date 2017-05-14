@@ -5,6 +5,7 @@ import 'brace/mode/javascript';
 import 'brace/mode/json';
 import 'brace/theme/eclipse';
 import 'brace/ext/language_tools';
+import 'brace/ext/searchbox';
 import 'brace/snippets/javascript';
 
 import './style/index.less';

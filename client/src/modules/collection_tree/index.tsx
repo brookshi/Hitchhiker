@@ -1,27 +1,29 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { Menu } from 'antd';
-import { DtoResCollection, DtoResRecord } from '../../../../api/interfaces/dto_res';
 import { refreshCollectionAction, activeRecordAction } from './action';
 import { State } from '../../state';
 import RecordFolder from './record_folder';
 import RecordItem from './record_item';
 import CollectionItem from './collection_item';
-import './style/index.less';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { SelectParam } from 'antd/lib/menu';
+import * as _ from 'lodash';
+import { DtoCollection } from '../../../../api/interfaces/dto_collection';
+import './style/index.less';
 
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
 
 interface CollectionListStateProps {
-    collections: DtoResCollection[];
+    collections: _.Dictionary<DtoCollection>;
+    records: _.Dictionary<_.Dictionary<DtoRecord>>;
     activeKey: string;
 }
 
 interface CollectionListDispatchProps {
     refresh: Function;
-    activeRecord: (record: DtoRecord | DtoResRecord) => void;
+    activeRecord: (record: DtoRecord) => void;
 }
 
 type CollectionListProps = CollectionListStateProps & CollectionListDispatchProps;
@@ -54,15 +56,16 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     }
 
     render() {
-        const { collections, activeKey } = this.props;
+        const { collections, records, activeKey } = this.props;
         const recordStyle = { height: '30px', lineHeight: '30px' };
 
-        const loopRecords = (data: DtoResRecord[], inFolder: boolean = false) => data.map(r => {
-            if (r.children && r.children.length) {
+        const loopRecords = (data: DtoRecord[], inFolder: boolean = false) => data.map(r => {
+            if (r.category === 10) {
                 const isOpen = this.state.openKeys.indexOf(r.id) > -1;
+                const children = _.remove(data, (d) => d.pid === r.id);
                 return (
                     <SubMenu className="folder" key={r.id} title={<RecordFolder name={r.name} isOpen={isOpen} />}>
-                        {loopRecords(r.children, true)}
+                        {loopRecords(children, true)}
                     </SubMenu>
                 );
             }
@@ -84,10 +87,10 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                 onSelect={this.onSelectChanged}
             >
                 {
-                    collections.map(c => {
+                    _.chain(collections).values<DtoCollection>().sortBy('name').value().map(c => {
                         return (
                             <SubMenu className="collection-item" key={c.id} title={<CollectionItem name={c.name} />}>
-                                {loopRecords(c.records)}
+                                {loopRecords(_.chain(records[c.id]).values<DtoRecord>().sortBy(['category', 'name']).value())}
                             </SubMenu>
                         );
                     })
@@ -99,7 +102,8 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
 
 const mapStateToProps = (state: State): CollectionListStateProps => {
     return {
-        collections: state.collections,
+        collections: state.collectionsInfo.collections,
+        records: state.collectionsInfo.records,
         activeKey: state.collectionState.activeKey
     };
 };

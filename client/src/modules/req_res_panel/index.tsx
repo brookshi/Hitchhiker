@@ -4,7 +4,7 @@ import { Tabs, Badge } from 'antd';
 import { DtoResRecord } from '../../../../api/interfaces/dto_res';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
-import { activeTabAction, sendRequestAction, addTabAction, removeTabAction, updateRecordAction, cancelRequestAction } from './action';
+import { activeTabAction, sendRequestAction, addTabAction, removeTabAction, updateRecordAction, cancelRequestAction, saveRecordAction, saveAsRecordAction } from './action';
 import './style/index.less';
 import { ResponseState, State, RecordState } from '../../state';
 import RequestPanel from './request_panel';
@@ -32,6 +32,10 @@ interface ReqResPanelDispatchProps {
     onChanged(record: DtoRecord);
 
     cancelRequest(id: string);
+
+    save(record: DtoRecord);
+
+    saveAs(record: DtoRecord);
 }
 
 type ReqResPanelProps = ReqResPanelStateProps & ReqResPanelDispatchProps;
@@ -174,6 +178,8 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                                             isRequesting={isRequesting}
                                             onChanged={this.props.onChanged}
                                             onResize={this.updateReqPanelHeight}
+                                            save={this.props.save}
+                                            saveAs={this.props.saveAs}
                                         />
                                         {this.responsePanel}
                                     </div>
@@ -198,7 +204,9 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): ReqResPanelDispatchProps =
         addTab: () => dispatch(addTabAction()),
         removeTab: (key) => dispatch(removeTabAction(key)),
         onChanged: (record) => dispatch(updateRecordAction(record)),
-        cancelRequest: (id) => dispatch(cancelRequestAction(id))
+        cancelRequest: (id) => dispatch(cancelRequestAction(id)),
+        save: (record) => dispatch(saveRecordAction(record)),
+        saveAs: (record) => dispatch(saveAsRecordAction(record)),
     };
 };
 

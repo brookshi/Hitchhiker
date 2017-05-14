@@ -1,3 +1,5 @@
+import { DtoRecord } from "./dto_record";
+
 export interface DtoCollection {
 
     id: string;
@@ -5,4 +7,9 @@ export interface DtoCollection {
     name: string;
 
     description: string;
+}
+
+export interface DtoCollectionWithRecord {
+    collections: _.Dictionary<DtoCollection>;
+    records: _.Dictionary<_.Dictionary<DtoRecord>>;
 }

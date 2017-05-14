@@ -26,6 +26,8 @@ interface RequestPanelStateProps {
     sendRequest: (record: DtoRecord) => void;
     onChanged: (record: DtoRecord) => void;
     onResize: (height: number) => void;
+    save: (record: DtoRecord) => void;
+    saveAs: (record: DtoRecord) => void;
 }
 
 interface RequestPanelState {
@@ -117,6 +119,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         if (!(data instanceof Array)) {
             rst = StringUtil.stringToKeyValues(data.currentTarget.value) as DtoHeader[];
         }
+        rst = rst.filter(header => header.key || header.value);
         this.onRecordChanged({ ...this.props.activeRecord, headers: rst });
     }
 
@@ -145,11 +148,11 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     }
 
     onSaveAs = (e) => {
-        console.log('click', e);
+        this.props.saveAs(this.props.activeRecord);
     }
 
     onSave = (e) => {
-        console.log('click', e);
+        this.props.save(this.props.activeRecord);
     }
 
     onTabChanged = (e) => {
