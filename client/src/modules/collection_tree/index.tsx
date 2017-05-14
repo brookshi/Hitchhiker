@@ -10,6 +10,7 @@ import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { SelectParam } from 'antd/lib/menu';
 import * as _ from 'lodash';
 import { DtoCollection } from '../../../../api/interfaces/dto_collection';
+import { RecordCategory } from '../../common/record_category';
 import './style/index.less';
 
 const SubMenu = Menu.SubMenu;
@@ -60,7 +61,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         const recordStyle = { height: '30px', lineHeight: '30px' };
 
         const loopRecords = (data: DtoRecord[], inFolder: boolean = false) => data.map(r => {
-            if (r.category === 10) {
+            if (r.category === RecordCategory.folder) {
                 const isOpen = this.state.openKeys.indexOf(r.id) > -1;
                 const children = _.remove(data, (d) => d.pid === r.id);
                 return (
