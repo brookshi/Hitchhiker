@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { Tabs, Badge } from 'antd';
-import { DtoResRecord } from '../../../../api/interfaces/dto_res';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
 import { activeTabAction, sendRequestAction, addTabAction, removeTabAction, updateRecordAction, cancelRequestAction, saveRecordAction, saveAsRecordAction } from './action';
@@ -80,7 +79,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         throw new Error('miss active record state');
     }
 
-    get activeRecord(): DtoRecord | DtoResRecord {
+    get activeRecord(): DtoRecord {
         return this.activeRecordState.record;
     }
 
