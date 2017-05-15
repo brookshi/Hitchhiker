@@ -14,10 +14,10 @@ export class Record {
     @ManyToOne(type => Collection, collection => collection.records)
     collection: Collection;
 
-    @Column({ default: '' })
+    @Column({ nullable: true, default: '' })
     pid: string;
 
-    @Column({ type: 'int', default: 1 })
+    @Column({ type: 'int', default: 20 })
     category: RecordCategory;
 
     @Column()
@@ -26,7 +26,7 @@ export class Record {
     @Column({ nullable: true })
     url: string;
 
-    @Column()
+    @Column({ nullable: true })
     method: string;
 
     @OneToMany(type => Header, header => header.record, {

@@ -16,6 +16,7 @@ export const SendRequestFailedType = 'send_request_failed_type';
 export const CancelRequestType = 'cancel_request_type';
 export const SaveRecordType = 'save_record_type';
 export const SaveAsRecordType = 'save_as_record_type';
+export const UpdateTabRecordId = 'update_tab_record_id';
 
 export const addTabAction = () => ({ type: AddTabType });
 

@@ -1,15 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne } from 'typeorm';
 import { Environment } from "./environment";
 
 @Entity()
 export class Variable {
-    @PrimaryGeneratedColumn()
-    id: number;
+    @PrimaryColumn()
+    id: string;
 
-    @Column()
+    @Column({ nullable: true })
     key: string;
 
-    @Column()
+    @Column({ nullable: true })
     value: string;
 
     @Column({ default: false })

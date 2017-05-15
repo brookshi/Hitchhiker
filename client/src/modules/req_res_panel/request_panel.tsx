@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from 'react';
-import { Form, Select, Input, Dropdown, Menu, Button, Tabs, Badge } from 'antd';
+import { Form, Select, Input, Dropdown, Menu, Button, Tabs, Badge, Modal, TreeSelect } from 'antd';
 import { HttpMethod } from '../../common/http_method';
 import KeyValueItem from '../../components/key_value';
 import Editor from '../../components/editor';
@@ -10,6 +10,7 @@ import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { DtoHeader } from '../../../../api/interfaces/dto_header';
 import { nameWithTag } from '../../components/name_with_tag/index';
 import { normalBadgeStyle } from '../../style/theme';
+import { TreeData } from 'antd/lib/tree-select/interface';
 import './style/index.less';
 
 const FItem = Form.Item;
@@ -23,17 +24,21 @@ interface RequestPanelStateProps {
     isRequesting: boolean;
     activeRecord: DtoRecord;
     style?: any;
+    collectionTreeData?: TreeData[];
     sendRequest: (record: DtoRecord) => void;
     onChanged: (record: DtoRecord) => void;
     onResize: (height: number) => void;
     save: (record: DtoRecord) => void;
     saveAs: (record: DtoRecord) => void;
+    updateTabRecordId: (oldId: string, newId: string) => void;
 }
 
 interface RequestPanelState {
     nameValidateStatus?: validateType;
     urlValidateStatus?: validateType;
     headersEditMode?: 'Key Value Edit' | 'Bulk Edit';
+    isSaveDlgOpen: boolean;
+    selectedFolderId?: string;
 }
 
 class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelState> {
@@ -44,6 +49,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         super(props);
         this.state = {
             headersEditMode: 'Key Value Edit',
+            isSaveDlgOpen: false
         };
     }
 
@@ -152,7 +158,30 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     }
 
     onSave = (e) => {
-        this.props.save(this.props.activeRecord);
+        const { activeRecord } = this.props;
+        if (activeRecord.id.startsWith('@new')) {
+            this.setState({ ...this.state, isSaveDlgOpen: true });
+        } else {
+            this.props.save(activeRecord);
+        }
+    }
+
+    onSaveNew = (e) => {
+        if (!this.state.selectedFolderId) {
+            return;
+        }
+        const { activeRecord } = this.props;
+        const [cid, pid] = this.state.selectedFolderId.split('::');
+        activeRecord.collectionId = cid;
+        activeRecord.pid = pid;
+
+        const oldRecordId = activeRecord.id;
+        if (oldRecordId.startsWith('@new')) {
+            activeRecord.id = StringUtil.generateUID();
+            this.props.updateTabRecordId(oldRecordId, activeRecord.id);
+        }
+        this.props.save(activeRecord);
+        this.setState({ ...this.state, isSaveDlgOpen: false });
     }
 
     onTabChanged = (e) => {
@@ -233,6 +262,26 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                         </Tabs>
                     </div>
                 </Form>
+                <Modal
+                    title="Save Request"
+                    visible={this.state.isSaveDlgOpen}
+                    okText="OK"
+                    cancelText="Cancel"
+                    onOk={this.onSaveNew}
+                    onCancel={() => this.setState({ ...this.state, isSaveDlgOpen: false })}
+                >
+                    <div style={{ marginBottom: '8px' }}>Select collection/folder:</div>
+                    <TreeSelect
+                        showSearch={true}
+                        allowClear={true}
+                        style={{ width: '100%' }}
+                        dropdownStyle={{ maxHeight: 500, overflow: 'auto' }}
+                        placeholder="please select collection / folder"
+                        treeDefaultExpandAll={true}
+                        value={this.state.selectedFolderId}
+                        onChange={(e) => this.setState({ ...this.state, selectedFolderId: e })}
+                        treeData={this.props.collectionTreeData} />
+                </Modal>
             </div>
         );
     }

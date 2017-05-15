@@ -1,10 +1,9 @@
 import { initialState, getDefaultRecord, CollectionState, RecordState } from '../state';
 import { FetchCollectionType, ActiveRecordType } from '../modules/collection_tree/action';
-import { ActiveTabType, SendRequestFulfilledType, AddTabType, RemoveTabType, UpdateTabType, SendRequestType, CancelRequestType, SaveRecordType } from '../modules/req_res_panel/action';
+import { ActiveTabType, SendRequestFulfilledType, AddTabType, RemoveTabType, UpdateTabType, SendRequestType, CancelRequestType, SaveRecordType, UpdateTabRecordId } from '../modules/req_res_panel/action';
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
 import { DtoCollectionWithRecord } from '../../../api/interfaces/dto_collection';
-import { StringUtil } from '../utils/string_util';
 
 export function collectionsInfo(state: DtoCollectionWithRecord = initialState.collectionsInfo, action: any): DtoCollectionWithRecord {
     switch (action.type) {
@@ -14,20 +13,15 @@ export function collectionsInfo(state: DtoCollectionWithRecord = initialState.co
         }
         case SaveRecordType: {
             const record = action.record;
-            if (record.id.startsWith('@new')) {
-                record.id = StringUtil.generateUID();
-                let collectionRecords = _.values(state.records[record.collectionId]);
-                collectionRecords.push(record);
-                collectionRecords = _.sortBy(collectionRecords, r => r.name);
-                return { ...state, [record.collectionId]: { ..._.keyBy(collectionRecords) } };
-
-            } else {
-                const originRecord = state.records[record.collectionId][record.id];
-                if (originRecord) {
-                    return { ...state, [record.collectionId]: { ...state.records[record.collectionId], [record.id]: record } };
+            return {
+                ...state,
+                records: {
+                    [record.collectionId]: {
+                        ...state.records[record.collectionId],
+                        [record.id]: record
+                    }
                 }
-            }
-            return state;
+            };
         }
         default: return state;
     }
@@ -51,6 +45,8 @@ function activeKey(state: string = initialState.collectionState.activeKey, actio
             return action.key;
         case ActiveRecordType:
             return action.record.id;
+        case UpdateTabRecordId:
+            return action.value.newId;
         default:
             return state;
     }
@@ -85,6 +81,13 @@ function recordState(states: RecordState[] = initialState.collectionState.record
             if (isNotExist) {
                 action.record.collectionId = action.record.collection.id;
                 states = [...states, { name: action.record.name, record: action.record, isChanged: false, isRequesting: false }];
+            }
+            return [...states];
+        }
+        case UpdateTabRecordId: {
+            const index = states.findIndex(r => r.record.id === action.value.oldId);
+            if (index > -1) {
+                states[index] = { ...states[index], record: { ...states[index].record, id: action.value.newId } };
             }
             return [...states];
         }

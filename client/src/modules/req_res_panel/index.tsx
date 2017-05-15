@@ -3,13 +3,18 @@ import { connect, Dispatch } from 'react-redux';
 import { Tabs, Badge } from 'antd';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
-import { activeTabAction, sendRequestAction, addTabAction, removeTabAction, updateRecordAction, cancelRequestAction, saveRecordAction, saveAsRecordAction } from './action';
+import { activeTabAction, sendRequestAction, addTabAction, removeTabAction, updateRecordAction, cancelRequestAction, saveRecordAction, saveAsRecordAction, UpdateTabRecordId } from './action';
 import './style/index.less';
 import { ResponseState, State, RecordState } from '../../state';
 import RequestPanel from './request_panel';
 import ResPanel, { nonResPanel } from './response_panel';
 import ResponseLoadingPanel from './res_loading_panel';
 import ResErrorPanel from '../../components/res_error_panel';
+import { TreeData } from 'antd/lib/tree-select/interface';
+import { DtoCollectionWithRecord } from '../../../../api/interfaces/dto_collection';
+import { RecordCategory } from '../../common/record_category';
+import * as _ from 'lodash';
+import { actionCreator } from '../../action';
 
 interface ReqResPanelStateProps {
     activeKey: string;
@@ -17,6 +22,8 @@ interface ReqResPanelStateProps {
     recordState: RecordState[];
 
     responseState: ResponseState;
+
+    collectionTreeData: TreeData[];
 }
 
 interface ReqResPanelDispatchProps {
@@ -35,6 +42,8 @@ interface ReqResPanelDispatchProps {
     save(record: DtoRecord);
 
     saveAs(record: DtoRecord);
+
+    updateTabRecordId(oldId: string, newId: string);
 }
 
 type ReqResPanelProps = ReqResPanelStateProps & ReqResPanelDispatchProps;
@@ -121,7 +130,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                 ...this.state.reqPanelVisible,
                 [this.props.activeKey]: status
             }
-        });
+        }, () => this.adjustResPanelHeight(0.1));
     }
 
     onTabChanged = (key) => {
@@ -172,12 +181,14 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                                         <RequestPanel
                                             style={reqStyle}
                                             activeRecord={record}
+                                            collectionTreeData={this.props.collectionTreeData}
                                             sendRequest={this.props.sendRequest}
                                             isRequesting={isRequesting}
                                             onChanged={this.props.onChanged}
                                             onResize={this.updateReqPanelHeight}
                                             save={this.props.save}
                                             saveAs={this.props.saveAs}
+                                            updateTabRecordId={this.props.updateTabRecordId}
                                         />
                                         {this.responsePanel}
                                     </div>
@@ -191,8 +202,26 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 }
 
+const selectCollectionTreeData = (collectionsInfo: DtoCollectionWithRecord) => {
+    const treeData = new Array<TreeData>();
+    _.values(collectionsInfo.collections).forEach(c => {
+        treeData.push({
+            key: c.id,
+            value: c.id,
+            label: c.name,
+            children: _.values(collectionsInfo.records[c.id])
+                .filter(r => r.category === RecordCategory.folder)
+                .map(r => ({ key: `${c.id}::${r.id}`, value: `${c.id}::${r.id}`, label: r.name }))
+        });
+    });
+    return treeData;
+};
+
 const mapStateToProps = (state: State): ReqResPanelStateProps => {
-    return state.collectionState;
+    return {
+        ...state.collectionState,
+        collectionTreeData: selectCollectionTreeData(state.collectionsInfo)
+    };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): ReqResPanelDispatchProps => {
@@ -205,6 +234,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): ReqResPanelDispatchProps =
         cancelRequest: (id) => dispatch(cancelRequestAction(id)),
         save: (record) => dispatch(saveRecordAction(record)),
         saveAs: (record) => dispatch(saveAsRecordAction(record)),
+        updateTabRecordId: (oldId, newId) => dispatch(actionCreator(UpdateTabRecordId, { oldId, newId }))
     };
 };
 
