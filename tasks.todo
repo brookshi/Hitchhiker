@@ -17,6 +17,12 @@
     ✔ message @done (2017/4/2 下午10:11:44)
     ✔ auto generate accout for invite user @done (2017/4/9 下午10:59:31) // TODO: need mail password??
     ☐ team
+
+    ☐ tab change/unchange status
+    ☐ confirm when close changed tab
+    ☐ request header/body option
+    ☐ add tab button
+    ☐ split line
 0.2.0:
     ☐ body type
     ☐ record auth
