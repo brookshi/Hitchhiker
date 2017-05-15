@@ -66,8 +66,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                                 toggleResPanelMaximize={this.toggleReqPanelVisible}
                             />
                         )
-                ) :
-                    nonResPanel
+                ) : nonResPanel
             );
     }
 

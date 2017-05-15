@@ -110,6 +110,15 @@ function collectionState(state: CollectionState = initialState.collectionState, 
             let index = recordState.findIndex(r => r.record.id === action.key);
             const activeIndex = recordState.findIndex(r => r.record.id === activeKey);
             recordState.splice(index, 1);
+            if (recordState.length === 0) {
+                const record = getDefaultRecord();
+                recordState.push({
+                    record: record,
+                    name: record.name,
+                    isChanged: false,
+                    isRequesting: false
+                });
+            }
             if (index === activeIndex) {
                 index = index === recordState.length ? index - 1 : index;
                 activeKey = recordState[index].record.id;
