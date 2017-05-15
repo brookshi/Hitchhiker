@@ -58,6 +58,10 @@ export function* saveRecord() {
     yield takeEvery(SaveRecordType, pushToChannel);
 }
 
+export function* saveAsRecord() {
+    yield takeEvery(SaveAsRecordType, pushToChannel);
+}
+
 function* pushToChannel(action: any) {
     const method = action.record.id.startsWith('@new') ? HttpMethod.POST : HttpMethod.PUT;
     const channelAction = syncAction({ type: SyncType.addRecord, method: method, url: 'http://localhost:3000/api/record', body: action.record });

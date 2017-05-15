@@ -38,6 +38,7 @@ interface RequestPanelState {
     urlValidateStatus?: validateType;
     headersEditMode?: 'Key Value Edit' | 'Bulk Edit';
     isSaveDlgOpen: boolean;
+    isSaveAsDlgOpen: boolean;
     selectedFolderId?: string;
 }
 
@@ -49,13 +50,16 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         super(props);
         this.state = {
             headersEditMode: 'Key Value Edit',
-            isSaveDlgOpen: false
+            isSaveDlgOpen: false,
+            isSaveAsDlgOpen: false
         };
     }
 
     public componentWillReceiveProps(nextProps: RequestPanelStateProps) {
         this.setState({
             ...this.state,
+            isSaveDlgOpen: false,
+            isSaveAsDlgOpen: false,
             record: nextProps.activeRecord as DtoRecord
         });
     }
@@ -154,7 +158,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     }
 
     onSaveAs = (e) => {
-        this.props.saveAs(this.props.activeRecord);
+        this.setState({ ...this.state, isSaveAsDlgOpen: true });
     }
 
     onSave = (e) => {
@@ -170,18 +174,22 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         if (!this.state.selectedFolderId) {
             return;
         }
-        const { activeRecord } = this.props;
-        const [cid, pid] = this.state.selectedFolderId.split('::');
-        activeRecord.collectionId = cid;
-        activeRecord.pid = pid;
+        const record = { ...this.props.activeRecord };
+        [record.collectionId, record.pid] = this.state.selectedFolderId.split('::');
 
-        const oldRecordId = activeRecord.id;
-        if (oldRecordId.startsWith('@new')) {
-            activeRecord.id = StringUtil.generateUID();
-            this.props.updateTabRecordId(oldRecordId, activeRecord.id);
+        const oldRecordId = record.id;
+        if (this.state.isSaveAsDlgOpen) {
+            record.id = StringUtil.generateUID();
+            this.props.saveAs(record);
+            this.setState({ ...this.state, isSaveAsDlgOpen: false });
+        } else {
+            if (oldRecordId.startsWith('@new')) {
+                record.id = StringUtil.generateUID();
+                this.props.updateTabRecordId(oldRecordId, record.id);
+            }
+            this.props.save(record);
+            this.setState({ ...this.state, isSaveDlgOpen: false });
         }
-        this.props.save(activeRecord);
-        this.setState({ ...this.state, isSaveDlgOpen: false });
     }
 
     onTabChanged = (e) => {
@@ -189,8 +197,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     }
 
     sendRequest = () => {
-        const r = this.props.activeRecord;
-        this.props.sendRequest(r);
+        this.props.sendRequest(this.props.activeRecord);
     }
 
     setReqPanel = (ele: any) => {
@@ -264,15 +271,14 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                 </Form>
                 <Modal
                     title="Save Request"
-                    visible={this.state.isSaveDlgOpen}
+                    visible={this.state.isSaveDlgOpen || this.state.isSaveAsDlgOpen}
                     okText="OK"
                     cancelText="Cancel"
                     onOk={this.onSaveNew}
-                    onCancel={() => this.setState({ ...this.state, isSaveDlgOpen: false })}
+                    onCancel={() => this.setState({ ...this.state, isSaveDlgOpen: false, isSaveAsDlgOpen: false })}
                 >
                     <div style={{ marginBottom: '8px' }}>Select collection/folder:</div>
                     <TreeSelect
-                        showSearch={true}
                         allowClear={true}
                         style={{ width: '100%' }}
                         dropdownStyle={{ maxHeight: 500, overflow: 'auto' }}

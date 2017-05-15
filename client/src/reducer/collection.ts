@@ -1,6 +1,6 @@
 import { initialState, getDefaultRecord, CollectionState, RecordState } from '../state';
 import { FetchCollectionType, ActiveRecordType } from '../modules/collection_tree/action';
-import { ActiveTabType, SendRequestFulfilledType, AddTabType, RemoveTabType, UpdateTabType, SendRequestType, CancelRequestType, SaveRecordType, UpdateTabRecordId } from '../modules/req_res_panel/action';
+import { ActiveTabType, SendRequestFulfilledType, AddTabType, RemoveTabType, UpdateTabType, SendRequestType, CancelRequestType, SaveRecordType, UpdateTabRecordId, SaveAsRecordType } from '../modules/req_res_panel/action';
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
 import { DtoCollectionWithRecord } from '../../../api/interfaces/dto_collection';
@@ -11,6 +11,7 @@ export function collectionsInfo(state: DtoCollectionWithRecord = initialState.co
             console.log(action.collections);
             return _.cloneDeep(action.collections);
         }
+        case SaveAsRecordType:
         case SaveRecordType: {
             const record = action.record;
             return {
