@@ -21,8 +21,9 @@
     ✔ tab change/unchange status @done (5/16/2017, 12:47:02 PM)
     ✔ confirm when close changed tab @done (5/16/2017, 1:36:26 PM)
     ☐ request header/body option
-    ☐ add tab button
+    ✔ add tab button @done (5/16/2017, 6:33:08 PM)
     ☐ split line
+    ☐ save collection list sort
 0.2.0:
     ☐ body type
     ☐ record auth

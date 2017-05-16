@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from 'react';
-import { Form, Select, Input, Dropdown, Menu, Button, Tabs, Badge, Modal, TreeSelect } from 'antd';
+import { Form, Select, Input, Dropdown, Menu, Button, Tabs, Badge, Modal, TreeSelect, Icon } from 'antd';
 import { HttpMethod } from '../../common/http_method';
 import KeyValueItem from '../../components/key_value';
 import Editor from '../../components/editor';
@@ -40,7 +40,25 @@ interface RequestPanelState {
     isSaveDlgOpen: boolean;
     isSaveAsDlgOpen: boolean;
     selectedFolderId?: string;
+    activeTabKey: string;
 }
+
+const bodyTypes = [
+    'application/json',
+    'application/javascript',
+    'application/xml',
+    'text/xml',
+    'text/plain',
+    'text/html'
+];
+
+const bodyTypeMenu = (
+    <Menu>
+        {
+            bodyTypes.map(type => <Menu.Item key={type}>{type}</Menu.Item>)
+        }
+    </Menu>
+);
 
 class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelState> {
 
@@ -51,7 +69,8 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         this.state = {
             headersEditMode: 'Key Value Edit',
             isSaveDlgOpen: false,
-            isSaveAsDlgOpen: false
+            isSaveAsDlgOpen: false,
+            activeTabKey: 'headers'
         };
     }
 
@@ -92,10 +111,20 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     }
 
     getTabExtraFunc = () => {
+        const { activeTabKey } = this.state;
         return (
-            <Button className="tab-extra-button" onClick={this.onHeaderModeChanged}>
-                {this.isBulkEditMode() ? 'Key Value Edit' : 'Bulk Edit'}
-            </Button>
+            activeTabKey === 'headers' ? (
+                <Button className="tab-extra-button" onClick={this.onHeaderModeChanged}>
+                    {this.isBulkEditMode() ? 'Key Value Edit' : 'Bulk Edit'}
+                </Button>) : activeTabKey === 'body' ? (
+                    <Dropdown overlay={bodyTypeMenu} trigger={['click']}>
+                        <a className="ant-dropdown-link" href="#">
+                            {this.props.activeRecord.bodyType} <Icon type="down" />
+                        </a>
+                    </Dropdown>
+                ) : (
+
+            )
         );
     }
 
@@ -193,7 +222,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     }
 
     onTabChanged = (e) => {
-        this.setState({ ...this.state });
+        this.setState({ ...this.state, activeTabKey: e });
     }
 
     sendRequest = () => {
@@ -254,6 +283,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                         <Tabs
                             className="req-res-tabs"
                             defaultActiveKey="headers"
+                            activeKey={this.state.activeTabKey}
                             animated={false}
                             onChange={this.onTabChanged}
                             tabBarExtraContent={this.getTabExtraFunc()}>
