@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { Tabs, Badge } from 'antd';
+import { Tabs, Badge, Modal, Button } from 'antd';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
 import { activeTabAction, sendRequestAction, addTabAction, removeTabAction, updateRecordAction, cancelRequestAction, saveRecordAction, saveAsRecordAction, UpdateTabRecordId } from './action';
@@ -54,6 +54,10 @@ interface ReqResPanelState {
     resHeights: { [id: string]: number };
 
     activeResTab: string;
+
+    isConfirmCloseDlgOpen: boolean;
+
+    currentEditKey: string;
 }
 
 class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
@@ -100,7 +104,9 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         this.state = {
             reqPanelVisible: {},
             resHeights: {},
-            activeResTab: 'content'
+            activeResTab: 'content',
+            isConfirmCloseDlgOpen: false,
+            currentEditKey: ''
         };
     }
 
@@ -149,7 +155,24 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 
     remove = (key) => {
-        this.props.removeTab(key);
+        const index = this.props.recordState.findIndex(r => r.record.id === key);
+        if (key.startsWith('@new') || (index >= 0 && !this.props.recordState[index].isChanged)) {
+            this.props.removeTab(key);
+            return;
+        }
+        this.setState({ ...this.state, currentEditKey: key, isConfirmCloseDlgOpen: true });
+    }
+
+    closeTabWithoutSave = () => {
+        this.props.removeTab(this.state.currentEditKey);
+        this.setState({ ...this.state, currentEditKey: '', isConfirmCloseDlgOpen: false });
+    }
+
+    closeTabWithSave = () => {
+        const index = this.props.recordState.findIndex(r => r.record.id === this.state.currentEditKey);
+        this.props.save(this.props.recordState[index].record);
+        this.props.removeTab(this.state.currentEditKey);
+        this.setState({ ...this.state, currentEditKey: '', isConfirmCloseDlgOpen: false });
     }
 
     setReqResPanel = (ele: any) => {
@@ -197,6 +220,17 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                         })
                     }
                 </Tabs>
+                <Modal title="Close Tab"
+                    visible={this.state.isConfirmCloseDlgOpen}
+                    onCancel={() => this.setState({ ...this.state, isConfirmCloseDlgOpen: false })}
+                    footer={[
+                        <Button key="dont_save" onClick={this.closeTabWithoutSave}>Don't Save</Button>,
+                        <Button key="cancel_save" onClick={() => this.setState({ ...this.state, isConfirmCloseDlgOpen: false })}>Cancel</Button>,
+                        <Button key="save" type="primary" onClick={this.closeTabWithSave}>Save</Button>
+                    ]}
+                >
+                    Your changed will be lost if you close this tab without saving.
+                </Modal>
             </div>
         );
     }
