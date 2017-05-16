@@ -12,6 +12,7 @@ import { nameWithTag } from '../../components/name_with_tag/index';
 import { normalBadgeStyle } from '../../style/theme';
 import { TreeData } from 'antd/lib/tree-select/interface';
 import { bodyTypes } from '../../common/body_type';
+import { testSnippets } from '../../common/test_snippet';
 import './style/index.less';
 
 const FItem = Form.Item;
@@ -49,12 +50,6 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     reqPanel: any;
 
     defaultBodyType = 'application/json';
-
-    snippets = (
-        <Menu>
-
-        </Menu>
-    );
 
     constructor(props: RequestPanelStateProps) {
         super(props);
@@ -117,7 +112,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                         </a>
                     </Dropdown>
                 ) : (
-                        <Dropdown overlay={this.snippets} trigger={['click']}>
+                        <Dropdown overlay={this.snippetsMenu} trigger={['click']}>
                             <a className="ant-dropdown-link" href="#">
                                 Snippets <Icon type="down" />
                             </a>
@@ -144,6 +139,21 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                 />
             );
     }
+
+    onSelectSnippet = (e) => {
+        const snippet = testSnippets[e.key];
+        const { activeRecord } = this.props;
+        const testValue = activeRecord.test && activeRecord.test.length > 0 ? (`${activeRecord.test}\n\n${snippet}`) : snippet
+        this.onRecordChanged({ ...activeRecord, test: testValue });
+    }
+
+    snippetsMenu = (
+        <Menu onClick={this.onSelectSnippet}>
+            {
+                Object.keys(testSnippets).map(s => <Menu.Item key={s}>{s}</Menu.Item>)
+            }
+        </Menu>
+    );
 
     onBodyTypeChanged = (e) => {
         const { headers } = this.props.activeRecord;

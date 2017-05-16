@@ -20,10 +20,12 @@
 
     ✔ tab change/unchange status @done (5/16/2017, 12:47:02 PM)
     ✔ confirm when close changed tab @done (5/16/2017, 1:36:26 PM)
-    ☐ request header/body option
+    ✔ request header/body option @done (2017/5/16 下午10:05:11)
     ✔ add tab button @done (5/16/2017, 6:33:08 PM)
+    ✔ snippets @done (2017/5/16 下午11:07:40)
     ☐ split line
     ☐ save collection list sort
+    ☐ sync status
 0.2.0:
     ☐ body type
     ☐ record auth
