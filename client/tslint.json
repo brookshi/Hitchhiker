@@ -30,10 +30,7 @@
         "jsx-no-multiline-js": false,
         "label-position": true,
         "member-ordering": [
-            true,
-            "public-before-private",
-            "static-before-instance",
-            "variables-before-functions"
+            false
         ],
         "no-arg": true,
         "no-consecutive-blank-lines": true,

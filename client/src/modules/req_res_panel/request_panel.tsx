@@ -11,6 +11,7 @@ import { DtoHeader } from '../../../../api/interfaces/dto_header';
 import { nameWithTag } from '../../components/name_with_tag/index';
 import { normalBadgeStyle } from '../../style/theme';
 import { TreeData } from 'antd/lib/tree-select/interface';
+import { bodyTypes } from '../../common/body_type';
 import './style/index.less';
 
 const FItem = Form.Item;
@@ -43,26 +44,17 @@ interface RequestPanelState {
     activeTabKey: string;
 }
 
-const bodyTypes = [
-    'application/json',
-    'application/javascript',
-    'application/xml',
-    'text/xml',
-    'text/plain',
-    'text/html'
-];
-
-const bodyTypeMenu = (
-    <Menu>
-        {
-            bodyTypes.map(type => <Menu.Item key={type}>{type}</Menu.Item>)
-        }
-    </Menu>
-);
-
 class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelState> {
 
     reqPanel: any;
+
+    defaultBodyType = 'application/json';
+
+    snippets = (
+        <Menu>
+
+        </Menu>
+    );
 
     constructor(props: RequestPanelStateProps) {
         super(props);
@@ -110,21 +102,27 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         );
     }
 
+    currentBodyType = () => this.props.activeRecord.bodyType || this.defaultBodyType;
+
     getTabExtraFunc = () => {
         const { activeTabKey } = this.state;
         return (
             activeTabKey === 'headers' ? (
                 <Button className="tab-extra-button" onClick={this.onHeaderModeChanged}>
                     {this.isBulkEditMode() ? 'Key Value Edit' : 'Bulk Edit'}
-                </Button>) : activeTabKey === 'body' ? (
-                    <Dropdown overlay={bodyTypeMenu} trigger={['click']}>
+                </Button>) : (activeTabKey === 'body' ? (
+                    <Dropdown overlay={this.getBodyTypeMenu()} trigger={['click']} style={{ width: 200 }}>
                         <a className="ant-dropdown-link" href="#">
-                            {this.props.activeRecord.bodyType} <Icon type="down" />
+                            {this.currentBodyType()} <Icon type="down" />
                         </a>
                     </Dropdown>
                 ) : (
-
-            )
+                        <Dropdown overlay={this.snippets} trigger={['click']}>
+                            <a className="ant-dropdown-link" href="#">
+                                Snippets <Icon type="down" />
+                            </a>
+                        </Dropdown>
+                    ))
         );
     }
 
@@ -145,6 +143,32 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                     onChanged={this.onHeadersChanged}
                 />
             );
+    }
+
+    onBodyTypeChanged = (e) => {
+        const { headers } = this.props.activeRecord;
+        if (!headers) {
+            return;
+        }
+        const record = { ...this.props.activeRecord };
+        record.bodyType = e.key;
+        const headerKeys = headers.map(h => h.key ? h.key.toLowerCase() : '');
+        const index = headerKeys.indexOf('content-type');
+        if (index >= 0) {
+            headers[index] = { ...headers[index], value: record.bodyType };
+            record.headers = headers.filter(header => header.key || header.value);
+        }
+        this.onRecordChanged(record);
+    }
+
+    getBodyTypeMenu = () => {
+        return (
+            <Menu onClick={this.onBodyTypeChanged} selectedKeys={[this.currentBodyType()]}>
+                {
+                    Object.keys(bodyTypes).map(type => <Menu.Item key={type}>{type}</Menu.Item>)
+                }
+            </Menu>
+        );
     }
 
     isBulkEditMode = () => this.state.headersEditMode === 'Bulk Edit';
@@ -291,7 +315,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                                 {this.getHeadersCtrl()}
                             </TabPane>
                             <TabPane tab={<Badge style={normalBadgeStyle} dot={!!activeRecord.body && activeRecord.body.length > 0} count={0}>Body</Badge>} key="body">
-                                <Editor type={activeRecord.bodyType} fixHeight={true} height={300} value={activeRecord.body} onChange={v => this.onInputChanged(v, 'body')} />
+                                <Editor type={bodyTypes[this.currentBodyType()]} fixHeight={true} height={300} value={activeRecord.body} onChange={v => this.onInputChanged(v, 'body')} />
                             </TabPane>
                             <TabPane tab={<Badge style={normalBadgeStyle} dot={!!activeRecord.test && activeRecord.test.length > 0} count={0}>Test</Badge>} key="test">
                                 <Editor type="javascript" height={300} fixHeight={true} value={activeRecord.test} onChange={v => this.onInputChanged(v, 'test')} />

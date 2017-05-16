@@ -36,6 +36,7 @@ export class RecordService {
         record.collection = collection;
         record.name = target.name;
         record.category = target.category;
+        record.bodyType = target.bodyType;
         return record;
     }
 
