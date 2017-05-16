@@ -18,7 +18,7 @@
     ✔ auto generate accout for invite user @done (2017/4/9 下午10:59:31) // TODO: need mail password??
     ☐ team
 
-    ☐ tab change/unchange status
+    ✔ tab change/unchange status @done (5/16/2017, 12:47:02 PM)
     ☐ confirm when close changed tab
     ☐ request header/body option
     ☐ add tab button

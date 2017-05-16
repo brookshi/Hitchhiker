@@ -22,7 +22,7 @@ export class RecordService {
         record.id = target.id;
         record.url = target.url;
         record.pid = target.pid;
-        record.body = target.body;
+        record.body = target.body || '';
         if (target.headers instanceof Array) {
             record.headers = target.headers.map(o => {
                 let header = HeaderService.fromDto(o);
@@ -30,7 +30,7 @@ export class RecordService {
                 return header;
             });
         }
-        record.test = target.test;
+        record.test = target.test || '';
         record.sort = target.sort;
         record.method = target.method;
         record.collection = collection;

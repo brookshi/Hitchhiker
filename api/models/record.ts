@@ -26,7 +26,7 @@ export class Record {
     @Column({ nullable: true })
     url: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, default: 'GET' })
     method: string;
 
     @OneToMany(type => Header, header => header.record, {

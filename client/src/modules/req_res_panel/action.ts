@@ -8,7 +8,7 @@ import { HttpMethod } from '../../common/http_method';
 
 export const AddTabType = 'add_tab_type';
 export const RemoveTabType = 'remove_tab_type';
-export const UpdateTabType = 'update_tab_type';
+export const UpdateTabChangedType = 'update_tab_changed_type';
 export const ActiveTabType = 'active_tab_type';
 export const SendRequestType = 'send_request_type';
 export const SendRequestFulfilledType = 'send_request_fulfilled_type';
@@ -22,7 +22,7 @@ export const addTabAction = () => ({ type: AddTabType });
 
 export const removeTabAction = (key) => ({ type: RemoveTabType, key });
 
-export const updateRecordAction = (record) => ({ type: UpdateTabType, record });
+export const updateRecordAction = (record) => ({ type: UpdateTabChangedType, record });
 
 export const sendRequestAction = (recordRun: DtoRecordRun) => ({ type: SendRequestType, recordRun });
 

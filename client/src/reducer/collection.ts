@@ -1,6 +1,6 @@
 import { initialState, getDefaultRecord, CollectionState, RecordState } from '../state';
 import { FetchCollectionType, ActiveRecordType } from '../modules/collection_tree/action';
-import { ActiveTabType, SendRequestFulfilledType, AddTabType, RemoveTabType, UpdateTabType, SendRequestType, CancelRequestType, SaveRecordType, UpdateTabRecordId, SaveAsRecordType } from '../modules/req_res_panel/action';
+import { ActiveTabType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, UpdateTabRecordId, SaveAsRecordType } from '../modules/req_res_panel/action';
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
 import { DtoCollectionWithRecord } from '../../../api/interfaces/dto_collection';
@@ -13,7 +13,7 @@ export function collectionsInfo(state: DtoCollectionWithRecord = initialState.co
         }
         case SaveAsRecordType:
         case SaveRecordType: {
-            const record = action.record;
+            const record = _.cloneDeep(action.record);
             return {
                 ...state,
                 records: {
@@ -60,15 +60,9 @@ function recordState(states: RecordState[] = initialState.collectionState.record
             states[index].isRequesting = true;
             return [...states];
         }
-        case UpdateTabType: {
-            const index = states.findIndex(r => r.record.id === action.record.id);
-            states[index].record = { ...action.record };
-            states[index].isChanged = true;
-            return [...states];
-        }
         case SaveRecordType: {
             const index = states.findIndex(r => r.record.id === action.record.id);
-            states[index].record = { ...action.record };
+            states[index].record = { ..._.cloneDeep(action.record) };
             states[index].isChanged = false;
             return [...states];
         }
@@ -81,14 +75,23 @@ function recordState(states: RecordState[] = initialState.collectionState.record
             const isNotExist = !states.find(r => r.record.id === action.record.id);
             if (isNotExist) {
                 action.record.collectionId = action.record.collection.id;
-                states = [...states, { name: action.record.name, record: action.record, isChanged: false, isRequesting: false }];
+                states = [
+                    ...states,
+                    {
+                        name: action.record.name, record: { ..._.cloneDeep(action.record) }, isChanged: false,
+                        isRequesting: false
+                    }
+                ];
             }
             return [...states];
         }
         case UpdateTabRecordId: {
             const index = states.findIndex(r => r.record.id === action.value.oldId);
             if (index > -1) {
-                states[index] = { ...states[index], record: { ...states[index].record, id: action.value.newId } };
+                states[index] = {
+                    ...states[index],
+                    record: { ..._.cloneDeep(states[index].record), id: action.value.newId }
+                };
             }
             return [...states];
         }
@@ -106,7 +109,12 @@ function collectionState(state: CollectionState = initialState.collectionState, 
                 ...state,
                 recordState: [
                     ...recordState,
-                    { name: newRecord.name || 'new request', record: newRecord, isChanged: false, isRequesting: false }
+                    {
+                        name: newRecord.name || 'new request',
+                        record: newRecord,
+                        isChanged: false,
+                        isRequesting: false
+                    }
                 ],
                 activeKey: newRecord.id
             };
