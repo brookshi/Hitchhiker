@@ -77,10 +77,11 @@ class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
     }
 
     public render() {
-        const { body, elapsed, status, statusMessage, cookies, headers, tests } = this.props.res;
+        let { body, elapsed, status, statusMessage, cookies, headers, tests } = this.props.res;
         if (!body) {
             return <div />;
         }
+        cookies = cookies || [];
         const extraContent = (
             <div>
                 <span>Status:</span>
@@ -93,8 +94,8 @@ class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
 
         const value = StringUtil.beautify(body, headers['Content-Type']);
         const testKeys = Object.keys(tests);
-        const succTestLen = Object.keys(tests).filter(t => tests[t]).length;
-        const testsTag = testKeys.length > 0 ? `${succTestLen}/${Object.keys(tests).length}` : '';
+        const successTestLen = Object.keys(tests).filter(t => tests[t]).length;
+        const testsTag = testKeys.length > 0 ? `${successTestLen}/${Object.keys(tests).length}` : '';
 
         return (
             <Tabs
@@ -117,7 +118,7 @@ class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
                         tabPanelCookie(cookies)
                     }
                 </TabPane>
-                <TabPane className="display-tab-panel" tab={nameWithTag('Test', testsTag, succTestLen === testKeys.length ? 'normal' : 'warning')} key="test">
+                <TabPane className="display-tab-panel" tab={nameWithTag('Test', testsTag, successTestLen === testKeys.length ? 'normal' : 'warning')} key="test">
                     {
                         tabPanelTest(tests)
                     }
