@@ -98,6 +98,15 @@ export class RecordService {
         return await rep.where('record.id=:id', { id: id }).getOne();
     }
 
+    static async getChildren(id: string, includeHeaders: boolean = false): Promise<Record[]> {
+        const connection = await ConnectionManager.getInstance();
+        let rep = connection.getRepository(Record).createQueryBuilder("record");
+        if (includeHeaders) {
+            rep = rep.leftJoinAndSelect('record.headers', 'header');
+        }
+        return await rep.where('record.pid=:pid', { pid: id }).getMany();
+    }
+
     static async create(record: Record): Promise<ResObject> {
         record.sort = await RecordService.getMaxSort();
         return await RecordService.save(record);
@@ -114,7 +123,22 @@ export class RecordService {
         return await RecordService.save(record);
     }
 
+    static async deleteFolder(id: string): Promise<ResObject> {
+        const children = await RecordService.getChildren(id);
+        children.forEach(async r => await RecordService.deleteRecord(r.id));
+        return await RecordService.deleteRecord(id);
+    }
+
     static async delete(id: string): Promise<ResObject> {
+        const record = await RecordService.getById(id);
+        if (record.category === RecordCategory.record) {
+            return await RecordService.deleteRecord(id);
+        } else {
+            return await RecordService.deleteFolder(record.id);
+        }
+    }
+
+    static async deleteRecord(id: string): Promise<ResObject> {
         await HeaderService.deleteForRecord(id);
 
         const connection = await ConnectionManager.getInstance();

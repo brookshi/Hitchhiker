@@ -26,9 +26,10 @@
     ✔ save collection list sort @done (5/17/2017, 12:50:52 PM)
     ☐ collection create/edit/del
     ☐ folder create/edit/del
-    ☐ record del
+    ✔ record del @done (2017/5/17 下午10:41:17)
     ☐ split line
     ☐ sync status
+    ☐ tip
 0.2.0:
     ☐ body type
     ☐ record auth

@@ -9,7 +9,7 @@ import { DtoRecord } from '../../../../api/interfaces/dto_record';
 interface RecordItemProps {
     record: DtoRecord;
     inFolder: boolean;
-    deleteRecord(record: DtoRecord);
+    deleteRecord();
 }
 
 interface RecordItemState { }
@@ -26,7 +26,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
         );
     }
 
-    deleteRecord = () => deleteDlg('record', () => this.props.deleteRecord(this.props.record));
+    deleteRecord = () => deleteDlg('record', () => this.props.deleteRecord());
 
     public render() {
         let { record, inFolder } = this.props;

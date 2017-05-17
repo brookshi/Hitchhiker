@@ -4,6 +4,7 @@ import { ActiveTabType, SendRequestFulfilledType, AddTabType, RemoveTabType, Sen
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
 import { DtoCollectionWithRecord } from '../../../api/interfaces/dto_collection';
+import { RecordCategory } from '../common/record_category';
 
 export function collectionsInfo(state: DtoCollectionWithRecord = initialState.collectionsInfo, action: any): DtoCollectionWithRecord {
     switch (action.type) {
@@ -25,8 +26,11 @@ export function collectionsInfo(state: DtoCollectionWithRecord = initialState.co
             };
         }
         case DeleteRecordType: {
-            const { id, collectionId } = action.value;
+            const { id, collectionId, category } = action.value;
             const recordsInCollection = state.records[collectionId];
+            if (category === RecordCategory.folder) {
+                _.values(recordsInCollection).filter(r => r.pid === id).map(r => r.id).forEach(i => Reflect.deleteProperty(recordsInCollection, i));
+            }
             Reflect.deleteProperty(recordsInCollection, id);
             return {
                 ...state,

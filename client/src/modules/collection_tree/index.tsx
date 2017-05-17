@@ -29,7 +29,7 @@ interface CollectionListDispatchProps {
 
     activeRecord: (record: DtoRecord) => void;
 
-    deleteRecord(record: DtoRecord);
+    deleteRecord(id: string, records: _.Dictionary<DtoRecord>);
 
     deleteCollection(id: string);
 
@@ -69,20 +69,20 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         const { collections, records, activeKey } = this.props;
         const recordStyle = { height: '30px', lineHeight: '30px' };
 
-        const loopRecords = (data: DtoRecord[], inFolder: boolean = false) => data.map(r => {
+        const loopRecords = (data: DtoRecord[], cid: string, inFolder: boolean = false) => data.map(r => {
 
             if (r.category === RecordCategory.folder) {
                 const isOpen = this.state.openKeys.indexOf(r.id) > -1;
                 const children = _.remove(data, (d) => d.pid === r.id);
                 return (
-                    <SubMenu className="folder" key={r.id} title={<RecordFolder name={r.name} isOpen={isOpen} />}>
-                        {loopRecords(children, true)}
+                    <SubMenu className="folder" key={r.id} title={<RecordFolder record={r} isOpen={isOpen} deleteRecord={() => this.props.deleteRecord(r.id, records[cid])} />}>
+                        {loopRecords(children, cid, true)}
                     </SubMenu>
                 );
             }
             return (
                 <MenuItem key={r.id} style={recordStyle} data={r}>
-                    {<RecordItem record={r} inFolder={inFolder} deleteRecord={this.props.deleteRecord} />}
+                    {<RecordItem record={r} inFolder={inFolder} deleteRecord={() => this.props.deleteRecord(r.id, records[cid])} />}
                 </MenuItem>
             );
         });
@@ -105,7 +105,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                                 {
                                     sortRecords.length === 0 ?
                                         <div style={{ height: 20 }} /> :
-                                        loopRecords(sortRecords)
+                                        loopRecords(sortRecords, c.id)
                                 }
                             </SubMenu>
                         );
@@ -129,7 +129,15 @@ const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps
     return {
         refresh: () => dispatch(refreshCollectionAction()),
         activeRecord: (record) => dispatch(activeRecordAction(record)),
-        deleteRecord: record => { dispatch(actionCreator(DeleteRecordType, record)); dispatch(removeTabAction(record.id)); },
+        deleteRecord: (id, records) => {
+            const record = records[id];
+            if (record.category === RecordCategory.folder) {
+                const children = _.values(records).filter(r => r.pid === id);
+                children.forEach(r => dispatch(removeTabAction(r.id)));
+            }
+            dispatch(removeTabAction(id));
+            dispatch(actionCreator(DeleteRecordType, record));
+        },
         deleteCollection: id => dispatch(actionCreator(DeleteCollectionType, id)),
         updateCollection: collection => dispatch(actionCreator(UpdateCollectionType, collection)),
         createCollection: collection => dispatch(actionCreator(CreateCollectionType, collection))
