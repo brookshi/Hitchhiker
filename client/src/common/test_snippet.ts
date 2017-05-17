@@ -6,4 +6,4 @@ export const testSnippets = {
     'Response time is less than 200ms': 'tests["response time is less than 200ms"] = responseTime < 200;',
     'Response status check': 'tests["status code is 200"] = responseCode.code === 200;',
     'Response status name': 'tests["status code name is ok"] = responseCode.name === "OK";',
-}
+};

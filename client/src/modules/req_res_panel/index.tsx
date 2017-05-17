@@ -11,7 +11,7 @@ import ResPanel, { nonResPanel } from './response_panel';
 import ResponseLoadingPanel from './res_loading_panel';
 import ResErrorPanel from '../../components/res_error_panel';
 import { TreeData } from 'antd/lib/tree-select/interface';
-import { DtoCollectionWithRecord } from '../../../../api/interfaces/dto_collection';
+import { DtoCollectionWithRecord, DtoCollection } from '../../../../api/interfaces/dto_collection';
 import { RecordCategory } from '../../common/record_category';
 import * as _ from 'lodash';
 import { actionCreator } from '../../action';
@@ -238,14 +238,14 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
 const selectCollectionTreeData = (collectionsInfo: DtoCollectionWithRecord) => {
     const treeData = new Array<TreeData>();
-    _.values(collectionsInfo.collections).forEach(c => {
+    _.chain(collectionsInfo.collections).values<DtoCollection>().sortBy(c => c.name).value().forEach(c => {
         treeData.push({
             key: c.id,
             value: c.id,
             label: c.name,
-            children: _.values(collectionsInfo.records[c.id])
+            children: _.sortBy(_.values(collectionsInfo.records[c.id])
                 .filter(r => r.category === RecordCategory.folder)
-                .map(r => ({ key: `${c.id}::${r.id}`, value: `${c.id}::${r.id}`, label: r.name }))
+                .map(r => ({ key: `${c.id}::${r.id}`, value: `${c.id}::${r.id}`, label: r.name })), t => t.label)
         });
     });
     return treeData;

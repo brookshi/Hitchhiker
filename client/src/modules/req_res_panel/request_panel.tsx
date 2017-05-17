@@ -143,15 +143,13 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     onSelectSnippet = (e) => {
         const snippet = testSnippets[e.key];
         const { activeRecord } = this.props;
-        const testValue = activeRecord.test && activeRecord.test.length > 0 ? (`${activeRecord.test}\n\n${snippet}`) : snippet
+        const testValue = activeRecord.test && activeRecord.test.length > 0 ? (`${activeRecord.test}\n\n${snippet}`) : snippet;
         this.onRecordChanged({ ...activeRecord, test: testValue });
     }
 
     snippetsMenu = (
         <Menu onClick={this.onSelectSnippet}>
-            {
-                Object.keys(testSnippets).map(s => <Menu.Item key={s}>{s}</Menu.Item>)
-            }
+            {Object.keys(testSnippets).map(s => <Menu.Item key={s}>{s}</Menu.Item>)}
         </Menu>
     );
 
@@ -174,9 +172,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     getBodyTypeMenu = () => {
         return (
             <Menu onClick={this.onBodyTypeChanged} selectedKeys={[this.currentBodyType()]}>
-                {
-                    Object.keys(bodyTypes).map(type => <Menu.Item key={type}>{type}</Menu.Item>)
-                }
+                {Object.keys(bodyTypes).map(type => <Menu.Item key={type}>{type}</Menu.Item>)}
             </Menu>
         );
     }
