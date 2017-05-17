@@ -6,6 +6,7 @@ interface ItemWithMenuProps {
     name: string;
     icon: any;
     menu: any;
+    className?: string;
 }
 
 interface ItemWithMenuState {
@@ -26,17 +27,17 @@ class ItemWithMenu extends React.Component<ItemWithMenuProps, ItemWithMenuState>
     }
 
     public render() {
-        const { icon, name, menu } = this.props;
-        const className = 'item-with-menu-icon' + (this.state.isVisible ? ' item-with-menu-icon-visible' : '');
+        const { icon, name, menu, className } = this.props;
+        const iconClassName = 'item-with-menu-icon' + (this.state.isVisible ? ' item-with-menu-icon-visible' : '');
 
         return (
-            <span className="item-with-menu">
+            <span className={`${className} item-with-menu`}>
                 {icon}
                 <span>
                     {name}
                 </span>
                 <Dropdown onVisibleChange={this.onMenuVisibleChanged} overlay={menu} placement="bottomRight">
-                    <Icon className={className} type="ellipsis" />
+                    <Icon className={iconClassName} type="ellipsis" />
                 </Dropdown>
             </span>
         );

@@ -1,5 +1,4 @@
-import { Record } from '../models/record';
-import { POST, PUT, BodyParam, BaseController } from 'webapi-router';
+import { POST, PUT, DELETE, BodyParam, PathParam, BaseController } from 'webapi-router';
 import { ResObject } from "../common/res_object";
 import * as Koa from 'koa';
 import { RecordService } from "../services/record_service";
@@ -18,6 +17,11 @@ export default class RecordController extends BaseController {
     @PUT('/record')
     async update( @BodyParam record: DtoRecord): Promise<ResObject> {
         return await RecordService.update(RecordService.fromDto(record));
+    }
+
+    @DELETE('/record/:id')
+    async delete( @PathParam('id') id: string): Promise<ResObject> {
+        return await RecordService.delete(id);
     }
 
     @POST('/record/run')

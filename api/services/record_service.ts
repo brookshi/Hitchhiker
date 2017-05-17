@@ -114,6 +114,15 @@ export class RecordService {
         return await RecordService.save(record);
     }
 
+    static async delete(id: string): Promise<ResObject> {
+        const connection = await ConnectionManager.getInstance();
+        await connection.getRepository(Record).createQueryBuilder('record')
+            .delete()
+            .where('record.id = id', { id: id })
+            .execute();
+        return { success: true, message: Message.recordDeleteSuccess };
+    }
+
     private static adjustHeaders(record: Record) {
         record.headers.forEach((header, index) => {
             header.id = header.id || StringUtil.generateUID();

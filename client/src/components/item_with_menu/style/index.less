@@ -3,16 +3,28 @@
 .item-with-menu {
     width: 100%;
     display: inline-block;
-    background: @panel-background;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 30px;
     .item-with-menu-icon-visible,
     &:hover .item-with-menu-icon {
         display: inline;
         position: absolute;
         top: calc(50% - 8px);
-        right: 24px;
+        right: 8px;
         font-size: 18px;
         margin-left: 16px;
         vertical-align: text-bottom;
+    }
+}
+
+.collection-item .ant-menu-submenu-title{
+    &::after{
+        display: none;
+    }
+    
+    &::before{
+        display: none;
     }
 }
 

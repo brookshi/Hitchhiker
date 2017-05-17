@@ -45,6 +45,7 @@ export class Message {
     static recordCreateFailedOnName: string = 'record name is incorrect';
     static recordSortSuccess: string = 'sort records success';
     static recordSaveSuccess: string = 'record save success';
+    static recordDeleteSuccess: string = 'record delete success';
 
     static apiNotExist: string = 'this api does not exist';
 

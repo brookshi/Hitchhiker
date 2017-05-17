@@ -3,11 +3,17 @@
 .collection-tree {
     text-align: left;
     background: @panel-background;
+
+    .collection-tree-bottom {
+        border-top: 1px solid @border-color-dark;
+        width: 100%;
+        height: 10px;
+    }
 }
 
 .collection-item {
     >div[aria-expanded] {
-        border-bottom: @border-color-dark 1px solid;
+        border-top: @border-color-dark 1px solid;
         z-index: 10;
         padding-left: 16px;
         padding-right: 0px;
@@ -19,7 +25,8 @@
         }
     }
     >div[aria-expanded="true"] {
-        box-shadow: -1px 0px 4px rgba(0, 0, 0, 0.45);
+        box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.20);
+        padding-bottom: 4px;
     }
     ul[role="menu"]{
         background: @panel-background;
@@ -34,10 +41,12 @@
 }
 
 .record {
-    display: flex;
+    display: inline-block;
     .record-icon {
-        display: flex;
+        display: inline-block;
         width: 48px;
+        min-width: 48px;
+        text-align: center;
     }
 }
 
