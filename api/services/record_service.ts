@@ -115,10 +115,12 @@ export class RecordService {
     }
 
     static async delete(id: string): Promise<ResObject> {
+        await HeaderService.deleteForRecord(id);
+
         const connection = await ConnectionManager.getInstance();
         await connection.getRepository(Record).createQueryBuilder('record')
             .delete()
-            .where('record.id = id', { id: id })
+            .where('record.id=:id', { id: id })
             .execute();
         return { success: true, message: Message.recordDeleteSuccess };
     }

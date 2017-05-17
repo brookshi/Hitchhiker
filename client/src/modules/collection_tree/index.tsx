@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { Menu } from 'antd';
-import { refreshCollectionAction, activeRecordAction, DeleteRecord, DeleteCollection, UpdateCollection, CreateCollection } from './action';
+import { refreshCollectionAction, activeRecordAction, DeleteRecordType, DeleteCollectionType, UpdateCollectionType, CreateCollectionType } from './action';
 import { State } from '../../state';
 import RecordFolder from './record_folder';
 import RecordItem from './record_item';
@@ -13,6 +13,7 @@ import { DtoCollection } from '../../../../api/interfaces/dto_collection';
 import { RecordCategory } from '../../common/record_category';
 import './style/index.less';
 import { actionCreator } from '../../action';
+import { removeTabAction } from '../req_res_panel/action';
 
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
@@ -28,7 +29,7 @@ interface CollectionListDispatchProps {
 
     activeRecord: (record: DtoRecord) => void;
 
-    deleteRecord(id: string);
+    deleteRecord(record: DtoRecord);
 
     deleteCollection(id: string);
 
@@ -44,18 +45,16 @@ interface CollectionListState {
 }
 
 class CollectionList extends React.Component<CollectionListProps, CollectionListState> {
-    refresh: Function;
 
     constructor(props: CollectionListProps) {
         super(props);
-        this.refresh = props.refresh;
         this.state = {
             openKeys: [],
         };
     }
 
     componentWillMount() {
-        this.refresh();
+        this.props.refresh();
     }
 
     onOpenChanged = (openKeys: string[]) => {
@@ -83,7 +82,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             }
             return (
                 <MenuItem key={r.id} style={recordStyle} data={r}>
-                    {<RecordItem id={r.id} name={r.name} url={r.url} method={r.method} inFolder={inFolder} deleteRecord={this.props.deleteRecord} />}
+                    {<RecordItem record={r} inFolder={inFolder} deleteRecord={this.props.deleteRecord} />}
                 </MenuItem>
             );
         });
@@ -130,10 +129,10 @@ const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps
     return {
         refresh: () => dispatch(refreshCollectionAction()),
         activeRecord: (record) => dispatch(activeRecordAction(record)),
-        deleteRecord: id => dispatch(actionCreator(DeleteRecord, id)),
-        deleteCollection: id => dispatch(actionCreator(DeleteCollection, id)),
-        updateCollection: collection => dispatch(actionCreator(UpdateCollection, collection)),
-        createCollection: collection => dispatch(actionCreator(CreateCollection, collection))
+        deleteRecord: record => { dispatch(actionCreator(DeleteRecordType, record)); dispatch(removeTabAction(record.id)); },
+        deleteCollection: id => dispatch(actionCreator(DeleteCollectionType, id)),
+        updateCollection: collection => dispatch(actionCreator(UpdateCollectionType, collection)),
+        createCollection: collection => dispatch(actionCreator(CreateCollectionType, collection))
     };
 };
 

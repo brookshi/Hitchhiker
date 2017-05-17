@@ -11,10 +11,10 @@ export const ActiveRecordType = 'active_record_type';
 export const RefreshCollectionType = 'refresh_collection';
 export const FetchCollectionType = 'fetch_collection';
 export const FetchCollectionFailedType = 'fetch_collection_failed';
-export const DeleteRecord = 'delete_record';
-export const DeleteCollection = 'delete_collection';
-export const UpdateCollection = 'update_collection';
-export const CreateCollection = 'create_collection';
+export const DeleteRecordType = 'delete_record_type';
+export const DeleteCollectionType = 'delete_collection_type';
+export const UpdateCollectionType = 'update_collection_type';
+export const CreateCollectionType = 'create_collection_type';
 
 export const activeRecordAction = (record: DtoRecord) => ({ type: ActiveRecordType, record });
 
@@ -27,7 +27,7 @@ export function* refreshCollection() {
 }
 
 export function* deleteRecord() {
-    yield takeEvery(DeleteRecord, pushDeleteRecordToChannel);
+    yield takeEvery(DeleteRecordType, pushDeleteRecordToChannel);
 }
 
 function* fetchCollection() {
@@ -41,6 +41,6 @@ function* fetchCollection() {
 }
 
 function* pushDeleteRecordToChannel(action: any) {
-    const channelAction = syncAction({ type: SyncType.addRecord, method: HttpMethod.DELETE, url: `http://localhost:3000/api/record/${action.id}` });
+    const channelAction = syncAction({ type: SyncType.addRecord, method: HttpMethod.DELETE, url: `http://localhost:3000/api/record/${action.value.id}` });
     yield put(channelAction);
 }

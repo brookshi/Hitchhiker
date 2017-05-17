@@ -4,14 +4,12 @@ import ItemWithMenu from '../../components/item_with_menu';
 import './style/index.less';
 import { Menu, Icon } from 'antd';
 import { deleteDlg } from '../../components/confirm_dialog/index';
+import { DtoRecord } from '../../../../api/interfaces/dto_record';
 
 interface RecordItemProps {
-    id: string;
-    name: string;
-    method?: string;
-    url?: string;
+    record: DtoRecord;
     inFolder: boolean;
-    deleteRecord(id: string);
+    deleteRecord(record: DtoRecord);
 }
 
 interface RecordItemState { }
@@ -20,20 +18,19 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
 
     getMenu = () => {
         return (
-            <Menu onClick={this.deleteRecord}>
+            <Menu style={{ width: 120 }} onClick={this.deleteRecord}>
                 <Menu.Item>
-                    <Icon type="delete" /> delete
+                    <Icon type="delete" /> Delete
                 </Menu.Item>
             </Menu>
         );
     }
 
-    deleteRecord() {
-        deleteDlg('record', () => this.props.deleteRecord(this.props.id));
-    }
+    deleteRecord = () => deleteDlg('record', () => this.props.deleteRecord(this.props.record));
 
     public render() {
-        let { name, method, inFolder } = this.props;
+        let { record, inFolder } = this.props;
+        let { method, name } = record;
         method = method || 'GET';
         return (
             <ItemWithMenu

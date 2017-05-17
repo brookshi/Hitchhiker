@@ -1,5 +1,7 @@
 import { Header } from "../models/header";
 import { DtoHeader } from "../interfaces/dto_header";
+import { ResObject } from "../common/res_object";
+import { ConnectionManager } from "./connection_manager";
 
 export class HeaderService {
     static fromDto(dtoHeader: DtoHeader): Header {
@@ -15,5 +17,13 @@ export class HeaderService {
         const target = <Header>Object.create(header);
         target.id = undefined;
         return target;
+    }
+
+    static async  deleteForRecord(recordId: string) {
+        const connection = await ConnectionManager.getInstance();
+        await connection.getRepository(Header).createQueryBuilder('header')
+            .delete()
+            .where('header.record=:id', { id: recordId })
+            .execute();
     }
 }

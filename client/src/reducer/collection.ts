@@ -1,5 +1,5 @@
 import { initialState, getDefaultRecord, CollectionState, RecordState } from '../state';
-import { FetchCollectionType, ActiveRecordType } from '../modules/collection_tree/action';
+import { FetchCollectionType, ActiveRecordType, DeleteRecordType } from '../modules/collection_tree/action';
 import { ActiveTabType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, UpdateTabRecordId, SaveAsRecordType } from '../modules/req_res_panel/action';
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
@@ -22,6 +22,15 @@ export function collectionsInfo(state: DtoCollectionWithRecord = initialState.co
                         [record.id]: record
                     }
                 }
+            };
+        }
+        case DeleteRecordType: {
+            const { id, collectionId } = action.value;
+            const recordsInCollection = state.records[collectionId];
+            Reflect.deleteProperty(recordsInCollection, id);
+            return {
+                ...state,
+                records: { ...state.records, [collectionId]: { ...recordsInCollection } }
             };
         }
         default: return state;
@@ -120,22 +129,25 @@ function collectionState(state: CollectionState = initialState.collectionState, 
             };
         case RemoveTabType: {
             let index = recordState.findIndex(r => r.record.id === action.key);
-            const activeIndex = recordState.findIndex(r => r.record.id === activeKey);
-            recordState.splice(index, 1);
-            if (recordState.length === 0) {
-                const record = getDefaultRecord();
-                recordState.push({
-                    record: record,
-                    name: record.name,
-                    isChanged: false,
-                    isRequesting: false
-                });
+            if (index > -1) {
+                const activeIndex = recordState.findIndex(r => r.record.id === activeKey);
+                recordState.splice(index, 1);
+                if (recordState.length === 0) {
+                    const record = getDefaultRecord();
+                    recordState.push({
+                        record: record,
+                        name: record.name,
+                        isChanged: false,
+                        isRequesting: false
+                    });
+                }
+                if (index === activeIndex) {
+                    index = index === recordState.length ? index - 1 : index;
+                    activeKey = recordState[index].record.id;
+                }
+                return { ...state, recordState: [...recordState], activeKey: activeKey };
             }
-            if (index === activeIndex) {
-                index = index === recordState.length ? index - 1 : index;
-                activeKey = recordState[index].record.id;
-            }
-            return { ...state, recordState: [...recordState], activeKey: activeKey };
+            return state;
         }
         case SendRequestFulfilledType: {
             const index = recordState.findIndex(r => r.record.id === action.result.id);
