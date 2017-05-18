@@ -103,33 +103,35 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         });
 
         return (
-            <Menu
-                className="collection-tree"
-                style={{ width: 300 }}
-                onOpenChange={this.onOpenChanged}
-                mode="inline"
-                inlineIndent={0}
-                selectedKeys={[activeKey]}
-                onSelect={this.onSelectChanged}
-            >
-                {
-                    _.chain(collections).values<DtoCollection>().sortBy('name').value().map(c => {
-                        let sortRecords = _.chain(records[c.id]).values<DtoRecord>().sortBy(['category', 'name']).value();
-                        return (
-                            <SubMenu className="collection-item" key={c.id} title={(
-                                <CollectionItem name={c.name} onNameChanged={(name) => this.props.changeCollectionName(c, name)} />
-                            )}>
-                                {
-                                    sortRecords.length === 0 ?
-                                        <div style={{ height: 20 }} /> :
-                                        loopRecords(sortRecords, c.id)
-                                }
-                            </SubMenu>
-                        );
-                    })
-                }
+            <div>
+                <Menu
+                    className="collection-tree"
+                    style={{ width: 300 }}
+                    onOpenChange={this.onOpenChanged}
+                    mode="inline"
+                    inlineIndent={0}
+                    selectedKeys={[activeKey]}
+                    onSelect={this.onSelectChanged}
+                >
+                    {
+                        _.chain(collections).values<DtoCollection>().sortBy('name').value().map(c => {
+                            let sortRecords = _.chain(records[c.id]).values<DtoRecord>().sortBy(['category', 'name']).value();
+                            return (
+                                <SubMenu className="collection-item" key={c.id} title={(
+                                    <CollectionItem name={c.name} onNameChanged={(name) => this.props.changeCollectionName(c, name)} deleteCollection={() => this.props.deleteCollection(c.id)} />
+                                )}>
+                                    {
+                                        sortRecords.length === 0 ?
+                                            <div style={{ height: 20 }} /> :
+                                            loopRecords(sortRecords, c.id)
+                                    }
+                                </SubMenu>
+                            );
+                        })
+                    }
+                </Menu>
                 <div className="collection-tree-bottom" />
-            </Menu>
+            </div>
         );
     }
 }

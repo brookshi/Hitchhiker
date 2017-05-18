@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from 'react';
-import { Form, Select, Input, Dropdown, Menu, Button, Tabs, Badge, Modal, TreeSelect, Icon } from 'antd';
+import { Form, Select, Input, Dropdown, Menu, Button, Tabs, Badge, Modal, TreeSelect, Icon, message } from 'antd';
 import { HttpMethod } from '../../common/http_method';
 import KeyValueItem from '../../components/key_value';
 import Editor from '../../components/editor';
@@ -66,7 +66,8 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
             ...this.state,
             isSaveDlgOpen: false,
             isSaveAsDlgOpen: false,
-            record: nextProps.activeRecord as DtoRecord
+            record: nextProps.activeRecord,
+            nameValidateStatus: nextProps.activeRecord.name.trim() === '' ? 'warning' : undefined
         });
     }
 
@@ -201,7 +202,6 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     onInputChanged = (value: string, type: string) => {
         let record = this.props.activeRecord;
         record[type] = value;
-        this.onRecordChanged({ ...record });
 
         let nameValidateStatus = this.state.nameValidateStatus;
         if (type === 'name') {
@@ -210,24 +210,36 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
             } else if (this.state.nameValidateStatus) {
                 nameValidateStatus = undefined;
             }
-            this.setState({ ...this.state, nameValidateStatus: nameValidateStatus });
         }
+        this.onRecordChanged({ ...record });
     }
 
     onRecordChanged = (record: DtoRecord) => {
         this.props.onChanged(record);
     }
 
+    canSave = () => {
+        if (this.props.activeRecord.name.trim() !== '') {
+            return true;
+        }
+        message.warning('miss name');
+        return false;
+    }
+
     onSaveAs = (e) => {
-        this.setState({ ...this.state, isSaveAsDlgOpen: true });
+        if (this.canSave()) {
+            this.setState({ ...this.state, isSaveAsDlgOpen: true });
+        }
     }
 
     onSave = (e) => {
-        const { activeRecord } = this.props;
-        if (activeRecord.id.startsWith('@new')) {
-            this.setState({ ...this.state, isSaveDlgOpen: true });
-        } else {
-            this.props.save(activeRecord);
+        if (this.canSave()) {
+            const { activeRecord } = this.props;
+            if (activeRecord.id.startsWith('@new')) {
+                this.setState({ ...this.state, isSaveDlgOpen: true });
+            } else {
+                this.props.save(activeRecord);
+            }
         }
     }
 

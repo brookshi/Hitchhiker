@@ -2,11 +2,14 @@ import React from 'react';
 import { Icon, Menu } from 'antd';
 import ItemWithMenu from '../../components/item_with_menu';
 import './style/index.less';
+import { deleteDlg } from '../../components/confirm_dialog/index';
 
 interface CollectionItemProps {
     name: string;
 
     onNameChanged(name: string);
+
+    deleteCollection();
 }
 
 interface CollectionItemState {
@@ -14,26 +17,45 @@ interface CollectionItemState {
 
 class CollectionItem extends React.Component<CollectionItemProps, CollectionItemState> {
 
-    public render() {
-        const menu = (
-            <Menu>
-                <Menu.Item>
-                    <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">1st menu item</a>
+    itemWithMenu: ItemWithMenu;
+
+    getMenu = () => {
+        return (
+            <Menu style={{ width: 120 }} onClick={this.onClickMenu}>
+                <Menu.Item key="edit">
+                    <Icon type="edit" /> Rename
                 </Menu.Item>
-                <Menu.Item>
-                    <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">2nd menu item</a>
+                <Menu.Item key="copy">
+                    <Icon type="copy" /> Duplicate
                 </Menu.Item>
-                <Menu.Item>
-                    <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">3d menu item</a>
+                <Menu.Item key="delete">
+                    <Icon type="delete" /> Delete
                 </Menu.Item>
             </Menu>
         );
+    }
+
+    onClickMenu = (e) => {
+        this[e.key]();
+    }
+
+    delete = () => deleteDlg('collection', () => this.props.deleteCollection());
+
+    edit = () => {
+        if (this.itemWithMenu) {
+            this.itemWithMenu.edit();
+        }
+    }
+
+    public render() {
+
         return (
             <ItemWithMenu
+                ref={ele => this.itemWithMenu = ele}
                 onNameChanged={this.props.onNameChanged}
                 icon={<Icon className="c-icon" type="wallet" />}
                 name={this.props.name}
-                menu={menu}
+                menu={this.getMenu()}
             />
         );
     }
