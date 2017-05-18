@@ -24,8 +24,10 @@
     ✔ add tab button @done (5/16/2017, 6:33:08 PM)
     ✔ snippets @done (2017/5/16 下午11:07:40)
     ✔ save collection list sort @done (5/17/2017, 12:50:52 PM)
-    ☐ collection create/edit/del
-    ☐ folder create/edit/del
+    ☐ collection create/edit/del/duplicate
+    ☐ folder create/edit/del/duplicate
+    ☐ record duplicate
+    ☐ record/folder move
     ✔ record del @done (2017/5/17 下午10:41:17)
     ☐ split line
     ☐ sync status
