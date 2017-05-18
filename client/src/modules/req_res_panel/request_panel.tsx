@@ -164,8 +164,10 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         const index = headerKeys.indexOf('content-type');
         if (index >= 0) {
             headers[index] = { ...headers[index], value: record.bodyType };
-            record.headers = headers.filter(header => header.key || header.value);
+        } else {
+            headers.push({ isActive: true, key: 'content-type', value: record.bodyType, id: StringUtil.generateUID() });
         }
+        record.headers = headers.filter(header => header.key || header.value);
         this.onRecordChanged(record);
     }
 
@@ -317,7 +319,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                             animated={false}
                             onChange={this.onTabChanged}
                             tabBarExtraContent={this.getTabExtraFunc()}>
-                            <TabPane tab={nameWithTag('Headers', activeRecord.headers ? (Math.max(0, activeRecord.headers.length - 1)).toString() : '')} key="headers">
+                            <TabPane tab={nameWithTag('Headers', activeRecord.headers ? (Math.max(0, activeRecord.headers.length)).toString() : '')} key="headers">
                                 {this.getHeadersCtrl()}
                             </TabPane>
                             <TabPane tab={<Badge style={normalBadgeStyle} dot={!!activeRecord.body && activeRecord.body.length > 0} count={0}>Body</Badge>} key="body">

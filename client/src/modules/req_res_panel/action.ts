@@ -32,9 +32,9 @@ export const sendRequestFulfilledAction = (result: { id: string, runResult: RunR
 
 export const activeTabAction = (key: string) => ({ type: ActiveTabType, key });
 
-export const saveRecordAction = (record: DtoRecord) => ({ type: SaveRecordType, record });
+export const saveRecordAction = (record: DtoRecord) => ({ type: SaveRecordType, value: { isNew: record.id.startsWith('@new'), record } });
 
-export const saveAsRecordAction = (record: DtoRecord) => ({ type: SaveAsRecordType, record });
+export const saveAsRecordAction = (record: DtoRecord) => ({ type: SaveAsRecordType, value: { isNew: true, record } });
 
 export function* sendRequest() {
     yield takeEvery(SendRequestType, sendRequestFulfilled);
@@ -63,7 +63,7 @@ export function* saveAsRecord() {
 }
 
 function* pushSaveRecordToChannel(action: any) {
-    const method = action.record.id.startsWith('@new') ? HttpMethod.POST : HttpMethod.PUT;
-    const channelAction = syncAction({ type: SyncType.addRecord, method: method, url: 'http://localhost:3000/api/record', body: action.record });
+    const method = action.value.isNew ? HttpMethod.POST : HttpMethod.PUT;
+    const channelAction = syncAction({ type: SyncType.addRecord, method: method, url: 'http://localhost:3000/api/record', body: action.value.record });
     yield put(channelAction);
 }

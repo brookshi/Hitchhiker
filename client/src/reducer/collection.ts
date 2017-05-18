@@ -1,5 +1,5 @@
 import { initialState, getDefaultRecord, CollectionState, RecordState } from '../state';
-import { FetchCollectionType, ActiveRecordType, DeleteRecordType } from '../modules/collection_tree/action';
+import { FetchCollectionType, ActiveRecordType, DeleteRecordType, SaveCollectionType } from '../modules/collection_tree/action';
 import { ActiveTabType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, UpdateTabRecordId, SaveAsRecordType } from '../modules/req_res_panel/action';
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
@@ -14,14 +14,25 @@ export function collectionsInfo(state: DtoCollectionWithRecord = initialState.co
         }
         case SaveAsRecordType:
         case SaveRecordType: {
-            const record = _.cloneDeep(action.record);
+            const record = _.cloneDeep(action.value.record);
             return {
                 ...state,
                 records: {
+                    ...state.records,
                     [record.collectionId]: {
                         ...state.records[record.collectionId],
                         [record.id]: record
                     }
+                }
+            };
+        }
+        case SaveCollectionType: {
+            const collection = _.cloneDeep(action.value.collection);
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    [collection.id]: collection
                 }
             };
         }
@@ -74,10 +85,13 @@ function recordState(states: RecordState[] = initialState.collectionState.record
             return [...states];
         }
         case SaveRecordType: {
-            const index = states.findIndex(r => r.record.id === action.record.id);
-            states[index].record = { ..._.cloneDeep(action.record) };
-            states[index].isChanged = false;
-            return [...states];
+            const index = states.findIndex(r => r.record.id === action.value.record.id);
+            if (index > -1) {
+                states[index].record = { ..._.cloneDeep(action.value.record) };
+                states[index].isChanged = false;
+                return [...states];
+            }
+            return states;
         }
         case CancelRequestType: {
             const index = states.findIndex(r => r.record.id === action.id);

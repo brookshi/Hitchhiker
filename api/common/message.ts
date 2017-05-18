@@ -14,11 +14,11 @@ export class Message {
     static userOldPwdIncorrect: string = 'old password is incorrect';
     static userChangePwdSuccess: string = 'change password success';
     static findPwdSuccess: string = 'a new password have send to your mail';
-    static regConfireFailed_userNotExist: string = 'check failed, user does not exist';
-    static regConfireFailed_userConfirmed: string = 'user was confirmed';
-    static regConfireFailed_expired: string = 'verification url was expired';
-    static regConfireFailed_invalid: string = 'verification url was invalid';
-    static regConfirmSuccess: string = 'account is actived, you can use it to login now';
+    static regConfirmFailed_userNotExist: string = 'check failed, user does not exist';
+    static regConfirmFailed_userConfirmed: string = 'user was confirmed';
+    static regConfirmFailed_expired: string = 'verification url was expired';
+    static regConfirmFailed_invalid: string = 'verification url was invalid';
+    static regConfirmSuccess: string = 'account is activated, you can use it to login now';
 
     static invite_InviterNotExist: string = 'inviter does not exist';
     static emailsAtLeastOne: string = 'at least one email';
@@ -27,7 +27,7 @@ export class Message {
     static envCreateSuccess: string = 'create environment success';
     static envUpdateSuccess: string = 'update environment success';
     static envDeleteSuccess: string = 'delete environment success';
-    static envNotExist: string = 'enviornment does not exist';
+    static envNotExist: string = 'environment does not exist';
 
     static teamSaveSuccess: string = 'team save success';
     static teamQuitSuccess: string = 'quit team success';
@@ -39,6 +39,7 @@ export class Message {
 
     static collectionCreateFailed: string = 'create collection failed';
     static collectionCreateSuccess: string = 'create collection success';
+    static collectionUpdateSuccess: string = 'update collection success';
     static collectionNotExist: string = 'collection does not exist';
 
     static recordCreateFailed: string = 'create record failed';

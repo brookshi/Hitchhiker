@@ -2,8 +2,8 @@
     "app": {
         "host": "http://localhost:81/api/",
         "language": "cn",
-        "encrptykey": "hitchhikerapi",
-        "autoGeneraterAccount": true,
+        "encryptKey": "hitchhikerapi",
+        "autoGeneratorAccount": true,
         "defaultPassword": "123456"
     },
     "user": {

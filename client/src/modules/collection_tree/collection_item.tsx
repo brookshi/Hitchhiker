@@ -5,9 +5,12 @@ import './style/index.less';
 
 interface CollectionItemProps {
     name: string;
+
+    onNameChanged(name: string);
 }
 
-interface CollectionItemState { }
+interface CollectionItemState {
+}
 
 class CollectionItem extends React.Component<CollectionItemProps, CollectionItemState> {
 
@@ -27,6 +30,7 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
         );
         return (
             <ItemWithMenu
+                onNameChanged={this.props.onNameChanged}
                 icon={<Icon className="c-icon" type="wallet" />}
                 name={this.props.name}
                 menu={menu}

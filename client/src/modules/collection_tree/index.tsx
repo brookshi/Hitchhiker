@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { Menu } from 'antd';
-import { refreshCollectionAction, activeRecordAction, DeleteRecordType, DeleteCollectionType, UpdateCollectionType, CreateCollectionType } from './action';
+import { refreshCollectionAction, activeRecordAction, DeleteRecordType, DeleteCollectionType, UpdateCollectionType, CreateCollectionType, SaveCollectionType } from './action';
 import { State } from '../../state';
 import RecordFolder from './record_folder';
 import RecordItem from './record_item';
@@ -13,7 +13,7 @@ import { DtoCollection } from '../../../../api/interfaces/dto_collection';
 import { RecordCategory } from '../../common/record_category';
 import './style/index.less';
 import { actionCreator } from '../../action';
-import { removeTabAction } from '../req_res_panel/action';
+import { removeTabAction, SaveRecordType } from '../req_res_panel/action';
 
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
@@ -36,6 +36,10 @@ interface CollectionListDispatchProps {
     updateCollection(collection: DtoCollection);
 
     createCollection(collection: DtoCollection);
+
+    changeFolderName(record: DtoRecord, name: string);
+
+    changeCollectionName(collection: DtoCollection, name: string);
 }
 
 type CollectionListProps = CollectionListStateProps & CollectionListDispatchProps;
@@ -75,14 +79,25 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                 const isOpen = this.state.openKeys.indexOf(r.id) > -1;
                 const children = _.remove(data, (d) => d.pid === r.id);
                 return (
-                    <SubMenu className="folder" key={r.id} title={<RecordFolder record={r} isOpen={isOpen} deleteRecord={() => this.props.deleteRecord(r.id, records[cid])} />}>
+                    <SubMenu className="folder" key={r.id} title={(
+                        <RecordFolder
+                            record={r}
+                            isOpen={isOpen}
+                            deleteRecord={() => this.props.deleteRecord(r.id, records[cid])}
+                            onNameChanged={(name) => this.props.changeFolderName(r, name)}
+                        />
+                    )}>
                         {loopRecords(children, cid, true)}
                     </SubMenu>
                 );
             }
             return (
                 <MenuItem key={r.id} style={recordStyle} data={r}>
-                    {<RecordItem record={r} inFolder={inFolder} deleteRecord={() => this.props.deleteRecord(r.id, records[cid])} />}
+                    {<RecordItem
+                        record={r}
+                        inFolder={inFolder}
+                        deleteRecord={() => this.props.deleteRecord(r.id, records[cid])}
+                    />}
                 </MenuItem>
             );
         });
@@ -101,7 +116,8 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                     _.chain(collections).values<DtoCollection>().sortBy('name').value().map(c => {
                         let sortRecords = _.chain(records[c.id]).values<DtoRecord>().sortBy(['category', 'name']).value();
                         return (
-                            <SubMenu className="collection-item" key={c.id} title={<CollectionItem name={c.name} />}>
+                            <SubMenu className="collection-item" key={c.id} title={<CollectionItem name={c.name}
+                                onNameChanged={(name) => this.props.changeCollectionName(c, name)} />}>
                                 {
                                     sortRecords.length === 0 ?
                                         <div style={{ height: 20 }} /> :
@@ -140,7 +156,9 @@ const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps
         },
         deleteCollection: id => dispatch(actionCreator(DeleteCollectionType, id)),
         updateCollection: collection => dispatch(actionCreator(UpdateCollectionType, collection)),
-        createCollection: collection => dispatch(actionCreator(CreateCollectionType, collection))
+        createCollection: collection => dispatch(actionCreator(CreateCollectionType, collection)),
+        changeFolderName: (record, name) => dispatch(actionCreator(SaveRecordType, { isNew: false, record: { ...record, name } })),
+        changeCollectionName: (collection, name) => dispatch(actionCreator(SaveCollectionType, { isNew: false, collection: { ...collection, name } }))
     };
 };
 

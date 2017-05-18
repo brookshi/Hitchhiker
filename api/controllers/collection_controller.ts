@@ -1,6 +1,6 @@
 import { CollectionService } from '../services/collection_service';
 import { UserCollectionService } from '../services/user_collection_service';
-import { GET, POST, BodyParam, PathParam, BaseController } from 'webapi-router';
+import { GET, POST, PUT, BodyParam, PathParam, BaseController } from 'webapi-router';
 import { ResObject } from "../common/res_object";
 import * as Koa from 'koa';
 import { DtoCollection, DtoCollectionWithRecord } from "../interfaces/dto_collection";
@@ -30,6 +30,11 @@ export default class CollectionController extends BaseController {
     async create(ctx: Koa.Context, @BodyParam collection: DtoCollection): Promise<ResObject> {
         const userId = SessionService.getUserId(ctx);
         return await CollectionService.create(collection.name, collection.description, userId);
+    }
+
+    @PUT('/collection')
+    async update(ctx: Koa.Context, @BodyParam collection: DtoCollection): Promise<ResObject> {
+        return await CollectionService.update(collection, SessionService.getUserId(ctx));
     }
 
     @GET('/collection/share/:collectionid/to/:teamid')

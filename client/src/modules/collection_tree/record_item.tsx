@@ -12,21 +12,44 @@ interface RecordItemProps {
     deleteRecord();
 }
 
-interface RecordItemState { }
+interface RecordItemState {
+}
 
 class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
 
+    itemWithMenu: ItemWithMenu;
+
+    constructor(props: RecordItemProps) {
+        super(props);
+        this.state = {
+            isEdit: false
+        };
+    }
+
     getMenu = () => {
         return (
-            <Menu style={{ width: 120 }} onClick={this.deleteRecord}>
-                <Menu.Item>
+            <Menu style={{ width: 120 }} onClick={this.onClickMenu}>
+                <Menu.Item key="delete">
                     <Icon type="delete" /> Delete
+                </Menu.Item>
+                <Menu.Item key="edit">
+                    <Icon type="edit" /> Rename
                 </Menu.Item>
             </Menu>
         );
     }
 
-    deleteRecord = () => deleteDlg('record', () => this.props.deleteRecord());
+    onClickMenu = (e) => {
+        this[e.key]();
+    }
+
+    delete = () => deleteDlg('record', () => this.props.deleteRecord());
+
+    edit = () => {
+        if (this.itemWithMenu) {
+            this.itemWithMenu.edit();
+        }
+    }
 
     public render() {
         let { record, inFolder } = this.props;
@@ -34,6 +57,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
         method = method || 'GET';
         return (
             <ItemWithMenu
+                ref={ele => this.itemWithMenu = ele}
                 className="record"
                 icon={(
                     <span className={'record-icon' + (inFolder ? ' record-in-folder' : '')}>

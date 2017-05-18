@@ -5,7 +5,8 @@ export enum SyncType {
     addRecord = 1,
     delRecord = 2,
     addCollection = 3,
-    delCollection = 4,
+    updateCollection = 4,
+    delCollection = 5,
 }
 
 export interface SyncItem {

@@ -51,6 +51,13 @@ export class CollectionService {
         return { success: true, message: Message.collectionCreateSuccess };
     }
 
+    static async update(dtoCollection: DtoCollection, userId: string): Promise<ResObject> {
+        const owner = new User();
+        owner.id = userId;
+        await CollectionService.save(CollectionService.fromDto(dtoCollection));
+        return { success: true, message: Message.collectionCreateSuccess };
+    }
+
     static async getOwns(userId: string): Promise<Collection[]> {
         const connection = await ConnectionManager.getInstance();
 

@@ -9,14 +9,14 @@ export class StringUtil {
     }
 
     static encrypt(str: string): string {
-        const cipher = crypto.createCipher('aes-256-cbc', Setting.instance.app.encrptykey);
+        const cipher = crypto.createCipher('aes-256-cbc', Setting.instance.app.encryptKey);
         let rst = cipher.update(str, 'utf8', 'base64');
         rst += cipher.final('base64');
         return rst;
     }
 
     static decrypt(str: string): string {
-        const decipher = crypto.createDecipher('aes-256-cbc', Setting.instance.app.encrptykey);
+        const decipher = crypto.createDecipher('aes-256-cbc', Setting.instance.app.encryptKey);
         let rst = decipher.update(str, 'base64', 'utf8');
         rst += decipher.final('utf8');
         return rst;

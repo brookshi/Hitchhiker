@@ -94,22 +94,22 @@ export default class UserController extends BaseController {
     async regConfirm( @QueryParam('id') id: string, @QueryParam('token') token: string): Promise<ResObject> {
         const user = await UserService.getUserById(id);
         if (!user) {
-            return { success: false, message: Message.regConfireFailed_userNotExist };
+            return { success: false, message: Message.regConfirmFailed_userNotExist };
         }
 
         if (user.isActive) {
-            return { success: false, message: Message.regConfireFailed_userConfirmed };
+            return { success: false, message: Message.regConfirmFailed_userConfirmed };
         }
 
         const json = StringUtil.decrypt(token);
         const info = <RegToken>JSON.parse(json);
 
         if (!info || info.host !== Setting.instance.app.host) {
-            return { success: false, message: Message.regConfireFailed_invalid };
+            return { success: false, message: Message.regConfirmFailed_invalid };
         }
 
         if (DateUtil.diff(new Date(info.date), new Date()) > 24) {
-            return { success: false, message: Message.regConfireFailed_expired };
+            return { success: false, message: Message.regConfirmFailed_expired };
         }
 
         UserService.active(user.id);
@@ -126,9 +126,9 @@ export default class UserController extends BaseController {
 
         const emailArr = <Array<string>>checkEmailsRst.result;
         const user = (<any>ctx).session.user;
-        const rsts = await Promise.all(emailArr.map(email => MailService.inviterMail(email, user)));
+        const results = await Promise.all(emailArr.map(email => MailService.inviterMail(email, user)));
 
-        return { success: rsts.every(rst => !rst.err), message: rsts.map(rst => rst.err).join(';') };
+        return { success: results.every(rst => !rst.err), message: results.map(rst => rst.err).join(';') };
     }
 
     @GET('/user/invitetoteam')
@@ -151,13 +151,13 @@ export default class UserController extends BaseController {
         }
 
         const user = (<any>ctx).session.user;
-        const rsts = await Promise.all(emailArr.map(email => MailService.teamInviterMail(email, user, team)));
-        const success = rsts.every(rst => !rst.err);
+        const results = await Promise.all(emailArr.map(email => MailService.teamInviterMail(email, user, team)));
+        const success = results.every(rst => !rst.err);
 
-        if (success) { //TODO: add in trancation is the better way
+        if (success) { //TODO: add in transaction is the better way
             await Promise.all(emailArr.map(email => UserService.createUserByEmail(email)));
         }
 
-        return { success: success, message: rsts.map(rst => rst.err).join(';') };
+        return { success: success, message: results.map(rst => rst.err).join(';') };
     }
 }

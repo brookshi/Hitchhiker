@@ -3,9 +3,9 @@
 .item-with-menu {
     width: 100%;
     display: inline-block;
+    padding-right: 30px;
     overflow: hidden;
     text-overflow: ellipsis;
-    padding-right: 30px;
     .item-with-menu-icon-visible,
     &:hover .item-with-menu-icon {
         display: inline;
@@ -34,4 +34,12 @@
     &:hover {
         background: rgba(89, 89, 89, 0.1);
     }
+}
+
+.item-with-menu-name{
+    display: inline-block;
+    width: calc(100% - 48px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
 }
