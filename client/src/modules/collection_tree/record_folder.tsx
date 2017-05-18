@@ -25,11 +25,11 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
     getMenu = () => {
         return (
             <Menu style={{ width: 120 }} onClick={this.onClickMenu}>
-                <Menu.Item key="delete">
-                    <Icon type="delete" /> Delete
-                </Menu.Item>
                 <Menu.Item key="edit">
                     <Icon type="edit" /> Rename
+                </Menu.Item>
+                <Menu.Item key="delete">
+                    <Icon type="delete" /> Delete
                 </Menu.Item>
             </Menu>
         );

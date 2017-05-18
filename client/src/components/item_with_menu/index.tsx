@@ -44,7 +44,7 @@ class ItemWithMenu extends React.Component<ItemWithMenuProps, ItemWithMenuState>
     }
 
     completeEdit = (e) => {
-        e.nativeEvent.cancelBubble = true;
+        e.stopPropagation();
         if (this.props.onNameChanged) {
             this.setState({ ...this.state, isEdit: false });
             this.props.onNameChanged(this.state.name);
@@ -58,6 +58,10 @@ class ItemWithMenu extends React.Component<ItemWithMenuProps, ItemWithMenuState>
         }
     }
 
+    stopPropagation = (e) => {
+        e.stopPropagation();
+    }
+
     public render() {
         const { icon, menu, className } = this.props;
         const { isEdit, isVisible, name } = this.state;
@@ -69,10 +73,10 @@ class ItemWithMenu extends React.Component<ItemWithMenuProps, ItemWithMenuState>
             <span className={`${className} item-with-menu`}>
                 {icon}
                 <span className="item-with-menu-name">
-                    <Input onChange={this.onNameChanged} suffix={completeEditIcon} style={nameStyle} ref={ele => this.nameInput = ele} value={name} />  {(isEdit ? '' : name)}
+                    <Input onClick={this.stopPropagation} onBlur={this.completeEdit} onChange={this.onNameChanged} suffix={completeEditIcon} style={nameStyle} ref={ele => this.nameInput = ele} value={name} />  {(isEdit ? '' : name)}
                 </span>
                 <Dropdown onVisibleChange={this.onMenuVisibleChanged} overlay={menu} placement="bottomRight">
-                    <Icon className={iconClassName} type="ellipsis" />
+                    <Icon className={iconClassName} onClick={this.stopPropagation} type="ellipsis" />
                 </Dropdown>
             </span>
         );

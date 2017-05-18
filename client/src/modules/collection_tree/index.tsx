@@ -93,11 +93,11 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             }
             return (
                 <MenuItem key={r.id} style={recordStyle} data={r}>
-                    {<RecordItem
+                    <RecordItem
                         record={r}
                         inFolder={inFolder}
                         deleteRecord={() => this.props.deleteRecord(r.id, records[cid])}
-                    />}
+                    />
                 </MenuItem>
             );
         });
@@ -116,8 +116,9 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                     _.chain(collections).values<DtoCollection>().sortBy('name').value().map(c => {
                         let sortRecords = _.chain(records[c.id]).values<DtoRecord>().sortBy(['category', 'name']).value();
                         return (
-                            <SubMenu className="collection-item" key={c.id} title={<CollectionItem name={c.name}
-                                onNameChanged={(name) => this.props.changeCollectionName(c, name)} />}>
+                            <SubMenu className="collection-item" key={c.id} title={(
+                                <CollectionItem name={c.name} onNameChanged={(name) => this.props.changeCollectionName(c, name)} />
+                            )}>
                                 {
                                     sortRecords.length === 0 ?
                                         <div style={{ height: 20 }} /> :

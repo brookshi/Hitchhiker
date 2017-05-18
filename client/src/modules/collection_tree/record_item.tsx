@@ -21,9 +21,6 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
 
     constructor(props: RecordItemProps) {
         super(props);
-        this.state = {
-            isEdit: false
-        };
     }
 
     getMenu = () => {
@@ -31,9 +28,6 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
             <Menu style={{ width: 120 }} onClick={this.onClickMenu}>
                 <Menu.Item key="delete">
                     <Icon type="delete" /> Delete
-                </Menu.Item>
-                <Menu.Item key="edit">
-                    <Icon type="edit" /> Rename
                 </Menu.Item>
             </Menu>
         );
@@ -45,16 +39,11 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
 
     delete = () => deleteDlg('record', () => this.props.deleteRecord());
 
-    edit = () => {
-        if (this.itemWithMenu) {
-            this.itemWithMenu.edit();
-        }
-    }
-
     public render() {
         let { record, inFolder } = this.props;
         let { method, name } = record;
         method = method || 'GET';
+
         return (
             <ItemWithMenu
                 ref={ele => this.itemWithMenu = ele}
