@@ -7,6 +7,8 @@ import { deleteDlg } from '../../components/confirm_dialog/index';
 interface CollectionItemProps {
     name: string;
 
+    recordCount: number;
+
     onNameChanged(name: string);
 
     deleteCollection();
@@ -58,7 +60,7 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
                 onNameChanged={this.props.onNameChanged}
                 icon={<Icon className="c-icon" type="wallet" />}
                 name={this.props.name}
-                subName={<div>12requests</div>}
+                subName={<div>{`${this.props.recordCount} requests`}</div>}
                 menu={this.getMenu()}
             />
         );

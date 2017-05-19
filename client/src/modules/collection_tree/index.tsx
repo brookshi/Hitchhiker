@@ -72,7 +72,6 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     render() {
         const { collections, records, activeKey } = this.props;
         const recordStyle = { height: '30px', lineHeight: '30px' };
-
         const loopRecords = (data: DtoRecord[], cid: string, inFolder: boolean = false) => data.map(r => {
 
             if (r.category === RecordCategory.folder) {
@@ -115,10 +114,11 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                 >
                     {
                         _.chain(collections).values<DtoCollection>().sortBy('name').value().map(c => {
+                            const recordCount = _.values(records[c.id]).filter(r => r.category === RecordCategory.record).length;
                             let sortRecords = _.chain(records[c.id]).values<DtoRecord>().sortBy(['category', 'name']).value();
                             return (
                                 <SubMenu className="collection-item" key={c.id} title={(
-                                    <CollectionItem name={c.name} onNameChanged={(name) => this.props.changeCollectionName(c, name)} deleteCollection={() => this.props.deleteCollection(c.id)} />
+                                    <CollectionItem name={c.name} recordCount={recordCount} onNameChanged={(name) => this.props.changeCollectionName(c, name)} deleteCollection={() => this.props.deleteCollection(c.id)} />
                                 )}>
                                     {
                                         sortRecords.length === 0 ?
