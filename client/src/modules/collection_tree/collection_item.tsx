@@ -27,11 +27,8 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
                 <Menu.Item key="edit">
                     <Icon type="edit" /> Rename
                 </Menu.Item>
-                <Menu.Item key="folder">
+                <Menu.Item key="createFolder">
                     <Icon type="folder" /> Create folder
-                </Menu.Item>
-                <Menu.Item key="copy">
-                    <Icon type="copy" /> Duplicate
                 </Menu.Item>
                 <Menu.Item key="delete">
                     <Icon type="delete" /> Delete

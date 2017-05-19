@@ -10,6 +10,7 @@ interface RecordItemProps {
     record: DtoRecord;
     inFolder: boolean;
     deleteRecord();
+    duplicateRecord();
 }
 
 interface RecordItemState {
@@ -26,7 +27,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
     getMenu = () => {
         return (
             <Menu className="item_menu" onClick={this.onClickMenu}>
-                <Menu.Item key="copy">
+                <Menu.Item key="duplicate">
                     <Icon type="copy" /> Duplicate
                 </Menu.Item>
                 <Menu.Item key="delete">
@@ -41,6 +42,8 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
     }
 
     delete = () => deleteDlg('record', () => this.props.deleteRecord());
+
+    duplicate = () => this.props.duplicateRecord();
 
     public render() {
         let { record, inFolder } = this.props;

@@ -14,6 +14,7 @@ import { RecordCategory } from '../../common/record_category';
 import './style/index.less';
 import { actionCreator } from '../../action';
 import { removeTabAction, SaveRecordType } from '../req_res_panel/action';
+import { StringUtil } from '../../utils/string_util';
 
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
@@ -40,6 +41,8 @@ interface CollectionListDispatchProps {
     changeFolderName(record: DtoRecord, name: string);
 
     changeCollectionName(collection: DtoCollection, name: string);
+
+    duplicateRecord(record: DtoRecord);
 }
 
 type CollectionListProps = CollectionListStateProps & CollectionListDispatchProps;
@@ -95,6 +98,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                     <RecordItem
                         record={r}
                         inFolder={inFolder}
+                        duplicateRecord={() => this.props.duplicateRecord(r)}
                         deleteRecord={() => this.props.deleteRecord(r.id, records[cid])}
                     />
                 </MenuItem>
@@ -161,7 +165,8 @@ const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps
         updateCollection: collection => dispatch(actionCreator(UpdateCollectionType, collection)),
         createCollection: collection => dispatch(actionCreator(CreateCollectionType, collection)),
         changeFolderName: (record, name) => dispatch(actionCreator(SaveRecordType, { isNew: false, record: { ...record, name } })),
-        changeCollectionName: (collection, name) => dispatch(actionCreator(SaveCollectionType, { isNew: false, collection: { ...collection, name } }))
+        changeCollectionName: (collection, name) => dispatch(actionCreator(SaveCollectionType, { isNew: false, collection: { ...collection, name } })),
+        duplicateRecord: (record) => dispatch(actionCreator(SaveRecordType, { isNew: true, record: { ...record, id: StringUtil.generateUID(), name: `${record.name}.copy` } }))
     };
 };
 
