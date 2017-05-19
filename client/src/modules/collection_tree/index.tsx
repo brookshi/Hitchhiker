@@ -43,6 +43,8 @@ interface CollectionListDispatchProps {
     changeCollectionName(collection: DtoCollection, name: string);
 
     duplicateRecord(record: DtoRecord);
+
+    createFolder(record: DtoRecord);
 }
 
 type CollectionListProps = CollectionListStateProps & CollectionListDispatchProps;
@@ -52,6 +54,10 @@ interface CollectionListState {
 }
 
 class CollectionList extends React.Component<CollectionListProps, CollectionListState> {
+
+    currentNewFolder: DtoRecord | undefined;
+    currentNewCollectionId: string;
+    folderRefs: _.Dictionary<RecordFolder> = {};
 
     constructor(props: CollectionListProps) {
         super(props);
@@ -72,6 +78,27 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         this.props.activeRecord(param.item.props.data);
     }
 
+    createFolder = (folder: DtoRecord) => {
+        this.props.createFolder(folder);
+        this.currentNewFolder = folder;
+    }
+
+    componentWillReceiveProps(nextProps: CollectionListProps) {
+        const openKeys = this.state.openKeys;
+        if (this.currentNewFolder &&
+            this.currentNewFolder.collectionId &&
+            openKeys.indexOf(this.currentNewFolder.collectionId) < 0) {
+            this.setState({ ...this.state, openKeys: [...openKeys, this.currentNewFolder.collectionId] });
+        }
+    }
+
+    componentDidUpdate(prevProps: CollectionListProps, prevState: CollectionListState) {
+        if (this.currentNewFolder && this.folderRefs[this.currentNewFolder.id]) {
+            this.folderRefs[this.currentNewFolder.id].edit();
+            this.currentNewFolder = undefined;
+        }
+    }
+
     render() {
         const { collections, records, activeKey } = this.props;
         const recordStyle = { height: '30px', lineHeight: '30px' };
@@ -83,6 +110,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                 return (
                     <SubMenu className="folder" key={r.id} title={(
                         <RecordFolder
+                            ref={ele => this.folderRefs[r.id] = ele}
                             record={r}
                             isOpen={isOpen}
                             deleteRecord={() => this.props.deleteRecord(r.id, records[cid])}
@@ -113,6 +141,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                     onOpenChange={this.onOpenChanged}
                     mode="inline"
                     inlineIndent={0}
+                    openKeys={this.state.openKeys}
                     selectedKeys={[activeKey]}
                     onSelect={this.onSelectChanged}
                 >
@@ -122,7 +151,13 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                             let sortRecords = _.chain(records[c.id]).values<DtoRecord>().sortBy(['category', 'name']).value();
                             return (
                                 <SubMenu className="collection-item" key={c.id} title={(
-                                    <CollectionItem name={c.name} recordCount={recordCount} onNameChanged={(name) => this.props.changeCollectionName(c, name)} deleteCollection={() => this.props.deleteCollection(c.id)} />
+                                    <CollectionItem
+                                        collection={c}
+                                        recordCount={recordCount}
+                                        onNameChanged={(name) => this.props.changeCollectionName(c, name)}
+                                        deleteCollection={() => this.props.deleteCollection(c.id)}
+                                        createFolder={this.createFolder}
+                                    />
                                 )}>
                                     {
                                         sortRecords.length === 0 ?
@@ -166,7 +201,8 @@ const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps
         createCollection: collection => dispatch(actionCreator(CreateCollectionType, collection)),
         changeFolderName: (record, name) => dispatch(actionCreator(SaveRecordType, { isNew: false, record: { ...record, name } })),
         changeCollectionName: (collection, name) => dispatch(actionCreator(SaveCollectionType, { isNew: false, collection: { ...collection, name } })),
-        duplicateRecord: (record) => dispatch(actionCreator(SaveRecordType, { isNew: true, record: { ...record, id: StringUtil.generateUID(), name: `${record.name}.copy` } }))
+        duplicateRecord: (record) => dispatch(actionCreator(SaveRecordType, { isNew: true, record: { ...record, id: StringUtil.generateUID(), name: `${record.name}.copy` } })),
+        createFolder: (record) => dispatch(actionCreator(SaveRecordType, { isNew: true, record }))
     };
 };
 
