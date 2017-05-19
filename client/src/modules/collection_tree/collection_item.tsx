@@ -21,9 +21,12 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
 
     getMenu = () => {
         return (
-            <Menu style={{ width: 120 }} onClick={this.onClickMenu}>
+            <Menu className="item_menu" onClick={this.onClickMenu}>
                 <Menu.Item key="edit">
                     <Icon type="edit" /> Rename
+                </Menu.Item>
+                <Menu.Item key="folder">
+                    <Icon type="folder" /> Create folder
                 </Menu.Item>
                 <Menu.Item key="copy">
                     <Icon type="copy" /> Duplicate
@@ -55,6 +58,7 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
                 onNameChanged={this.props.onNameChanged}
                 icon={<Icon className="c-icon" type="wallet" />}
                 name={this.props.name}
+                subName={<div>12requests</div>}
                 menu={this.getMenu()}
             />
         );

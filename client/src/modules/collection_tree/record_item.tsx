@@ -25,7 +25,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
 
     getMenu = () => {
         return (
-            <Menu style={{ width: 120 }} onClick={this.onClickMenu}>
+            <Menu className="item_menu" onClick={this.onClickMenu}>
                 <Menu.Item key="copy">
                     <Icon type="copy" /> Duplicate
                 </Menu.Item>

@@ -52,10 +52,14 @@ export class CollectionService {
     }
 
     static async update(dtoCollection: DtoCollection, userId: string): Promise<ResObject> {
-        const owner = new User();
-        owner.id = userId;
-        await CollectionService.save(CollectionService.fromDto(dtoCollection));
-        return { success: true, message: Message.collectionCreateSuccess };
+        const connection = await ConnectionManager.getInstance();
+
+        await connection.getRepository(Collection)
+            .createQueryBuilder('collection')
+            .where('id=:id', { id: dtoCollection.id })
+            .update({ name: dtoCollection.name, description: dtoCollection.description })
+            .execute();
+        return { success: true, message: Message.collectionUpdateSuccess };
     }
 
     static async getOwns(userId: string): Promise<Collection[]> {

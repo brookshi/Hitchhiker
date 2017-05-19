@@ -4,6 +4,7 @@ import './style/index.less';
 
 interface ItemWithMenuProps {
     name: string;
+    subName?: React.ReactNode | string;
     icon: any;
     menu: any;
     className?: string;
@@ -63,17 +64,27 @@ class ItemWithMenu extends React.Component<ItemWithMenuProps, ItemWithMenuState>
     }
 
     public render() {
-        const { icon, menu, className } = this.props;
+        const { icon, menu, className, subName } = this.props;
         const { isEdit, isVisible, name } = this.state;
         const iconClassName = 'item-with-menu-icon' + (isVisible ? ' item-with-menu-icon-visible' : '');
         const nameStyle = isEdit ? {} : { display: 'none' };
         const completeEditIcon = <Icon type="check-circle" onClick={this.completeEdit} />;
+        const lineHeight = subName ? '30px' : '';
 
         return (
             <span className={`${className} item-with-menu`}>
                 {icon}
                 <span className="item-with-menu-name">
-                    <Input onClick={this.stopPropagation} onBlur={this.completeEdit} onChange={this.onNameChanged} suffix={completeEditIcon} style={nameStyle} ref={ele => this.nameInput = ele} value={name} />  {(isEdit ? '' : name)}
+                    <div style={{ lineHeight }}>
+                        <Input onClick={this.stopPropagation} onBlur={this.completeEdit} onChange={this.onNameChanged} suffix={completeEditIcon} style={nameStyle} ref={ele => this.nameInput = ele} value={name} />  {(isEdit ? '' : name)}
+                    </div>
+                    {
+                        subName ? (
+                            <div className="item-with-menu-subname" style={{ lineHeight }}>
+                                {subName}
+                            </div>
+                        ) : ''
+                    }
                 </span>
                 <Dropdown onVisibleChange={this.onMenuVisibleChanged} overlay={menu} placement="bottomRight">
                     <Icon className={iconClassName} onClick={this.stopPropagation} type="ellipsis" />
