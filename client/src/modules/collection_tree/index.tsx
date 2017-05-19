@@ -83,6 +83,10 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         this.currentNewFolder = folder;
     }
 
+    changeFolderName = (folder: DtoRecord, name: string) => {
+        this.props.changeFolderName(folder, name.trim() === '' ? folder.name : name)
+    }
+
     componentWillReceiveProps(nextProps: CollectionListProps) {
         const openKeys = this.state.openKeys;
         if (this.currentNewFolder &&
@@ -111,10 +115,10 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                     <SubMenu className="folder" key={r.id} title={(
                         <RecordFolder
                             ref={ele => this.folderRefs[r.id] = ele}
-                            record={r}
+                            record={{ ...r }}
                             isOpen={isOpen}
                             deleteRecord={() => this.props.deleteRecord(r.id, records[cid])}
-                            onNameChanged={(name) => this.props.changeFolderName(r, name)}
+                            onNameChanged={(name) => this.changeFolderName(r, name)}
                         />
                     )}>
                         {loopRecords(children, cid, true)}
@@ -124,7 +128,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             return (
                 <MenuItem key={r.id} style={recordStyle} data={r}>
                     <RecordItem
-                        record={r}
+                        record={{ ...r }}
                         inFolder={inFolder}
                         duplicateRecord={() => this.props.duplicateRecord(r)}
                         deleteRecord={() => this.props.deleteRecord(r.id, records[cid])}
@@ -152,9 +156,9 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                             return (
                                 <SubMenu className="collection-item" key={c.id} title={(
                                     <CollectionItem
-                                        collection={c}
+                                        collection={{ ...c }}
                                         recordCount={recordCount}
-                                        onNameChanged={(name) => this.props.changeCollectionName(c, name)}
+                                        onNameChanged={(name) => this.props.changeCollectionName(c, name.trim() === '' ? c.name : name)}
                                         deleteCollection={() => this.props.deleteCollection(c.id)}
                                         createFolder={this.createFolder}
                                     />

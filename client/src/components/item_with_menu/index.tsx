@@ -48,7 +48,7 @@ class ItemWithMenu extends React.Component<ItemWithMenuProps, ItemWithMenuState>
         e.stopPropagation();
         if (this.props.onNameChanged) {
             this.setState({ ...this.state, isEdit: false });
-            this.props.onNameChanged(this.state.name);
+            this.props.onNameChanged(this.state.name.trim() || this.props.name);
         }
     }
 
@@ -76,7 +76,7 @@ class ItemWithMenu extends React.Component<ItemWithMenuProps, ItemWithMenuState>
                 {icon}
                 <span className="item-with-menu-name">
                     <div style={{ lineHeight }}>
-                        <Input onClick={this.stopPropagation} onBlur={this.completeEdit} onChange={this.onNameChanged} suffix={completeEditIcon} style={nameStyle} ref={ele => this.nameInput = ele} value={name} />  {(isEdit ? '' : name)}
+                        <Input onClick={this.stopPropagation} onBlur={this.completeEdit} onChange={this.onNameChanged} suffix={completeEditIcon} style={nameStyle} ref={ele => this.nameInput = ele} value={name} />  {(isEdit ? '' : this.props.name)}
                     </div>
                     {
                         subName ? (
