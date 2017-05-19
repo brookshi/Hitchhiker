@@ -8,12 +8,9 @@ import * as _ from "lodash";
 export class UserCollectionService {
 
     static async getUserCollections(userId: string): Promise<{ collections: Collection[], recordsList: { [key: string]: Record[] } }> {
-        let collectionArr = await Promise.all([CollectionService.getOwns(userId), UserCollectionService.getUserTeamCollections(userId)]);
+        let collections = await UserCollectionService.getUserTeamCollections(userId);
 
-        let collections = <Collection[]>_.unionWith(collectionArr[0], collectionArr[1], (a, b) => (<Collection>a).id === (<Collection>b).id);
-
-        const collectionIds = collections.map(o => o.id);
-        const recordsList = await RecordService.getByCollectionIds(collectionIds, true);
+        const recordsList = await RecordService.getByCollectionIds(collections.map(o => o.id), true);
 
         // collections.forEach(o => o.records = recordsList[o.id]);
 
@@ -21,7 +18,7 @@ export class UserCollectionService {
     }
 
     static async getUserTeamCollections(userId: string): Promise<Collection[]> {
-        const user = await UserService.getUserById(userId);
+        const user = await UserService.getUserById(userId, true);
 
         if (!user) {
             return null;

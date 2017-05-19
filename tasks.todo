@@ -17,7 +17,6 @@
     ✔ message @done (2017/4/2 下午10:11:44)
     ✔ auto generate accout for invite user @done (2017/4/9 下午10:59:31) // TODO: need mail password??
     ☐ team
-
     ✔ tab change/unchange status @done (5/16/2017, 12:47:02 PM)
     ✔ confirm when close changed tab @done (5/16/2017, 1:36:26 PM)
     ✔ request header/body option @done (2017/5/16 下午10:05:11)
@@ -27,12 +26,13 @@
     ☐ collection create/edit/del
     ✔ folder create/edit/del @done (5/19/2017, 6:47:02 PM)
     ✔ record duplicate @done (5/19/2017, 6:47:11 PM)
-    ☐ record/folder move
     ✔ edit null/empty @done (5/19/2017, 7:04:18 PM)
     ✔ record del @done (2017/5/17 下午10:41:17)
+    ☐ record/folder move
     ☐ split line
     ☐ sync status
     ☐ tip
+    ☐ input spell check
 0.2.0:
     ☐ body type
     ☐ record auth

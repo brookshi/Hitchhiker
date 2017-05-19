@@ -1,10 +1,20 @@
 import { initialState, getDefaultRecord, CollectionState, RecordState } from '../state';
-import { FetchCollectionType, ActiveRecordType, DeleteRecordType, SaveCollectionType } from '../modules/collection_tree/action';
+import { FetchCollectionType, ActiveRecordType, DeleteRecordType, SaveCollectionType, DeleteCollectionType } from '../modules/collection_tree/action';
 import { ActiveTabType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, UpdateTabRecordId, SaveAsRecordType } from '../modules/req_res_panel/action';
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
 import { DtoCollectionWithRecord } from '../../../api/interfaces/dto_collection';
 import { RecordCategory } from '../common/record_category';
+
+const getNewRecordState: () => RecordState = () => {
+    const newRecord = getDefaultRecord();
+    return {
+        name: newRecord.name || 'new request',
+        record: newRecord,
+        isChanged: false,
+        isRequesting: false
+    };
+};
 
 export function collectionsInfo(state: DtoCollectionWithRecord = initialState.collectionsInfo, action: any): DtoCollectionWithRecord {
     switch (action.type) {
@@ -47,6 +57,12 @@ export function collectionsInfo(state: DtoCollectionWithRecord = initialState.co
                 ...state,
                 records: { ...state.records, [collectionId]: { ...recordsInCollection } }
             };
+        }
+        case DeleteCollectionType: {
+            const collectionId = action.value;
+            Reflect.deleteProperty(state.collections, collectionId);
+            Reflect.deleteProperty(state.records, collectionId);
+            return { ...state, collections: { ...state.collections }, records: { ...state.records } };
         }
         default: return state;
     }
@@ -131,19 +147,14 @@ function collectionState(state: CollectionState = initialState.collectionState, 
     let { recordState, activeKey } = state;
     switch (action.type) {
         case AddTabType:
-            const newRecord = getDefaultRecord();
+            const newRecordState = getNewRecordState();
             return {
                 ...state,
                 recordState: [
                     ...recordState,
-                    {
-                        name: newRecord.name || 'new request',
-                        record: newRecord,
-                        isChanged: false,
-                        isRequesting: false
-                    }
+                    newRecordState
                 ],
-                activeKey: newRecord.id
+                activeKey: newRecordState.record.id
             };
         case RemoveTabType: {
             let index = recordState.findIndex(r => r.record.id === action.key);
@@ -151,13 +162,7 @@ function collectionState(state: CollectionState = initialState.collectionState, 
                 const activeIndex = recordState.findIndex(r => r.record.id === activeKey);
                 recordState.splice(index, 1);
                 if (recordState.length === 0) {
-                    const record = getDefaultRecord();
-                    recordState.push({
-                        record: record,
-                        name: record.name,
-                        isChanged: false,
-                        isRequesting: false
-                    });
+                    recordState.push(getNewRecordState());
                 }
                 if (index === activeIndex) {
                     index = index === recordState.length ? index - 1 : index;
@@ -178,6 +183,14 @@ function collectionState(state: CollectionState = initialState.collectionState, 
                     [action.result.id]: action.result.runResult
                 }
             };
+        }
+        case DeleteCollectionType: {
+            const restStates = recordState.filter(s => s.record.collectionId !== action.value);
+            if (restStates.length === 0) {
+                restStates.push(getNewRecordState());
+            }
+            activeKey = restStates[0].record.id;
+            return { ...state, recordState: [...restStates], activeKey };
         }
         default:
             return state;

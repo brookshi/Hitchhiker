@@ -1,5 +1,5 @@
 import { take, actionChannel, call, spawn, put } from 'redux-saga/effects';
-import { refreshCollection, deleteRecord, saveCollection } from './modules/collection_tree/action';
+import { refreshCollection, deleteRecord, saveCollection, deleteCollection } from './modules/collection_tree/action';
 import { sendRequest, saveRecord, saveAsRecord } from './modules/req_res_panel/action';
 import RequestManager, { SyncItem } from './utils/request_manager';
 import { delay } from 'redux-saga';
@@ -22,6 +22,7 @@ export function* rootSaga() {
         spawn(saveAsRecord),
         spawn(deleteRecord),
         spawn(saveCollection),
+        spawn(deleteCollection),
         spawn(sync)
     ];
 };

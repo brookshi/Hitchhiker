@@ -62,6 +62,17 @@ export class CollectionService {
         return { success: true, message: Message.collectionUpdateSuccess };
     }
 
+    static async delete(id: string): Promise<ResObject> {
+        const connection = await ConnectionManager.getInstance();
+
+        await connection.getRepository(Collection)
+            .createQueryBuilder('collection')
+            .where('id=:id', { id })
+            .update({ recycle: true })
+            .execute();
+        return { success: true, message: Message.collectionDeleteSuccess };
+    }
+
     static async getOwns(userId: string): Promise<Collection[]> {
         const connection = await ConnectionManager.getInstance();
 
@@ -119,7 +130,7 @@ export class CollectionService {
     }
 
     static async getByTeamIds(teamIds: string[]): Promise<Collection[]> {
-        if (teamIds) {
+        if (!teamIds) {
             return [];
         }
 

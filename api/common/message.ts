@@ -41,6 +41,7 @@ export class Message {
     static collectionCreateSuccess: string = 'create collection success';
     static collectionUpdateSuccess: string = 'update collection success';
     static collectionNotExist: string = 'collection does not exist';
+    static collectionDeleteSuccess: string = 'collection delete success';
 
     static recordCreateFailed: string = 'create record failed';
     static recordCreateFailedOnName: string = 'record name is incorrect';

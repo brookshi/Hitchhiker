@@ -84,7 +84,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     }
 
     changeFolderName = (folder: DtoRecord, name: string) => {
-        this.props.changeFolderName(folder, name.trim() === '' ? folder.name : name)
+        this.props.changeFolderName(folder, name.trim() === '' ? folder.name : name);
     }
 
     componentWillReceiveProps(nextProps: CollectionListProps) {
@@ -200,7 +200,7 @@ const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps
             dispatch(removeTabAction(id));
             dispatch(actionCreator(DeleteRecordType, record));
         },
-        deleteCollection: id => dispatch(actionCreator(DeleteCollectionType, id)),
+        deleteCollection: id => { dispatch(actionCreator(DeleteCollectionType, id)); },
         updateCollection: collection => dispatch(actionCreator(UpdateCollectionType, collection)),
         createCollection: collection => dispatch(actionCreator(CreateCollectionType, collection)),
         changeFolderName: (record, name) => dispatch(actionCreator(SaveRecordType, { isNew: false, record: { ...record, name } })),

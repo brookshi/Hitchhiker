@@ -31,6 +31,10 @@ export function* deleteRecord() {
     yield takeEvery(DeleteRecordType, pushDeleteRecordToChannel);
 }
 
+export function* deleteCollection() {
+    yield takeEvery(DeleteCollectionType, pushDeleteCollectionToChannel);
+}
+
 export function* saveCollection() {
     yield takeEvery(SaveCollectionType, pushSaveCollectionToChannel);
 }
@@ -47,6 +51,11 @@ function* fetchCollection() {
 
 function* pushDeleteRecordToChannel(action: any) {
     const channelAction = syncAction({ type: SyncType.delRecord, method: HttpMethod.DELETE, url: `http://localhost:3000/api/record/${action.value.id}` });
+    yield put(channelAction);
+}
+
+function* pushDeleteCollectionToChannel(action: any) {
+    const channelAction = syncAction({ type: SyncType.delCollection, method: HttpMethod.DELETE, url: `http://localhost:3000/api/collection/${action.value}` });
     yield put(channelAction);
 }
 
