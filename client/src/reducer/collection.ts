@@ -25,6 +25,10 @@ export function collectionsInfo(state: DtoCollectionWithRecord = initialState.co
         case SaveAsRecordType:
         case SaveRecordType: {
             const record = _.cloneDeep(action.value.record);
+            const oldRecord = _.values(state.records).find(s => !!s[record.id]);
+            if (oldRecord) {
+                Reflect.deleteProperty(state.records[oldRecord[record.id].collectionId], record.id);
+            }
             return {
                 ...state,
                 records: {

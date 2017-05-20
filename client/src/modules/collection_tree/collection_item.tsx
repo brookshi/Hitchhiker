@@ -18,9 +18,12 @@ interface CollectionItemProps {
     deleteCollection();
 
     createFolder(record: DtoRecord);
+
+    moveToCollection(record: DtoRecord, collection?: string);
 }
 
 interface CollectionItemState {
+    isDragOver?: boolean;
 }
 
 const createDefaultFolder: (collectionId: string) => DtoRecord = (cid) => {
@@ -33,6 +36,13 @@ const createDefaultFolder: (collectionId: string) => DtoRecord = (cid) => {
 };
 
 class CollectionItem extends React.Component<CollectionItemProps, CollectionItemState> {
+
+    constructor(props: CollectionItemProps) {
+        super(props);
+        this.state = {
+            isDragOver: false
+        };
+    }
 
     itemWithMenu: ItemWithMenu;
 
@@ -66,17 +76,49 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
 
     createFolder = () => this.props.createFolder(createDefaultFolder(this.props.collection.id));
 
+    checkTransferFlag = (e, flag) => {
+        return e.dataTransfer.types.indexOf(flag) > -1;
+    }
+
+    dragOver = (e) => {
+        e.preventDefault();
+        if (this.checkTransferFlag(e, 'record') || this.checkTransferFlag(e, 'folder')) {
+            this.setState({ ...this.state, isDragOver: true });
+        }
+    }
+
+    dragLeave = (e) => {
+        this.setState({ ...this.state, isDragOver: false });
+    }
+
+    drop = (e) => {
+        if (this.checkTransferFlag(e, 'record') || this.checkTransferFlag(e, 'folder')) {
+            const data = e.dataTransfer.getData('folder') || e.dataTransfer.getData('record');
+            const record = JSON.parse(data) as DtoRecord;
+            if (record.collectionId !== this.props.collection.id) {
+                this.props.moveToCollection(record, this.props.collection.id);
+            }
+        }
+        this.setState({ ...this.state, isDragOver: false });
+    }
+
     public render() {
 
         return (
-            <ItemWithMenu
-                ref={ele => this.itemWithMenu = ele}
-                onNameChanged={this.props.onNameChanged}
-                icon={<Icon className="c-icon" type="wallet" />}
-                name={this.props.collection.name}
-                subName={<div>{`${this.props.recordCount} requests`}</div>}
-                menu={this.getMenu()}
-            />
+            <div className={this.state.isDragOver ? 'folder-item-container' : ''}
+                onDragOver={this.dragOver}
+                onDragLeave={this.dragLeave}
+                onDrop={this.drop}
+            >
+                <ItemWithMenu
+                    ref={ele => this.itemWithMenu = ele}
+                    onNameChanged={this.props.onNameChanged}
+                    icon={<Icon className="c-icon" type="wallet" />}
+                    name={this.props.collection.name}
+                    subName={<div>{`${this.props.recordCount} requests`}</div>}
+                    menu={this.getMenu()}
+                />
+            </div>
         );
     }
 }

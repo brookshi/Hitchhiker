@@ -8,9 +8,16 @@ import { DtoRecord } from '../../../../api/interfaces/dto_record';
 
 interface RecordItemProps {
     record: DtoRecord;
+
     inFolder: boolean;
+
     deleteRecord();
+
     duplicateRecord();
+
+    moveRecordToFolder(record: DtoRecord, collectionId?: string, folderId?: string);
+
+    moveToCollection(record: DtoRecord, collection?: string);
 }
 
 interface RecordItemState {
@@ -45,23 +52,52 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
 
     duplicate = () => this.props.duplicateRecord();
 
+    checkTransferFlag = (e, flag) => {
+        return e.dataTransfer.types.indexOf(flag) > -1;
+    }
+
+    dragStart = (e) => {
+        e.dataTransfer.setData('record', JSON.stringify(this.props.record));
+    }
+
+    dragOver = (e) => {
+        e.preventDefault();
+    }
+
+    drop = (e) => {
+        const currentRecord = this.props.record;
+        if (this.checkTransferFlag(e, 'record')) {
+            const transferRecord = JSON.parse(e.dataTransfer.getData('record')) as DtoRecord;
+            if (transferRecord.pid !== currentRecord.pid || transferRecord.collectionId !== currentRecord.collectionId) {
+                this.props.moveRecordToFolder(transferRecord, currentRecord.collectionId, currentRecord.pid);
+            }
+        } else if (this.checkTransferFlag(e, 'folder')) {
+            const folder = JSON.parse(e.dataTransfer.getData('folder')) as DtoRecord;
+            if (folder.collectionId !== currentRecord.collectionId) {
+                this.props.moveToCollection(folder, currentRecord.collectionId);
+            }
+        }
+    }
+
     public render() {
         let { record, inFolder } = this.props;
         let { method, name } = record;
         method = method || 'GET';
 
         return (
-            <ItemWithMenu
-                ref={ele => this.itemWithMenu = ele}
-                className="record"
-                icon={(
-                    <span className={'record-icon' + (inFolder ? ' record-in-folder' : '')}>
-                        <HttpMethodIcon httpMethod={method.toUpperCase()} />
-                    </span>
-                )}
-                name={name}
-                menu={this.getMenu()}
-            />
+            <div draggable={true} onDragStart={this.dragStart} onDragOver={this.dragOver} onDrop={this.drop}>
+                <ItemWithMenu
+                    ref={ele => this.itemWithMenu = ele}
+                    className="record"
+                    icon={(
+                        <span className={'record-icon' + (inFolder ? ' record-in-folder' : '')}>
+                            <HttpMethodIcon httpMethod={method.toUpperCase()} />
+                        </span>
+                    )}
+                    name={name}
+                    menu={this.getMenu()}
+                />
+            </div>
         );
     }
 }

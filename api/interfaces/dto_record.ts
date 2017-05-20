@@ -6,7 +6,7 @@ export interface DtoRecord {
 
     id: string;
 
-    collectionId?: string;
+    collectionId: string;
 
     pid?: string;
 
