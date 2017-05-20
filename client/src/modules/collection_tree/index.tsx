@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { Menu } from 'antd';
-import { refreshCollectionAction, activeRecordAction, DeleteRecordType, DeleteCollectionType, UpdateCollectionType, CreateCollectionType, SaveCollectionType } from './action';
+import { refreshCollectionAction, activeRecordAction, DeleteRecordType, DeleteCollectionType, UpdateCollectionType, CreateCollectionType, SaveCollectionType, MoveRecordType } from './action';
 import { State } from '../../state';
 import RecordFolder from './record_folder';
 import RecordItem from './record_item';
@@ -45,6 +45,8 @@ interface CollectionListDispatchProps {
     duplicateRecord(record: DtoRecord);
 
     createFolder(record: DtoRecord);
+
+    moveRecord(record: DtoRecord);
 }
 
 type CollectionListProps = CollectionListStateProps & CollectionListDispatchProps;
@@ -99,14 +101,14 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     }
 
     moveRecordToFolder = (record: DtoRecord, collectionId: string, folderId: string) => {
-        this.props.updateRecord({ ...record, pid: folderId, collectionId });
+        this.props.moveRecord({ ...record, pid: folderId, collectionId });
     }
 
     moveToCollection = (record: DtoRecord, collectionId: string) => {
-        this.props.updateRecord({ ...record, collectionId });
+        this.props.moveRecord({ ...record, collectionId });
         if (record.category === RecordCategory.folder) {
             _.values(this.props.records[record.collectionId]).filter(r => r.pid === record.id).forEach(r => {
-                this.props.updateRecord({ ...r, collectionId });
+                this.props.moveRecord({ ...r, collectionId });
             });
         }
     }
@@ -235,7 +237,8 @@ const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps
         updateRecord: (record) => dispatch(actionCreator(SaveRecordType, { isNew: false, record })),
         changeCollectionName: (collection, name) => dispatch(actionCreator(SaveCollectionType, { isNew: false, collection: { ...collection, name } })),
         duplicateRecord: (record) => dispatch(actionCreator(SaveRecordType, { isNew: true, record: { ...record, id: StringUtil.generateUID(), name: `${record.name}.copy` } })),
-        createFolder: (record) => dispatch(actionCreator(SaveRecordType, { isNew: true, record }))
+        createFolder: (record) => dispatch(actionCreator(SaveRecordType, { isNew: true, record })),
+        moveRecord: record => dispatch(actionCreator(MoveRecordType, { record }))
     };
 };
 

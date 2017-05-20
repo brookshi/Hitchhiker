@@ -16,6 +16,7 @@ export const DeleteCollectionType = 'delete_collection_type';
 export const UpdateCollectionType = 'update_collection_type';
 export const CreateCollectionType = 'create_collection_type';
 export const SaveCollectionType = 'save_collection_type';
+export const MoveRecordType = 'move_record_type';
 
 export const activeRecordAction = (record: DtoRecord) => ({ type: ActiveRecordType, record });
 
@@ -37,6 +38,10 @@ export function* deleteCollection() {
 
 export function* saveCollection() {
     yield takeEvery(SaveCollectionType, pushSaveCollectionToChannel);
+}
+
+export function* moveRecord() {
+    yield takeEvery(MoveRecordType, pushMoveRecordToChannel);
 }
 
 function* fetchCollection() {
@@ -61,5 +66,10 @@ function* pushDeleteCollectionToChannel(action: any) {
 
 function* pushSaveCollectionToChannel(action: any) {
     const channelAction = syncAction({ type: SyncType.addRecord, method: action.value.isNew ? HttpMethod.POST : HttpMethod.PUT, url: `http://localhost:3000/api/collection`, body: action.value.collection });
+    yield put(channelAction);
+}
+
+function* pushMoveRecordToChannel(action: any) {
+    const channelAction = syncAction({ type: SyncType.addRecord, method: HttpMethod.PUT, url: 'http://localhost:3000/api/record', body: action.value.record });
     yield put(channelAction);
 }

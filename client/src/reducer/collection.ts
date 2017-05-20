@@ -1,5 +1,5 @@
 import { initialState, getDefaultRecord, CollectionState, RecordState } from '../state';
-import { FetchCollectionType, ActiveRecordType, DeleteRecordType, SaveCollectionType, DeleteCollectionType } from '../modules/collection_tree/action';
+import { FetchCollectionType, ActiveRecordType, DeleteRecordType, SaveCollectionType, DeleteCollectionType, MoveRecordType } from '../modules/collection_tree/action';
 import { ActiveTabType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, UpdateTabRecordId, SaveAsRecordType } from '../modules/req_res_panel/action';
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
@@ -23,7 +23,8 @@ export function collectionsInfo(state: DtoCollectionWithRecord = initialState.co
             return _.cloneDeep(action.collections);
         }
         case SaveAsRecordType:
-        case SaveRecordType: {
+        case SaveRecordType:
+        case MoveRecordType: {
             const record = _.cloneDeep(action.value.record);
             const oldRecord = _.values(state.records).find(s => !!s[record.id]);
             if (oldRecord) {
@@ -109,6 +110,15 @@ function recordState(states: RecordState[] = initialState.collectionState.record
             if (index > -1) {
                 states[index].record = { ..._.cloneDeep(action.value.record) };
                 states[index].isChanged = false;
+                return [...states];
+            }
+            return states;
+        }
+        case MoveRecordType: {
+            const record = action.value.record;
+            const index = states.findIndex(r => r.record.id === record.id);
+            if (index > -1) {
+                states[index].record = { ...record, pid: record.pid, collectionId: record.collectionId };
                 return [...states];
             }
             return states;
