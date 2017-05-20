@@ -105,7 +105,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     }
 
     moveToCollection = (record: DtoRecord, collectionId: string) => {
-        this.props.moveRecord({ ...record, collectionId });
+        this.props.moveRecord({ ...record, collectionId, pid: '' });
         if (record.category === RecordCategory.folder) {
             _.values(this.props.records[record.collectionId]).filter(r => r.pid === record.id).forEach(r => {
                 this.props.moveRecord({ ...r, collectionId });

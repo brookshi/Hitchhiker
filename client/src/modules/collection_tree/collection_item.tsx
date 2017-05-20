@@ -95,7 +95,7 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
         if (this.checkTransferFlag(e, 'record') || this.checkTransferFlag(e, 'folder')) {
             const data = e.dataTransfer.getData('folder') || e.dataTransfer.getData('record');
             const record = JSON.parse(data) as DtoRecord;
-            if (record.collectionId !== this.props.collection.id) {
+            if (record.collectionId !== this.props.collection.id || record.pid) {
                 this.props.moveToCollection(record, this.props.collection.id);
             }
         }
