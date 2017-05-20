@@ -9,13 +9,33 @@ import './style/perfect-scrollbar.min.css';
 
 const { Header, Content, Sider } = Layout;
 
-class App extends React.Component<{}, any> {
+interface AppState {
+  collapsed: boolean;
 
-  state = {
-    collapsed: false,
-    mode: 'inline',
-    selectedKeys: ['1']
-  };
+  mode: 'inline' | 'vertical';
+
+  selectedKeys: string[];
+
+  collectionPanelWidth: number;
+}
+
+class App extends React.Component<{}, AppState> {
+
+  private minCollectionWidth = 100;
+  private maxCollectionWidth = 600;
+  private toolBarWidth = 50;
+  private isResizing: boolean;
+
+  constructor(props: {}) {
+    super(props);
+    this.isResizing = false;
+    this.state = {
+      collapsed: false,
+      mode: 'inline',
+      selectedKeys: ['1'],
+      collectionPanelWidth: 300
+    };
+  }
 
   onCollapse = (collapsed) => {
     this.setState({
@@ -34,12 +54,33 @@ class App extends React.Component<{}, any> {
     }
   }
 
+  onSplitterMove = (e) => {
+    e.preventDefault();
+    const width = Math.min(Math.max(e.clientX - this.toolBarWidth, this.minCollectionWidth), this.maxCollectionWidth);
+    this.setState({ ...this.state, collectionPanelWidth: width });
+  }
+
+  onSplitterMouseDown = (e) => {
+    if (e.button !== 0) {
+      return;
+    }
+    document.addEventListener('mousemove', this.onSplitterMove);
+    document.addEventListener('mouseup', this.onSplitterMouseUp);
+    e.preventDefault();
+  }
+
+  onSplitterMouseUp = (e) => {
+    document.removeEventListener('mousemove', this.onSplitterMove);
+    document.removeEventListener('mouseup', this.onSplitterMouseUp);
+    e.preventDefault();
+  }
+
   render() {
     return (
       <Layout className="layout">
         <Header />
         <Layout>
-          <Sider style={{ maxWidth: 50 }}>
+          <Sider style={{ maxWidth: this.toolBarWidth }}>
             <Menu
               className="sider-menu"
               mode="vertical"
@@ -70,7 +111,7 @@ class App extends React.Component<{}, any> {
           <Layout className="main-panel">
             <Sider
               className="collection-sider"
-              style={{ minWidth: this.state.collapsed ? 0 : 300 }}
+              style={{ minWidth: this.state.collapsed ? 0 : this.state.collectionPanelWidth }}
               collapsible={true}
               collapsedWidth="0.1"
               collapsed={this.state.collapsed}
@@ -79,6 +120,7 @@ class App extends React.Component<{}, any> {
                 <CollectionList />
               </PerfectScrollbar>
             </Sider>
+            <div className="splitter" onMouseDown={this.onSplitterMouseDown} />
             <Content style={{ marginTop: 4 }}>
               <PerfectScrollbar>
                 <ReqResPanel />

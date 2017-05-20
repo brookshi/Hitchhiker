@@ -171,7 +171,6 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             <div>
                 <Menu
                     className="collection-tree"
-                    style={{ width: 300 }}
                     onOpenChange={this.onOpenChanged}
                     mode="inline"
                     inlineIndent={0}

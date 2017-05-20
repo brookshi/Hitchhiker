@@ -29,10 +29,11 @@
     ✔ edit null/empty @done (5/19/2017, 7:04:18 PM)
     ✔ record del @done (2017/5/17 下午10:41:17)
     ✔ record/folder move @done (2017/5/20 下午4:08:05)
-    ☐ split line
-    ☐ sync status
+    ✔ split line @done (2017/5/20 下午9:48:09)
     ☐ tip
     ☐ input spell check
+    ☐ local storage for record states
+    ☐ sync status
     ☐ top banner
 0.2.0:
     ☐ body type
