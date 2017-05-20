@@ -22,15 +22,6 @@ interface EditorProps {
 
 interface EditorState { }
 
-const markers = [];
-//     startRow: 0,
-//     startCol: 1,
-//     endRow: 0,
-//     endCol: Infinity,
-//     type: "screenLine",
-//     className: "ace_active-line"
-// }];
-
 class Editor extends React.Component<EditorProps, EditorState> {
 
     public render() {
@@ -50,7 +41,7 @@ class Editor extends React.Component<EditorProps, EditorState> {
             value: value,
             readOnly: readOnly,
             onChange: onChange,
-            markers: markers
+            editorProps: { $blockScrolling: Infinity }
         };
         if (!this.props.fixHeight) {
             const maxLines = activeHeight / 15 | 0;
