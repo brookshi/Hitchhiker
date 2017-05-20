@@ -5,7 +5,6 @@
   "main": "index.js",
   "dependencies": {
     "@types/uuid": "^2.0.29",
-    "emailjs": "^1.0.8",
     "koa": "^2.0.0-alpha.7",
     "koa-bodyparser": "^3.2.0",
     "koa-query": "^0.0.6",
