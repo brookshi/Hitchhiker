@@ -29,7 +29,7 @@ export default class CollectionController extends BaseController {
     @POST('/collection')
     async create(ctx: Koa.Context, @BodyParam collection: DtoCollection): Promise<ResObject> {
         const userId = SessionService.getUserId(ctx);
-        return await CollectionService.create(collection.name, collection.description, userId);
+        return await CollectionService.create(collection, userId);
     }
 
     @PUT('/collection')

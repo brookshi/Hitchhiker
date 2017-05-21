@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { Menu, Dropdown, Icon } from 'antd';
-import { activeRecordAction, DeleteRecordType, DeleteCollectionType, UpdateCollectionType, CreateCollectionType, SaveCollectionType, MoveRecordType } from './action';
+import { Menu, Dropdown, Icon, Button, Modal, TreeSelect, Input } from 'antd';
+import { activeRecordAction, DeleteRecordType, DeleteCollectionType, SaveCollectionType, MoveRecordType } from './action';
 import { State } from '../../state';
 import RecordFolder from './record_folder';
 import RecordItem from './record_item';
@@ -20,6 +20,7 @@ import './style/index.less';
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
 const AllTeam = 'All';
+const NewCollectionName = 'New collection';
 
 interface CollectionListStateProps {
     collections: _.Dictionary<DtoCollection>;
@@ -38,13 +39,11 @@ interface CollectionListDispatchProps {
 
     deleteCollection(id: string);
 
-    updateCollection(collection: DtoCollection);
-
-    createCollection(collection: DtoCollection);
-
     updateRecord(record: DtoRecord);
 
-    changeCollectionName(collection: DtoCollection, name: string);
+    saveCollection(collection: DtoCollection);
+
+    updateCollection(collection: DtoCollection);
 
     duplicateRecord(record: DtoRecord);
 
@@ -59,6 +58,12 @@ interface CollectionListState {
     openKeys: string[];
 
     selectedTeam: string;
+
+    isAddCollectionDlgOpen: boolean;
+
+    selectedNewCollectionTeam?: string;
+
+    newCollectionName: string;
 }
 
 class CollectionList extends React.Component<CollectionListProps, CollectionListState> {
@@ -67,11 +72,15 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     currentNewCollectionId: string;
     folderRefs: _.Dictionary<RecordFolder> = {};
 
+    newCollectionNameRef: Input;
+
     constructor(props: CollectionListProps) {
         super(props);
         this.state = {
             openKeys: [],
-            selectedTeam: AllTeam
+            selectedTeam: AllTeam,
+            isAddCollectionDlgOpen: false,
+            newCollectionName: NewCollectionName
         };
     }
 
@@ -99,7 +108,8 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     changeCollectionName = (collection: DtoCollection, name: string) => {
         name = name.trim() === '' ? collection.name : name;
         if (name !== collection.name) {
-            this.props.changeCollectionName(collection, name);
+            collection.name = name;
+            this.props.updateCollection(collection);
         }
     }
 
@@ -166,6 +176,25 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         return _.filter(collections, c => c.teamId === this.state.selectedTeam);
     }
 
+    addCollection = () => {
+        this.setState({ ...this.state, isAddCollectionDlgOpen: true }, () => this.newCollectionNameRef && this.newCollectionNameRef.focus());
+    }
+
+    onCreateCollection = () => {
+        if (!this.state.selectedNewCollectionTeam) {
+            return;
+        }
+
+        const collection: DtoCollection = {
+            id: StringUtil.generateUID(),
+            name: this.state.newCollectionName,
+            teamId: this.state.selectedNewCollectionTeam,
+            description: ''
+        };
+        this.props.saveCollection(collection);
+        this.setState({ ...this.state, isAddCollectionDlgOpen: false, newCollectionName: NewCollectionName, selectedNewCollectionTeam: undefined });
+    }
+
     loopRecords = (data: DtoRecord[], cid: string, inFolder: boolean = false) => {
         return data.map(r => {
             const recordStyle = { height: '30px', lineHeight: '30px' };
@@ -220,6 +249,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                             </a>
                         </Dropdown>
                     </span>
+                    <Button className="collection-add-btn" type="primary" icon="folder-add" onClick={this.addCollection} />
                 </div>
                 <div className="collection-tree-container">
                     <PerfectScrollbar>
@@ -260,6 +290,27 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                         {displayCollections.length === 0 ? '' : <div className="collection-tree-bottom" />}
                     </PerfectScrollbar>
                 </div>
+                <Modal
+                    title="Create new collection"
+                    visible={this.state.isAddCollectionDlgOpen}
+                    okText="OK"
+                    cancelText="Cancel"
+                    onOk={this.onCreateCollection}
+                    onCancel={() => this.setState({ ...this.state, isAddCollectionDlgOpen: false })}
+                >
+                    <div style={{ marginBottom: '8px' }}>Select team for this collection:</div>
+                    <Input ref={ele => this.newCollectionNameRef = ele} style={{ width: '100%', marginBottom: '8px' }} value={this.state.newCollectionName} onChange={e => this.setState({ ...this.state, newCollectionName: e.currentTarget.value })} />
+                    <div style={{ marginBottom: '8px' }}>Select team for this collection:</div>
+                    <TreeSelect
+                        allowClear={true}
+                        style={{ width: '100%' }}
+                        dropdownStyle={{ maxHeight: 500, overflow: 'auto' }}
+                        placeholder="Please select team"
+                        treeDefaultExpandAll={true}
+                        value={this.state.selectedNewCollectionTeam}
+                        onChange={(e) => this.setState({ ...this.state, selectedNewCollectionTeam: e })}
+                        treeData={this.props.teams.map(t => ({ key: t.id, value: t.id, label: t.name }))} />
+                </Modal>
             </div>
         );
     }
@@ -288,10 +339,9 @@ const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps
             dispatch(actionCreator(DeleteRecordType, record));
         },
         deleteCollection: id => { dispatch(actionCreator(DeleteCollectionType, id)); },
-        updateCollection: collection => dispatch(actionCreator(UpdateCollectionType, collection)),
-        createCollection: collection => dispatch(actionCreator(CreateCollectionType, collection)),
         updateRecord: (record) => dispatch(actionCreator(SaveRecordType, { isNew: false, record })),
-        changeCollectionName: (collection, name) => dispatch(actionCreator(SaveCollectionType, { isNew: false, collection: { ...collection, name } })),
+        saveCollection: (collection) => { dispatch(actionCreator(SaveCollectionType, { isNew: true, collection })); },
+        updateCollection: (collection) => { dispatch(actionCreator(SaveCollectionType, { isNew: false, collection })); },
         duplicateRecord: (record) => dispatch(actionCreator(SaveRecordType, { isNew: true, record: { ...record, id: StringUtil.generateUID(), name: `${record.name}.copy` } })),
         createFolder: (record) => dispatch(actionCreator(SaveRecordType, { isNew: true, record })),
         moveRecord: record => dispatch(actionCreator(MoveRecordType, { record }))

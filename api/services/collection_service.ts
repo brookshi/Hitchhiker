@@ -8,6 +8,7 @@ import { StringUtil } from "../utils/string_util";
 import { DtoCollection } from "../interfaces/dto_collection";
 import { RecordService } from "./record_service";
 import { TeamService } from "./team_service";
+import { Team } from "../models/team";
 
 export class CollectionService {
 
@@ -29,6 +30,8 @@ export class CollectionService {
         collection.id = dtoCollection.id || StringUtil.generateUID();
         collection.name = dtoCollection.name;
         collection.description = dtoCollection.description;
+        collection.team = new Team();
+        collection.team.id = dtoCollection.teamId;
         collection.records = [];
         return collection;
     }
@@ -37,14 +40,11 @@ export class CollectionService {
         return { ...collection, teamId: collection.team.id };
     }
 
-    static async create(name: string, desc: string, userId: string): Promise<ResObject> {
+    static async create(dtoCollection: DtoCollection, userId: string): Promise<ResObject> {
         const owner = new User();
         owner.id = userId;
 
-        const collection = new Collection();
-        collection.id = StringUtil.generateUID();
-        collection.name = name;
-        collection.description = desc;
+        const collection = CollectionService.fromDto(dtoCollection);
         collection.owner = owner;
 
         await CollectionService.save(collection);

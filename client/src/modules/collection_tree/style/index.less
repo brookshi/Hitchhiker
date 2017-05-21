@@ -16,6 +16,7 @@
     background: @panel-background;
     line-height: 35px;
     padding-left: 4px;
+    font-weight: bold;
 
     >span{
         margin-left: 8px;
@@ -53,6 +54,26 @@
         border-bottom: #ccc 1px solid;
     }
     ul[role="menu"]{
+        background: @panel-background;
+    }
+}
+
+.collection-add-btn{
+    border: 0px;
+    font-size: 18px;
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    background: @panel-background;
+    color: @primary-color;
+
+    &:hover{
+        color: @primary-color-light;
+        background: @panel-background;
+    }
+
+    &:focus{
+        color: @primary-color;
         background: @panel-background;
     }
 }

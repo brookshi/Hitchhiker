@@ -13,8 +13,6 @@ export const ActiveRecordType = 'active_record_type';
 export const FetchCollectionFailedType = 'fetch_collection_failed';
 export const DeleteRecordType = 'delete_record_type';
 export const DeleteCollectionType = 'delete_collection_type';
-export const UpdateCollectionType = 'update_collection_type';
-export const CreateCollectionType = 'create_collection_type';
 export const SaveCollectionType = 'save_collection_type';
 export const MoveRecordType = 'move_record_type';
 

@@ -89,7 +89,7 @@ class App extends React.Component<AppProps, AppState> {
   onSplitterMove = (e) => {
     e.preventDefault();
     const width = Math.min(Math.max(e.clientX - this.toolBarWidth, this.minCollectionWidth), this.maxCollectionWidth);
-    this.setState({ ...this.state, collectionPanelWidth: width });
+    this.props.resizeCollectionPanel(width);
   }
 
   onSplitterMouseDown = (e) => {

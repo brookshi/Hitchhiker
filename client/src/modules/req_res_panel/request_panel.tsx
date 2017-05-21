@@ -356,7 +356,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                         allowClear={true}
                         style={{ width: '100%' }}
                         dropdownStyle={{ maxHeight: 500, overflow: 'auto' }}
-                        placeholder="please select collection / folder"
+                        placeholder="Please select collection / folder"
                         treeDefaultExpandAll={true}
                         value={this.state.selectedFolderId}
                         onChange={(e) => this.setState({ ...this.state, selectedFolderId: e })}
