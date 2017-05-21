@@ -1,5 +1,27 @@
 @import '../../../style/colors.less';
 
+@collection-toolbar-height: 35px;
+
+.collection-panel{
+    height: 100%;
+}
+
+.collection-tree-container{
+    height: calc(100% - @collection-toolbar-height);
+}
+
+.collection-toolbar{
+    height: @collection-toolbar-height;
+    border-bottom: 1px solid @border-color-dark;
+    background: @panel-background;
+    line-height: 35px;
+    padding-left: 4px;
+
+    >span{
+        margin-left: 8px;
+    }
+}
+
 .collection-tree {
     text-align: left;
     background: @panel-background;

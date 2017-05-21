@@ -1,5 +1,6 @@
 import { DtoRecord } from '../../api/interfaces/dto_record';
 import { DtoCollectionWithRecord } from '../../api/interfaces/dto_collection';
+import { DtoResUser } from '../../api/interfaces/dto_res';
 import { StringUtil } from './utils/string_util';
 import { RecordCategory } from './common/record_category';
 import { RunResult } from '../../api/interfaces/dto_run_result';
@@ -24,7 +25,7 @@ export interface RecordState {
     isRequesting: boolean;
 }
 
-export interface CollectionState {
+export interface DisplayRecordsState {
     activeKey: string;
 
     recordState: RecordState[];
@@ -36,10 +37,30 @@ export interface ResponseState {
     [id: string]: RunResult;
 }
 
-export interface State {
+export interface CollectionState {
     collectionsInfo: DtoCollectionWithRecord;
 
+    isLoaded: boolean;
+}
+
+export interface UIState {
+    collectionPanelWidth: number;
+}
+
+export interface UserInfoState {
+    userInfo: DtoResUser;
+
+    isLoaded: boolean;
+}
+
+export interface State {
+    uiState: UIState;
+
+    userState: UserInfoState;
+
     collectionState: CollectionState;
+
+    displayRecordsState: DisplayRecordsState;
 
     // teamState: TeamState;
 
@@ -51,11 +72,23 @@ export interface State {
 }
 
 export const initialState: State = {
-    collectionsInfo: {
-        collections: {},
-        records: {}
+    uiState: {
+        collectionPanelWidth: 300
+    },
+    userState: {
+        isLoaded: false,
+        userInfo: {
+            teams: []
+        }
     },
     collectionState: {
+        isLoaded: false,
+        collectionsInfo: {
+            collections: {},
+            records: {}
+        }
+    },
+    displayRecordsState: {
         activeKey: '@new',
         recordState: [
             {

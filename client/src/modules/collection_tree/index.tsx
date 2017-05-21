@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { Menu } from 'antd';
-import { refreshCollectionAction, activeRecordAction, DeleteRecordType, DeleteCollectionType, UpdateCollectionType, CreateCollectionType, SaveCollectionType, MoveRecordType } from './action';
+import { Menu, Dropdown, Icon } from 'antd';
+import { activeRecordAction, DeleteRecordType, DeleteCollectionType, UpdateCollectionType, CreateCollectionType, SaveCollectionType, MoveRecordType } from './action';
 import { State } from '../../state';
 import RecordFolder from './record_folder';
 import RecordItem from './record_item';
@@ -11,23 +11,27 @@ import { SelectParam } from 'antd/lib/menu';
 import * as _ from 'lodash';
 import { DtoCollection } from '../../../../api/interfaces/dto_collection';
 import { RecordCategory } from '../../common/record_category';
-import './style/index.less';
 import { actionCreator } from '../../action';
 import { removeTabAction, SaveRecordType } from '../req_res_panel/action';
 import { StringUtil } from '../../utils/string_util';
+import PerfectScrollbar from 'react-perfect-scrollbar';
+import './style/index.less';
 
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
+const AllTeam = 'All';
 
 interface CollectionListStateProps {
     collections: _.Dictionary<DtoCollection>;
+
     records: _.Dictionary<_.Dictionary<DtoRecord>>;
+
     activeKey: string;
+
+    teams: { id: string, name: string }[];
 }
 
 interface CollectionListDispatchProps {
-    refresh: Function;
-
     activeRecord: (record: DtoRecord) => void;
 
     deleteRecord(id: string, records: _.Dictionary<DtoRecord>);
@@ -53,6 +57,8 @@ type CollectionListProps = CollectionListStateProps & CollectionListDispatchProp
 
 interface CollectionListState {
     openKeys: string[];
+
+    selectedTeam: string;
 }
 
 class CollectionList extends React.Component<CollectionListProps, CollectionListState> {
@@ -65,11 +71,8 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         super(props);
         this.state = {
             openKeys: [],
+            selectedTeam: AllTeam
         };
-    }
-
-    componentWillMount() {
-        this.props.refresh();
     }
 
     onOpenChanged = (openKeys: string[]) => {
@@ -129,10 +132,44 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         }
     }
 
-    render() {
-        const { collections, records, activeKey } = this.props;
-        const recordStyle = { height: '30px', lineHeight: '30px' };
-        const loopRecords = (data: DtoRecord[], cid: string, inFolder: boolean = false) => data.map(r => {
+    onTeamChanged = (e) => {
+        this.setState({ ...this.state, selectedTeam: e.key });
+    }
+
+    getTeamMenu = () => {
+        const teams = this.props.teams;
+        return (
+            <Menu style={{ minWidth: 150 }} onClick={this.onTeamChanged} selectedKeys={[this.state.selectedTeam]}>
+                <Menu.Item key={AllTeam}>{AllTeam}</Menu.Item>
+                {teams.map(t => <Menu.Item key={t.id}>{t.name}</Menu.Item>)}
+            </Menu>
+        );
+    }
+
+    getCurrentTeam = () => {
+        return this.props.teams.find(t => t.id === this.state.selectedTeam) || { id: AllTeam, name: AllTeam };
+    }
+
+    getOpenKeys = () => {
+        const openKeys = this.state.openKeys;
+        if (this.state.selectedTeam === AllTeam) {
+            return openKeys;
+        }
+        return _.filter(openKeys, k => this.props.collections[k] && this.props.collections[k].teamId === this.state.selectedTeam);
+    }
+
+    getDisplayCollections = () => {
+        const collections = _.chain(this.props.collections).values<DtoCollection>().sortBy('name').value();
+        if (this.state.selectedTeam === AllTeam) {
+            return collections;
+        }
+        return _.filter(collections, c => c.teamId === this.state.selectedTeam);
+    }
+
+    loopRecords = (data: DtoRecord[], cid: string, inFolder: boolean = false) => {
+        return data.map(r => {
+            const recordStyle = { height: '30px', lineHeight: '30px' };
+            const { records } = this.props;
 
             if (r.category === RecordCategory.folder) {
                 const isOpen = this.state.openKeys.indexOf(r.id) > -1;
@@ -149,7 +186,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                             moveToCollection={this.moveToCollection}
                         />
                     )}>
-                        {loopRecords(children, cid, true)}
+                        {this.loopRecords(children, cid, true)}
                     </SubMenu>
                 );
             }
@@ -166,60 +203,80 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                 </MenuItem>
             );
         });
+    }
+
+    render() {
+        const { records, activeKey } = this.props;
+        const displayCollections = this.getDisplayCollections();
 
         return (
-            <div>
-                <Menu
-                    className="collection-tree"
-                    onOpenChange={this.onOpenChanged}
-                    mode="inline"
-                    inlineIndent={0}
-                    openKeys={this.state.openKeys}
-                    selectedKeys={[activeKey]}
-                    onSelect={this.onSelectChanged}
-                >
-                    {
-                        _.chain(collections).values<DtoCollection>().sortBy('name').value().map(c => {
-                            const recordCount = _.values(records[c.id]).filter(r => r.category === RecordCategory.record).length;
-                            let sortRecords = _.chain(records[c.id]).values<DtoRecord>().sortBy(['category', 'name']).value();
-                            return (
-                                <SubMenu className="collection-item" key={c.id} title={(
-                                    <CollectionItem
-                                        collection={{ ...c }}
-                                        recordCount={recordCount}
-                                        onNameChanged={(name) => this.changeCollectionName(c, name)}
-                                        deleteCollection={() => this.props.deleteCollection(c.id)}
-                                        moveToCollection={this.moveToCollection}
-                                        createFolder={this.createFolder}
-                                    />
-                                )}>
-                                    {
-                                        sortRecords.length === 0 ?
-                                            <div style={{ height: 20 }} /> :
-                                            loopRecords(sortRecords, c.id)
-                                    }
-                                </SubMenu>
-                            );
-                        })
-                    }
-                </Menu>
-                <div className="collection-tree-bottom" />
+            <div className="collection-panel">
+                <div className="collection-toolbar">
+                    <span>Team:</span>
+                    <span>
+                        <Dropdown overlay={this.getTeamMenu()} trigger={['click']} style={{ width: 200 }}>
+                            <a className="ant-dropdown-link" href="#">
+                                {this.getCurrentTeam().name} <Icon type="down" />
+                            </a>
+                        </Dropdown>
+                    </span>
+                </div>
+                <div className="collection-tree-container">
+                    <PerfectScrollbar>
+                        <Menu
+                            className="collection-tree"
+                            onOpenChange={this.onOpenChanged}
+                            mode="inline"
+                            inlineIndent={0}
+                            openKeys={this.getOpenKeys()}
+                            selectedKeys={[activeKey]}
+                            onSelect={this.onSelectChanged}
+                        >
+                            {
+                                displayCollections.map(c => {
+                                    const recordCount = _.values(records[c.id]).filter(r => r.category === RecordCategory.record).length;
+                                    let sortRecords = _.chain(records[c.id]).values<DtoRecord>().sortBy(['category', 'name']).value();
+                                    return (
+                                        <SubMenu className="collection-item" key={c.id} title={(
+                                            <CollectionItem
+                                                collection={{ ...c }}
+                                                recordCount={recordCount}
+                                                onNameChanged={(name) => this.changeCollectionName(c, name)}
+                                                deleteCollection={() => this.props.deleteCollection(c.id)}
+                                                moveToCollection={this.moveToCollection}
+                                                createFolder={this.createFolder}
+                                            />
+                                        )}>
+                                            {
+                                                sortRecords.length === 0 ?
+                                                    <div style={{ height: 20 }} /> :
+                                                    this.loopRecords(sortRecords, c.id)
+                                            }
+                                        </SubMenu>
+                                    );
+                                })
+                            }
+                        </Menu>
+                        {displayCollections.length === 0 ? '' : <div className="collection-tree-bottom" />}
+                    </PerfectScrollbar>
+                </div>
             </div>
         );
     }
 }
 
 const mapStateToProps = (state: State): CollectionListStateProps => {
+    let teams = state.userState.userInfo.teams ? state.userState.userInfo.teams.map(t => ({ id: t.id, name: t.name })) : [];
     return {
-        collections: state.collectionsInfo.collections,
-        records: state.collectionsInfo.records,
-        activeKey: state.collectionState.activeKey
+        collections: state.collectionState.collectionsInfo.collections,
+        records: state.collectionState.collectionsInfo.records,
+        activeKey: state.displayRecordsState.activeKey,
+        teams: _.sortBy(teams, t => t.name)
     };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps => {
     return {
-        refresh: () => dispatch(refreshCollectionAction()),
         activeRecord: (record) => dispatch(activeRecordAction(record)),
         deleteRecord: (id, records) => {
             const record = records[id];

@@ -3,11 +3,34 @@ import './style/App.less';
 import CollectionList from './modules/collection_tree';
 import { Layout, Menu, Icon } from 'antd';
 import { ClickParam } from 'antd/lib/menu';
-import PerfectScrollbar from 'react-perfect-scrollbar';
 import ReqResPanel from './modules/req_res_panel';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 import './style/perfect-scrollbar.min.css';
+import { State, UIState } from './state';
+import { connect, Dispatch } from 'react-redux';
+import { refreshCollectionAction } from './modules/collection_tree/action';
+import { actionCreator, ResizeCollectionPanelType } from './action';
+import { LoginType } from './modules/login/action';
 
 const { Header, Content, Sider } = Layout;
+
+interface AppStateProps {
+  isLogin: boolean;
+
+  isFetchCollection: boolean;
+
+  uiState: UIState;
+}
+
+interface AppDispatchProps {
+  getCollection();
+
+  login();
+
+  resizeCollectionPanel(width: number);
+}
+
+type AppProps = AppStateProps & AppDispatchProps;
 
 interface AppState {
   collapsed: boolean;
@@ -15,26 +38,35 @@ interface AppState {
   mode: 'inline' | 'vertical';
 
   selectedKeys: string[];
-
-  collectionPanelWidth: number;
 }
 
-class App extends React.Component<{}, AppState> {
+class App extends React.Component<AppProps, AppState> {
 
   private minCollectionWidth = 100;
   private maxCollectionWidth = 600;
   private toolBarWidth = 50;
   private isResizing: boolean;
 
-  constructor(props: {}) {
+  constructor(props: AppProps) {
     super(props);
     this.isResizing = false;
     this.state = {
       collapsed: false,
       mode: 'inline',
-      selectedKeys: ['1'],
-      collectionPanelWidth: 300
+      selectedKeys: ['1']
     };
+  }
+
+  componentWillMount() {
+    if (!this.props.isLogin) {
+      this.props.login();
+    }
+  }
+
+  componentWillReceiveProps(nextProps: AppProps) {
+    if (nextProps.isLogin && !nextProps.isFetchCollection) {
+      this.props.getCollection();
+    }
   }
 
   onCollapse = (collapsed) => {
@@ -111,14 +143,12 @@ class App extends React.Component<{}, AppState> {
           <Layout className="main-panel">
             <Sider
               className="collection-sider"
-              style={{ minWidth: this.state.collapsed ? 0 : this.state.collectionPanelWidth }}
+              style={{ minWidth: this.state.collapsed ? 0 : this.props.uiState.collectionPanelWidth }}
               collapsible={true}
               collapsedWidth="0.1"
               collapsed={this.state.collapsed}
               onCollapse={this.onCollapse}>
-              <PerfectScrollbar>
-                <CollectionList />
-              </PerfectScrollbar>
+              <CollectionList />
             </Sider>
             <div className="splitter" onMouseDown={this.onSplitterMouseDown} />
             <Content style={{ marginTop: 4 }}>
@@ -133,4 +163,23 @@ class App extends React.Component<{}, AppState> {
   }
 }
 
-export default App;
+const mapStateToProps = (state: State): AppStateProps => {
+  return {
+    uiState: state.uiState,
+    isLogin: state.userState.isLoaded,
+    isFetchCollection: state.collectionState.isLoaded
+  };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch<any>): AppDispatchProps => {
+  return {
+    getCollection: () => dispatch(refreshCollectionAction()),
+    login: () => dispatch(actionCreator(LoginType)),
+    resizeCollectionPanel: (width) => dispatch(actionCreator(ResizeCollectionPanelType, width))
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(App);

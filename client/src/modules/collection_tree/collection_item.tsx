@@ -115,7 +115,7 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
                     onNameChanged={this.props.onNameChanged}
                     icon={<Icon className="c-icon" type="wallet" />}
                     name={this.props.collection.name}
-                    subName={<div>{`${this.props.recordCount} requests`}</div>}
+                    subName={<div>{`${this.props.recordCount} request${this.props.recordCount > 1 ? 's' : ''}`}</div>}
                     menu={this.getMenu()}
                 />
             </div>

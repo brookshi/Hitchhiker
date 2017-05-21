@@ -1,5 +1,4 @@
-import { Environment } from './environment';
-import { JoinColumn, OneToMany, Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, ManyToMany } from 'typeorm';
+import { Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, ManyToMany } from 'typeorm';
 import { Team } from './team';
 
 @Entity()
@@ -22,10 +21,6 @@ export class User {
         cascadeInsert: true
     })
     teams: Team[] = [];
-
-    @JoinColumn()
-    @OneToMany(type => Environment, env => env.owner)
-    environments: Environment[] = [];
 
     @Column()
     isActive: boolean;

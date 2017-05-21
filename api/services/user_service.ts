@@ -90,7 +90,6 @@ export class UserService {
             .setParameter('email', email);
 
         if (needTeam) { rep = rep.leftJoinAndSelect('user.teams', 'team'); };
-        if (needEnv) { rep = rep.leftJoinAndSelect('user.environments', 'env'); };
 
         return rep.getOne();
     }
@@ -104,7 +103,6 @@ export class UserService {
             .setParameter('id', id);
 
         if (needTeam) { rep = rep.leftJoinAndSelect('user.teams', 'team'); };
-        if (needEnv) { rep = rep.leftJoinAndSelect('user.environments', 'env'); };
 
         return rep.getOne();
     }

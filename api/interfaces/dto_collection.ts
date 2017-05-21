@@ -6,6 +6,8 @@ export interface DtoCollection {
 
     name: string;
 
+    teamId: string;
+
     description: string;
 }
 

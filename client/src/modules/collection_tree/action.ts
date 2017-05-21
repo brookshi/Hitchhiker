@@ -7,9 +7,9 @@ import { DtoCollection } from '../../../../api/interfaces/dto_collection';
 import { syncAction } from '../../action';
 import { HttpMethod } from '../../common/http_method';
 
-export const ActiveRecordType = 'active_record_type';
 export const RefreshCollectionType = 'refresh_collection';
 export const FetchCollectionType = 'fetch_collection';
+export const ActiveRecordType = 'active_record_type';
 export const FetchCollectionFailedType = 'fetch_collection_failed';
 export const DeleteRecordType = 'delete_record_type';
 export const DeleteCollectionType = 'delete_collection_type';
@@ -28,6 +28,16 @@ export function* refreshCollection() {
     yield takeLatest(RefreshCollectionType, fetchCollection);
 }
 
+function* fetchCollection() {
+    try {
+        const res = yield call(RequestManager.get, 'http://localhost:3000/api/collections');
+        const body = yield res.json();
+        yield put(fetchCollectionAction(body));
+    } catch (err) {
+        yield put(errorAction(FetchCollectionFailedType, err));
+    }
+}
+
 export function* deleteRecord() {
     yield takeEvery(DeleteRecordType, pushDeleteRecordToChannel);
 }
@@ -42,16 +52,6 @@ export function* saveCollection() {
 
 export function* moveRecord() {
     yield takeEvery(MoveRecordType, pushMoveRecordToChannel);
-}
-
-function* fetchCollection() {
-    try {
-        const res = yield call(RequestManager.get, 'http://localhost:3000/api/collections');
-        const body = yield res.json();
-        yield put(fetchCollectionAction(body));
-    } catch (err) {
-        yield put(errorAction(FetchCollectionFailedType, err));
-    }
 }
 
 function* pushDeleteRecordToChannel(action: any) {

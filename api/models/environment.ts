@@ -1,5 +1,4 @@
 import { ManyToOne, OneToMany, Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { User } from './user';
 import { Variable } from "./variable";
 import { Team } from "./team";
 
@@ -16,9 +15,6 @@ export class Environment {
         cascadeUpdate: true
     })
     variables: Variable[] = [];
-
-    @ManyToOne(type => User, user => user.environments)
-    owner: User;
 
     @ManyToOne(type => Team, team => team.environments)
     team: Team;

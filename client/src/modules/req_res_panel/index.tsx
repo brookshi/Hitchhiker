@@ -253,8 +253,8 @@ const selectCollectionTreeData = (collectionsInfo: DtoCollectionWithRecord) => {
 
 const mapStateToProps = (state: State): ReqResPanelStateProps => {
     return {
-        ...state.collectionState,
-        collectionTreeData: selectCollectionTreeData(state.collectionsInfo)
+        ...state.displayRecordsState,
+        collectionTreeData: selectCollectionTreeData(state.collectionState.collectionsInfo)
     };
 };
 

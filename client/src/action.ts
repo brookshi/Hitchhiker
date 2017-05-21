@@ -3,6 +3,9 @@ import { refreshCollection, deleteRecord, saveCollection, deleteCollection, move
 import { sendRequest, saveRecord, saveAsRecord } from './modules/req_res_panel/action';
 import RequestManager, { SyncItem } from './utils/request_manager';
 import { delay } from 'redux-saga';
+import { login } from './modules/login/action';
+
+export const ResizeCollectionPanelType = 'resize_collection_panel_type';
 
 export const SyncActionType = 'sync_type';
 export const SyncFailedActionType = 'sync_failed_type';
@@ -16,6 +19,7 @@ const RetryTimes = 3;
 
 export function* rootSaga() {
     yield [
+        spawn(login),
         spawn(refreshCollection),
         spawn(sendRequest),
         spawn(saveRecord),

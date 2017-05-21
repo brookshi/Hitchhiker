@@ -1,9 +1,8 @@
-import { initialState, getDefaultRecord, CollectionState, RecordState } from '../state';
+import { initialState, getDefaultRecord, DisplayRecordsState, RecordState, CollectionState } from '../state';
 import { FetchCollectionType, ActiveRecordType, DeleteRecordType, SaveCollectionType, DeleteCollectionType, MoveRecordType } from '../modules/collection_tree/action';
 import { ActiveTabType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, UpdateTabRecordId, SaveAsRecordType } from '../modules/req_res_panel/action';
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
-import { DtoCollectionWithRecord } from '../../../api/interfaces/dto_collection';
 import { RecordCategory } from '../common/record_category';
 
 const getNewRecordState: () => RecordState = () => {
@@ -16,27 +15,30 @@ const getNewRecordState: () => RecordState = () => {
     };
 };
 
-export function collectionsInfo(state: DtoCollectionWithRecord = initialState.collectionsInfo, action: any): DtoCollectionWithRecord {
+export function collectionState(state: CollectionState = initialState.collectionState, action: any): CollectionState {
     switch (action.type) {
         case FetchCollectionType: {
             console.log(action.collections);
-            return _.cloneDeep(action.collections);
+            return _.cloneDeep({ collectionsInfo: action.collections, isLoaded: true });
         }
         case SaveAsRecordType:
         case SaveRecordType:
         case MoveRecordType: {
             const record = _.cloneDeep(action.value.record);
-            const oldRecord = _.values(state.records).find(s => !!s[record.id]);
+            const oldRecord = _.values(state.collectionsInfo.records).find(s => !!s[record.id]);
             if (oldRecord) {
-                Reflect.deleteProperty(state.records[oldRecord[record.id].collectionId], record.id);
+                Reflect.deleteProperty(state.collectionsInfo.records[oldRecord[record.id].collectionId], record.id);
             }
             return {
                 ...state,
-                records: {
-                    ...state.records,
-                    [record.collectionId]: {
-                        ...state.records[record.collectionId],
-                        [record.id]: record
+                collectionsInfo: {
+                    ...state.collectionsInfo,
+                    records: {
+                        ...state.collectionsInfo.records,
+                        [record.collectionId]: {
+                            ...state.collectionsInfo.records[record.collectionId],
+                            [record.id]: record
+                        }
                     }
                 }
             };
@@ -45,47 +47,53 @@ export function collectionsInfo(state: DtoCollectionWithRecord = initialState.co
             const collection = _.cloneDeep(action.value.collection);
             return {
                 ...state,
-                collections: {
-                    ...state.collections,
-                    [collection.id]: collection
+                collectionsInfo: {
+                    ...state.collectionsInfo,
+                    collections: {
+                        ...state.collectionsInfo.collections,
+                        [collection.id]: collection
+                    }
                 }
             };
         }
         case DeleteRecordType: {
             const { id, collectionId, category } = action.value;
-            const recordsInCollection = state.records[collectionId];
+            const recordsInCollection = state.collectionsInfo.records[collectionId];
             if (category === RecordCategory.folder) {
                 _.values(recordsInCollection).filter(r => r.pid === id).map(r => r.id).forEach(i => Reflect.deleteProperty(recordsInCollection, i));
             }
             Reflect.deleteProperty(recordsInCollection, id);
             return {
                 ...state,
-                records: { ...state.records, [collectionId]: { ...recordsInCollection } }
+                collectionsInfo: {
+                    ...state.collectionsInfo,
+                    records: { ...state.collectionsInfo.records, [collectionId]: { ...recordsInCollection } }
+                }
             };
         }
         case DeleteCollectionType: {
             const collectionId = action.value;
-            Reflect.deleteProperty(state.collections, collectionId);
-            Reflect.deleteProperty(state.records, collectionId);
-            return { ...state, collections: { ...state.collections }, records: { ...state.records } };
+            Reflect.deleteProperty(state.collectionsInfo.collections, collectionId);
+            Reflect.deleteProperty(state.collectionsInfo.records, collectionId);
+            return { ...state, collections: { ...state.collectionsInfo.collections }, records: { ...state.collectionsInfo.records } };
         }
         default: return state;
     }
 }
 
-export function root(state: CollectionState = initialState.collectionState, action: any): CollectionState {
-    const intermediateState = combineReducers<CollectionState>({
+export function root(state: DisplayRecordsState = initialState.displayRecordsState, action: any): DisplayRecordsState {
+    const intermediateState = combineReducers<DisplayRecordsState>({
         activeKey,
         recordState,
-        responseState: (s = initialState.collectionState.responseState, a) => s
+        responseState: (s = initialState.displayRecordsState.responseState, a) => s
     })(state, action);
 
-    const finalState = collectionState(intermediateState, action);
+    const finalState = recordWithResState(intermediateState, action);
 
     return finalState;
 }
 
-function activeKey(state: string = initialState.collectionState.activeKey, action: any): string {
+function activeKey(state: string = initialState.displayRecordsState.activeKey, action: any): string {
     switch (action.type) {
         case ActiveTabType:
             return action.key;
@@ -98,7 +106,7 @@ function activeKey(state: string = initialState.collectionState.activeKey, actio
     }
 }
 
-function recordState(states: RecordState[] = initialState.collectionState.recordState, action: any): RecordState[] {
+function recordState(states: RecordState[] = initialState.displayRecordsState.recordState, action: any): RecordState[] {
     switch (action.type) {
         case SendRequestType: {
             let index = states.findIndex(r => r.record.id === action.recordRun.record.id);
@@ -157,7 +165,7 @@ function recordState(states: RecordState[] = initialState.collectionState.record
     }
 }
 
-function collectionState(state: CollectionState = initialState.collectionState, action: any): CollectionState {
+function recordWithResState(state: DisplayRecordsState = initialState.displayRecordsState, action: any): DisplayRecordsState {
     let { recordState, activeKey } = state;
     switch (action.type) {
         case AddTabType:
