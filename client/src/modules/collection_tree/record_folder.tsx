@@ -104,12 +104,12 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
                 <ItemWithMenu
                     ref={ele => this.itemWithMenu = ele}
                     onNameChanged={this.props.onNameChanged}
-                    icon={
+                    icon={(
                         <Icon
                             className="c-icon"
                             type={this.props.isOpen ? 'folder-open' : 'folder'}
                         />
-                    }
+                    )}
                     name={this.props.folder.name}
                     menu={this.getMenu()}
                 />

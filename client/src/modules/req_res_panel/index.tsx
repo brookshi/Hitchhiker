@@ -239,19 +239,21 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                 <Modal title="Close Tab"
                     visible={this.state.isConfirmCloseDlgOpen}
                     onCancel={() => this.setState({ ...this.state, isConfirmCloseDlgOpen: false })}
-                    footer={[
+                    footer={[(
                         <Button
                             key="dont_save"
                             onClick={this.closeTabWithoutSave}
                         >
                             Don't Save
-                        </Button>,
+                        </Button>
+                    ), (
                         <Button
                             key="cancel_save"
                             onClick={() => this.setState({ ...this.state, isConfirmCloseDlgOpen: false })}
                         >
                             Cancel
-                        </Button>,
+                        </Button>
+                    ), (
                         <Button
                             key="save"
                             type="primary"
@@ -259,7 +261,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                         >
                             Save
                         </Button>
-                    ]}
+                    )]}
                 >
                     Your changed will be lost if you close this tab without saving.
                 </Modal>

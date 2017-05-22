@@ -9,8 +9,10 @@ import './style/perfect-scrollbar.min.css';
 import { State, UIState } from './state';
 import { connect, Dispatch } from 'react-redux';
 import { refreshCollectionAction } from './modules/collection_tree/action';
+import Splitter from './components/splitter';
 import { actionCreator, ResizeCollectionPanelType } from './action';
 import { LoginType } from './modules/login/action';
+import Config from './common/config';
 
 const { Header, Content, Sider } = Layout;
 
@@ -36,6 +38,8 @@ type AppProps = AppStateProps & AppDispatchProps;
 
 interface AppState {
 
+  activeModule: 'collection' | 'team' | 'schedule' | 'api_doc' | 'api_mock' | 'stress_test';
+
   collapsed: boolean;
 
   mode: 'inline' | 'vertical';
@@ -45,15 +49,10 @@ interface AppState {
 
 class App extends React.Component<AppProps, AppState> {
 
-  private minCollectionWidth = 100;
-  private maxCollectionWidth = 600;
-  private toolBarWidth = 50;
-  private isResizing: boolean;
-
   constructor(props: AppProps) {
     super(props);
-    this.isResizing = false;
     this.state = {
+      activeModule: 'collection',
       collapsed: false,
       mode: 'inline',
       selectedKeys: ['1']
@@ -89,25 +88,35 @@ class App extends React.Component<AppProps, AppState> {
     }
   }
 
-  private onSplitterMove = (e) => {
-    e.preventDefault();
-    const width = Math.min(Math.max(e.clientX - this.toolBarWidth, this.minCollectionWidth), this.maxCollectionWidth);
-    this.props.resizeCollectionPanel(width);
+  private collectionModule = () => {
+    return (
+      <Layout className="main-panel">
+        <Sider
+          className="collection-sider"
+          style={{ minWidth: this.state.collapsed ? 0 : this.props.uiState.collectionPanelWidth }}
+          collapsible={true}
+          collapsedWidth="0.1"
+          collapsed={this.state.collapsed}
+          onCollapse={this.onCollapse}>
+          <CollectionList />
+        </Sider>
+        <Splitter resizeCollectionPanel={this.props.resizeCollectionPanel} />
+        <Content style={{ marginTop: 4 }}>
+          <PerfectScrollbar>
+            <ReqResPanel />
+          </PerfectScrollbar>
+        </Content>
+      </Layout>
+    );
   }
 
-  private onSplitterMouseDown = (e) => {
-    if (e.button !== 0) {
-      return;
+  private activeModule = () => {
+    switch (this.state.activeModule) {
+      case 'collection':
+        return this.collectionModule();
+      default:
+        return this.collectionModule();
     }
-    document.addEventListener('mousemove', this.onSplitterMove);
-    document.addEventListener('mouseup', this.onSplitterMouseUp);
-    e.preventDefault();
-  }
-
-  private onSplitterMouseUp = (e) => {
-    document.removeEventListener('mousemove', this.onSplitterMove);
-    document.removeEventListener('mouseup', this.onSplitterMouseUp);
-    e.preventDefault();
   }
 
   render() {
@@ -115,7 +124,7 @@ class App extends React.Component<AppProps, AppState> {
       <Layout className="layout">
         <Header />
         <Layout>
-          <Sider style={{ maxWidth: this.toolBarWidth }}>
+          <Sider style={{ maxWidth: Config.ToolBarWidth }}>
             <Menu
               className="sider-menu"
               mode="vertical"
@@ -123,55 +132,39 @@ class App extends React.Component<AppProps, AppState> {
               selectedKeys={this.state.selectedKeys}
               onClick={this.onClick}
             >
-              <Menu.Item key="1">
+              <Menu.Item key="collection">
                 <Tooltip mouseEnterDelay={1} placement="right" title="Collections">
                   <Icon type="wallet" />
                 </Tooltip>
               </Menu.Item>
-              <Menu.Item key="2">
+              <Menu.Item key="team">
                 <Tooltip mouseEnterDelay={1} placement="right" title="Team">
                   <Icon type="team" />
                 </Tooltip>
               </Menu.Item>
-              <Menu.Item key="3">
+              <Menu.Item key="schedule">
                 <Tooltip mouseEnterDelay={1} placement="right" title="Scheduler">
                   <Icon type="schedule" />
                 </Tooltip>
               </Menu.Item>
-              <Menu.Item key="4">
+              <Menu.Item key="api_doc">
                 <Tooltip mouseEnterDelay={1} placement="right" title="Api document">
                   <Icon type="file-text" />
                 </Tooltip>
               </Menu.Item>
-              <Menu.Item key="5">
+              <Menu.Item key="api_mock">
                 <Tooltip mouseEnterDelay={1} placement="right" title="Api mock">
                   <Icon type="api" />
                 </Tooltip>
               </Menu.Item>
-              <Menu.Item key="6">
+              <Menu.Item key="stress_test">
                 <Tooltip mouseEnterDelay={1} placement="right" title="Stress test">
                   <Icon type="code-o" />
                 </Tooltip>
               </Menu.Item>
             </Menu>
           </Sider>
-          <Layout className="main-panel">
-            <Sider
-              className="collection-sider"
-              style={{ minWidth: this.state.collapsed ? 0 : this.props.uiState.collectionPanelWidth }}
-              collapsible={true}
-              collapsedWidth="0.1"
-              collapsed={this.state.collapsed}
-              onCollapse={this.onCollapse}>
-              <CollectionList />
-            </Sider>
-            <div className="splitter" onMouseDown={this.onSplitterMouseDown} />
-            <Content style={{ marginTop: 4 }}>
-              <PerfectScrollbar>
-                <ReqResPanel />
-              </PerfectScrollbar>
-            </Content>
-          </Layout>
+          {this.activeModule()}
         </Layout>
       </Layout>
     );
