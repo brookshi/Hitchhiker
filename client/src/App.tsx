@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './style/App.less';
 import CollectionList from './modules/collection_tree';
-import { Layout, Menu, Icon } from 'antd';
+import { Layout, Menu, Icon, Tooltip } from 'antd';
 import { ClickParam } from 'antd/lib/menu';
 import ReqResPanel from './modules/req_res_panel';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -121,22 +121,34 @@ class App extends React.Component<AppProps, AppState> {
               onClick={this.onClick}
             >
               <Menu.Item key="1">
-                <Icon type="wallet" />
+                <Tooltip mouseEnterDelay={1} placement="right" title="Collections">
+                  <Icon type="wallet" />
+                </Tooltip>
               </Menu.Item>
               <Menu.Item key="2">
-                <Icon type="team" />
+                <Tooltip mouseEnterDelay={1} placement="right" title="Team">
+                  <Icon type="team" />
+                </Tooltip>
               </Menu.Item>
               <Menu.Item key="3">
-                <Icon type="schedule" />
+                <Tooltip mouseEnterDelay={1} placement="right" title="Scheduler">
+                  <Icon type="schedule" />
+                </Tooltip>
               </Menu.Item>
               <Menu.Item key="4">
-                <Icon type="file-text" />
+                <Tooltip mouseEnterDelay={1} placement="right" title="Api document">
+                  <Icon type="file-text" />
+                </Tooltip>
               </Menu.Item>
               <Menu.Item key="5">
-                <Icon type="api" />
+                <Tooltip mouseEnterDelay={1} placement="right" title="Api mock">
+                  <Icon type="api" />
+                </Tooltip>
               </Menu.Item>
               <Menu.Item key="6">
-                <Icon type="code-o" />
+                <Tooltip mouseEnterDelay={1} placement="right" title="Stress test">
+                  <Icon type="code-o" />
+                </Tooltip>
               </Menu.Item>
             </Menu>
           </Sider>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { Tabs, Badge, Modal, Button } from 'antd';
+import { Tabs, Badge, Modal, Button, Tooltip } from 'antd';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
 import { activeTabAction, sendRequestAction, addTabAction, removeTabAction, updateRecordAction, cancelRequestAction, saveRecordAction, saveAsRecordAction, UpdateTabRecordId } from './action';
@@ -188,6 +188,12 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                     onChange={this.onTabChanged}
                     onEdit={this.onEdit}
                     animated={false}
+                    hideAdd={true}
+                    tabBarExtraContent={(
+                        <Tooltip mouseEnterDelay={1} placement="left" title="new tab">
+                            <Button className="record-add-btn" type="primary" icon="plus" onClick={this.add} />
+                        </Tooltip>)
+                    }
                 >
                     {
                         this.props.recordState.map(recordState => {
@@ -197,7 +203,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                             return (
                                 <Tabs.TabPane
                                     key={record.id}
-                                    tab={<Badge count={0} dot={recordState.isChanged}>{name}</Badge>}
+                                    tab={<Badge count="" dot={recordState.isChanged}>{name}</Badge>}
                                     closable={true}
                                 >
                                     <div className="req-res-panel">

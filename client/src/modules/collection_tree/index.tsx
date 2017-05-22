@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { Menu, Dropdown, Icon, Button, Modal, TreeSelect, Input } from 'antd';
+import { Menu, Dropdown, Icon, Button, Modal, TreeSelect, Input, Tooltip } from 'antd';
 import { activeRecordAction, DeleteRecordType, DeleteCollectionType, SaveCollectionType, MoveRecordType } from './action';
 import { State } from '../../state';
 import RecordFolder from './record_folder';
@@ -249,7 +249,9 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                             </a>
                         </Dropdown>
                     </span>
-                    <Button className="collection-add-btn" type="primary" icon="folder-add" onClick={this.addCollection} />
+                    <Tooltip mouseEnterDelay={1} placement="bottom" title="create collection">
+                        <Button className="collection-add-btn" type="primary" icon="folder-add" onClick={this.addCollection} />
+                    </Tooltip>
                 </div>
                 <div className="collection-tree-container">
                     <PerfectScrollbar>
