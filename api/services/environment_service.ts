@@ -50,7 +50,6 @@ export class EnvironmentService {
         const env = new Environment();
         env.id = StringUtil.generateUID();
         env.name = name;
-        env.owner = owner;
         if (variables) {
             variables.forEach(v => {
                 env.variables.push(VariableService.create(v.key, v.value, v.isActive, v.sort, env));

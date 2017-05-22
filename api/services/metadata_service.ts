@@ -1,7 +1,6 @@
 import { PostmanCollectionV1, PostmanRecord, PostmanAllV1 } from "../interfaces/postman_v1";
 import { MetadataType } from "../common/metadata_type";
 import { Collection } from "../models/collection";
-import { DtoCollection } from "../interfaces/dto_collection";
 import { User } from "../models/user";
 import { DtoRecord } from "../interfaces/dto_record";
 import { RecordService } from "./record_service";
@@ -47,7 +46,6 @@ export class MetadataService {
             const env = new Environment();
             env.name = e.name;
             env.variables = [];
-            env.owner = owner;
             env.team = TeamService.create(teamId);
 
             let sort = 0;
@@ -67,7 +65,7 @@ export class MetadataService {
 
     static async convertPostmanCollectionV1(owner: User, teamId: string, data: PostmanCollectionV1): Promise<Collection> {
         let sort = await RecordService.getMaxSort();
-        const dtoCollection = <DtoCollection>data;
+        const dtoCollection = { ...data, teamId: teamId };
         const collection = CollectionService.fromDto(dtoCollection);
 
         collection.owner = owner;
