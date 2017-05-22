@@ -4,6 +4,7 @@ import CollectionList from './modules/collection_tree';
 import { Layout, Menu, Icon, Tooltip } from 'antd';
 import { ClickParam } from 'antd/lib/menu';
 import ReqResPanel from './modules/req_res_panel';
+import Team from './modules/team';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import './style/perfect-scrollbar.min.css';
 import { State, UIState } from './state';
@@ -38,13 +39,11 @@ type AppProps = AppStateProps & AppDispatchProps;
 
 interface AppState {
 
-  activeModule: 'collection' | 'team' | 'schedule' | 'api_doc' | 'api_mock' | 'stress_test';
+  activeModule: 'collection' | 'team' | 'schedule' | 'api_doc' | 'api_mock' | 'stress_test' | '' | any;
 
   collapsed: boolean;
 
   mode: 'inline' | 'vertical';
-
-  selectedKeys: string[];
 }
 
 class App extends React.Component<AppProps, AppState> {
@@ -54,8 +53,7 @@ class App extends React.Component<AppProps, AppState> {
     this.state = {
       activeModule: 'collection',
       collapsed: false,
-      mode: 'inline',
-      selectedKeys: ['1']
+      mode: 'inline'
     };
   }
 
@@ -75,16 +73,16 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({
       collapsed,
       mode: collapsed ? 'vertical' : 'inline',
-      selectedKeys: collapsed ? [] : this.state.selectedKeys
+      activeModule: collapsed ? '' : this.state.activeModule
     });
   }
 
   private onClick = (param: ClickParam) => {
-    const { collapsed, selectedKeys } = this.state;
-    if (this.state.selectedKeys.findIndex(o => o === param.key) > -1) {
-      this.setState({ ...this.state, collapsed: !collapsed, selectedKeys: collapsed ? selectedKeys : [] });
+    const { collapsed, activeModule } = this.state;
+    if (activeModule === param.key) {
+      this.setState({ ...this.state, collapsed: !collapsed, activeModule: collapsed ? activeModule : '' });
     } else {
-      this.setState({ ...this.state, collapsed: false, selectedKeys: [param.key] });
+      this.setState({ ...this.state, collapsed: false, activeModule: param.key });
     }
   }
 
@@ -114,6 +112,8 @@ class App extends React.Component<AppProps, AppState> {
     switch (this.state.activeModule) {
       case 'collection':
         return this.collectionModule();
+      case 'team':
+        return <Team />;
       default:
         return this.collectionModule();
     }
@@ -129,7 +129,7 @@ class App extends React.Component<AppProps, AppState> {
               className="sider-menu"
               mode="vertical"
               theme="dark"
-              selectedKeys={this.state.selectedKeys}
+              selectedKeys={[this.state.activeModule]}
               onClick={this.onClick}
             >
               <Menu.Item key="collection">
