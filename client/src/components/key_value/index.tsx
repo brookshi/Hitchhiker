@@ -6,21 +6,28 @@ import { StringUtil } from '../../utils/string_util';
 import { DtoHeader } from '../../../../api/interfaces/dto_header';
 
 const generateDefaultHeader: () => DtoHeader = () => ({
+
     id: StringUtil.generateUID(),
+
     isActive: true
 });
 
 interface KeyValueComponentProps {
+
     headers: Array<DtoHeader>;
+
     onChanged: (headers: DtoHeader[]) => void;
 }
 
 interface KeyValueComponentState {
+
     headers: Array<DtoHeader>;
 }
 
 interface SortableElementParam {
+
     header: DtoHeader;
+
     hIndex: number;
 }
 
@@ -34,10 +41,26 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
             <li className="keyvalue-item">
                 <div style={visibility}>
                     <this.DragHandle />
-                    <Checkbox key={`cb${header.id}`} onChange={(e) => this.onValueChange('isActive', hIndex, e)} defaultChecked={header.isActive} />
+                    <Checkbox
+                        key={`cb${header.id}`}
+                        onChange={(e) => this.onValueChange('isActive', hIndex, e)}
+                        defaultChecked={header.isActive}
+                    />
                 </div>
-                <Input spellCheck={false} key={`key${header.id}`} onChange={(e) => this.onValueChange('key', hIndex, e)} placeholder="key" value={header.key} />
-                <Input spellCheck={false} key={`value${header.id}`} onChange={(e) => this.onValueChange('value', hIndex, e)} placeholder="value" value={header.value} />
+                <Input
+                    spellCheck={false}
+                    key={`key${header.id}`}
+                    onChange={(e) => this.onValueChange('key', hIndex, e)}
+                    placeholder="key"
+                    value={header.key}
+                />
+                <Input
+                    spellCheck={false}
+                    key={`value${header.id}`}
+                    onChange={(e) => this.onValueChange('value', hIndex, e)}
+                    placeholder="value"
+                    value={header.value}
+                />
                 <Icon style={visibility} type="close" onClick={(event) => this.onDelItem(hIndex)} />
             </li>
         );
@@ -66,15 +89,15 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
         this.state = { headers: [generateDefaultHeader()] };
     }
 
-    public componentWillMount() {
+    componentWillMount() {
         this.appendIfNeed(this.props);
     }
 
-    public componentWillReceiveProps(nextProps: KeyValueComponentProps) {
+    componentWillReceiveProps(nextProps: KeyValueComponentProps) {
         this.appendIfNeed(nextProps);
     }
 
-    getInitedHeaders(props: KeyValueComponentProps): DtoHeader[] {
+    private getInitialHeaders(props: KeyValueComponentProps): DtoHeader[] {
         let headers = [...props.headers];
         if (!headers || headers.length === 0) {
             headers = [generateDefaultHeader()];
@@ -82,8 +105,8 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
         return headers;
     }
 
-    appendIfNeed = (props: KeyValueComponentProps) => {
-        const headers = this.getInitedHeaders(props);
+    private appendIfNeed = (props: KeyValueComponentProps) => {
+        const headers = this.getInitialHeaders(props);
         const lastHeader = headers[headers.length - 1];
         if (lastHeader.key || lastHeader.value) {
             headers.push(generateDefaultHeader());
@@ -91,25 +114,25 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
         this.setState({ ...this.state, headers: headers });
     }
 
-    onSortEnd = ({ oldIndex, newIndex }) => {
+    private onSortEnd = ({ oldIndex, newIndex }) => {
         let { headers } = this.state;
         headers = arrayMove(headers, oldIndex, newIndex);
         this.onChanged(headers);
     }
 
-    onValueChange = (type: 'key' | 'value' | 'isActive', index: number, event) => {
+    private onValueChange = (type: 'key' | 'value' | 'isActive', index: number, event) => {
         const { headers } = this.state;
         headers[index][type] = event.target.value;
         this.onChanged(headers);
     }
 
-    onDelItem = (index: number) => {
+    private onDelItem = (index: number) => {
         const { headers } = this.state;
         headers.splice(index, 1);
         this.onChanged(headers);
     }
 
-    onChanged(headers: DtoHeader[]) {
+    private onChanged(headers: DtoHeader[]) {
         const { onChanged } = this.props;
         if (onChanged) {
             onChanged(headers);

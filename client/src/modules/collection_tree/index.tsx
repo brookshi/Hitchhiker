@@ -23,6 +23,7 @@ const AllTeam = 'All';
 const NewCollectionName = 'New collection';
 
 interface CollectionListStateProps {
+
     collections: _.Dictionary<DtoCollection>;
 
     records: _.Dictionary<_.Dictionary<DtoRecord>>;
@@ -33,6 +34,7 @@ interface CollectionListStateProps {
 }
 
 interface CollectionListDispatchProps {
+
     activeRecord: (record: DtoRecord) => void;
 
     deleteRecord(id: string, records: _.Dictionary<DtoRecord>);
@@ -55,6 +57,7 @@ interface CollectionListDispatchProps {
 type CollectionListProps = CollectionListStateProps & CollectionListDispatchProps;
 
 interface CollectionListState {
+
     openKeys: string[];
 
     selectedTeam: string;
@@ -68,11 +71,9 @@ interface CollectionListState {
 
 class CollectionList extends React.Component<CollectionListProps, CollectionListState> {
 
-    currentNewFolder: DtoRecord | undefined;
-    currentNewCollectionId: string;
-    folderRefs: _.Dictionary<RecordFolder> = {};
-
-    newCollectionNameRef: Input;
+    private currentNewFolder: DtoRecord | undefined;
+    private folderRefs: _.Dictionary<RecordFolder> = {};
+    private newCollectionNameRef: Input;
 
     constructor(props: CollectionListProps) {
         super(props);
@@ -82,48 +83,6 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             isAddCollectionDlgOpen: false,
             newCollectionName: NewCollectionName
         };
-    }
-
-    onOpenChanged = (openKeys: string[]) => {
-        this.setState({ openKeys: openKeys });
-    }
-
-    onSelectChanged = (param: SelectParam) => {
-        this.props.activeRecord(param.item.props.data);
-    }
-
-    createFolder = (folder: DtoRecord) => {
-        this.props.createFolder(folder);
-        this.currentNewFolder = folder;
-    }
-
-    changeFolderName = (folder: DtoRecord, name: string) => {
-        name = name.trim() === '' ? folder.name : name;
-        if (name !== folder.name) {
-            folder.name = name;
-            this.props.updateRecord(folder);
-        }
-    }
-
-    changeCollectionName = (collection: DtoCollection, name: string) => {
-        name = name.trim() === '' ? collection.name : name;
-        if (name !== collection.name) {
-            collection.name = name;
-            this.props.updateCollection(collection);
-        }
-    }
-
-    moveRecordToFolder = (record: DtoRecord, collectionId: string, folderId: string) => {
-        this.props.moveRecord({ ...record, pid: folderId, collectionId });
-    }
-
-    moveToCollection = (record: DtoRecord, collectionId: string) => {
-        this.props.moveRecord({ ...record, collectionId, pid: '' });
-        if (record.category === RecordCategory.folder) {
-            _.values(this.props.records[record.collectionId]).filter(r => r.pid === record.id).forEach(r => {
-                this.props.moveRecord({ ...r, collectionId });
-            });
-        }
     }
 
     componentWillReceiveProps(nextProps: CollectionListProps) {
@@ -142,11 +101,51 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         }
     }
 
-    onTeamChanged = (e) => {
+    private onOpenChanged = (openKeys: string[]) => {
+        this.setState({ openKeys: openKeys });
+    }
+
+    private onSelectChanged = (param: SelectParam) => {
+        this.props.activeRecord(param.item.props.data);
+    }
+
+    private createFolder = (folder: DtoRecord) => {
+        this.props.createFolder(folder);
+        this.currentNewFolder = folder;
+    }
+
+    private changeFolderName = (folder: DtoRecord, name: string) => {
+        if (name.trim() !== '' && name !== folder.name) {
+            folder.name = name;
+            this.props.updateRecord(folder);
+        }
+    }
+
+    private changeCollectionName = (collection: DtoCollection, name: string) => {
+        if (name.trim() !== '' && name !== collection.name) {
+            collection.name = name;
+            this.props.updateCollection(collection);
+        }
+    }
+
+    private moveRecordToFolder = (record: DtoRecord, collectionId: string, folderId: string) => {
+        this.props.moveRecord({ ...record, pid: folderId, collectionId });
+    }
+
+    private moveToCollection = (record: DtoRecord, collectionId: string) => {
+        this.props.moveRecord({ ...record, collectionId, pid: '' });
+        if (record.category === RecordCategory.folder) {
+            _.values(this.props.records[record.collectionId]).filter(r => r.pid === record.id).forEach(r => {
+                this.props.moveRecord({ ...r, collectionId });
+            });
+        }
+    }
+
+    private onTeamChanged = (e) => {
         this.setState({ ...this.state, selectedTeam: e.key });
     }
 
-    getTeamMenu = () => {
+    private getTeamMenu = () => {
         const teams = this.props.teams;
         return (
             <Menu style={{ minWidth: 150 }} onClick={this.onTeamChanged} selectedKeys={[this.state.selectedTeam]}>
@@ -156,11 +155,11 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         );
     }
 
-    getCurrentTeam = () => {
+    private getCurrentTeam = () => {
         return this.props.teams.find(t => t.id === this.state.selectedTeam) || { id: AllTeam, name: AllTeam };
     }
 
-    getOpenKeys = () => {
+    private getOpenKeys = () => {
         const openKeys = this.state.openKeys;
         if (this.state.selectedTeam === AllTeam) {
             return openKeys;
@@ -168,7 +167,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         return _.filter(openKeys, k => this.props.collections[k] && this.props.collections[k].teamId === this.state.selectedTeam);
     }
 
-    getDisplayCollections = () => {
+    private getDisplayCollections = () => {
         const collections = _.chain(this.props.collections).values<DtoCollection>().sortBy('name').value();
         if (this.state.selectedTeam === AllTeam) {
             return collections;
@@ -176,11 +175,11 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         return _.filter(collections, c => c.teamId === this.state.selectedTeam);
     }
 
-    addCollection = () => {
+    private addCollection = () => {
         this.setState({ ...this.state, isAddCollectionDlgOpen: true }, () => this.newCollectionNameRef && this.newCollectionNameRef.focus());
     }
 
-    onCreateCollection = () => {
+    private onCreateCollection = () => {
         if (!this.state.selectedNewCollectionTeam) {
             return;
         }
@@ -195,7 +194,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         this.setState({ ...this.state, isAddCollectionDlgOpen: false, newCollectionName: NewCollectionName, selectedNewCollectionTeam: undefined });
     }
 
-    loopRecords = (data: DtoRecord[], cid: string, inFolder: boolean = false) => {
+    private loopRecords = (data: DtoRecord[], cid: string, inFolder: boolean = false) => {
         return data.map(r => {
             const recordStyle = { height: '30px', lineHeight: '30px' };
             const { records } = this.props;
@@ -268,17 +267,21 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                                 displayCollections.map(c => {
                                     const recordCount = _.values(records[c.id]).filter(r => r.category === RecordCategory.record).length;
                                     let sortRecords = _.chain(records[c.id]).values<DtoRecord>().sortBy(['category', 'name']).value();
+
                                     return (
-                                        <SubMenu className={`${c.id !== displayCollections[0].id ? 'collection-separator-line' : ''} collection-item`} key={c.id} title={(
-                                            <CollectionItem
-                                                collection={{ ...c }}
-                                                recordCount={recordCount}
-                                                onNameChanged={(name) => this.changeCollectionName(c, name)}
-                                                deleteCollection={() => this.props.deleteCollection(c.id)}
-                                                moveToCollection={this.moveToCollection}
-                                                createFolder={this.createFolder}
-                                            />
-                                        )}>
+                                        <SubMenu
+                                            className={`${c.id !== displayCollections[0].id ? 'collection-separator-line' : ''} collection-item`}
+                                            key={c.id}
+                                            title={(
+                                                <CollectionItem
+                                                    collection={{ ...c }}
+                                                    recordCount={recordCount}
+                                                    onNameChanged={(name) => this.changeCollectionName(c, name)}
+                                                    deleteCollection={() => this.props.deleteCollection(c.id)}
+                                                    moveToCollection={this.moveToCollection}
+                                                    createFolder={this.createFolder}
+                                                />
+                                            )}>
                                             {
                                                 sortRecords.length === 0 ?
                                                     <div style={{ height: 20 }} /> :

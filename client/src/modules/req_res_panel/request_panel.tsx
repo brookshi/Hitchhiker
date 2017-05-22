@@ -23,33 +23,50 @@ const TabPane = Tabs.TabPane;
 type validateType = 'success' | 'warning' | 'error' | 'validating';
 
 interface RequestPanelStateProps {
+
     isRequesting: boolean;
+
     activeRecord: DtoRecord;
+
     style?: any;
+
     collectionTreeData?: TreeData[];
-    sendRequest: (record: DtoRecord) => void;
-    onChanged: (record: DtoRecord) => void;
-    onResize: (height: number) => void;
-    save: (record: DtoRecord) => void;
-    saveAs: (record: DtoRecord) => void;
-    updateTabRecordId: (oldId: string, newId: string) => void;
+
+    sendRequest(record: DtoRecord);
+
+    onChanged(record: DtoRecord);
+
+    onResize(height: number);
+
+    save(record: DtoRecord);
+
+    saveAs(record: DtoRecord);
+
+    updateTabRecordId(oldId: string, newId: string);
 }
 
 interface RequestPanelState {
+
     nameValidateStatus?: validateType;
+
     urlValidateStatus?: validateType;
+
     headersEditMode?: 'Key Value Edit' | 'Bulk Edit';
+
     isSaveDlgOpen: boolean;
+
     isSaveAsDlgOpen: boolean;
+
     selectedFolderId?: string;
+
     activeTabKey: string;
 }
 
+const defaultBodyType = 'application/json';
+
 class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelState> {
 
-    reqPanel: any;
-
-    defaultBodyType = 'application/json';
+    private reqPanel: any;
 
     constructor(props: RequestPanelStateProps) {
         super(props);
@@ -79,14 +96,14 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         this.onResize();
     }
 
-    onResize() {
+    private onResize() {
         if (!this.reqPanel || !this.reqPanel.clientHeight) {
             return;
         }
         this.props.onResize(this.reqPanel.clientHeight);
     }
 
-    getMethods = (defaultValue?: string) => {
+    private getMethods = (defaultValue?: string) => {
         const value = (defaultValue || HttpMethod.GET).toUpperCase();
         return (
             <Select defaultValue={value} onChange={this.onMethodChanged} style={{ width: 100 }}>
@@ -98,31 +115,33 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         );
     }
 
-    currentBodyType = () => this.props.activeRecord.bodyType || this.defaultBodyType;
+    private currentBodyType = () => this.props.activeRecord.bodyType || defaultBodyType;
 
-    getTabExtraFunc = () => {
+    private getTabExtraFunc = () => {
         const { activeTabKey } = this.state;
         return (
             activeTabKey === 'headers' ? (
                 <Button className="tab-extra-button" onClick={this.onHeaderModeChanged}>
                     {this.isBulkEditMode() ? 'Key Value Edit' : 'Bulk Edit'}
-                </Button>) : (activeTabKey === 'body' ? (
-                    <Dropdown overlay={this.getBodyTypeMenu()} trigger={['click']} style={{ width: 200 }}>
-                        <a className="ant-dropdown-link" href="#">
-                            {this.currentBodyType()} <Icon type="down" />
-                        </a>
-                    </Dropdown>
-                ) : (
-                        <Dropdown overlay={this.snippetsMenu} trigger={['click']}>
+                </Button>
+            ) : (
+                    activeTabKey === 'body' ? (
+                        <Dropdown overlay={this.getBodyTypeMenu()} trigger={['click']} style={{ width: 200 }}>
                             <a className="ant-dropdown-link" href="#">
-                                Snippets <Icon type="down" />
+                                {this.currentBodyType()} <Icon type="down" />
                             </a>
                         </Dropdown>
-                    ))
+                    ) : (
+                            <Dropdown overlay={this.snippetsMenu} trigger={['click']}>
+                                <a className="ant-dropdown-link" href="#">
+                                    Snippets <Icon type="down" />
+                                </a>
+                            </Dropdown>
+                        ))
         );
     }
 
-    getHeadersCtrl = () => {
+    private getHeadersCtrl = () => {
         const headers = this.props.activeRecord.headers as KeyValuePair[];
         return this.state.headersEditMode === 'Bulk Edit' ?
             (
@@ -141,20 +160,20 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
             );
     }
 
-    onSelectSnippet = (e) => {
+    private onSelectSnippet = (e) => {
         const snippet = testSnippets[e.key];
         const { activeRecord } = this.props;
         const testValue = activeRecord.test && activeRecord.test.length > 0 ? (`${activeRecord.test}\n\n${snippet}`) : snippet;
         this.onRecordChanged({ ...activeRecord, test: testValue });
     }
 
-    snippetsMenu = (
+    private snippetsMenu = (
         <Menu onClick={this.onSelectSnippet}>
             {Object.keys(testSnippets).map(s => <Menu.Item key={s}>{s}</Menu.Item>)}
         </Menu>
     );
 
-    onBodyTypeChanged = (e) => {
+    private onBodyTypeChanged = (e) => {
         const { headers } = this.props.activeRecord;
         if (!headers) {
             return;
@@ -172,7 +191,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         this.onRecordChanged(record);
     }
 
-    getBodyTypeMenu = () => {
+    private getBodyTypeMenu = () => {
         return (
             <Menu onClick={this.onBodyTypeChanged} selectedKeys={[this.currentBodyType()]}>
                 {Object.keys(bodyTypes).map(type => <Menu.Item key={type}>{type}</Menu.Item>)}
@@ -180,13 +199,13 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         );
     }
 
-    isBulkEditMode = () => this.state.headersEditMode === 'Bulk Edit';
+    private isBulkEditMode = () => this.state.headersEditMode === 'Bulk Edit';
 
-    onHeaderModeChanged = () => {
+    private onHeaderModeChanged = () => {
         this.setState({ ...this.state, headersEditMode: this.state.headersEditMode === 'Bulk Edit' ? 'Key Value Edit' : 'Bulk Edit' });
     }
 
-    onHeadersChanged = (data: SyntheticEvent<any> | DtoHeader[]) => {
+    private onHeadersChanged = (data: SyntheticEvent<any> | DtoHeader[]) => {
         let rst = data as DtoHeader[];
         if (!(data instanceof Array)) {
             rst = StringUtil.stringToKeyValues(data.currentTarget.value) as DtoHeader[];
@@ -195,11 +214,11 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         this.onRecordChanged({ ...this.props.activeRecord, headers: rst });
     }
 
-    onMethodChanged = (selectedValue: SelectValue) => {
+    private onMethodChanged = (selectedValue: SelectValue) => {
         this.onRecordChanged({ ...this.props.activeRecord, method: selectedValue.toString() });
     }
 
-    onInputChanged = (value: string, type: string) => {
+    private onInputChanged = (value: string, type: string) => {
         let record = this.props.activeRecord;
         record[type] = value;
 
@@ -214,11 +233,11 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         this.onRecordChanged({ ...record });
     }
 
-    onRecordChanged = (record: DtoRecord) => {
+    private onRecordChanged = (record: DtoRecord) => {
         this.props.onChanged(record);
     }
 
-    canSave = () => {
+    private canSave = () => {
         if (this.props.activeRecord.name.trim() !== '') {
             return true;
         }
@@ -226,13 +245,13 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         return false;
     }
 
-    onSaveAs = (e) => {
+    private onSaveAs = (e) => {
         if (this.canSave()) {
             this.setState({ ...this.state, isSaveAsDlgOpen: true });
         }
     }
 
-    onSave = (e) => {
+    private onSave = (e) => {
         if (this.canSave()) {
             const { activeRecord } = this.props;
             if (activeRecord.id.startsWith('@new')) {
@@ -243,7 +262,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         }
     }
 
-    onSaveNew = (e) => {
+    private onSaveNew = (e) => {
         if (!this.state.selectedFolderId) {
             return;
         }
@@ -265,15 +284,15 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         }
     }
 
-    onTabChanged = (e) => {
+    private onTabChanged = (e) => {
         this.setState({ ...this.state, activeTabKey: e });
     }
 
-    sendRequest = () => {
+    private sendRequest = () => {
         this.props.sendRequest(this.props.activeRecord);
     }
 
-    setReqPanel = (ele: any) => {
+    private setReqPanel = (ele: any) => {
         this.reqPanel = ele;
     }
 
@@ -334,10 +353,24 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                             <TabPane tab={nameWithTag('Headers', activeRecord.headers ? (Math.max(0, activeRecord.headers.length)).toString() : '')} key="headers">
                                 {this.getHeadersCtrl()}
                             </TabPane>
-                            <TabPane tab={<Badge style={normalBadgeStyle} dot={!!activeRecord.body && activeRecord.body.length > 0} count="">Body</Badge>} key="body">
+                            <TabPane tab={
+                                <Badge
+                                    style={normalBadgeStyle}
+                                    dot={!!activeRecord.body && activeRecord.body.length > 0}
+                                    count=""
+                                > Body
+                                </Badge>
+                            } key="body">
                                 <Editor type={bodyTypes[this.currentBodyType()]} fixHeight={true} height={300} value={activeRecord.body} onChange={v => this.onInputChanged(v, 'body')} />
                             </TabPane>
-                            <TabPane tab={<Badge style={normalBadgeStyle} dot={!!activeRecord.test && activeRecord.test.length > 0} count="">Test</Badge>} key="test">
+                            <TabPane tab={
+                                <Badge
+                                    style={normalBadgeStyle}
+                                    dot={!!activeRecord.test && activeRecord.test.length > 0}
+                                    count="">
+                                    Test
+                                </Badge>
+                            } key="test">
                                 <Editor type="javascript" height={300} fixHeight={true} value={activeRecord.test} onChange={v => this.onInputChanged(v, 'test')} />
                             </TabPane>
                         </Tabs>

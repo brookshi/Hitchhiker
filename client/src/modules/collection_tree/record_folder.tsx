@@ -6,6 +6,7 @@ import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { deleteDlg } from '../../components/confirm_dialog/index';
 
 interface RecordFolderProps {
+
     folder: DtoRecord;
 
     isOpen: boolean;
@@ -20,19 +21,20 @@ interface RecordFolderProps {
 }
 
 interface RecordFolderState {
+
     isDragOver?: boolean;
 }
 
 class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState> {
+
+    private itemWithMenu: ItemWithMenu;
 
     constructor(props: RecordFolderProps) {
         super(props);
         this.state = { isDragOver: false };
     }
 
-    itemWithMenu: ItemWithMenu;
-
-    getMenu = () => {
+    private getMenu = () => {
         return (
             <Menu className="item_menu" onClick={this.onClickMenu}>
                 <Menu.Item key="edit">
@@ -45,7 +47,7 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
         );
     }
 
-    onClickMenu = (e) => {
+    private onClickMenu = (e) => {
         this[e.key]();
     }
 
@@ -57,26 +59,26 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
         }
     }
 
-    checkTransferFlag = (e, flag) => {
+    private checkTransferFlag = (e, flag) => {
         return e.dataTransfer.types.indexOf(flag) > -1;
     }
 
-    dragStart = (e) => {
+    private dragStart = (e) => {
         e.dataTransfer.setData('folder', JSON.stringify(this.props.folder));
     }
 
-    dragOver = (e) => {
+    private dragOver = (e) => {
         e.preventDefault();
         if (this.checkTransferFlag(e, 'record')) {
             this.setState({ ...this.state, isDragOver: true });
         }
     }
 
-    dragLeave = (e) => {
+    private dragLeave = (e) => {
         this.setState({ ...this.state, isDragOver: false });
     }
 
-    drop = (e) => {
+    private drop = (e) => {
         if (this.checkTransferFlag(e, 'record')) {
             const record = JSON.parse(e.dataTransfer.getData('record'));
             this.props.moveRecordToFolder(record, this.props.folder.collectionId, this.props.folder.id);
@@ -102,7 +104,12 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
                 <ItemWithMenu
                     ref={ele => this.itemWithMenu = ele}
                     onNameChanged={this.props.onNameChanged}
-                    icon={<Icon className="c-icon" type={this.props.isOpen ? 'folder-open' : 'folder'} />}
+                    icon={
+                        <Icon
+                            className="c-icon"
+                            type={this.props.isOpen ? 'folder-open' : 'folder'}
+                        />
+                    }
                     name={this.props.folder.name}
                     menu={this.getMenu()}
                 />

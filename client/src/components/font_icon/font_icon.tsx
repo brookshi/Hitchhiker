@@ -11,7 +11,11 @@ interface FontIconState { }
 class FontIcon extends React.Component<FontIconProps, FontIconState> {
     public render() {
         return (
-            <span className="font-icon" style={{ color: this.props.color }}>{this.props.text}</span>
+            <span
+                className="font-icon"
+                style={{
+                    color: this.props.color
+                }}>{this.props.text}</span>
         );
     }
 }

@@ -3,7 +3,9 @@ import { Spin, Button } from 'antd';
 import RequestManager from '../../utils/request_manager';
 
 interface ResponseLoadingPanelProps {
+
     activeKey: string;
+
     cancelRequest: (id: string) => void;
 }
 
@@ -11,7 +13,7 @@ interface ResponseLoadingPanelState { }
 
 class ResponseLoadingPanel extends React.Component<ResponseLoadingPanelProps, ResponseLoadingPanelState> {
 
-    cancelRequest = () => {
+    private cancelRequest = () => {
         const { activeKey } = this.props;
         RequestManager.cancelRequest(activeKey);
         this.props.cancelRequest(activeKey);

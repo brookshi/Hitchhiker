@@ -17,6 +17,7 @@ import * as _ from 'lodash';
 import { actionCreator } from '../../action';
 
 interface ReqResPanelStateProps {
+
     activeKey: string;
 
     recordState: RecordState[];
@@ -27,6 +28,7 @@ interface ReqResPanelStateProps {
 }
 
 interface ReqResPanelDispatchProps {
+
     addTab();
 
     removeTab(key: string);
@@ -49,6 +51,7 @@ interface ReqResPanelDispatchProps {
 type ReqResPanelProps = ReqResPanelStateProps & ReqResPanelDispatchProps;
 
 interface ReqResPanelState {
+
     reqPanelVisible: { [id: string]: boolean };
 
     resHeights: { [id: string]: number };
@@ -62,11 +65,15 @@ interface ReqResPanelState {
 
 class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
-    reqResPanel: any;
+    private reqResPanel: any;
 
-    get responsePanel() {
-        return this.activeRecordState && this.activeRecordState.isRequesting ?
-            <ResponseLoadingPanel activeKey={this.props.activeKey} cancelRequest={this.props.cancelRequest} /> : (
+    private get responsePanel() {
+        return this.activeRecordState && this.activeRecordState.isRequesting ? (
+            <ResponseLoadingPanel
+                activeKey={this.props.activeKey}
+                cancelRequest={this.props.cancelRequest}
+            />
+        ) : (
                 this.activeResponse ? (
                     this.activeResponse.error ?
                         <ResErrorPanel url={this.activeRecord.url} error={this.activeResponse.error} /> :
@@ -83,7 +90,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
             );
     }
 
-    get activeRecordState(): RecordState {
+    private get activeRecordState(): RecordState {
         const recordState = this.props.recordState.find(r => r.record.id === this.props.activeKey);
         if (recordState) {
             return recordState;
@@ -91,11 +98,11 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         throw new Error('miss active record state');
     }
 
-    get activeRecord(): DtoRecord {
+    private get activeRecord(): DtoRecord {
         return this.activeRecordState.record;
     }
 
-    get activeResponse(): RunResult | undefined {
+    private get activeResponse(): RunResult | undefined {
         return this.props.responseState[this.props.activeKey];
     }
 
@@ -110,25 +117,28 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         };
     }
 
-    onResTabChanged = (key: string) => {
+    private onResTabChanged = (key: string) => {
         this.setState({ ...this.state, activeResTab: key });
     }
 
-    updateReqPanelHeight = (reqHeight: number) => {
+    private updateReqPanelHeight = (reqHeight: number) => {
         this.adjustResPanelHeight(reqHeight);
     }
 
-    adjustResPanelHeight = (reqHeight: number) => {
+    private adjustResPanelHeight = (reqHeight: number) => {
         if (!this.reqResPanel || !reqHeight) {
             return;
         }
         const resHeight = this.reqResPanel.clientHeight - reqHeight - 88;
         if (resHeight !== this.state.resHeights[this.props.activeKey]) {
-            this.setState({ ...this.state, resHeights: { ...this.state.resHeights, [this.props.activeKey]: resHeight } });
+            this.setState({
+                ...this.state,
+                resHeights: { ...this.state.resHeights, [this.props.activeKey]: resHeight }
+            });
         }
     }
 
-    toggleReqPanelVisible = (resPanelStatus: 'up' | 'down') => {
+    private toggleReqPanelVisible = (resPanelStatus: 'up' | 'down') => {
         const status = resPanelStatus === 'up' ? true : false;
         this.setState({
             ...this.state,
@@ -139,14 +149,14 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         }, () => this.adjustResPanelHeight(0.1));
     }
 
-    onTabChanged = (key) => {
+    private onTabChanged = (key) => {
         const recordState = this.props.recordState.find(r => r.record.id === key);
         if (recordState) {
             this.props.activeTab(recordState.record.id);
         }
     }
 
-    onEdit = (key, action) => {
+    private onEdit = (key, action) => {
         this[action](key);
     }
 
@@ -163,19 +173,19 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         this.setState({ ...this.state, currentEditKey: key, isConfirmCloseDlgOpen: true });
     }
 
-    closeTabWithoutSave = () => {
+    private closeTabWithoutSave = () => {
         this.props.removeTab(this.state.currentEditKey);
         this.setState({ ...this.state, currentEditKey: '', isConfirmCloseDlgOpen: false });
     }
 
-    closeTabWithSave = () => {
+    private closeTabWithSave = () => {
         const index = this.props.recordState.findIndex(r => r.record.id === this.state.currentEditKey);
         this.props.save(this.props.recordState[index].record);
         this.props.removeTab(this.state.currentEditKey);
         this.setState({ ...this.state, currentEditKey: '', isConfirmCloseDlgOpen: false });
     }
 
-    setReqResPanel = (ele: any) => {
+    private setReqResPanel = (ele: any) => {
         this.reqResPanel = ele;
     }
 
@@ -230,9 +240,25 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                     visible={this.state.isConfirmCloseDlgOpen}
                     onCancel={() => this.setState({ ...this.state, isConfirmCloseDlgOpen: false })}
                     footer={[
-                        <Button key="dont_save" onClick={this.closeTabWithoutSave}>Don't Save</Button>,
-                        <Button key="cancel_save" onClick={() => this.setState({ ...this.state, isConfirmCloseDlgOpen: false })}>Cancel</Button>,
-                        <Button key="save" type="primary" onClick={this.closeTabWithSave}>Save</Button>
+                        <Button
+                            key="dont_save"
+                            onClick={this.closeTabWithoutSave}
+                        >
+                            Don't Save
+                        </Button>,
+                        <Button
+                            key="cancel_save"
+                            onClick={() => this.setState({ ...this.state, isConfirmCloseDlgOpen: false })}
+                        >
+                            Cancel
+                        </Button>,
+                        <Button
+                            key="save"
+                            type="primary"
+                            onClick={this.closeTabWithSave}
+                        >
+                            Save
+                        </Button>
                     ]}
                 >
                     Your changed will be lost if you close this tab without saving.

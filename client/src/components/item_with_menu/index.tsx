@@ -3,22 +3,30 @@ import { Icon, Dropdown, Input } from 'antd';
 import './style/index.less';
 
 interface ItemWithMenuProps {
+
     name: string;
+
     subName?: React.ReactNode | string;
+
     icon: any;
+
     menu: any;
+
     className?: string;
+
     onNameChanged?(name: string);
 }
 
 interface ItemWithMenuState {
+
     isVisible: boolean;
+
     isEdit: boolean;
+
     name: string;
 }
 
 class ItemWithMenu extends React.Component<ItemWithMenuProps, ItemWithMenuState> {
-
     nameInput: Input;
     needFocus: boolean;
 
@@ -38,26 +46,26 @@ class ItemWithMenu extends React.Component<ItemWithMenuProps, ItemWithMenuState>
         }
     }
 
-    onMenuVisibleChanged = (visible: boolean) => {
-        this.setState({ isVisible: visible });
-    }
-
     edit = () => {
         this.needFocus = true;
         this.setState({ ...this.state, isEdit: true });
     }
 
-    onNameChanged = (e) => {
+    private onMenuVisibleChanged = (visible: boolean) => {
+        this.setState({ isVisible: visible });
+    }
+
+    private onNameChanged = (e) => {
         this.setState({ ...this.state, name: e.currentTarget.value });
     }
 
-    onKeyDown = (e) => {
+    private onKeyDown = (e) => {
         if (e.key === 'Enter' || e.keyCode === 13) {
             this.completeEdit(e);
         }
     }
 
-    completeEdit = (e) => {
+    private completeEdit = (e) => {
         e.stopPropagation();
         if (this.props.onNameChanged) {
             this.setState({ ...this.state, isEdit: false });
@@ -65,7 +73,7 @@ class ItemWithMenu extends React.Component<ItemWithMenuProps, ItemWithMenuState>
         }
     }
 
-    stopPropagation = (e) => {
+    private stopPropagation = (e) => {
         e.stopPropagation();
     }
 
@@ -81,7 +89,18 @@ class ItemWithMenu extends React.Component<ItemWithMenuProps, ItemWithMenuState>
                 {icon}
                 <span className="item-with-menu-name">
                     <div style={{ lineHeight }}>
-                        <Input className="item-with-menu-input" spellCheck={false} onBlur={this.completeEdit} onKeyDown={this.onKeyDown} onClick={this.stopPropagation} onChange={this.onNameChanged} style={nameStyle} ref={ele => this.nameInput = ele} value={name} />  {(isEdit ? '' : this.props.name)}
+                        <Input
+                            className="item-with-menu-input"
+                            spellCheck={false}
+                            onBlur={this.completeEdit}
+                            onKeyDown={this.onKeyDown}
+                            onClick={this.stopPropagation}
+                            onChange={this.onNameChanged}
+                            style={nameStyle}
+                            ref={ele => this.nameInput = ele}
+                            value={name}
+                        />
+                        {isEdit ? '' : this.props.name}
                     </div>
                     {
                         subName ? (

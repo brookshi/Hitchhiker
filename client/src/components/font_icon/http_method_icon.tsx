@@ -3,6 +3,7 @@ import FontIcon from './font_icon';
 import { HttpMethodType } from '../../common/http_method';
 
 interface HttpMethodIconProps {
+
     httpMethod: HttpMethodType;
 }
 

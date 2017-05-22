@@ -1,13 +1,11 @@
 @import '../../../style/colors.less';
-
 @button-width: 88px;
 @url-height: 36px;
-
-.ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab{
+.ant-tabs.ant-tabs-card>.ant-tabs-bar .ant-tabs-tab {
     background: white;
 }
 
-.ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active{
+.ant-tabs.ant-tabs-card>.ant-tabs-bar .ant-tabs-tab-active {
     background: @panel-background;
     padding-bottom: 6px;
 }
@@ -29,77 +27,74 @@
 //         color: @primary-color-dark;
 //     }
 // }
-
-.record-add-btn{
+.record-add-btn {
     border: 0px;
     border-left: 1px solid @border-color;
     border-radius: 0px;
     font-size: 18px;
     background: @panel-background;
     color: @primary-color;
-
-    &:hover{
+    &:hover {
         color: @primary-color-light;
         background: @panel-background;
     }
-
-    &:focus{
+    &:focus {
         color: @primary-color;
         background: @panel-background;
     }
 }
 
-.ant-tabs-nav{
+.ant-tabs-nav {
     padding-left: 8px;
 }
 
-.request-tab{
+.request-tab {
     height: 100%;
-    .ant-tabs-bar{
+    .ant-tabs-bar {
         margin-bottom: 8px;
     }
 }
 
-.req-res-panel{
+.req-res-panel {
     padding: 0px 10px;
     margin-top: -8px;
     padding-top: 8px;
     background: @panel-background;
 }
 
-.req-panel{
+.req-panel {
     padding-bottom: 8px;
 }
 
-.url-panel{
+.url-panel {
     padding: 4px 0px;
 }
 
-.req-url{
+.req-url {
     width: calc(100% - (@button-width * 2 + 28px));
-    .ant-select-selection__rendered{
+    .ant-select-selection__rendered {
         line-height: @url-height;
     }
-    .ant-form-item-control-wrapper{
+    .ant-form-item-control-wrapper {
         width: 100%;
     }
-    .ant-select-arrow{
-        margin-top:0px;
+    .ant-select-arrow {
+        margin-top: 0px;
     }
-    .ant-select-selection-selected-value{
+    .ant-select-selection-selected-value {
         font-weight: 500;
-        font-size:15px;
+        font-size: 15px;
         width: 100%;
         color: #888888;
     }
-    input{
-        font-size:14px;
+    input {
+        font-size: 14px;
         height: @url-height;
     }
 }
 
-.req-name{
-    input{
+.req-name {
+    input {
         background: @panel-background;
         border-width: 0px 0px 1px 0px;
         font-weight: 600;
@@ -108,74 +103,72 @@
     }
 }
 
-.req-send{
-    button{
+.req-send {
+    button {
         width: @button-width;
         height: @url-height;
-        i{
+        i {
             margin-left: -8px;
         }
     }
 }
 
-.req-save{
-    .ant-btn{
+.req-save {
+    .ant-btn {
         height: @url-height;
         background: #eee;
     }
-    button:first-child{
+    button:first-child {
         width: 66px;
     }
 }
 
 .req-res-tabs {
-    div[role="tablist"]{
+    div[role="tablist"] {
         margin-bottom: 8px;
     }
-    div[role="tab"]{
-        font-size:12px;
+    div[role="tab"] {
+        font-size: 12px;
     }
 }
 
-.ant-select-tree-node-content-wrapper{
+.ant-select-tree-node-content-wrapper {
     display: inline-block;
     width: calc(100% - 30px);
     cursor: pointer;
-    &:hover{
+    &:hover {
         background: @primary-color-lighter;
     }
 }
 
-.normal-badge{
+.normal-badge {
     background: @primary-color;
 }
 
-textarea.req-header[type="textarea"]{
+textarea.req-header[type="textarea"] {
     height: 300px;
     border-radius: 0px;
     font-size: 13px;
 }
 
-.tab-extra-button{
+.tab-extra-button {
     background: @panel-background;
     border: 0px;
     color: @primary-color;
-
-    &:hover{
+    &:hover {
         color: @primary-color-light;
         background: @panel-background;
     }
-
-    &:focus{
+    &:focus {
         background: @panel-background;
     }
 }
 
-.res-tab{
+.res-tab {
     height: 100%;
 }
 
-.res-non-header{
+.res-non-header {
     margin-left: -10px;
     padding-left: 14px;
     line-height: 36px;
@@ -185,15 +178,14 @@ textarea.req-header[type="textarea"]{
     border-bottom: 1px solid @border-color;
 }
 
-.res-non-content{
-    height: calc(100% - 350px); 
+.res-non-content {
+    height: calc(100% - 350px);
     min-height: 300px;
     margin-top: 100px;
     text-align: center;
     font-size: 18px;
     color: @place-holder-color;
-
-    span{
+    span {
         margin: 0px 8px;
         padding: 8px 12px;
         color: white;
@@ -201,31 +193,31 @@ textarea.req-header[type="textarea"]{
         font-size: 14px;
         border-radius: 4px;
         margin-right: 4px;
-        i{
-            margin-right:4px;
+        i {
+            margin-right: 4px;
         }
     }
 }
 
-.res-loading-content{
+.res-loading-content {
     border-top: 1px solid @border-color;
-    height: calc(100% - 350px); 
+    height: calc(100% - 350px);
     min-height: 300px;
     padding-top: 100px;
     text-align: center;
-    >div{
+    >div {
         margin-bottom: 12px;
     }
-    span.ant-spin-dot{
+    span.ant-spin-dot {
         display: inline-block;
     }
 }
 
-.res-status{
+.res-status {
     color: @primary-color;
 }
 
-.res-toggle-size-btn{
+.res-toggle-size-btn {
     margin-left: 16px;
     margin-right: 2px;
     height: 20px;
@@ -234,16 +226,16 @@ textarea.req-header[type="textarea"]{
     font-weight: bold;
 }
 
-.display-tab-panel{
+.display-tab-panel {
     padding: 8px 0px 0px 8px;
 }
 
-.tabpanel-headers-key{
+.tabpanel-headers-key {
     font-weight: bold;
 }
 
-.res-tabpanel-list{
-    li{
+.res-tabpanel-list {
+    li {
         margin: 0px 0px 16px 0px;
     }
 }

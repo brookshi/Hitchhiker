@@ -7,6 +7,7 @@ import { deleteDlg } from '../../components/confirm_dialog/index';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 
 interface RecordItemProps {
+
     record: DtoRecord;
 
     inFolder: boolean;
@@ -20,18 +21,17 @@ interface RecordItemProps {
     moveToCollection(record: DtoRecord, collection?: string);
 }
 
-interface RecordItemState {
-}
+interface RecordItemState { }
 
 class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
 
-    itemWithMenu: ItemWithMenu;
+    private itemWithMenu: ItemWithMenu;
 
     constructor(props: RecordItemProps) {
         super(props);
     }
 
-    getMenu = () => {
+    private getMenu = () => {
         return (
             <Menu className="item_menu" onClick={this.onClickMenu}>
                 <Menu.Item key="duplicate">
@@ -44,7 +44,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
         );
     }
 
-    onClickMenu = (e) => {
+    private onClickMenu = (e) => {
         this[e.key]();
     }
 
@@ -52,19 +52,19 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
 
     duplicate = () => this.props.duplicateRecord();
 
-    checkTransferFlag = (e, flag) => {
+    private checkTransferFlag = (e, flag) => {
         return e.dataTransfer.types.indexOf(flag) > -1;
     }
 
-    dragStart = (e) => {
+    private dragStart = (e) => {
         e.dataTransfer.setData('record', JSON.stringify(this.props.record));
     }
 
-    dragOver = (e) => {
+    private dragOver = (e) => {
         e.preventDefault();
     }
 
-    drop = (e) => {
+    private drop = (e) => {
         const currentRecord = this.props.record;
         if (this.checkTransferFlag(e, 'record')) {
             const transferRecord = JSON.parse(e.dataTransfer.getData('record')) as DtoRecord;
@@ -85,7 +85,12 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
         method = method || 'GET';
 
         return (
-            <div draggable={true} onDragStart={this.dragStart} onDragOver={this.dragOver} onDrop={this.drop}>
+            <div
+                draggable={true}
+                onDragStart={this.dragStart}
+                onDragOver={this.dragOver}
+                onDrop={this.drop}
+            >
                 <ItemWithMenu
                     ref={ele => this.itemWithMenu = ele}
                     className={`record ${inFolder ? 'record-in-folder' : ''}`}

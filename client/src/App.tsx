@@ -15,6 +15,7 @@ import { LoginType } from './modules/login/action';
 const { Header, Content, Sider } = Layout;
 
 interface AppStateProps {
+
   isLogin: boolean;
 
   isFetchCollection: boolean;
@@ -23,6 +24,7 @@ interface AppStateProps {
 }
 
 interface AppDispatchProps {
+
   getCollection();
 
   login();
@@ -33,6 +35,7 @@ interface AppDispatchProps {
 type AppProps = AppStateProps & AppDispatchProps;
 
 interface AppState {
+
   collapsed: boolean;
 
   mode: 'inline' | 'vertical';
@@ -69,7 +72,7 @@ class App extends React.Component<AppProps, AppState> {
     }
   }
 
-  onCollapse = (collapsed) => {
+  private onCollapse = (collapsed) => {
     this.setState({
       collapsed,
       mode: collapsed ? 'vertical' : 'inline',
@@ -77,7 +80,7 @@ class App extends React.Component<AppProps, AppState> {
     });
   }
 
-  onClick = (param: ClickParam) => {
+  private onClick = (param: ClickParam) => {
     const { collapsed, selectedKeys } = this.state;
     if (this.state.selectedKeys.findIndex(o => o === param.key) > -1) {
       this.setState({ ...this.state, collapsed: !collapsed, selectedKeys: collapsed ? selectedKeys : [] });
@@ -86,13 +89,13 @@ class App extends React.Component<AppProps, AppState> {
     }
   }
 
-  onSplitterMove = (e) => {
+  private onSplitterMove = (e) => {
     e.preventDefault();
     const width = Math.min(Math.max(e.clientX - this.toolBarWidth, this.minCollectionWidth), this.maxCollectionWidth);
     this.props.resizeCollectionPanel(width);
   }
 
-  onSplitterMouseDown = (e) => {
+  private onSplitterMouseDown = (e) => {
     if (e.button !== 0) {
       return;
     }
@@ -101,7 +104,7 @@ class App extends React.Component<AppProps, AppState> {
     e.preventDefault();
   }
 
-  onSplitterMouseUp = (e) => {
+  private onSplitterMouseUp = (e) => {
     document.removeEventListener('mousemove', this.onSplitterMove);
     document.removeEventListener('mouseup', this.onSplitterMouseUp);
     e.preventDefault();

@@ -9,6 +9,7 @@ import { nameWithTag } from '../../components/name_with_tag';
 const TabPane = Tabs.TabPane;
 
 interface ResPanelProps {
+
     height?: number;
 
     res: RunResult;
@@ -21,6 +22,7 @@ interface ResPanelProps {
 }
 
 interface ResPanelState {
+
     panelStatus: 'up' | 'down';
 }
 
@@ -70,7 +72,7 @@ class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
         };
     }
 
-    toggleMaximize = () => {
+    private toggleMaximize = () => {
         const status = this.state.panelStatus === 'up' ? 'down' : 'up';
         this.setState({ ...this.state, panelStatus: status });
         this.props.toggleResPanelMaximize(status);

@@ -9,6 +9,7 @@ import { RecordCategory } from '../../common/record_category';
 import { DtoCollection } from '../../../../api/interfaces/dto_collection';
 
 interface CollectionItemProps {
+
     collection: DtoCollection;
 
     recordCount: number;
@@ -23,6 +24,7 @@ interface CollectionItemProps {
 }
 
 interface CollectionItemState {
+
     isDragOver?: boolean;
 }
 
@@ -37,6 +39,8 @@ const createDefaultFolder: (collectionId: string) => DtoRecord = (cid) => {
 
 class CollectionItem extends React.Component<CollectionItemProps, CollectionItemState> {
 
+    private itemWithMenu: ItemWithMenu;
+
     constructor(props: CollectionItemProps) {
         super(props);
         this.state = {
@@ -44,9 +48,7 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
         };
     }
 
-    itemWithMenu: ItemWithMenu;
-
-    getMenu = () => {
+    private getMenu = () => {
         return (
             <Menu className="item_menu" onClick={this.onClickMenu}>
                 <Menu.Item key="edit">
@@ -62,7 +64,7 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
         );
     }
 
-    onClickMenu = (e) => {
+    private onClickMenu = (e) => {
         this[e.key]();
     }
 
@@ -76,22 +78,22 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
 
     createFolder = () => this.props.createFolder(createDefaultFolder(this.props.collection.id));
 
-    checkTransferFlag = (e, flag) => {
+    private checkTransferFlag = (e, flag) => {
         return e.dataTransfer.types.indexOf(flag) > -1;
     }
 
-    dragOver = (e) => {
+    private dragOver = (e) => {
         e.preventDefault();
         if (this.checkTransferFlag(e, 'record') || this.checkTransferFlag(e, 'folder')) {
             this.setState({ ...this.state, isDragOver: true });
         }
     }
 
-    dragLeave = (e) => {
+    private dragLeave = (e) => {
         this.setState({ ...this.state, isDragOver: false });
     }
 
-    drop = (e) => {
+    private drop = (e) => {
         if (this.checkTransferFlag(e, 'record') || this.checkTransferFlag(e, 'folder')) {
             const data = e.dataTransfer.getData('folder') || e.dataTransfer.getData('record');
             const record = JSON.parse(data) as DtoRecord;

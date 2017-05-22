@@ -1,5 +1,4 @@
 @import '../../../style/colors.less';
-
 .item-with-menu {
     width: 100%;
     display: inline-block;
@@ -18,12 +17,11 @@
     }
 }
 
-.collection-item .ant-menu-submenu-title{
-    &::after{
+.collection-item .ant-menu-submenu-title {
+    &::after {
         display: none;
     }
-    
-    &::before{
+    &::before {
         display: none;
     }
 }
@@ -36,24 +34,17 @@
     }
 }
 
-.item-with-menu-name{
+.item-with-menu-name {
     vertical-align: bottom;
-   // padding-bottom: 1px;
-   // margin-left: -8px;
-    //width: calc(100% - 48px);
-
- display: inline-block;
+    display: inline-block;
     width: calc(100% - 48px);
     overflow: hidden;
     text-overflow: ellipsis;
-
-    >div{
-       // display: inline;
+    >div {
         overflow: hidden;
         text-overflow: ellipsis;
     }
-
-    .item-with-menu-subname{
+    .item-with-menu-subname {
         font-size: 12px;
         color: @place-holder-color;
         margin-top: -8px;
@@ -61,6 +52,6 @@
     }
 }
 
-.item-with-menu-input{
+.item-with-menu-input {
     border-radius: 0px;
 }

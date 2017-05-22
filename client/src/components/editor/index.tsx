@@ -12,11 +12,17 @@ import 'brace/snippets/javascript';
 import './style/index.less';
 
 interface EditorProps {
+
     type?: 'javascript' | 'xml' | 'json' | 'text';
+
     value?: string;
+
     readOnly?: boolean;
+
     height?: number;
+
     onChange?: (value: string) => void;
+
     fixHeight?: boolean;
 }
 
