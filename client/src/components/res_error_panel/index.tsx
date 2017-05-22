@@ -20,7 +20,7 @@ class ResErrorPanel extends React.Component<ResErrorPanelProps, ResErrorPanelSta
                 <div className="res-error-header">Response</div>
                 <div className="res-error-title">Could not get any respponse</div>
                 <div className="res-error-desc">Error when get data from <span><a>{url}</a></span></div>
-                <Input type="textarea" disabled={true} value={errorStr} autosize={true} />
+                <Input spellCheck={false} type="textarea" disabled={true} value={errorStr} autosize={true} />
             </div>
         );
     }

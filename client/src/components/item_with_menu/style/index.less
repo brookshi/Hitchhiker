@@ -37,13 +37,18 @@
 }
 
 .item-with-menu-name{
-    display: inline;
     vertical-align: bottom;
-    padding-bottom: 1px;
-    margin-left: -8px;
+   // padding-bottom: 1px;
+   // margin-left: -8px;
+    //width: calc(100% - 48px);
+
+ display: inline-block;
+    width: calc(100% - 48px);
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     >div{
-        display: inline;
+       // display: inline;
         overflow: hidden;
         text-overflow: ellipsis;
     }
@@ -54,4 +59,8 @@
         margin-top: -8px;
         margin-bottom: 2px;
     }
+}
+
+.item-with-menu-input{
+    border-radius: 0px;
 }

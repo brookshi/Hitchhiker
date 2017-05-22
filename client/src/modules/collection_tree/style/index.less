@@ -37,7 +37,6 @@
 
 .collection-item {
     >div[aria-expanded] {
-        border-top: @border-color-dark 1px solid;
         z-index: 10;
         padding-left: 16px;
         padding-right: 0px;
@@ -56,6 +55,10 @@
     ul[role="menu"]{
         background: @panel-background;
     }
+}
+
+.collection-separator-line{
+    border-top: @border-color-dark 1px solid;
 }
 
 .collection-add-btn{
@@ -101,6 +104,9 @@
 
 .record-in-folder {
     margin-left: 32px;
+    .item-with-menu-name{
+        padding-right: 32px;
+    }
 }
 
 .folder>div[aria-expanded] {

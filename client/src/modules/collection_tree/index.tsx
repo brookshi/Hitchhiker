@@ -269,7 +269,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                                     const recordCount = _.values(records[c.id]).filter(r => r.category === RecordCategory.record).length;
                                     let sortRecords = _.chain(records[c.id]).values<DtoRecord>().sortBy(['category', 'name']).value();
                                     return (
-                                        <SubMenu className="collection-item" key={c.id} title={(
+                                        <SubMenu className={`${c.id !== displayCollections[0].id ? 'collection-separator-line' : ''} collection-item`} key={c.id} title={(
                                             <CollectionItem
                                                 collection={{ ...c }}
                                                 recordCount={recordCount}
@@ -301,7 +301,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                     onCancel={() => this.setState({ ...this.state, isAddCollectionDlgOpen: false })}
                 >
                     <div style={{ marginBottom: '8px' }}>Select team for this collection:</div>
-                    <Input ref={ele => this.newCollectionNameRef = ele} style={{ width: '100%', marginBottom: '8px' }} value={this.state.newCollectionName} onChange={e => this.setState({ ...this.state, newCollectionName: e.currentTarget.value })} />
+                    <Input spellCheck={false} ref={ele => this.newCollectionNameRef = ele} style={{ width: '100%', marginBottom: '8px' }} value={this.state.newCollectionName} onChange={e => this.setState({ ...this.state, newCollectionName: e.currentTarget.value })} />
                     <div style={{ marginBottom: '8px' }}>Select team for this collection:</div>
                     <TreeSelect
                         allowClear={true}

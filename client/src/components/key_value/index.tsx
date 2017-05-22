@@ -36,8 +36,8 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
                     <this.DragHandle />
                     <Checkbox key={`cb${header.id}`} onChange={(e) => this.onValueChange('isActive', hIndex, e)} defaultChecked={header.isActive} />
                 </div>
-                <Input key={`key${header.id}`} onChange={(e) => this.onValueChange('key', hIndex, e)} placeholder="key" value={header.key} />
-                <Input key={`value${header.id}`} onChange={(e) => this.onValueChange('value', hIndex, e)} placeholder="value" value={header.value} />
+                <Input spellCheck={false} key={`key${header.id}`} onChange={(e) => this.onValueChange('key', hIndex, e)} placeholder="key" value={header.key} />
+                <Input spellCheck={false} key={`value${header.id}`} onChange={(e) => this.onValueChange('value', hIndex, e)} placeholder="value" value={header.value} />
                 <Icon style={visibility} type="close" onClick={(event) => this.onDelItem(hIndex)} />
             </li>
         );

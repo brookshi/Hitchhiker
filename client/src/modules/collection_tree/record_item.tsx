@@ -88,9 +88,9 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
             <div draggable={true} onDragStart={this.dragStart} onDragOver={this.dragOver} onDrop={this.drop}>
                 <ItemWithMenu
                     ref={ele => this.itemWithMenu = ele}
-                    className="record"
+                    className={`record ${inFolder ? 'record-in-folder' : ''}`}
                     icon={(
-                        <span className={'record-icon' + (inFolder ? ' record-in-folder' : '')}>
+                        <span className="record-icon">
                             <HttpMethodIcon httpMethod={method.toUpperCase()} />
                         </span>
                     )}
