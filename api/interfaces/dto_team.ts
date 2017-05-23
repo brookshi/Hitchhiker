@@ -4,11 +4,5 @@ export interface DtoTeam {
 
     name: string;
 
-    members: string[];
-
-    collections: string[];
-
     note: string;
-
-    owner: string;
 }

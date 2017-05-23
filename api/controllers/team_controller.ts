@@ -16,13 +16,12 @@ export default class TeamController extends BaseController {
 
     @POST('/team')
     async create(ctx: Koa.Context, @BodyParam info: DtoTeam): Promise<ResObject> {
-        info.owner = SessionService.getUserId(ctx);
-        return await TeamService.saveTeam(info);
+        return await TeamService.createTeam(info, SessionService.getUserId(ctx));
     }
 
     @PUT('/team')
     async update( @BodyParam info: DtoTeam): Promise<ResObject> {
-        return await TeamService.saveTeam(info);
+        return await TeamService.updateTeam(info);
     }
 
     //TODO: add relative page to display and redirect to login page is missing session

@@ -6,6 +6,7 @@ import { ValidateUtil } from "../utils/validate_util";
 import { Setting } from "../utils/setting";
 import { MailService } from "./mail_service";
 import { StringUtil } from "../utils/string_util";
+import { TeamService } from "./team_service";
 
 export class UserService {
 
@@ -84,14 +85,20 @@ export class UserService {
     static async getUserByEmail(email: string, needTeam?: boolean, needEnv?: boolean): Promise<User> {
         const connection = await ConnectionManager.getInstance();
 
-        let rep = await connection.getRepository(User)
+        let rep = connection.getRepository(User)
             .createQueryBuilder("user")
             .where(`user.email = :email`)
             .setParameter('email', email);
 
         if (needTeam) { rep = rep.leftJoinAndSelect('user.teams', 'team'); };
 
-        return rep.getOne();
+        const user = await rep.getOne();
+
+        if (user && needTeam) {
+            user.teams = await TeamService.getTeams(user.teams.map(t => t.id), false, true);
+        }
+
+        return user;
     }
 
     static async getUserById(id: string, needTeam?: boolean, needEnv?: boolean): Promise<User> {
@@ -104,7 +111,13 @@ export class UserService {
 
         if (needTeam) { rep = rep.leftJoinAndSelect('user.teams', 'team'); };
 
-        return rep.getOne();
+        const user = await rep.getOne();
+
+        if (user && needTeam) {
+            user.teams = await TeamService.getTeams(user.teams.map(t => t.id), false, true);
+        }
+
+        return user;
     }
 
     static async active(id: string) {

@@ -5,7 +5,6 @@ import { ResObject } from "../common/res_object";
 import { Message } from "../common/message";
 import { StringUtil } from "../utils/string_util";
 import { User } from "../models/user";
-import { Collection } from "../models/collection";
 
 export class TeamService {
 
@@ -15,31 +14,13 @@ export class TeamService {
         return team;
     }
 
-    static fromDto(dtoTeam: DtoTeam): Team {
+    static fromDto(dtoTeam: DtoTeam, ownerId: string): Team {
         let team = TeamService.create(dtoTeam.id || StringUtil.generateUID());
         team.name = dtoTeam.name;
-
-        team.members = [];
-        if (dtoTeam.members) {
-            dtoTeam.members.forEach(m => {
-                const user = new User();
-                user.id = m;
-                team.members.push(user);
-            });
-        }
-
-        team.collections = [];
-        if (dtoTeam.collections) {
-            dtoTeam.collections.forEach(c => {
-                const collection = new Collection();
-                collection.id = c;
-                team.collections.push(collection);
-            });
-        }
-
         team.note = dtoTeam.note;
+
         const owner = new User();
-        owner.id = dtoTeam.owner;
+        owner.id = ownerId;
         team.owner = owner;
 
         return team;
@@ -69,7 +50,7 @@ export class TeamService {
             rep = rep.leftJoinAndSelect('team.collections', 'collection');
         }
         if (needUser) {
-            rep = rep.leftJoinAndSelect('team.users', 'user');
+            rep = rep.leftJoinAndSelect('team.members', 'members');
         }
 
         return await rep.where('1=1')
@@ -77,11 +58,23 @@ export class TeamService {
             .getMany();
     }
 
-    static async saveTeam(dtoTeam: DtoTeam): Promise<ResObject> {
+    static async createTeam(dtoTeam: DtoTeam, ownerId: string): Promise<ResObject> {
         const connection = await ConnectionManager.getInstance();
-        const team = TeamService.fromDto(dtoTeam);
+        const team = TeamService.fromDto(dtoTeam, ownerId);
 
         await connection.getRepository(Team).persist(team);
+
+        return { success: true, message: Message.teamSaveSuccess };
+    }
+
+    static async updateTeam(dtoTeam: DtoTeam): Promise<ResObject> {
+        const connection = await ConnectionManager.getInstance();
+
+        await connection.getRepository(Team)
+            .createQueryBuilder('team')
+            .where("id=:id", { id: dtoTeam.id })
+            .update({ name: dtoTeam.name, note: dtoTeam.note })
+            .execute();
 
         return { success: true, message: Message.teamSaveSuccess };
     }

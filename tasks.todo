@@ -32,9 +32,10 @@
     ✔ split line @done (2017/5/20 下午9:48:09)
     ✔ tip @done (5/22/2017, 2:00:46 PM)
     ✔ input spell check @done (5/22/2017, 5:59:42 PM)
-    ☐ local storage for record states
+    ☐ local storage for record states & refresh merge with tabs
     ☐ sync status
     ☐ top banner
+    ☐ record change time line (db)
 0.2.0:
     ☐ body type
     ☐ record auth

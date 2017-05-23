@@ -30,6 +30,7 @@ export class Message {
     static envNotExist: string = 'environment does not exist';
 
     static teamSaveSuccess: string = 'team save success';
+    static teamUpdateSuccess: string = 'team update success';
     static teamQuitSuccess: string = 'quit team success';
     static teamNotExist: string = 'team does not exist';
     static emailsAllInTeam: string = 'emails are all in this team already';
