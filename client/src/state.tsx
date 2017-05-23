@@ -16,6 +16,7 @@ export function getDefaultRecord(isInit: boolean = false): DtoRecord {
 }
 
 export interface RecordState {
+
     name: string;
 
     record: DtoRecord;
@@ -26,6 +27,7 @@ export interface RecordState {
 }
 
 export interface DisplayRecordsState {
+
     activeKey: string;
 
     recordState: RecordState[];
@@ -34,26 +36,35 @@ export interface DisplayRecordsState {
 }
 
 export interface ResponseState {
+
     [id: string]: RunResult;
 }
 
 export interface CollectionState {
+
     collectionsInfo: DtoCollectionWithRecord;
 
     isLoaded: boolean;
 }
 
 export interface UIState {
-    collectionPanelWidth: number;
+
+    activeModule: string;
+
+    leftPanelWidth: number;
+
+    collapsed: boolean;
 }
 
 export interface UserInfoState {
+
     userInfo: DtoResUser;
 
     isLoaded: boolean;
 }
 
 export interface State {
+
     uiState: UIState;
 
     userState: UserInfoState;
@@ -73,12 +84,21 @@ export interface State {
 
 export const initialState: State = {
     uiState: {
-        collectionPanelWidth: 300
+        activeModule: 'collection',
+        leftPanelWidth: 300,
+        collapsed: false
     },
     userState: {
         isLoaded: false,
         userInfo: {
-            teams: []
+            teams: [],
+            id: '',
+            name: '',
+            password: '',
+            email: '',
+            isActive: false,
+            createDate: new Date(),
+            updateDate: new Date(),
         }
     },
     collectionState: {

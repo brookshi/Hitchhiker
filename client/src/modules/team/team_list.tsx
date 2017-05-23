@@ -3,6 +3,7 @@ import { Menu } from 'antd';
 import { SelectParam } from 'antd/lib/menu';
 import { DtoResTeam } from '../../../../api/interfaces/dto_res';
 import TeamItem from './team_item';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 
 interface TeamListProps {
 
@@ -43,25 +44,29 @@ class TeamList extends React.Component<TeamListProps, TeamListState> {
 
     public render() {
         return (
-            <Menu
-                className="collection-tree"
-                mode="inline"
-                inlineIndent={0}
-                selectedKeys={[this.state.activeTeam]}
-                onSelect={this.onSelectChanged}
-            >
-                {
-                    this.props.teams.map(t =>
-                        <TeamItem
-                            team={t}
-                            isOwner={t.owner.id === this.props.userId}
-                            disbandTeam={this.props.disbandTeam(t)}
-                            quitTeam={this.props.quitTeam(t)}
-                            onNameChanged={name => this.changeTeamName(name, t)}
-                        />
-                    )
-                }
-            </Menu>
+            <PerfectScrollbar>
+                <Menu
+                    className="collection-tree"
+                    mode="inline"
+                    inlineIndent={0}
+                    selectedKeys={[this.state.activeTeam]}
+                    onSelect={this.onSelectChanged}
+                >
+                    {
+                        this.props.teams.map(t =>
+                            (
+                                <TeamItem
+                                    team={t}
+                                    isOwner={t.owner.id === this.props.userId}
+                                    disbandTeam={this.props.disbandTeam(t)}
+                                    quitTeam={this.props.quitTeam(t)}
+                                    onNameChanged={name => this.changeTeamName(name, t)}
+                                />
+                            )
+                        )
+                    }
+                </Menu>
+            </PerfectScrollbar>
         );
     }
 }

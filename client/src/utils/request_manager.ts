@@ -13,6 +13,12 @@ export enum SyncType {
     updateCollection = 4,
 
     delCollection = 5,
+
+    updateTeam = 6,
+
+    disbandTeam = 7,
+
+    quitTeam = 8
 }
 
 export interface SyncItem {

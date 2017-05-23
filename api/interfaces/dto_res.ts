@@ -10,7 +10,7 @@ export interface DtoResCollection extends Collection { }
 
 export interface DtoResRecord extends Partial<Record> { }
 
-export interface DtoResUser extends Partial<User> { }
+export interface DtoResUser extends User { }
 
 export interface DtoResTeam extends Team { }
 

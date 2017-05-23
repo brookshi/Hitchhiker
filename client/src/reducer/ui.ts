@@ -1,10 +1,13 @@
 import { initialState, UIState } from '../state';
-import { ResizeCollectionPanelType } from '../action';
+import { ResizeLeftPanelType, UpdateLeftPanelType } from '../action';
 
 export function uiState(state: UIState = initialState.uiState, action: any): UIState {
     switch (action.type) {
-        case ResizeCollectionPanelType: {
-            return { ...state, collectionPanelWidth: action.value };
+        case ResizeLeftPanelType: {
+            return { ...state, leftPanelWidth: action.value };
+        }
+        case UpdateLeftPanelType: {
+            return { ...state, collapsed: action.value.collapsed, activeModule: action.value.activeModule };
         }
         default:
             return state;

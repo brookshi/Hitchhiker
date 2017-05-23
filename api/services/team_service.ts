@@ -26,7 +26,7 @@ export class TeamService {
         return team;
     }
 
-    static async getTeam(id: string, needCollection: boolean = true, needUser: boolean = false): Promise<Team> {
+    static async getTeam(id: string, needOwner: boolean = true, needCollection: boolean = true, needUser: boolean = false, needEnv: boolean = false): Promise<Team> {
         const connection = await ConnectionManager.getInstance();
 
         let rep = connection.getRepository(Team).createQueryBuilder('team');
@@ -35,6 +35,12 @@ export class TeamService {
         }
         if (needUser) {
             rep = rep.leftJoinAndSelect('team.members', 'members');
+        }
+        if (needOwner) {
+            rep = rep.leftJoinAndSelect('team.owner', 'owner');
+        }
+        if (needEnv) {
+            rep = rep.leftJoinAndSelect('team.environments', 'environments');
         }
 
         return await rep.where('team.id=:id')
@@ -42,7 +48,7 @@ export class TeamService {
             .getOne();
     }
 
-    static async getTeams(ids: string[], needCollection: boolean = true, needUser: boolean = false): Promise<Team[]> {
+    static async getTeams(ids: string[], needOwner: boolean = true, needCollection: boolean = true, needUser: boolean = false, needEnv: boolean = false): Promise<Team[]> {
         const connection = await ConnectionManager.getInstance();
 
         let rep = connection.getRepository(Team).createQueryBuilder('team');
@@ -51,6 +57,12 @@ export class TeamService {
         }
         if (needUser) {
             rep = rep.leftJoinAndSelect('team.members', 'members');
+        }
+        if (needOwner) {
+            rep = rep.leftJoinAndSelect('team.owner', 'owner');
+        }
+        if (needEnv) {
+            rep = rep.leftJoinAndSelect('team.environments', 'environments');
         }
 
         return await rep.where('1=1')

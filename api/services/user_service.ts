@@ -95,7 +95,7 @@ export class UserService {
         const user = await rep.getOne();
 
         if (user && needTeam) {
-            user.teams = await TeamService.getTeams(user.teams.map(t => t.id), false, true);
+            user.teams = await TeamService.getTeams(user.teams.map(t => t.id), true, false, true, true);
         }
 
         return user;
@@ -114,7 +114,7 @@ export class UserService {
         const user = await rep.getOne();
 
         if (user && needTeam) {
-            user.teams = await TeamService.getTeams(user.teams.map(t => t.id), false, true);
+            user.teams = await TeamService.getTeams(user.teams.map(t => t.id), true, false, true, true);
         }
 
         return user;

@@ -7,11 +7,11 @@ import ReqResPanel from './modules/req_res_panel';
 import Team from './modules/team';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import './style/perfect-scrollbar.min.css';
-import { State, UIState } from './state';
+import { State } from './state';
 import { connect, Dispatch } from 'react-redux';
 import { refreshCollectionAction } from './modules/collection_tree/action';
 import Splitter from './components/splitter';
-import { actionCreator, ResizeCollectionPanelType } from './action';
+import { actionCreator, ResizeLeftPanelType, UpdateLeftPanelType } from './action';
 import { LoginType } from './modules/login/action';
 import Config from './common/config';
 
@@ -19,42 +19,36 @@ const { Header, Content, Sider } = Layout;
 
 interface AppStateProps {
 
+  activeModule: string;
+
+  collapsed: boolean;
+
   isLogin: boolean;
 
   isFetchCollection: boolean;
 
-  uiState: UIState;
+  leftPanelWidth: number;
 }
 
 interface AppDispatchProps {
+
+  updateLeftPanelStatus(collapsed: boolean, activeModule: string);
 
   getCollection();
 
   login();
 
-  resizeCollectionPanel(width: number);
+  resizeLeftPanel(width: number);
 }
 
 type AppProps = AppStateProps & AppDispatchProps;
 
-interface AppState {
-
-  activeModule: 'collection' | 'team' | 'schedule' | 'api_doc' | 'api_mock' | 'stress_test' | '' | any;
-
-  collapsed: boolean;
-
-  mode: 'inline' | 'vertical';
-}
+interface AppState { }
 
 class App extends React.Component<AppProps, AppState> {
 
   constructor(props: AppProps) {
     super(props);
-    this.state = {
-      activeModule: 'collection',
-      collapsed: false,
-      mode: 'inline'
-    };
   }
 
   componentWillMount() {
@@ -70,35 +64,33 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   private onCollapse = (collapsed) => {
-    this.setState({
-      collapsed,
-      mode: collapsed ? 'vertical' : 'inline',
-      activeModule: collapsed ? '' : this.state.activeModule
-    });
+    this.props.updateLeftPanelStatus(collapsed, collapsed ? '' : this.props.activeModule);
   }
 
   private onClick = (param: ClickParam) => {
-    const { collapsed, activeModule } = this.state;
+
+    const { collapsed, activeModule, updateLeftPanelStatus } = this.props;
     if (activeModule === param.key) {
-      this.setState({ ...this.state, collapsed: !collapsed, activeModule: collapsed ? activeModule : '' });
+      updateLeftPanelStatus(!collapsed, collapsed ? activeModule : '');
     } else {
-      this.setState({ ...this.state, collapsed: false, activeModule: param.key });
+      updateLeftPanelStatus(false, param.key);
     }
   }
 
   private collectionModule = () => {
+    const { collapsed, leftPanelWidth } = this.props;
     return (
       <Layout className="main-panel">
         <Sider
           className="collection-sider"
-          style={{ minWidth: this.state.collapsed ? 0 : this.props.uiState.collectionPanelWidth }}
+          style={{ minWidth: collapsed ? 0 : leftPanelWidth }}
           collapsible={true}
           collapsedWidth="0.1"
-          collapsed={this.state.collapsed}
+          collapsed={collapsed}
           onCollapse={this.onCollapse}>
           <CollectionList />
         </Sider>
-        <Splitter resizeCollectionPanel={this.props.resizeCollectionPanel} />
+        <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
         <Content style={{ marginTop: 4 }}>
           <PerfectScrollbar>
             <ReqResPanel />
@@ -109,7 +101,7 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   private activeModule = () => {
-    switch (this.state.activeModule) {
+    switch (this.props.activeModule) {
       case 'collection':
         return this.collectionModule();
       case 'team':
@@ -129,7 +121,7 @@ class App extends React.Component<AppProps, AppState> {
               className="sider-menu"
               mode="vertical"
               theme="dark"
-              selectedKeys={[this.state.activeModule]}
+              selectedKeys={[this.props.activeModule]}
               onClick={this.onClick}
             >
               <Menu.Item key="collection">
@@ -173,7 +165,9 @@ class App extends React.Component<AppProps, AppState> {
 
 const mapStateToProps = (state: State): AppStateProps => {
   return {
-    uiState: state.uiState,
+    leftPanelWidth: state.uiState.leftPanelWidth,
+    collapsed: state.uiState.collapsed,
+    activeModule: state.uiState.activeModule,
     isLogin: state.userState.isLoaded,
     isFetchCollection: state.collectionState.isLoaded
   };
@@ -183,7 +177,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): AppDispatchProps => {
   return {
     getCollection: () => dispatch(refreshCollectionAction()),
     login: () => dispatch(actionCreator(LoginType)),
-    resizeCollectionPanel: (width) => dispatch(actionCreator(ResizeCollectionPanelType, width))
+    resizeLeftPanel: (width) => dispatch(actionCreator(ResizeLeftPanelType, width)),
+    updateLeftPanelStatus: (collapsed, activeModule) => dispatch(actionCreator(UpdateLeftPanelType, { collapsed, activeModule }))
   };
 };
 
