@@ -239,7 +239,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
 
         return (
             <div className="collection-panel">
-                <div className="collection-toolbar">
+                <div className="small-toolbar">
                     <span>Team:</span>
                     <span>
                         <Dropdown overlay={this.getTeamMenu()} trigger={['click']} style={{ width: 200 }}>
@@ -249,7 +249,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                         </Dropdown>
                     </span>
                     <Tooltip mouseEnterDelay={1} placement="bottom" title="create collection">
-                        <Button className="collection-add-btn" type="primary" icon="folder-add" onClick={this.addCollection} />
+                        <Button className="icon-btn" type="primary" icon="folder-add" onClick={this.addCollection} />
                     </Tooltip>
                 </div>
                 <div className="collection-tree-container">

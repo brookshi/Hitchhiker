@@ -4,5 +4,5 @@ export interface DtoTeam {
 
     name: string;
 
-    note: string;
+    note?: string;
 }

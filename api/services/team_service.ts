@@ -73,6 +73,9 @@ export class TeamService {
     static async createTeam(dtoTeam: DtoTeam, ownerId: string): Promise<ResObject> {
         const connection = await ConnectionManager.getInstance();
         const team = TeamService.fromDto(dtoTeam, ownerId);
+        const owner = new User();
+        owner.id = ownerId;
+        team.members.push(owner);
 
         await connection.getRepository(Team).persist(team);
 

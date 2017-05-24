@@ -54,3 +54,34 @@ body {
 div.ace_editor[id="brace-editor"] {
   font-family: inherit;
 }
+
+.icon-btn {
+    border: 0px;
+    font-size: 18px;
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    background: @panel-background;
+    color: @primary-color;
+    &:hover {
+        color: @primary-color-light;
+        background: @panel-background;
+    }
+    &:focus {
+        color: @primary-color;
+        background: @panel-background;
+    }
+}
+
+.small-toolbar {
+    height: 35px;
+    border-bottom: 1px solid @border-color-dark;
+    background: @panel-background;
+    line-height: 35px;
+    padding-left: 4px;
+    font-weight: bold;
+    overflow: hidden;
+    >span {
+        margin-left: 8px;
+    }
+}

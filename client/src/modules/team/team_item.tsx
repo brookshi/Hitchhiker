@@ -31,6 +31,13 @@ class TeamItem extends React.Component<TeamItemProps, TeamItemState> {
     private getMenu = () => {
         return (
             <Menu className="item_menu" onClick={this.onClickMenu}>
+                {
+                    this.props.isOwner ? (
+                        <Menu.Item key="edit">
+                            <Icon type="edit" /> Rename
+                        </Menu.Item>
+                    ) : ''
+                }
                 <Menu.Item key="delete">
                     <Icon type="delete" /> {this.props.isOwner ? 'Disband' : 'Quit'}
                 </Menu.Item>

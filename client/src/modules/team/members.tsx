@@ -27,13 +27,13 @@ class Members extends React.Component<MembersProps, MembersState> {
     public render() {
         return (
             <div>
-                <div className="team-members-title">Members:
+                <div className="team-title">Members:
                     <span className="team-members-invite-btn">
                         <Button type="primary" size="small" icon="user-add">Invite</Button>
                     </span>
                 </div>
                 <MemberTable
-                    className="team-members"
+                    className="team-table team-members"
                     bordered={true}
                     size="middle"
                     rowKey="email"
@@ -54,6 +54,7 @@ class Members extends React.Component<MembersProps, MembersState> {
                         title="IsOwner"
                         dataIndex="isOwner"
                         key="isOwner"
+                        width={200}
                         render={(text, record) => (<Icon type={record.isOwner ? 'check' : ''} />)}
                     />
                     {
@@ -61,6 +62,7 @@ class Members extends React.Component<MembersProps, MembersState> {
                             <MemberColumn
                                 title="Action"
                                 key="action"
+                                width={200}
                                 render={(text, record) => (
                                     <span>
                                         <a href="#">Delete</a>

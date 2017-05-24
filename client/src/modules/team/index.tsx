@@ -4,6 +4,7 @@ import { Layout } from 'antd';
 import Splitter from '../../components/splitter';
 import TeamList from './team_list';
 import Members from './members';
+import Environments from './environments';
 import { DtoResTeam } from '../../../../api/interfaces/dto_res';
 import { DtoTeam } from '../../../../api/interfaces/dto_team';
 import { State } from '../../state';
@@ -66,11 +67,19 @@ class Team extends React.Component<TeamProps, TeamState> {
         if (!team) {
             return [];
         }
-        return _.sortBy(team.members.map(t => ({ name: t.name, email: t.email, isOwner: t.id === this.props.userId })), m => m.name);
+        return _.sortBy(team.members.map(t => ({ name: t.name, email: t.email, isOwner: t.id === team.owner.id })), m => m.name);
+    }
+
+    getSelectTeamEnvironments = () => {
+        const team = this.props.teams.find(t => t.id === this.state.activeTeam);
+        if (!team) {
+            return [];
+        }
+        return _.sortBy(team.environments, e => e.name);
     }
 
     public render() {
-        const { userId, collapsed, collapsedLeftPanel, teams, leftPanelWidth, disbandTeam, quitTeam, updateTeam } = this.props;
+        const { userId, collapsed, collapsedLeftPanel, teams, leftPanelWidth, disbandTeam, quitTeam, updateTeam, createTeam } = this.props;
 
         return (
             <Layout className="main-panel">
@@ -89,6 +98,7 @@ class Team extends React.Component<TeamProps, TeamState> {
                         disbandTeam={disbandTeam}
                         quitTeam={quitTeam}
                         updateTeam={updateTeam}
+                        addTeam={createTeam}
                     />
                 </Sider>
                 <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
@@ -97,6 +107,7 @@ class Team extends React.Component<TeamProps, TeamState> {
                         isOwner={this.isSelectTeamOwn()}
                         members={this.getSelectTeamMembers()}
                     />
+                    <Environments environments={this.getSelectTeamEnvironments()} />
                 </Content>
             </Layout>
         );
@@ -104,11 +115,14 @@ class Team extends React.Component<TeamProps, TeamState> {
 }
 
 const mapStateToProps = (state: State): TeamStateProps => {
+    const { leftPanelWidth, collapsed } = state.uiState;
+    const { teams, id } = state.userState.userInfo;
+
     return {
-        leftPanelWidth: state.uiState.leftPanelWidth,
-        collapsed: state.uiState.collapsed,
-        userId: state.userState.userInfo.id,
-        teams: state.userState.userInfo.teams
+        leftPanelWidth: leftPanelWidth,
+        collapsed: collapsed,
+        userId: id,
+        teams: _.chain(teams).sortBy('name').sortBy(t => t.owner.id !== id).value()
     };
 };
 

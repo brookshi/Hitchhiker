@@ -201,7 +201,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                     hideAdd={true}
                     tabBarExtraContent={(
                         <Tooltip mouseEnterDelay={1} placement="left" title="new tab">
-                            <Button className="record-add-btn" type="primary" icon="plus" onClick={this.add} />
+                            <Button className="icon-btn record-add-btn" type="primary" icon="plus" onClick={this.add} />
                         </Tooltip>)
                     }
                 >
