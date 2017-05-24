@@ -3,11 +3,11 @@ import ItemWithMenu from '../../components/item_with_menu';
 import './style/index.less';
 import { Menu, Icon } from 'antd';
 import { deleteDlg } from '../../components/confirm_dialog/index';
-import { DtoResTeam } from '../../../../api/interfaces/dto_res';
+import { DtoTeam } from '../../../../api/interfaces/dto_team';
 
 interface TeamItemProps {
 
-    team: DtoResTeam;
+    team: DtoTeam;
 
     isOwner: boolean;
 
@@ -49,9 +49,16 @@ class TeamItem extends React.Component<TeamItemProps, TeamItemState> {
         deleteDlg('team', () => this.props.isOwner ? this.props.disbandTeam() : this.props.quitTeam());
     }
 
+    edit = () => {
+        if (this.itemWithMenu) {
+            this.itemWithMenu.edit();
+        }
+    }
+
     public render() {
         const { team, isOwner } = this.props;
         const { name, members } = team;
+        const count = members ? members.length : 0;
 
         return (
             <div>
@@ -61,7 +68,7 @@ class TeamItem extends React.Component<TeamItemProps, TeamItemState> {
                     onNameChanged={this.props.onNameChanged}
                     icon={<Icon className="c-icon" type="team" />}
                     name={name}
-                    subName={<div>{`${members.length} member${members.length > 1 ? 's' : ''}`}</div>}
+                    subName={<div>{`${count} member${count > 1 ? 's' : ''}`}</div>}
                     menu={this.getMenu()}
                 />
             </div>

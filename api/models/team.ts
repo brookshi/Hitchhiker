@@ -13,9 +13,7 @@ export class Team {
     name: string;
 
     @JoinTable()
-    @ManyToMany(type => User, user => user.teams, {
-        cascadeInsert: true
-    })
+    @ManyToMany(type => User, user => user.teams)
     members: User[] = [];
 
     @OneToMany(type => Collection, collection => collection.team)

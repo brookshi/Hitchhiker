@@ -14,7 +14,7 @@ export enum SyncType {
 
     delCollection = 5,
 
-    updateTeam = 6,
+    saveTeam = 6,
 
     disbandTeam = 7,
 

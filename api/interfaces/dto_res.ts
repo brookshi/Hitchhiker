@@ -12,7 +12,7 @@ export interface DtoResRecord extends Partial<Record> { }
 
 export interface DtoResUser extends User { }
 
-export interface DtoResTeam extends Team { }
+export interface DtoResTeam extends Partial<Team> { }
 
 export interface DtoResEnvironment extends Environment { }
 

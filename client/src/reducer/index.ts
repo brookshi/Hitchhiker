@@ -5,6 +5,7 @@ import { UpdateTabChangedType } from '../modules/req_res_panel/action';
 import * as _ from 'lodash';
 import { uiState } from './ui';
 import { userState } from './user';
+import { teamState } from './team';
 
 export const reduceReducers = (...reducers) => {
     return (state, action) =>
@@ -19,7 +20,8 @@ export function rootReducer(state: State = initialState, action: any): State {
         collectionState,
         displayRecordsState,
         uiState,
-        userState
+        userState,
+        teamState
     })(state, action);
 
     const finalState = root(intermediateState, action);

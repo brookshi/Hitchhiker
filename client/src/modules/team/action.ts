@@ -11,7 +11,17 @@ export function* quitTeam() {
     yield takeEvery(QuitTeamType, pushQuitTeamToChannel);
 }
 
+export function* saveTeam() {
+    yield takeEvery(SaveTeamType, pushSaveTeamToChannel);
+}
+
 function* pushQuitTeamToChannel(action: any) {
     const channelAction = syncAction({ type: SyncType.delRecord, method: HttpMethod.DELETE, url: `http://localhost:3000/api/record/${action.value.id}` });
+    yield put(channelAction);
+}
+
+function* pushSaveTeamToChannel(action: any) {
+    const method = action.value.isNew ? HttpMethod.POST : HttpMethod.PUT;
+    const channelAction = syncAction({ type: SyncType.saveTeam, method, url: `http://localhost:3000/api/team`, body: action.value.team });
     yield put(channelAction);
 }

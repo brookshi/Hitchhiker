@@ -5,13 +5,13 @@ import Splitter from '../../components/splitter';
 import TeamList from './team_list';
 import Members from './members';
 import Environments from './environments';
-import { DtoResTeam } from '../../../../api/interfaces/dto_res';
 import { DtoTeam } from '../../../../api/interfaces/dto_team';
 import { State } from '../../state';
 import { actionCreator, UpdateLeftPanelType, ResizeLeftPanelType } from '../../action';
 import { DisbandTeamType, QuitTeamType, SaveTeamType } from './action';
 import './style/index.less';
 import * as _ from 'lodash';
+import { DtoUser } from '../../../../api/interfaces/dto_user';
 
 const { Content, Sider } = Layout;
 
@@ -21,9 +21,9 @@ interface TeamStateProps {
 
     leftPanelWidth: number;
 
-    userId: string;
+    user: DtoUser;
 
-    teams: DtoResTeam[];
+    teams: DtoTeam[];
 }
 
 interface TeamDispatchProps {
@@ -53,18 +53,18 @@ class Team extends React.Component<TeamProps, TeamState> {
     constructor(props: TeamProps) {
         super(props);
         this.state = {
-            activeTeam: props.teams.length > 0 ? props.teams[0].id : ''
+            activeTeam: props.teams.length > 0 ? (props.teams[0].id || '') : ''
         };
     }
 
     isSelectTeamOwn = () => {
         const team = this.props.teams.find(t => t.id === this.state.activeTeam);
-        return !!team && team.owner.id === this.props.userId;
+        return !!team && !!team.owner && team.owner.id === this.props.user.id;
     }
 
     getSelectTeamMembers = () => {
         const team = this.props.teams.find(t => t.id === this.state.activeTeam);
-        if (!team) {
+        if (!team || !team.members) {
             return [];
         }
         return _.sortBy(team.members.map(t => ({ name: t.name, email: t.email, isOwner: t.id === team.owner.id })), m => m.name);
@@ -72,14 +72,14 @@ class Team extends React.Component<TeamProps, TeamState> {
 
     getSelectTeamEnvironments = () => {
         const team = this.props.teams.find(t => t.id === this.state.activeTeam);
-        if (!team) {
+        if (!team || !team.environments) {
             return [];
         }
         return _.sortBy(team.environments, e => e.name);
     }
 
     public render() {
-        const { userId, collapsed, collapsedLeftPanel, teams, leftPanelWidth, disbandTeam, quitTeam, updateTeam, createTeam } = this.props;
+        const { user, collapsed, collapsedLeftPanel, teams, leftPanelWidth, disbandTeam, quitTeam, updateTeam, createTeam } = this.props;
 
         return (
             <Layout className="main-panel">
@@ -93,12 +93,12 @@ class Team extends React.Component<TeamProps, TeamState> {
                     <TeamList
                         activeTeam={this.state.activeTeam}
                         selectTeam={(id) => this.setState({ ...this.state, activeTeam: id })}
-                        userId={userId}
+                        user={user}
                         teams={teams}
                         disbandTeam={disbandTeam}
                         quitTeam={quitTeam}
                         updateTeam={updateTeam}
-                        addTeam={createTeam}
+                        createTeam={createTeam}
                     />
                 </Sider>
                 <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
@@ -116,13 +116,14 @@ class Team extends React.Component<TeamProps, TeamState> {
 
 const mapStateToProps = (state: State): TeamStateProps => {
     const { leftPanelWidth, collapsed } = state.uiState;
-    const { teams, id } = state.userState.userInfo;
+    const teams = state.teamState.teams;
+    const user = state.userState.userInfo as DtoUser;
 
     return {
         leftPanelWidth: leftPanelWidth,
         collapsed: collapsed,
-        userId: id,
-        teams: _.chain(teams).sortBy('name').sortBy(t => t.owner.id !== id).value()
+        user: user,
+        teams: _.chain(teams).values<DtoTeam>().sortBy('name').sortBy(t => t.owner.id !== user.id).value()
     };
 };
 

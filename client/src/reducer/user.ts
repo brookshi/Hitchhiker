@@ -4,7 +4,7 @@ import { LoginSuccessType } from '../modules/login/action';
 export function userState(state: UserInfoState = initialState.userState, action: any): UserInfoState {
     switch (action.type) {
         case LoginSuccessType: {
-            return { ...state, userInfo: action.value.result, isLoaded: true };
+            return { ...state, userInfo: action.value.result.user, isLoaded: true };
         }
         default:
             return state;

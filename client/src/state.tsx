@@ -1,6 +1,6 @@
 import { DtoRecord } from '../../api/interfaces/dto_record';
 import { DtoCollectionWithRecord } from '../../api/interfaces/dto_collection';
-import { DtoResUser } from '../../api/interfaces/dto_res';
+import { DtoResUser, DtoResTeam } from '../../api/interfaces/dto_res';
 import { StringUtil } from './utils/string_util';
 import { RecordCategory } from './common/record_category';
 import { RunResult } from '../../api/interfaces/dto_run_result';
@@ -63,17 +63,22 @@ export interface UserInfoState {
     isLoaded: boolean;
 }
 
+export interface TeamState {
+
+    teams: _.Dictionary<DtoResTeam>;
+}
+
 export interface State {
 
     uiState: UIState;
 
     userState: UserInfoState;
 
+    teamState: TeamState;
+
     collectionState: CollectionState;
 
     displayRecordsState: DisplayRecordsState;
-
-    // teamState: TeamState;
 
     // documentState: DocumentState;
 
@@ -101,6 +106,7 @@ export const initialState: State = {
             updateDate: new Date(),
         }
     },
+    teamState: { teams: {} },
     collectionState: {
         isLoaded: false,
         collectionsInfo: {

@@ -1,17 +1,17 @@
 import React from 'react';
 import { Table } from 'antd';
-import { DtoResEnvironment } from '../../../../api/interfaces/dto_res';
+import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
 
 interface EnvironmentsProps {
 
-    environments: DtoResEnvironment[];
+    environments: DtoEnvironment[];
 }
 
 interface EnvironmentsState { }
 
-class EnvironmentTable extends Table<DtoResEnvironment> { }
+class EnvironmentTable extends Table<DtoEnvironment> { }
 
-class EnvironmentColumn extends Table.Column<DtoResEnvironment> { }
+class EnvironmentColumn extends Table.Column<DtoEnvironment> { }
 
 class Environments extends React.Component<EnvironmentsProps, EnvironmentsState> {
     public render() {

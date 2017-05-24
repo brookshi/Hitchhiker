@@ -5,6 +5,7 @@ import { ResObject } from "../common/res_object";
 import { Message } from "../common/message";
 import { StringUtil } from "../utils/string_util";
 import { User } from "../models/user";
+import { UserService } from "./user_service";
 
 export class TeamService {
 
@@ -73,9 +74,8 @@ export class TeamService {
     static async createTeam(dtoTeam: DtoTeam, ownerId: string): Promise<ResObject> {
         const connection = await ConnectionManager.getInstance();
         const team = TeamService.fromDto(dtoTeam, ownerId);
-        const owner = new User();
-        owner.id = ownerId;
-        team.members.push(owner);
+        const user = await UserService.getUserById(ownerId, true);
+        team.members.push(user);
 
         await connection.getRepository(Team).persist(team);
 

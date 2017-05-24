@@ -7,6 +7,7 @@ import { Setting } from "../utils/setting";
 import { MailService } from "./mail_service";
 import { StringUtil } from "../utils/string_util";
 import { TeamService } from "./team_service";
+import * as _ from "lodash";
 
 export class UserService {
 
@@ -25,10 +26,12 @@ export class UserService {
     }
 
     static async checkUser(email: string, pwd: string): Promise<ResObject> {
-        const user = await UserService.getUserByEmail(email, true, true);
+        const user = await UserService.getUserByEmail(email, true);
         if (user && user.password === pwd) {//TODO: md5
             if (user.isActive) {
-                return { success: true, message: '', result: user };
+                const teams = _.keyBy(user.teams, 'id');
+                user.teams = undefined;
+                return { success: true, message: '', result: { user, teams } };
             } else {
                 return { success: false, message: Message.accountNotActive };
             }
@@ -37,7 +40,7 @@ export class UserService {
     }
 
     static async checkUserById(userId: string): Promise<ResObject> {
-        const user = await UserService.getUserById(userId, false, false);
+        const user = await UserService.getUserById(userId, false);
         return { success: !!user, message: !!user ? '' : Message.userNotExist, result: user };
     }
 
@@ -82,7 +85,7 @@ export class UserService {
         return user !== undefined;
     }
 
-    static async getUserByEmail(email: string, needTeam?: boolean, needEnv?: boolean): Promise<User> {
+    static async getUserByEmail(email: string, needTeam?: boolean): Promise<User> {
         const connection = await ConnectionManager.getInstance();
 
         let rep = connection.getRepository(User)
@@ -101,7 +104,7 @@ export class UserService {
         return user;
     }
 
-    static async getUserById(id: string, needTeam?: boolean, needEnv?: boolean): Promise<User> {
+    static async getUserById(id: string, needTeam?: boolean): Promise<User> {
         const connection = await ConnectionManager.getInstance();
 
         let rep = await connection.getRepository(User)
