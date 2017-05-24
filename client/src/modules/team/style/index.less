@@ -1,0 +1,45 @@
+@import '../../../style/colors.less';
+
+.team-item-own{
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    transform: rotate(45deg) translate(-21px, 0px);
+    background: @primary-color;
+}
+
+.team-list{
+    .ant-menu-item{
+        height: 60px;
+        line-height: 60px;
+        border-bottom: 1px solid @border-color-dark;
+    }
+
+    .item-with-menu-title{
+        font-size: 16px;
+    }
+}
+
+.team-members{
+    background: white;
+    .ant-table-row{
+        line-height: 10px;
+    }
+}
+
+.team-members-title{
+    height: 30px;
+    margin-left: 4px;
+    font-size: 16px;
+    position: relative;
+}
+
+.team-right-panel{
+    margin-top: 4px;
+    padding: 0px 8px;
+}
+
+.team-members-invite-btn{
+    position: absolute;
+    right: 4px;
+}

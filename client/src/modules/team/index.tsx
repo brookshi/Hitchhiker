@@ -3,11 +3,14 @@ import { connect, Dispatch } from 'react-redux';
 import { Layout } from 'antd';
 import Splitter from '../../components/splitter';
 import TeamList from './team_list';
+import Members from './members';
 import { DtoResTeam } from '../../../../api/interfaces/dto_res';
 import { DtoTeam } from '../../../../api/interfaces/dto_team';
 import { State } from '../../state';
 import { actionCreator, UpdateLeftPanelType, ResizeLeftPanelType } from '../../action';
 import { DisbandTeamType, QuitTeamType, SaveTeamType } from './action';
+import './style/index.less';
+import * as _ from 'lodash';
 
 const { Content, Sider } = Layout;
 
@@ -39,9 +42,33 @@ interface TeamDispatchProps {
 
 type TeamProps = TeamStateProps & TeamDispatchProps;
 
-interface TeamState { }
+interface TeamState {
+
+    activeTeam: string;
+}
 
 class Team extends React.Component<TeamProps, TeamState> {
+
+    constructor(props: TeamProps) {
+        super(props);
+        this.state = {
+            activeTeam: props.teams.length > 0 ? props.teams[0].id : ''
+        };
+    }
+
+    isSelectTeamOwn = () => {
+        const team = this.props.teams.find(t => t.id === this.state.activeTeam);
+        return !!team && team.owner.id === this.props.userId;
+    }
+
+    getSelectTeamMembers = () => {
+        const team = this.props.teams.find(t => t.id === this.state.activeTeam);
+        if (!team) {
+            return [];
+        }
+        return _.sortBy(team.members.map(t => ({ name: t.name, email: t.email, isOwner: t.id === this.props.userId })), m => m.name);
+    }
+
     public render() {
         const { userId, collapsed, collapsedLeftPanel, teams, leftPanelWidth, disbandTeam, quitTeam, updateTeam } = this.props;
 
@@ -54,11 +81,22 @@ class Team extends React.Component<TeamProps, TeamState> {
                     collapsedWidth="0.1"
                     collapsed={collapsed}
                     onCollapse={collapsedLeftPanel}>
-                    <TeamList userId={userId} teams={teams} disbandTeam={disbandTeam} quitTeam={quitTeam} updateTeam={updateTeam} />
+                    <TeamList
+                        activeTeam={this.state.activeTeam}
+                        selectTeam={(id) => this.setState({ ...this.state, activeTeam: id })}
+                        userId={userId}
+                        teams={teams}
+                        disbandTeam={disbandTeam}
+                        quitTeam={quitTeam}
+                        updateTeam={updateTeam}
+                    />
                 </Sider>
                 <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
-                <Content style={{ marginTop: 4 }}>
-                    body
+                <Content className="team-right-panel">
+                    <Members
+                        isOwner={this.isSelectTeamOwn()}
+                        members={this.getSelectTeamMembers()}
+                    />
                 </Content>
             </Layout>
         );

@@ -43,18 +43,21 @@ class TeamItem extends React.Component<TeamItemProps, TeamItemState> {
     }
 
     public render() {
-        const { team } = this.props;
+        const { team, isOwner } = this.props;
         const { name, members } = team;
 
         return (
-            <ItemWithMenu
-                ref={ele => this.itemWithMenu = ele}
-                onNameChanged={this.props.onNameChanged}
-                icon={<Icon className="c-icon" type="team" />}
-                name={name}
-                subName={<div>{`${members.length} member${members.length > 1 ? 's' : ''}`}</div>}
-                menu={this.getMenu()}
-            />
+            <div>
+                {isOwner ? <div className="team-item-own" /> : ''}
+                <ItemWithMenu
+                    ref={ele => this.itemWithMenu = ele}
+                    onNameChanged={this.props.onNameChanged}
+                    icon={<Icon className="c-icon" type="team" />}
+                    name={name}
+                    subName={<div>{`${members.length} member${members.length > 1 ? 's' : ''}`}</div>}
+                    menu={this.getMenu()}
+                />
+            </div>
         );
     }
 }

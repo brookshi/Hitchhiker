@@ -88,7 +88,7 @@ class ItemWithMenu extends React.Component<ItemWithMenuProps, ItemWithMenuState>
             <span className={`${className} item-with-menu`}>
                 {icon}
                 <span className="item-with-menu-name">
-                    <div style={{ lineHeight }}>
+                    <div className="item-with-menu-title" style={{ lineHeight }}>
                         <Input
                             className="item-with-menu-input"
                             spellCheck={false}

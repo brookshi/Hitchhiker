@@ -11,28 +11,27 @@ interface TeamListProps {
 
     teams: DtoResTeam[];
 
+    activeTeam: string;
+
     disbandTeam(team: DtoResTeam);
 
     quitTeam(team: DtoResTeam);
 
     updateTeam(team: DtoResTeam);
+
+    selectTeam(teamId: string);
 }
 
-interface TeamListState {
-    activeTeam: string;
-}
+interface TeamListState { }
 
 class TeamList extends React.Component<TeamListProps, TeamListState> {
 
     constructor(props: TeamListProps) {
         super(props);
-        this.state = {
-            activeTeam: props.teams.length > 0 ? props.teams[0].id : ''
-        };
     }
 
     private onSelectChanged = (param: SelectParam) => {
-        this.setState({ ...this.state, activeTeam: param.item.props.data });
+        this.props.selectTeam(param.item.props.data);
     }
 
     private changeTeamName = (name: string, team: DtoResTeam) => {
@@ -46,22 +45,24 @@ class TeamList extends React.Component<TeamListProps, TeamListState> {
         return (
             <PerfectScrollbar>
                 <Menu
-                    className="collection-tree"
+                    className="team-list"
                     mode="inline"
                     inlineIndent={0}
-                    selectedKeys={[this.state.activeTeam]}
+                    selectedKeys={[this.props.activeTeam]}
                     onSelect={this.onSelectChanged}
                 >
                     {
                         this.props.teams.map(t =>
                             (
-                                <TeamItem
-                                    team={t}
-                                    isOwner={t.owner.id === this.props.userId}
-                                    disbandTeam={this.props.disbandTeam(t)}
-                                    quitTeam={this.props.quitTeam(t)}
-                                    onNameChanged={name => this.changeTeamName(name, t)}
-                                />
+                                <Menu.Item key={t.id} data={t}>
+                                    <TeamItem
+                                        team={t}
+                                        isOwner={t.owner.id === this.props.userId}
+                                        disbandTeam={this.props.disbandTeam(t)}
+                                        quitTeam={this.props.quitTeam(t)}
+                                        onNameChanged={name => this.changeTeamName(name, t)}
+                                    />
+                                </Menu.Item>
                             )
                         )
                     }
