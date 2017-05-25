@@ -143,7 +143,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): TeamDispatchProps => {
         updateTeam: (team) => dispatch(actionCreator(SaveTeamType, { isNew: false, team })),
         createTeam: (team) => dispatch(actionCreator(SaveTeamType, { isNew: true, team })),
         removeUser: (teamId, userId) => { dispatch(actionCreator(RemoveUserType, { teamId, userId })); },
-        invite: (teamId, emails) => { dispatch(actionCreator(InviteMemberType, { teamId, emails })) }
+        invite: (teamId, emails) => { dispatch(actionCreator(InviteMemberType, { teamId, emails })); }
     };
 };
 

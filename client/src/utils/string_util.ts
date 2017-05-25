@@ -68,7 +68,7 @@ export class StringUtil {
     }
 
     static checkEmail(email: string): boolean {
-        const pattern = /^[^\.@]+@[^\.@]+\.[a-zA-Z]+$/;
+        const pattern = /^[^@]+@[^\.@]+\.[a-zA-Z]+$/;
         return pattern.test(email);
     }
 

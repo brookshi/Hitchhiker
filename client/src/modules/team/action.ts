@@ -51,6 +51,6 @@ function* pushSaveTeamToChannel(action: any) {
 }
 
 function* pushInviteMemberToChannel(action: any) {
-    const channelAction = syncAction({ type: SyncType.inviteMember, method: HttpMethod.POST, url: `http://localhost:3000/api/team/${action.value.teamId}`, body: action.value.emails });
+    const channelAction = syncAction({ type: SyncType.inviteMember, method: HttpMethod.POST, url: `http://localhost:3000/api/team/${action.value.teamId}`, body: { emails: action.value.emails } });
     yield put(channelAction);
 }

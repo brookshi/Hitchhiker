@@ -4,7 +4,7 @@ import { Message } from "../common/message";
 export class ValidateUtil {
 
     static checkEmail(email: string): ResObject {
-        const pattern = /^[^\.@]+@[^\.@]+\.[a-zA-Z]+$/;
+        const pattern = /^[^@]+@[^\.@]+\.[a-zA-Z]+$/;
 
         return { success: pattern.test(email), message: Message.userEmailFormatError };
     }

@@ -108,8 +108,8 @@ export default class TeamController extends BaseController {
     }
 
     @POST('/team/:tid')
-    async inviteToTeam(ctx: Koa.Context, @PathParam('tid') teamId: string, @BodyParam emails: string[]): Promise<ResObject> {
-        const checkEmailsRst = ValidateUtil.checkEmails(emails);
+    async inviteToTeam(ctx: Koa.Context, @PathParam('tid') teamId: string, @BodyParam emailInfo: { emails: string[] }): Promise<ResObject> {
+        const checkEmailsRst = ValidateUtil.checkEmails(emailInfo.emails);
         if (!checkEmailsRst.success) {
             return checkEmailsRst;
         }

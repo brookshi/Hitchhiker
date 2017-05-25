@@ -61,7 +61,7 @@ class Members extends React.Component<MembersProps, MembersState> {
     }
 
     private clickInviteBtn = () => {
-        this.setState({ ...this.state, isInviteDlgOpen: true }, () => this.inviteEmailInput && ReactDOM.findDOMNode(this.inviteEmailInput).getElementsByClassName('ant-select-search__field').item.call('focus'));
+        this.setState({ ...this.state, isInviteDlgOpen: true }, () => this.inviteEmailInput && (ReactDOM.findDOMNode(this.inviteEmailInput).getElementsByTagName('input')[0] as HTMLInputElement).focus());
     }
 
     private inviteMember = () => {
@@ -75,7 +75,6 @@ class Members extends React.Component<MembersProps, MembersState> {
     }
 
     private inviteEmailsChanged = (value) => {
-        console.log(value);
         this.setState({ ...this.state, inviteEmails: value });
     }
 
