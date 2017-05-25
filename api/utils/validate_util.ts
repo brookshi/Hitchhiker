@@ -9,9 +9,9 @@ export class ValidateUtil {
         return { success: pattern.test(email), message: Message.userEmailFormatError };
     }
 
-    static checkEmails(emails: string): ResObject {
-        const separater = ';';
-        const emailArr = emails.split(separater);
+    static checkEmails(emails: string | string[]): ResObject {
+        const separator = ';';
+        const emailArr = emails instanceof Array ? emails : emails.split(separator);
         if (!emailArr || emailArr.length === 0) {
             return { success: false, message: Message.emailsAtLeastOne };
         }

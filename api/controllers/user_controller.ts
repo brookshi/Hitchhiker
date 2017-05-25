@@ -4,8 +4,6 @@ import { UserService } from "../services/user_service";
 import * as Koa from 'koa';
 import { User } from "../models/user";
 import { DtoUser } from "../interfaces/dto_user";
-import { DtoTeamQuit } from "../interfaces/dto_team_quit";
-import { UserTeamService } from "../services/user_team_service";
 import { SessionService } from "../services/session_service";
 import { Message } from "../common/message";
 import { RegToken } from "../common/reg_token";
@@ -124,35 +122,5 @@ export default class UserController extends BaseController {
         const results = await Promise.all(emailArr.map(email => MailService.inviterMail(email, user)));
 
         return { success: results.every(rst => !rst.err), message: results.map(rst => rst.err).join(';') };
-    }
-
-    @GET('/user/invitetoteam')
-    async inviteToTeam(ctx: Koa.Context, @QueryParam('teamid') teamId: string, @QueryParam('emails') emails: string): Promise<ResObject> {
-        const checkEmailsRst = ValidateUtil.checkEmails(emails);
-        if (!checkEmailsRst.success) {
-            return checkEmailsRst;
-        }
-        let emailArr = <Array<string>>checkEmailsRst.result;
-
-        const team = await TeamService.getTeam(teamId, false, true);
-
-        if (!team) {
-            return { success: false, message: Message.teamNotExist };
-        }
-
-        emailArr = _.difference(emailArr, team.members.map(t => t.email));
-        if (emailArr.length === 0) {
-            return { success: false, message: Message.emailsAllInTeam };
-        }
-
-        const user = (<any>ctx).session.user;
-        const results = await Promise.all(emailArr.map(email => MailService.teamInviterMail(email, user, team)));
-        const success = results.every(rst => !rst.err);
-
-        if (success) { //TODO: add in transaction is the better way
-            await Promise.all(emailArr.map(email => UserService.createUserByEmail(email)));
-        }
-
-        return { success: success, message: results.map(rst => rst.err).join(';') };
     }
 }

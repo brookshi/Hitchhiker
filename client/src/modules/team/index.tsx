@@ -8,7 +8,7 @@ import Environments from './environments';
 import { DtoTeam } from '../../../../api/interfaces/dto_team';
 import { State } from '../../state';
 import { actionCreator, UpdateLeftPanelType, ResizeLeftPanelType } from '../../action';
-import { DisbandTeamType, QuitTeamType, SaveTeamType } from './action';
+import { DisbandTeamType, QuitTeamType, SaveTeamType, RemoveUserType, InviteMemberType } from './action';
 import './style/index.less';
 import * as _ from 'lodash';
 import { DtoUser } from '../../../../api/interfaces/dto_user';
@@ -39,6 +39,10 @@ interface TeamDispatchProps {
     updateTeam(team: DtoTeam);
 
     createTeam(team: DtoTeam);
+
+    removeUser(teamId: string, userId: string);
+
+    invite(teamId: string, emails: string[]);
 }
 
 type TeamProps = TeamStateProps & TeamDispatchProps;
@@ -67,7 +71,7 @@ class Team extends React.Component<TeamProps, TeamState> {
         if (!team || !team.members) {
             return [];
         }
-        return _.sortBy(team.members.map(t => ({ name: t.name, email: t.email, isOwner: t.id === team.owner.id })), m => m.name);
+        return _.sortBy(team.members.map(t => ({ id: t.id, name: t.name, email: t.email, isOwner: t.id === team.owner.id })), m => m.name);
     }
 
     getSelectTeamEnvironments = () => {
@@ -79,7 +83,7 @@ class Team extends React.Component<TeamProps, TeamState> {
     }
 
     public render() {
-        const { user, collapsed, collapsedLeftPanel, teams, leftPanelWidth, disbandTeam, quitTeam, updateTeam, createTeam } = this.props;
+        const { user, collapsed, collapsedLeftPanel, teams, leftPanelWidth, disbandTeam, quitTeam, updateTeam, createTeam, removeUser, invite } = this.props;
 
         return (
             <Layout className="main-panel">
@@ -104,8 +108,11 @@ class Team extends React.Component<TeamProps, TeamState> {
                 <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
                 <Content className="team-right-panel">
                     <Members
+                        activeTeam={this.state.activeTeam}
                         isOwner={this.isSelectTeamOwn()}
                         members={this.getSelectTeamMembers()}
+                        removeUser={removeUser}
+                        invite={invite}
                     />
                     <Environments environments={this.getSelectTeamEnvironments()} />
                 </Content>
@@ -134,7 +141,9 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): TeamDispatchProps => {
         disbandTeam: (team) => { dispatch(actionCreator(DisbandTeamType, team)); },
         quitTeam: (team) => { dispatch(actionCreator(QuitTeamType, team)); },
         updateTeam: (team) => dispatch(actionCreator(SaveTeamType, { isNew: false, team })),
-        createTeam: (team) => dispatch(actionCreator(SaveTeamType, { isNew: true, team }))
+        createTeam: (team) => dispatch(actionCreator(SaveTeamType, { isNew: true, team })),
+        removeUser: (teamId, userId) => { dispatch(actionCreator(RemoveUserType, { teamId, userId })); },
+        invite: (teamId, emails) => { dispatch(actionCreator(InviteMemberType, { teamId, emails })) }
     };
 };
 

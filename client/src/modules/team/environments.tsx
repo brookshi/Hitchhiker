@@ -31,16 +31,19 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
                         title="Environment"
                         dataIndex="name"
                         key="name"
+                        render={(text, record) => (
+                            <a href="#">{text}</a>
+                        )}
                     />
                     <EnvironmentColumn
                         title="Action"
                         key="action"
-                        width={200}
+                        width={240}
                         render={(text, record) => (
                             <span>
-                                <a href="#">Delete</a>-
-                                <a href="#">Duplicate</a>-
-                                <a href="#">Edit</a>
+                                <a href="#">Edit</a> - <span />
+                                <a href="#">Duplicate</a> - <span />
+                                <a href="#">Delete</a>
                             </span>
                         )}
                     />

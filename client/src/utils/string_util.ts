@@ -66,4 +66,24 @@ export class StringUtil {
             return value;
         }
     }
+
+    static checkEmail(email: string): boolean {
+        const pattern = /^[^\.@]+@[^\.@]+\.[a-zA-Z]+$/;
+        return pattern.test(email);
+    }
+
+    static checkEmails(emails: string | string[]): { success: boolean, message: string, emails: string[] } {
+        const separator = ';';
+        const emailArr = emails instanceof Array ? emails : emails.split(separator);
+        if (!emailArr || emailArr.length === 0) {
+            return { success: false, message: 'at least one email', emails: [] };
+        }
+
+        const invalidEmailArr = emailArr.filter(e => !StringUtil.checkEmail(e));
+        return {
+            success: invalidEmailArr.length === 0,
+            message: `${invalidEmailArr.join(';')} is invalid`,
+            emails: emailArr.filter(e => StringUtil.checkEmail(e))
+        };
+    }
 }

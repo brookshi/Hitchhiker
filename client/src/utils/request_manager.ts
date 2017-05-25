@@ -18,7 +18,9 @@ export enum SyncType {
 
     disbandTeam = 7,
 
-    quitTeam = 8
+    quitTeam = 8,
+
+    inviteMember = 9,
 }
 
 export interface SyncItem {
