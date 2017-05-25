@@ -11,7 +11,6 @@ import { MailService } from "../services/mail_service";
 import { InviteToTeamToken } from "../common/invite_team_token";
 import { User } from "../models/user";
 import { Team } from "../models/team";
-import { DtoTeamQuit } from "../interfaces/dto_team_quit";
 import { UserTeamService } from "../services/user_team_service";
 
 export default class TeamController extends BaseController {
@@ -34,6 +33,12 @@ export default class TeamController extends BaseController {
     @DELETE('/team/:tid/user/:uid')
     async removeUser(ctx: Koa.Context, @PathParam('tid') teamId: string, @PathParam('uid') userId: string): Promise<ResObject> {
         return await UserTeamService.quitTeam({ userId, teamId });
+    }
+
+    @DELETE('/team/:tid')
+    async disbandTeam(ctx: Koa.Context, @PathParam('tid') teamId: string): Promise<ResObject> {
+        const userId = SessionService.getUserId(ctx);
+        return UserTeamService.disbandTeam({ userId, teamId });
     }
 
     //TODO: add relative page to display and redirect to login page is missing session

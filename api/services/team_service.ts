@@ -93,4 +93,20 @@ export class TeamService {
 
         return { success: true, message: Message.teamSaveSuccess };
     }
+
+    static async save(team: Team): Promise<ResObject> {
+        const connection = await ConnectionManager.getInstance();
+        await connection.getRepository(Team).persist(team);
+
+        return { success: true, message: Message.teamSaveSuccess };
+    }
+
+    static async delete(id: string): Promise<ResObject> {
+        const connection = await ConnectionManager.getInstance();
+        await connection.getRepository(Team).createQueryBuilder('team')
+            .delete()
+            .where('team.id=:id', { id: id })
+            .execute();
+        return { success: true, message: Message.teamDeleteSuccess };
+    }
 }

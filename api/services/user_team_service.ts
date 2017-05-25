@@ -2,6 +2,7 @@ import { DtoTeamQuit } from "../interfaces/dto_team_quit";
 import { UserService } from "./user_service";
 import { ResObject } from "../common/res_object";
 import { Message } from "../common/message";
+import { TeamService } from "./team_service";
 
 export class UserTeamService {
 
@@ -13,5 +14,19 @@ export class UserTeamService {
         }
         await UserService.save(user);
         return { success: true, message: Message.teamQuitSuccess };
+    }
+
+    static async disbandTeam(info: DtoTeamQuit): Promise<ResObject> {
+        const team = await TeamService.getTeam(info.teamId, true, false, false, false);
+        if (!team) {
+            return { success: false, message: Message.teamNotExist };
+        }
+        if (team.owner.id !== info.userId) {
+            return { success: false, message: Message.teamDisbandNeedOwner };
+        }
+        team.owner = undefined;
+        await TeamService.save(team);
+        await TeamService.delete(team.id);
+        return { success: true, message: Message.teamDisbandSuccess };
     }
 }

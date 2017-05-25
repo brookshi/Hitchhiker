@@ -33,6 +33,9 @@ export class Message {
     static teamUpdateSuccess: string = 'team update success';
     static teamQuitSuccess: string = 'quit team success';
     static teamNotExist: string = 'team does not exist';
+    static teamDisbandNeedOwner: string = 'only team owner can disband this team';
+    static teamDisbandSuccess: string = 'disband team success';
+    static teamDeleteSuccess: string = 'delete team success';
     static emailsAllInTeam: string = 'emails are all in this team already';
     static alreadyInTeam: string = 'already in this team';
     static joinTeamSuccess: string = 'join team success';
