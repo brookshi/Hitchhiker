@@ -85,11 +85,6 @@ export default class UserController extends BaseController {
         return { success: success, message: success ? Message.findPwdSuccess : mailRst.err };
     }
 
-    @POST('/user/quitteam')
-    async quitTeam( @BodyParam info: DtoTeamQuit): Promise<ResObject> {
-        return await UserTeamService.quitTeam(info);
-    }
-
     @GET('/user/regconfirm')
     async regConfirm( @QueryParam('id') id: string, @QueryParam('token') token: string): Promise<ResObject> {
         const user = await UserService.getUserById(id);

@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon, Menu } from 'antd';
 import ItemWithMenu from '../../components/item_with_menu';
 import './style/index.less';
-import { deleteDlg } from '../../components/confirm_dialog/index';
+import { confirmDlg } from '../../components/confirm_dialog/index';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { StringUtil } from '../../utils/string_util';
 import { RecordCategory } from '../../common/record_category';
@@ -68,7 +68,7 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
         this[e.key]();
     }
 
-    delete = () => deleteDlg('collection', () => this.props.deleteCollection());
+    delete = () => confirmDlg('collection', () => this.props.deleteCollection());
 
     edit = () => {
         if (this.itemWithMenu) {

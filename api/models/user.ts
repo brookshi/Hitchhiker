@@ -16,10 +16,7 @@ export class User {
     @Column()
     email: string;
 
-    @ManyToMany(type => Team, team => team.members, {
-        cascadeUpdate: true,
-        cascadeInsert: true
-    })
+    @ManyToMany(type => Team, team => team.members)
     teams: Team[] = [];
 
     @Column()

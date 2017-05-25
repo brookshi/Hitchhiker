@@ -7,6 +7,14 @@ export class StringUtil {
         return uuid.v1();
     }
 
+    static upperFirstAlphabet(word: string): string {
+        if (!word) {
+            return word;
+        }
+
+        return word[0].toUpperCase() + word.substr(1);
+    }
+
     static stringToKeyValues(str: string): Array<KeyValuePair> {
         return str.split('\n').map(k => {
             let [key, ...values] = k.split(':');

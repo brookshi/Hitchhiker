@@ -1,9 +1,10 @@
 import { Modal } from 'antd';
+import { StringUtil } from '../../utils/string_util';
 
-export function deleteDlg(type: string, onOk: (func: Function) => any) {
+export function confirmDlg(type: string, onOk: (func: Function) => any, action: string = 'delete', target: string = '') {
     Modal.confirm({
-        title: `Delete ${type}`,
-        content: `You want to delete this ${type}, right?`,
+        title: `${StringUtil.upperFirstAlphabet(action)} ${type}`,
+        content: `You want to ${action} this ${type}${target ? ': ' : ''}${target}, right?`,
         okText: 'Yes',
         cancelText: 'No',
         onOk: onOk,

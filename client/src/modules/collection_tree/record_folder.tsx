@@ -3,7 +3,7 @@ import { Icon, Menu } from 'antd';
 import ItemWithMenu from '../../components/item_with_menu';
 import './style/index.less';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
-import { deleteDlg } from '../../components/confirm_dialog/index';
+import { confirmDlg } from '../../components/confirm_dialog/index';
 
 interface RecordFolderProps {
 
@@ -51,7 +51,7 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
         this[e.key]();
     }
 
-    delete = () => deleteDlg('folder', () => this.props.deleteRecord());
+    delete = () => confirmDlg('folder', () => this.props.deleteRecord());
 
     edit = () => {
         if (this.itemWithMenu) {

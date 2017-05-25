@@ -3,7 +3,7 @@ import HttpMethodIcon from '../../components/font_icon/http_method_icon';
 import ItemWithMenu from '../../components/item_with_menu';
 import './style/index.less';
 import { Menu, Icon } from 'antd';
-import { deleteDlg } from '../../components/confirm_dialog/index';
+import { confirmDlg } from '../../components/confirm_dialog/index';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 
 interface RecordItemProps {
@@ -48,7 +48,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
         this[e.key]();
     }
 
-    delete = () => deleteDlg('record', () => this.props.deleteRecord());
+    delete = () => confirmDlg('record', () => this.props.deleteRecord());
 
     duplicate = () => this.props.duplicateRecord();
 

@@ -16,7 +16,7 @@ export function* saveTeam() {
 }
 
 function* pushQuitTeamToChannel(action: any) {
-    const channelAction = syncAction({ type: SyncType.delRecord, method: HttpMethod.DELETE, url: `http://localhost:3000/api/record/${action.value.id}` });
+    const channelAction = syncAction({ type: SyncType.quitTeam, method: HttpMethod.DELETE, url: `http://localhost:3000/api/team/${action.value.id}/own` });
     yield put(channelAction);
 }
 

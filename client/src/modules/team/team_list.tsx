@@ -95,8 +95,8 @@ class TeamList extends React.Component<TeamListProps, TeamListState> {
                                             ref={ele => this.teamRefs[t.id] = ele}
                                             team={t}
                                             isOwner={t.owner.id === this.props.user.id}
-                                            disbandTeam={this.props.disbandTeam(t)}
-                                            quitTeam={this.props.quitTeam(t)}
+                                            disbandTeam={() => this.props.disbandTeam(t)}
+                                            quitTeam={() => this.props.quitTeam(t)}
                                             onNameChanged={name => this.changeTeamName(name, t)}
                                         />
                                     </Menu.Item>

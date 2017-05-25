@@ -131,8 +131,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): TeamDispatchProps => {
     return {
         resizeLeftPanel: (width) => dispatch(actionCreator(ResizeLeftPanelType, width)),
         collapsedLeftPanel: (collapsed) => dispatch(actionCreator(UpdateLeftPanelType, collapsed)),
-        disbandTeam: (team) => dispatch(actionCreator(DisbandTeamType, team)),
-        quitTeam: (team) => dispatch(actionCreator(QuitTeamType, team)),
+        disbandTeam: (team) => { dispatch(actionCreator(DisbandTeamType, team)); },
+        quitTeam: (team) => { dispatch(actionCreator(QuitTeamType, team)); },
         updateTeam: (team) => dispatch(actionCreator(SaveTeamType, { isNew: false, team })),
         createTeam: (team) => dispatch(actionCreator(SaveTeamType, { isNew: true, team }))
     };

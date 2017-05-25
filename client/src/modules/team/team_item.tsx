@@ -2,7 +2,7 @@ import React from 'react';
 import ItemWithMenu from '../../components/item_with_menu';
 import './style/index.less';
 import { Menu, Icon } from 'antd';
-import { deleteDlg } from '../../components/confirm_dialog/index';
+import { confirmDlg } from '../../components/confirm_dialog/index';
 import { DtoTeam } from '../../../../api/interfaces/dto_team';
 
 interface TeamItemProps {
@@ -46,7 +46,16 @@ class TeamItem extends React.Component<TeamItemProps, TeamItemState> {
     }
 
     private onClickMenu = (e) => {
-        deleteDlg('team', () => this.props.isOwner ? this.props.disbandTeam() : this.props.quitTeam());
+        this[e.key]();
+    }
+
+    delete = () => {
+        confirmDlg(
+            'team',
+            () => this.props.isOwner ? this.props.disbandTeam() : this.props.quitTeam(),
+            this.props.isOwner ? 'disband' : 'quit',
+            this.props.team.name
+        );
     }
 
     edit = () => {

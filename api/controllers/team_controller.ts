@@ -1,4 +1,4 @@
-import { GET, POST, PUT, BodyParam, PathParam, QueryParam, BaseController } from 'webapi-router';
+import { GET, POST, PUT, DELETE, BodyParam, PathParam, QueryParam, BaseController } from 'webapi-router';
 import { ResObject } from "../common/res_object";
 import { DtoTeam } from "../interfaces/dto_team";
 import { TeamService } from "../services/team_service";
@@ -11,6 +11,8 @@ import { MailService } from "../services/mail_service";
 import { InviteToTeamToken } from "../common/invite_team_token";
 import { User } from "../models/user";
 import { Team } from "../models/team";
+import { DtoTeamQuit } from "../interfaces/dto_team_quit";
+import { UserTeamService } from "../services/user_team_service";
 
 export default class TeamController extends BaseController {
 
@@ -22,6 +24,16 @@ export default class TeamController extends BaseController {
     @PUT('/team')
     async update( @BodyParam info: DtoTeam): Promise<ResObject> {
         return await TeamService.updateTeam(info);
+    }
+
+    @DELETE('/team/:tid/own')
+    async quitTeam(ctx: Koa.Context, @PathParam('tid') teamId: string): Promise<ResObject> {
+        return await UserTeamService.quitTeam({ userId: SessionService.getUserId(ctx), teamId });
+    }
+
+    @DELETE('/team/:tid/user/:uid')
+    async removeUser(ctx: Koa.Context, @PathParam('tid') teamId: string, @PathParam('uid') userId: string): Promise<ResObject> {
+        return await UserTeamService.quitTeam({ userId, teamId });
     }
 
     //TODO: add relative page to display and redirect to login page is missing session
@@ -69,7 +81,7 @@ export default class TeamController extends BaseController {
         }
 
         const info = TokenService.parseToken<InviteToTeamToken>(token);
-        const user = await UserService.getUserById(userId, true, true);
+        const user = await UserService.getUserById(userId, true);
 
         if (!user) {
             return { success: false, message: Message.userNotExist };
