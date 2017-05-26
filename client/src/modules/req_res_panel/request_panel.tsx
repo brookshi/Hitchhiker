@@ -1,11 +1,10 @@
-import React, { SyntheticEvent } from 'react';
+import React from 'react';
 import { Form, Select, Input, Dropdown, Menu, Button, Tabs, Badge, Modal, TreeSelect, Icon, message } from 'antd';
 import { HttpMethod } from '../../common/http_method';
-import KeyValueItem from '../../components/key_value';
 import Editor from '../../components/editor';
+import KeyValueList from '../../components/key_value';
 import { SelectValue } from 'antd/lib/select';
 import { StringUtil } from '../../utils/string_util';
-import { KeyValuePair } from '../../common/key_value_pair';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { DtoHeader } from '../../../../api/interfaces/dto_header';
 import { nameWithTag } from '../../components/name_with_tag/index';
@@ -14,13 +13,16 @@ import { TreeData } from 'antd/lib/tree-select/interface';
 import { bodyTypes } from '../../common/body_type';
 import { testSnippets } from '../../common/test_snippet';
 import './style/index.less';
+import { ValidateStatus, KeyValueEditMode, KeyValueEditType, ValidateType } from '../../common/custom_type';
 
 const FItem = Form.Item;
 const Option = Select.Option;
 const DButton = Dropdown.Button as any;
 const TabPane = Tabs.TabPane;
 
-type validateType = 'success' | 'warning' | 'error' | 'validating';
+const defaultBodyType = 'application/json';
+const defaultTabKey = 'headers';
+const newRecordFlag = '@new';
 
 interface RequestPanelStateProps {
 
@@ -47,11 +49,11 @@ interface RequestPanelStateProps {
 
 interface RequestPanelState {
 
-    nameValidateStatus?: validateType;
+    nameValidateStatus?: ValidateStatus;
 
-    urlValidateStatus?: validateType;
+    urlValidateStatus?: ValidateStatus;
 
-    headersEditMode?: 'Key Value Edit' | 'Bulk Edit';
+    headersEditMode: KeyValueEditMode;
 
     isSaveDlgOpen: boolean;
 
@@ -62,8 +64,6 @@ interface RequestPanelState {
     activeTabKey: string;
 }
 
-const defaultBodyType = 'application/json';
-
 class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelState> {
 
     private reqPanel: any;
@@ -71,10 +71,10 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     constructor(props: RequestPanelStateProps) {
         super(props);
         this.state = {
-            headersEditMode: 'Key Value Edit',
+            headersEditMode: KeyValueEditType.keyValueEdit,
             isSaveDlgOpen: false,
             isSaveAsDlgOpen: false,
-            activeTabKey: 'headers'
+            activeTabKey: defaultTabKey
         };
     }
 
@@ -84,7 +84,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
             isSaveDlgOpen: false,
             isSaveAsDlgOpen: false,
             record: nextProps.activeRecord,
-            nameValidateStatus: nextProps.activeRecord.name.trim() === '' ? 'warning' : undefined
+            nameValidateStatus: nextProps.activeRecord.name.trim() === '' ? ValidateType.warning : undefined
         });
     }
 
@@ -120,9 +120,9 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     private getTabExtraFunc = () => {
         const { activeTabKey } = this.state;
         return (
-            activeTabKey === 'headers' ? (
+            activeTabKey === defaultTabKey ? (
                 <Button className="tab-extra-button" onClick={this.onHeaderModeChanged}>
-                    {this.isBulkEditMode() ? 'Key Value Edit' : 'Bulk Edit'}
+                    {KeyValueEditType.getReverseMode(this.state.headersEditMode)}
                 </Button>
             ) : (
                     activeTabKey === 'body' ? (
@@ -139,25 +139,6 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                             </Dropdown>
                         ))
         );
-    }
-
-    private getHeadersCtrl = () => {
-        const headers = this.props.activeRecord.headers as KeyValuePair[];
-        return this.state.headersEditMode === 'Bulk Edit' ?
-            (
-                <Input
-                    className="req-header"
-                    type="textarea"
-                    spellCheck={false}
-                    value={StringUtil.headersToString(headers)} onChange={(e) => this.onHeadersChanged(e)}
-                />
-            ) :
-            (
-                <KeyValueItem
-                    headers={this.props.activeRecord.headers as DtoHeader[]}
-                    onChanged={this.onHeadersChanged}
-                />
-            );
     }
 
     private onSelectSnippet = (e) => {
@@ -199,19 +180,15 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         );
     }
 
-    private isBulkEditMode = () => this.state.headersEditMode === 'Bulk Edit';
-
     private onHeaderModeChanged = () => {
-        this.setState({ ...this.state, headersEditMode: this.state.headersEditMode === 'Bulk Edit' ? 'Key Value Edit' : 'Bulk Edit' });
+        this.setState({
+            ...this.state,
+            headersEditMode: KeyValueEditType.getReverseMode(this.state.headersEditMode)
+        });
     }
 
-    private onHeadersChanged = (data: SyntheticEvent<any> | DtoHeader[]) => {
-        let rst = data as DtoHeader[];
-        if (!(data instanceof Array)) {
-            rst = StringUtil.stringToKeyValues(data.currentTarget.value) as DtoHeader[];
-        }
-        rst = rst.filter(header => header.key || header.value);
-        this.onRecordChanged({ ...this.props.activeRecord, headers: rst });
+    private onHeadersChanged = (data: DtoHeader[]) => {
+        this.onRecordChanged({ ...this.props.activeRecord, headers: data });
     }
 
     private onMethodChanged = (selectedValue: SelectValue) => {
@@ -225,7 +202,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         let nameValidateStatus = this.state.nameValidateStatus;
         if (type === 'name') {
             if ((value as string).trim() === '') {
-                nameValidateStatus = 'warning';
+                nameValidateStatus = ValidateType.warning;
             } else if (this.state.nameValidateStatus) {
                 nameValidateStatus = undefined;
             }
@@ -254,7 +231,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     private onSave = (e) => {
         if (this.canSave()) {
             const { activeRecord } = this.props;
-            if (activeRecord.id.startsWith('@new')) {
+            if (activeRecord.id.startsWith(newRecordFlag)) {
                 this.setState({ ...this.state, isSaveDlgOpen: true });
             } else {
                 this.props.save(activeRecord);
@@ -275,7 +252,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
             this.props.saveAs(record);
             this.setState({ ...this.state, isSaveAsDlgOpen: false });
         } else {
-            if (oldRecordId.startsWith('@new')) {
+            if (oldRecordId.startsWith(newRecordFlag)) {
                 record.id = StringUtil.generateUID();
                 this.props.updateTabRecordId(oldRecordId, record.id);
             }
@@ -303,7 +280,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
             </Menu>
         );
 
-        const { nameValidateStatus, urlValidateStatus } = this.state;
+        const { nameValidateStatus, urlValidateStatus, headersEditMode } = this.state;
         const { activeRecord, isRequesting, style } = this.props;
 
         return (
@@ -351,7 +328,11 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                             onChange={this.onTabChanged}
                             tabBarExtraContent={this.getTabExtraFunc()}>
                             <TabPane tab={nameWithTag('Headers', activeRecord.headers ? (Math.max(0, activeRecord.headers.length)).toString() : '')} key="headers">
-                                {this.getHeadersCtrl()}
+                                <KeyValueList
+                                    mode={headersEditMode}
+                                    onHeadersChanged={this.onHeadersChanged}
+                                    headers={this.props.activeRecord.headers}
+                                />
                             </TabPane>
                             <TabPane tab={(
                                 <Badge

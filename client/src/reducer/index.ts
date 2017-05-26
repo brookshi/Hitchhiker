@@ -36,7 +36,7 @@ function root(state: State = initialState, action: any): State {
             const cid = record.collectionId;
             let isChanged = true;
             if (cid) {
-                isChanged = !_.isEqual(state.collectionState.collectionsInfo[record.collectionId][record.id], record);
+                isChanged = !_.isEqual(state.collectionState.collectionsInfo.records[record.collectionId][record.id], record);
             }
             const recordState = state.displayRecordsState.recordState;
             const index = recordState.findIndex(r => r.record.id === action.record.id);

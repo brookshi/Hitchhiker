@@ -2,6 +2,7 @@
 .keyvalue-item {
     list-style: none;
     margin-bottom: 4px;
+    z-index: 1000;
     >div {
         display: inline-block;
         >label {
@@ -33,4 +34,10 @@
     &:hover {
         color: @primary-color;
     }
+}
+
+textarea.req-header[type="textarea"] {
+    height: 300px;
+    border-radius: 0px;
+    font-size: 13px;
 }

@@ -2,9 +2,9 @@ export interface DtoVariable {
 
     id: string;
 
-    key: string;
+    key?: string;
 
-    value: string;
+    value?: string;
 
     isActive: boolean;
 

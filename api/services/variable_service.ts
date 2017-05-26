@@ -4,6 +4,7 @@ import { EnvironmentService } from "./environment_service";
 import { Variable } from "../models/variable";
 import { Environment } from "../models/environment";
 import { DtoVariable } from "../interfaces/dto_variable";
+import { ConnectionManager } from "./connection_manager";
 
 export class VariableService {
 

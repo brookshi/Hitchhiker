@@ -61,6 +61,21 @@ export class EnvironmentService {
         return { success: true, message: Message.envCreateSuccess };
     }
 
+    // static async getEnvironments(teamIds: string[], needVariables: boolean = true): Promise<Environment[]> {
+    //     const connection = await ConnectionManager.getInstance();
+
+    //     let rep = connection.getRepository(Environment).createQueryBuilder('environment');
+    //     if (needVariables) {
+    //         rep = rep.leftJoinAndSelect('team.variables', 'variable');
+    //     }
+
+    //     var teams = await rep.where('1=1')
+    //         .andWhereInIds(ids)
+    //         .getMany();
+
+    //     var envs = 
+    // }
+
     static async update(id: string, name: string, variables: DtoVariable[]): Promise<ResObject> {
         const connection = await ConnectionManager.getInstance();
         const env = await EnvironmentService.get(id, true);
