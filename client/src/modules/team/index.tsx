@@ -8,10 +8,11 @@ import Environments from './environments';
 import { DtoTeam } from '../../../../api/interfaces/dto_team';
 import { State } from '../../state';
 import { actionCreator, UpdateLeftPanelType, ResizeLeftPanelType } from '../../action';
-import { DisbandTeamType, QuitTeamType, SaveTeamType, RemoveUserType, InviteMemberType } from './action';
+import { DisbandTeamType, QuitTeamType, SaveTeamType, RemoveUserType, InviteMemberType, SaveEnvironmentType } from './action';
 import './style/index.less';
 import * as _ from 'lodash';
 import { DtoUser } from '../../../../api/interfaces/dto_user';
+import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
 
 const { Content, Sider } = Layout;
 
@@ -24,6 +25,8 @@ interface TeamStateProps {
     user: DtoUser;
 
     teams: DtoTeam[];
+
+    environments: _.Dictionary<DtoEnvironment[]>;
 }
 
 interface TeamDispatchProps {
@@ -43,6 +46,10 @@ interface TeamDispatchProps {
     removeUser(teamId: string, userId: string);
 
     invite(teamId: string, emails: string[]);
+
+    createEnv(env: DtoEnvironment);
+
+    updateEnv(env: DtoEnvironment);
 }
 
 type TeamProps = TeamStateProps & TeamDispatchProps;
@@ -75,11 +82,8 @@ class Team extends React.Component<TeamProps, TeamState> {
     }
 
     getSelectTeamEnvironments = () => {
-        const team = this.props.teams.find(t => t.id === this.state.activeTeam);
-        if (!team || !team.environments) {
-            return [];
-        }
-        return _.sortBy(team.environments, e => e.name);
+        const env = this.props.environments[this.state.activeTeam];
+        return _.sortBy(env, e => e.name);
     }
 
     public render() {
@@ -114,7 +118,12 @@ class Team extends React.Component<TeamProps, TeamState> {
                         removeUser={removeUser}
                         invite={invite}
                     />
-                    <Environments environments={this.getSelectTeamEnvironments()} />
+                    <Environments
+                        environments={this.getSelectTeamEnvironments()}
+                        createEnv={this.props.createEnv}
+                        updateEnv={this.props.updateEnv}
+                        activeTeam={this.state.activeTeam}
+                    />
                 </Content>
             </Layout>
         );
@@ -130,7 +139,8 @@ const mapStateToProps = (state: State): TeamStateProps => {
         leftPanelWidth: leftPanelWidth,
         collapsed: collapsed,
         user: user,
-        teams: _.chain(teams).values<DtoTeam>().sortBy('name').sortBy(t => t.owner.id !== user.id).value()
+        teams: _.chain(teams).values<DtoTeam>().sortBy('name').sortBy(t => t.owner.id !== user.id).value(),
+        environments: state.environmentState.environments
     };
 };
 
@@ -143,7 +153,9 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): TeamDispatchProps => {
         updateTeam: (team) => dispatch(actionCreator(SaveTeamType, { isNew: false, team })),
         createTeam: (team) => dispatch(actionCreator(SaveTeamType, { isNew: true, team })),
         removeUser: (teamId, userId) => { dispatch(actionCreator(RemoveUserType, { teamId, userId })); },
-        invite: (teamId, emails) => { dispatch(actionCreator(InviteMemberType, { teamId, emails })); }
+        invite: (teamId, emails) => { dispatch(actionCreator(InviteMemberType, { teamId, emails })); },
+        createEnv: (env) => { dispatch(actionCreator(SaveEnvironmentType, { isNew: true, env })); },
+        updateEnv: (env) => { dispatch(actionCreator(SaveEnvironmentType, { isNew: false, env })); }
     };
 };
 

@@ -4,6 +4,7 @@ import { DtoResUser, DtoResTeam } from '../../api/interfaces/dto_res';
 import { StringUtil } from './utils/string_util';
 import { RecordCategory } from './common/record_category';
 import { RunResult } from '../../api/interfaces/dto_run_result';
+import { DtoEnvironment } from '../../api/interfaces/dto_environment';
 
 export function getDefaultRecord(isInit: boolean = false): DtoRecord {
     return {
@@ -47,6 +48,11 @@ export interface CollectionState {
     isLoaded: boolean;
 }
 
+export interface EnvironmentState {
+
+    environments: _.Dictionary<DtoEnvironment[]>;
+}
+
 export interface UIState {
 
     activeModule: string;
@@ -80,6 +86,8 @@ export interface State {
 
     displayRecordsState: DisplayRecordsState;
 
+    environmentState: EnvironmentState;
+
     // documentState: DocumentState;
 
     // mockState: MockState;
@@ -106,6 +114,7 @@ export const initialState: State = {
             updateDate: new Date(),
         }
     },
+    environmentState: { environments: {} },
     teamState: { teams: {} },
     collectionState: {
         isLoaded: false,

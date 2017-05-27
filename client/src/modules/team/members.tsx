@@ -125,7 +125,7 @@ class Members extends React.Component<MembersProps, MembersState> {
                                                     href="#"
                                                     onClick={() => this.removeUser(record)}>
                                                     Delete
-                                            </a>
+                                                </a>
                                             </span>
                                         )
                                 }

@@ -7,6 +7,8 @@ import { StringUtil } from "../utils/string_util";
 import { User } from "../models/user";
 import { UserService } from "./user_service";
 import { Environment } from "../models/environment";
+import { Variable } from "../models/variable";
+import { EnvironmentService } from "./environment_service";
 
 export class TeamService {
 
@@ -53,10 +55,6 @@ export class TeamService {
     static async getTeams(ids: string[], needOwner: boolean = true, needCollection: boolean = true, needUser: boolean = false, needEnv: boolean = false): Promise<Team[]> {
         const connection = await ConnectionManager.getInstance();
 
-        const innerSelect = connection.getRepository(Environment)
-            .createQueryBuilder('env')
-            .leftJoinAndSelect('env.variables', 'variables');
-
         let rep = connection.getRepository(Team).createQueryBuilder('team');
         if (needCollection) {
             rep = rep.leftJoinAndSelect('team.collections', 'collection');
@@ -68,7 +66,7 @@ export class TeamService {
             rep = rep.leftJoinAndSelect('team.owner', 'owner');
         }
         if (needEnv) {
-            rep = rep.leftJoinAndSelect(`(${innerSelect.getGeneratedQuery()})`, 'environment', '(team.id = environment.team)');
+            rep = rep.leftJoinAndSelect(`team.environments`, 'environment');
         }
 
         return await rep.where('1=1')

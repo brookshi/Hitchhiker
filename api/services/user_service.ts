@@ -8,6 +8,7 @@ import { MailService } from "./mail_service";
 import { StringUtil } from "../utils/string_util";
 import { TeamService } from "./team_service";
 import * as _ from "lodash";
+import { EnvironmentService } from "./environment_service";
 
 export class UserService {
 
@@ -29,9 +30,11 @@ export class UserService {
         const user = await UserService.getUserByEmail(email, true);
         if (user && user.password === pwd) {//TODO: md5
             if (user.isActive) {
+                const environments = _.groupBy(await EnvironmentService.getEnvironments(_.flatten(user.teams.map(t => t.environments.map(e => e.id)))), e => e.team.id);
+                user.teams.forEach(t => t.environments = undefined);
                 const teams = _.keyBy(user.teams, 'id');
                 user.teams = undefined;
-                return { success: true, message: '', result: { user, teams } };
+                return { success: true, message: '', result: { user, teams, environments } };
             } else {
                 return { success: false, message: Message.accountNotActive };
             }

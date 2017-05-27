@@ -8,6 +8,7 @@ export const DisbandTeamType = 'disband_team_type';
 export const SaveTeamType = 'save_team_type';
 export const RemoveUserType = 'remove_user_type';
 export const InviteMemberType = 'invite_member_type';
+export const SaveEnvironmentType = 'save_env_type';
 
 export function* quitTeam() {
     yield takeEvery(QuitTeamType, pushQuitTeamToChannel);
@@ -27,6 +28,10 @@ export function* removeUser() {
 
 export function* inviteMember() {
     yield takeEvery(InviteMemberType, pushInviteMemberToChannel);
+}
+
+export function* saveEnvironment() {
+    yield takeEvery(SaveEnvironmentType, pushSaveEnvToChannel);
 }
 
 function* pushQuitTeamToChannel(action: any) {
@@ -52,5 +57,11 @@ function* pushSaveTeamToChannel(action: any) {
 
 function* pushInviteMemberToChannel(action: any) {
     const channelAction = syncAction({ type: SyncType.inviteMember, method: HttpMethod.POST, url: `http://localhost:3000/api/team/${action.value.teamId}`, body: { emails: action.value.emails } });
+    yield put(channelAction);
+}
+
+function* pushSaveEnvToChannel(action: any) {
+    const method = action.value.isNew ? HttpMethod.POST : HttpMethod.PUT;
+    const channelAction = syncAction({ type: SyncType.inviteMember, method: method, url: `http://localhost:3000/api/environment`, body: action.value.env });
     yield put(channelAction);
 }

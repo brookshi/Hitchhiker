@@ -6,6 +6,7 @@ import * as _ from 'lodash';
 import { uiState } from './ui';
 import { userState } from './user';
 import { teamState } from './team';
+import { environmentState } from './environment';
 
 export const reduceReducers = (...reducers) => {
     return (state, action) =>
@@ -21,7 +22,8 @@ export function rootReducer(state: State = initialState, action: any): State {
         displayRecordsState,
         uiState,
         userState,
-        teamState
+        teamState,
+        environmentState
     })(state, action);
 
     const finalState = root(intermediateState, action);

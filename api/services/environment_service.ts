@@ -8,6 +8,7 @@ import { Message } from "../common/message";
 import { StringUtil } from "../utils/string_util";
 import { DtoEnvironment } from "../interfaces/dto_environment";
 import { VariableService } from "./variable_service";
+import { Team } from "../models/team";
 
 export class EnvironmentService {
 
@@ -15,7 +16,9 @@ export class EnvironmentService {
         const env = new Environment();
         env.name = dtoEnv.name;
         env.id = dtoEnv.id || StringUtil.generateUID();
-        env.variables = [];
+        env.variables = dtoEnv.variables.map(v => VariableService.fromDto(v));
+        env.team = new Team();
+        env.team.id = dtoEnv.teamId;
         return env;
     }
 
@@ -43,56 +46,46 @@ export class EnvironmentService {
         return await rep.where('env.id=:id').addParameters({ 'id': id }).getOne();
     }
 
-    static async create(name: string, variables: DtoVariable[], userId: string): Promise<ResObject> {
-        const owner = new User();
-        owner.id = userId;
-
-        const env = new Environment();
-        env.id = StringUtil.generateUID();
-        env.name = name;
-        if (variables) {
-            variables.forEach(v => {
-                env.variables.push(VariableService.create(v.key, v.value, v.isActive, v.sort, env));
-            });
-        }
+    static async create(dtoEnv: DtoEnvironment): Promise<ResObject> {
+        const env = EnvironmentService.fromDto(dtoEnv);
+        EnvironmentService.adjustVariables(env);
 
         await EnvironmentService.save(env);
 
         return { success: true, message: Message.envCreateSuccess };
     }
 
-    // static async getEnvironments(teamIds: string[], needVariables: boolean = true): Promise<Environment[]> {
-    //     const connection = await ConnectionManager.getInstance();
+    private static adjustVariables(env: Environment) {
+        env.variables.forEach((variable, index) => {
+            variable.id = variable.id || StringUtil.generateUID();
+            variable.sort = index;
+        });
+    }
 
-    //     let rep = connection.getRepository(Environment).createQueryBuilder('environment');
-    //     if (needVariables) {
-    //         rep = rep.leftJoinAndSelect('team.variables', 'variable');
-    //     }
-
-    //     var teams = await rep.where('1=1')
-    //         .andWhereInIds(ids)
-    //         .getMany();
-
-    //     var envs = 
-    // }
-
-    static async update(id: string, name: string, variables: DtoVariable[]): Promise<ResObject> {
+    static async getEnvironments(ids: string[], needVariables: boolean = true, needTeam: boolean = true): Promise<Environment[]> {
         const connection = await ConnectionManager.getInstance();
-        const env = await EnvironmentService.get(id, true);
-        if (!env) {
-            throw new Error(Message.envNotExist);
+
+        let rep = connection.getRepository(Environment).createQueryBuilder('environment');
+        if (needVariables) {
+            rep = rep.leftJoinAndSelect('environment.variables', 'variable');
         }
-        if (env.variables && env.variables.length > 0) {
-            await connection.getRepository(Variable).remove(env.variables);
+        if (needTeam) {
+            rep = rep.leftJoinAndSelect('environment.team', 'team');
         }
 
-        env.name = name;
-        env.variables = [];
-        if (variables) {
-            variables.forEach(v => {
-                env.variables.push(VariableService.create(v.key, v.value, v.isActive, v.sort, env));
-            });
-        }
+        return await rep.where('1=1')
+            .andWhereInIds(ids)
+            .getMany();
+    }
+
+    static async update(dtoEnv: DtoEnvironment): Promise<ResObject> {
+        const connection = await ConnectionManager.getInstance();
+        const env = EnvironmentService.fromDto(dtoEnv);
+        EnvironmentService.adjustVariables(env);
+        // if (env.variables && env.variables.length > 0) {
+        //     await connection.getRepository(Variable).remove(env.variables);
+        // }
+
         await EnvironmentService.save(env);
 
         return { success: true, message: Message.envUpdateSuccess };

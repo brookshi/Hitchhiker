@@ -6,5 +6,7 @@ export interface DtoEnvironment {
 
     name: string;
 
+    teamId: string;
+
     variables: DtoVariable[];
 }

@@ -4,10 +4,20 @@ import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
 import KeyValueComponent from '../../components/key_value';
 import { KeyValueEditType, KeyValueEditMode } from '../../common/custom_type';
 import { DtoHeader } from '../../../../api/interfaces/dto_header';
+import { StringUtil } from '../../utils/string_util';
+import { DtoVariable } from '../../../../api/interfaces/dto_variable';
+
+const getDefaultEnv = (teamId: string) => { return { id: StringUtil.generateUID(), name: '', variables: [], teamId }; };
 
 interface EnvironmentsProps {
 
+    activeTeam: string;
+
     environments: DtoEnvironment[];
+
+    createEnv(env: DtoEnvironment);
+
+    updateEnv(env: DtoEnvironment);
 }
 
 interface EnvironmentsState {
@@ -16,9 +26,9 @@ interface EnvironmentsState {
 
     variablesEditMode: KeyValueEditMode;
 
-    envName: string;
+    environment: DtoEnvironment;
 
-    variables: DtoHeader[];
+    isNew: boolean;
 }
 
 class EnvironmentTable extends Table<DtoEnvironment> { }
@@ -32,30 +42,35 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
     constructor(props: EnvironmentsProps) {
         super(props);
         this.state = {
+            isNew: true,
             isEditEnvDlgOpen: false,
             variablesEditMode: KeyValueEditType.keyValueEdit,
-            envName: '',
-            variables: []
+            environment: getDefaultEnv(props.activeTeam)
         };
     }
 
     private saveEnvironment = () => {
+        if (!this.state.environment.name) {
+            return;
+        }
 
+        this.state.isNew ? this.props.createEnv(this.state.environment) : this.props.updateEnv(this.state.environment);
+        this.setState({ ...this.state, isEditEnvDlgOpen: false, environment: getDefaultEnv(this.props.activeTeam) });
     }
 
     private onHeadersChanged = (variables: DtoHeader[]) => {
-        this.setState({ ...this.state, variables });
+        this.setState({ ...this.state, environment: { ...this.state.environment, variables: variables as DtoVariable[] } });
     }
 
     private onEnvNameChanged = (envName: string) => {
-        this.setState({ ...this.state, envName });
+        this.setState({ ...this.state, environment: { ...this.state.environment, name: envName } });
     }
 
     private editEnv = (env: DtoEnvironment) => {
         this.setState({
             ...this.state,
-            envName: env.name,
-            variables: env.variables as DtoHeader[],
+            environment: env,
+            isNew: false,
             isEditEnvDlgOpen: true
         }, () => this.envNameInput && this.envNameInput.focus());
     }
@@ -112,15 +127,14 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
                     width={600}
                 >
                     <div className="env-variable-tip">
-                        {
-                            'Variables can be used in Url, Headers, Body with format {{key}}, when send request, {{key}} will be replaced with value. For example, you can use different host for environment QA, Staging, Live by using variables.'
-                        }
+                        {'Variables can be used in Url, Headers, Body with format {{key}}, when send request, {{key}} will be replaced with value. For example, you can use different host for environment QA, Staging, Live by using variables.'}
                     </div>
                     <div style={{ marginBottom: '8px' }}>Environment Name:</div>
                     <Input
                         ref={ele => this.envNameInput = ele}
                         style={{ width: '100%' }}
-                        value={this.state.envName}
+                        value={this.state.environment.name}
+                        spellCheck={false}
                         onChange={e => this.onEnvNameChanged(e.currentTarget.value)}
                     />
                     <div className="env-variable-title">
@@ -133,7 +147,7 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
                     </div>
                     <KeyValueComponent
                         mode={this.state.variablesEditMode}
-                        headers={this.state.variables}
+                        headers={this.state.environment.variables}
                         onHeadersChanged={this.onHeadersChanged}
                     />
                 </Modal>
