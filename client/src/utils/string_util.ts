@@ -1,10 +1,11 @@
 import * as uuid from 'uuid';
 import { KeyValuePair } from '../common/key_value_pair';
 import { Beautify } from './beautify';
+import * as shortId from 'shortid';
 
 export class StringUtil {
     static generateUID(): string {
-        return uuid.v1();
+        return `${uuid.v1()}-${shortId.generate()}`;
     }
 
     static upperFirstAlphabet(word: string): string {

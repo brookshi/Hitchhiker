@@ -4,7 +4,7 @@ import { sendRequest, saveRecord, saveAsRecord } from './modules/req_res_panel/a
 import RequestManager, { SyncItem } from './utils/request_manager';
 import { delay } from 'redux-saga';
 import { login } from './modules/login/action';
-import { saveTeam, quitTeam, disbandTeam, removeUser, inviteMember, saveEnvironment } from './modules/team/action';
+import { saveTeam, quitTeam, disbandTeam, removeUser, inviteMember, saveEnvironment, delEnvironment } from './modules/team/action';
 
 export const ResizeLeftPanelType = 'resize_left_panel_type';
 export const UpdateLeftPanelType = 'collapse_left_panel_type';
@@ -36,6 +36,7 @@ export function* rootSaga() {
         spawn(removeUser),
         spawn(inviteMember),
         spawn(saveEnvironment),
+        spawn(delEnvironment),
         spawn(sync)
     ];
 };

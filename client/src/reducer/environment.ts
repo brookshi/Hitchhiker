@@ -1,6 +1,6 @@
 import { initialState, EnvironmentState } from '../state';
 import { LoginSuccessType } from '../modules/login/action';
-import { QuitTeamType, DisbandTeamType, SaveEnvironmentType } from '../modules/team/action';
+import { QuitTeamType, DisbandTeamType, SaveEnvironmentType, DelEnvironmentType } from '../modules/team/action';
 import * as _ from 'lodash';
 
 export function environmentState(state: EnvironmentState = initialState.environmentState, action: any): EnvironmentState {
@@ -21,6 +21,12 @@ export function environmentState(state: EnvironmentState = initialState.environm
             const envs = state.environments;
             Reflect.deleteProperty(envs, action.value.id);
             return { ...state, environments: { ...envs } };
+        }
+        case DelEnvironmentType: {
+            const { teamId, envId } = action.value;
+            const envs = state.environments[teamId];
+            _.remove(envs, e => e.id === envId);
+            return { ...state, environments: { ...state.environments, [teamId]: [...envs] } };
         }
         default:
             return state;

@@ -8,7 +8,7 @@ import Environments from './environments';
 import { DtoTeam } from '../../../../api/interfaces/dto_team';
 import { State } from '../../state';
 import { actionCreator, UpdateLeftPanelType, ResizeLeftPanelType } from '../../action';
-import { DisbandTeamType, QuitTeamType, SaveTeamType, RemoveUserType, InviteMemberType, SaveEnvironmentType } from './action';
+import { DisbandTeamType, QuitTeamType, SaveTeamType, RemoveUserType, InviteMemberType, SaveEnvironmentType, DelEnvironmentType } from './action';
 import './style/index.less';
 import * as _ from 'lodash';
 import { DtoUser } from '../../../../api/interfaces/dto_user';
@@ -50,6 +50,8 @@ interface TeamDispatchProps {
     createEnv(env: DtoEnvironment);
 
     updateEnv(env: DtoEnvironment);
+
+    delEnv(envId: string, teamId: string);
 }
 
 type TeamProps = TeamStateProps & TeamDispatchProps;
@@ -87,7 +89,7 @@ class Team extends React.Component<TeamProps, TeamState> {
     }
 
     public render() {
-        const { user, collapsed, collapsedLeftPanel, teams, leftPanelWidth, disbandTeam, quitTeam, updateTeam, createTeam, removeUser, invite } = this.props;
+        const { user, collapsed, collapsedLeftPanel, teams, leftPanelWidth, disbandTeam, quitTeam, updateTeam, createTeam, removeUser, invite, createEnv, updateEnv, delEnv } = this.props;
 
         return (
             <Layout className="main-panel">
@@ -118,11 +120,13 @@ class Team extends React.Component<TeamProps, TeamState> {
                         removeUser={removeUser}
                         invite={invite}
                     />
+                    <div style={{ height: 12 }} />
                     <Environments
                         environments={this.getSelectTeamEnvironments()}
-                        createEnv={this.props.createEnv}
-                        updateEnv={this.props.updateEnv}
+                        createEnv={createEnv}
+                        updateEnv={updateEnv}
                         activeTeam={this.state.activeTeam}
+                        delEnv={envId => delEnv(envId, this.state.activeTeam)}
                     />
                 </Content>
             </Layout>
@@ -155,7 +159,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): TeamDispatchProps => {
         removeUser: (teamId, userId) => { dispatch(actionCreator(RemoveUserType, { teamId, userId })); },
         invite: (teamId, emails) => { dispatch(actionCreator(InviteMemberType, { teamId, emails })); },
         createEnv: (env) => { dispatch(actionCreator(SaveEnvironmentType, { isNew: true, env })); },
-        updateEnv: (env) => { dispatch(actionCreator(SaveEnvironmentType, { isNew: false, env })); }
+        updateEnv: (env) => { dispatch(actionCreator(SaveEnvironmentType, { isNew: false, env })); },
+        delEnv: (envId, teamId) => { dispatch(actionCreator(DelEnvironmentType, { envId, teamId })); }
     };
 };
 

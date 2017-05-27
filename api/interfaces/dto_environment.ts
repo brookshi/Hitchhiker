@@ -1,4 +1,5 @@
 import { DtoVariable } from "./dto_variable";
+import { DtoTeam } from "./dto_team";
 
 export interface DtoEnvironment {
 
@@ -6,7 +7,7 @@ export interface DtoEnvironment {
 
     name: string;
 
-    teamId: string;
+    team: Partial<DtoTeam>;
 
     variables: DtoVariable[];
 }

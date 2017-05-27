@@ -6,9 +6,6 @@ import { Message } from "../common/message";
 import { StringUtil } from "../utils/string_util";
 import { User } from "../models/user";
 import { UserService } from "./user_service";
-import { Environment } from "../models/environment";
-import { Variable } from "../models/variable";
-import { EnvironmentService } from "./environment_service";
 
 export class TeamService {
 

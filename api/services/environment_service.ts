@@ -1,9 +1,7 @@
 import { ResObject } from '../common/res_object';
 import { Environment } from '../models/environment';
-import { User } from '../models/user';
 import { ConnectionManager } from "./connection_manager";
 import { Variable } from "../models/variable";
-import { DtoVariable } from "../interfaces/dto_variable";
 import { Message } from "../common/message";
 import { StringUtil } from "../utils/string_util";
 import { DtoEnvironment } from "../interfaces/dto_environment";
@@ -18,7 +16,7 @@ export class EnvironmentService {
         env.id = dtoEnv.id || StringUtil.generateUID();
         env.variables = dtoEnv.variables.map(v => VariableService.fromDto(v));
         env.team = new Team();
-        env.team.id = dtoEnv.teamId;
+        env.team.id = dtoEnv.team.id;
         return env;
     }
 

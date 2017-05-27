@@ -6,8 +6,9 @@ import { KeyValueEditType, KeyValueEditMode } from '../../common/custom_type';
 import { DtoHeader } from '../../../../api/interfaces/dto_header';
 import { StringUtil } from '../../utils/string_util';
 import { DtoVariable } from '../../../../api/interfaces/dto_variable';
+import { confirmDlg } from '../../components/confirm_dialog/index';
 
-const getDefaultEnv = (teamId: string) => { return { id: StringUtil.generateUID(), name: '', variables: [], teamId }; };
+const getDefaultEnv = (teamId: string) => { return { id: StringUtil.generateUID(), name: '', variables: [], team: { id: teamId } }; };
 
 interface EnvironmentsProps {
 
@@ -18,6 +19,8 @@ interface EnvironmentsProps {
     createEnv(env: DtoEnvironment);
 
     updateEnv(env: DtoEnvironment);
+
+    delEnv(envId: string);
 }
 
 interface EnvironmentsState {
@@ -58,6 +61,18 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
         this.setState({ ...this.state, isEditEnvDlgOpen: false, environment: getDefaultEnv(this.props.activeTeam) });
     }
 
+    private duplicate = (env: DtoEnvironment) => {
+        const envCopy = { ...env };
+        envCopy.name = `${envCopy.name}.copy`;
+        envCopy.id = StringUtil.generateUID();
+        envCopy.variables.forEach(v => v.id = StringUtil.generateUID());
+        this.props.createEnv(envCopy);
+    }
+
+    private delEnvironment = (record: DtoEnvironment) => {
+        confirmDlg('environment', () => this.props.delEnv(record.id), 'delete', record.name);
+    }
+
     private onHeadersChanged = (variables: DtoHeader[]) => {
         this.setState({ ...this.state, environment: { ...this.state.environment, variables: variables as DtoVariable[] } });
     }
@@ -66,11 +81,11 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
         this.setState({ ...this.state, environment: { ...this.state.environment, name: envName } });
     }
 
-    private editEnv = (env: DtoEnvironment) => {
+    private showEditDlg = (env: DtoEnvironment, isNew: boolean) => {
         this.setState({
             ...this.state,
             environment: env,
-            isNew: false,
+            isNew: isNew,
             isEditEnvDlgOpen: true
         }, () => this.envNameInput && this.envNameInput.focus());
     }
@@ -87,6 +102,16 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
             <div>
                 <div className="team-title">
                     Environments:
+                    <Button
+                        className="team-create-btn"
+                        type="primary"
+                        size="small"
+                        icon="plus"
+                        ghost={true}
+                        onClick={() => this.showEditDlg(getDefaultEnv(this.props.activeTeam), true)}
+                    >
+                        New Environment
+                    </Button>
                 </div>
                 <EnvironmentTable
                     className="team-table team-environments"
@@ -101,7 +126,7 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
                         dataIndex="name"
                         key="name"
                         render={(text, record) => (
-                            <a href="#" onClick={() => this.editEnv(record)}>{text}</a>
+                            <a href="#" onClick={() => this.showEditDlg(record, false)}>{text}</a>
                         )}
                     />
                     <EnvironmentColumn
@@ -110,9 +135,9 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
                         width={240}
                         render={(text, record) => (
                             <span>
-                                <a href="#">Edit</a> - <span />
-                                <a href="#">Duplicate</a> - <span />
-                                <a href="#">Delete</a>
+                                <a href="#" onClick={() => this.showEditDlg(record, false)}>Edit</a> - <span />
+                                <a href="#" onClick={() => this.duplicate(record)}>Duplicate</a> - <span />
+                                <a href="#" onClick={() => this.delEnvironment(record)}>Delete</a>
                             </span>
                         )}
                     />

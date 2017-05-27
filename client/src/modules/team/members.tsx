@@ -82,9 +82,16 @@ class Members extends React.Component<MembersProps, MembersState> {
         return (
             <div>
                 <div className="team-title">Members:
-                    <span className="team-members-invite-btn">
-                        <Button type="primary" size="small" icon="user-add" onClick={this.clickInviteBtn}>Invite</Button>
-                    </span>
+                    <Button
+                        className="team-create-btn"
+                        type="primary"
+                        size="small"
+                        icon="user-add"
+                        ghost={true}
+                        onClick={this.clickInviteBtn}
+                    >
+                        Invite Members
+                    </Button>
                 </div>
                 <MemberTable
                     className="team-table team-members"

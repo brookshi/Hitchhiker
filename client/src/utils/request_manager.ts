@@ -21,6 +21,10 @@ export enum SyncType {
     quitTeam = 8,
 
     inviteMember = 9,
+
+    saveEnvironment = 10,
+
+    delEnvironment = 11
 }
 
 export interface SyncItem {
