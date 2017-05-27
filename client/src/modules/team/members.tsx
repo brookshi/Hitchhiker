@@ -81,7 +81,7 @@ class Members extends React.Component<MembersProps, MembersState> {
     public render() {
         return (
             <div>
-                <div className="team-title">Members:
+                <div className="team-title">Members
                     <Button
                         className="team-create-btn"
                         type="primary"

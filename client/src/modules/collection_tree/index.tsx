@@ -322,7 +322,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
 }
 
 const mapStateToProps = (state: State): CollectionListStateProps => {
-    let teams = state.userState.userInfo.teams ? state.userState.userInfo.teams.map(t => ({ id: t.id, name: t.name })) : [];
+    let teams = _.values(state.teamState.teams).map(t => ({ id: t.id ? t.id : '', name: t.name ? t.name : '' }));
     return {
         collections: state.collectionState.collectionsInfo.collections,
         records: state.collectionState.collectionsInfo.records,

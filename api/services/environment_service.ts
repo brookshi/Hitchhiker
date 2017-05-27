@@ -78,13 +78,14 @@ export class EnvironmentService {
 
     static async update(dtoEnv: DtoEnvironment): Promise<ResObject> {
         const connection = await ConnectionManager.getInstance();
-        const env = EnvironmentService.fromDto(dtoEnv);
-        EnvironmentService.adjustVariables(env);
-        // if (env.variables && env.variables.length > 0) {
-        //     await connection.getRepository(Variable).remove(env.variables);
-        // }
+        const env = await EnvironmentService.get(dtoEnv.id, true);
+        if (env && env.variables && env.variables.length > 0) {
+            await connection.getRepository(Variable).remove(env.variables);
+        }
+        const newEnv = EnvironmentService.fromDto(dtoEnv);
+        EnvironmentService.adjustVariables(newEnv);
 
-        await EnvironmentService.save(env);
+        await EnvironmentService.save(newEnv);
 
         return { success: true, message: Message.envUpdateSuccess };
     }

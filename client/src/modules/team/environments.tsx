@@ -101,7 +101,7 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
         return (
             <div>
                 <div className="team-title">
-                    Environments:
+                    Environments
                     <Button
                         className="team-create-btn"
                         type="primary"
