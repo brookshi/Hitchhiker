@@ -27,7 +27,7 @@ export class StringUtil {
         let regex = /{{.*?}}/g;
         let rst;
         while ((rst = regex.exec(target)) !== null) {
-            arr.push(<string>rst);
+            arr.push(<string>rst[0]);
         }
 
         if (arr.length === 0) {

@@ -1,7 +1,8 @@
 import { initialState, EnvironmentState } from '../state';
 import { LoginSuccessType } from '../modules/login/action';
-import { QuitTeamType, DisbandTeamType, SaveEnvironmentType, DelEnvironmentType } from '../modules/team/action';
+import { QuitTeamType, DisbandTeamType, SaveEnvironmentType, DelEnvironmentType, EditEnvCompletedType } from '../modules/team/action';
 import * as _ from 'lodash';
+import { SwitchEnvtype, EditEnvType } from '../modules/req_res_panel/action';
 
 export function environmentState(state: EnvironmentState = initialState.environmentState, action: any): EnvironmentState {
     switch (action.type) {
@@ -27,6 +28,17 @@ export function environmentState(state: EnvironmentState = initialState.environm
             const envs = state.environments[teamId];
             _.remove(envs, e => e.id === envId);
             return { ...state, environments: { ...state.environments, [teamId]: [...envs] } };
+        }
+        case SwitchEnvtype: {
+            const { teamId, envId } = action.value;
+            return { ...state, activeEnv: { [teamId]: envId } };
+        }
+        case EditEnvType: {
+            const isEditEnvDlgOpen = action.value.envId !== 'no environment';
+            return { ...state, isEditEnvDlgOpen, editedEnvironment: action.value.envId };
+        }
+        case EditEnvCompletedType: {
+            return { ...state, isEditEnvDlgOpen: false, editedEnvironment: undefined };
         }
         default:
             return state;

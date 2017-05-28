@@ -6,10 +6,12 @@ import { HttpMethod } from '../../common/http_method';
 export const QuitTeamType = 'quit_team_type';
 export const DisbandTeamType = 'disband_team_type';
 export const SaveTeamType = 'save_team_type';
+export const ActiveTeamType = 'active_team_type';
 export const RemoveUserType = 'remove_user_type';
 export const InviteMemberType = 'invite_member_type';
 export const SaveEnvironmentType = 'save_env_type';
 export const DelEnvironmentType = 'del_env_type';
+export const EditEnvCompletedType = 'edit_env_completed_type';
 
 export function* quitTeam() {
     yield takeEvery(QuitTeamType, pushQuitTeamToChannel);

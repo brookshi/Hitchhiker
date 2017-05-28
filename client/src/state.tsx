@@ -51,6 +51,12 @@ export interface CollectionState {
 export interface EnvironmentState {
 
     environments: _.Dictionary<DtoEnvironment[]>;
+
+    activeEnv: _.Dictionary<string>;
+
+    isEditEnvDlgOpen: boolean;
+
+    editedEnvironment?: string;
 }
 
 export interface UIState {
@@ -72,6 +78,8 @@ export interface UserInfoState {
 export interface TeamState {
 
     teams: _.Dictionary<DtoResTeam>;
+
+    activeTeam: string;
 }
 
 export interface State {
@@ -114,8 +122,15 @@ export const initialState: State = {
             updateDate: new Date(),
         }
     },
-    environmentState: { environments: {} },
-    teamState: { teams: {} },
+    environmentState: {
+        environments: {},
+        activeEnv: {},
+        isEditEnvDlgOpen: false
+    },
+    teamState: {
+        teams: {},
+        activeTeam: ''
+    },
     collectionState: {
         isLoaded: false,
         collectionsInfo: {

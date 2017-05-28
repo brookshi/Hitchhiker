@@ -16,16 +16,22 @@ interface EnvironmentsProps {
 
     environments: DtoEnvironment[];
 
+    isEditEnvDlgOpen: boolean;
+
+    editedEnvironment?: string;
+
     createEnv(env: DtoEnvironment);
 
     updateEnv(env: DtoEnvironment);
 
     delEnv(envId: string);
+
+    editEnvCompleted();
+
+    editEnv(teamId: string, envId: string);
 }
 
 interface EnvironmentsState {
-
-    isEditEnvDlgOpen: boolean;
 
     variablesEditMode: KeyValueEditMode;
 
@@ -45,11 +51,27 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
     constructor(props: EnvironmentsProps) {
         super(props);
         this.state = {
-            isNew: true,
-            isEditEnvDlgOpen: false,
+            isNew: false,
             variablesEditMode: KeyValueEditType.keyValueEdit,
             environment: getDefaultEnv(props.activeTeam)
         };
+    }
+
+    componentWillReceiveProps(nextProps: EnvironmentsProps) {
+        this.showEditDlg(nextProps);
+    }
+
+    public componentDidMount() {
+        this.showEditDlg(this.props);
+    }
+
+    private showEditDlg = (props: EnvironmentsProps) => {
+        const { editedEnvironment, environments, activeTeam, isEditEnvDlgOpen } = props;
+        if (isEditEnvDlgOpen) {
+            this.setState({
+                ...this.state, environment: environments.find(e => e.id === editedEnvironment) || getDefaultEnv(activeTeam)
+            }, () => this.envNameInput && this.envNameInput.focus());
+        }
     }
 
     private saveEnvironment = () => {
@@ -58,7 +80,7 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
         }
 
         this.state.isNew ? this.props.createEnv(this.state.environment) : this.props.updateEnv(this.state.environment);
-        this.setState({ ...this.state, isEditEnvDlgOpen: false, environment: getDefaultEnv(this.props.activeTeam) });
+        this.props.editEnvCompleted();
     }
 
     private duplicate = (env: DtoEnvironment) => {
@@ -81,13 +103,10 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
         this.setState({ ...this.state, environment: { ...this.state.environment, name: envName } });
     }
 
-    private showEditDlg = (env: DtoEnvironment, isNew: boolean) => {
+    private editEnv = (env: DtoEnvironment, isNew: boolean) => {
         this.setState({
-            ...this.state,
-            environment: env,
-            isNew: isNew,
-            isEditEnvDlgOpen: true
-        }, () => this.envNameInput && this.envNameInput.focus());
+            ...this.state, isNew: isNew
+        }, () => this.props.editEnv(this.props.activeTeam, env.id));
     }
 
     private onHeaderModeChanged = () => {
@@ -108,7 +127,7 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
                         size="small"
                         icon="plus"
                         ghost={true}
-                        onClick={() => this.showEditDlg(getDefaultEnv(this.props.activeTeam), true)}
+                        onClick={() => this.editEnv(getDefaultEnv(this.props.activeTeam), true)}
                     >
                         New Environment
                     </Button>
@@ -126,7 +145,7 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
                         dataIndex="name"
                         key="name"
                         render={(text, record) => (
-                            <a href="#" onClick={() => this.showEditDlg(record, false)}>{text}</a>
+                            <a href="#" onClick={() => this.editEnv(record, false)}>{text}</a>
                         )}
                     />
                     <EnvironmentColumn
@@ -135,7 +154,7 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
                         width={240}
                         render={(text, record) => (
                             <span>
-                                <a href="#" onClick={() => this.showEditDlg(record, false)}>Edit</a> - <span />
+                                <a href="#" onClick={() => this.editEnv(record, false)}>Edit</a> - <span />
                                 <a href="#" onClick={() => this.duplicate(record)}>Duplicate</a> - <span />
                                 <a href="#" onClick={() => this.delEnvironment(record)}>Delete</a>
                             </span>
@@ -144,15 +163,15 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
                 </EnvironmentTable>
                 <Modal
                     title="Edit Environment"
-                    visible={this.state.isEditEnvDlgOpen}
-                    onCancel={() => this.setState({ ...this.state, isEditEnvDlgOpen: false })}
+                    visible={this.props.isEditEnvDlgOpen}
+                    onCancel={() => this.props.editEnvCompleted()}
                     okText="Save"
                     cancelText="Cancel"
                     onOk={this.saveEnvironment}
                     width={600}
                 >
                     <div className="env-variable-tip">
-                        {'Variables can be used in Url, Headers, Body with format {{key}}, when send request, {{key}} will be replaced with value. For example, you can use different host for environment QA, Staging, Live by using variables.'}
+                        {'Variables can be used in Url, Headers with format {{key}}, when send request, {{key}} will be replaced with its corresponding value. For example, you can use different host for environment(QA, Staging, Product) by using variables.'}
                     </div>
                     <div style={{ marginBottom: '8px' }}>Environment Name:</div>
                     <Input

@@ -8,15 +8,18 @@ import Environments from './environments';
 import { DtoTeam } from '../../../../api/interfaces/dto_team';
 import { State } from '../../state';
 import { actionCreator, UpdateLeftPanelType, ResizeLeftPanelType } from '../../action';
-import { DisbandTeamType, QuitTeamType, SaveTeamType, RemoveUserType, InviteMemberType, SaveEnvironmentType, DelEnvironmentType } from './action';
+import { DisbandTeamType, QuitTeamType, SaveTeamType, RemoveUserType, InviteMemberType, SaveEnvironmentType, DelEnvironmentType, ActiveTeamType, EditEnvCompletedType } from './action';
 import './style/index.less';
 import * as _ from 'lodash';
 import { DtoUser } from '../../../../api/interfaces/dto_user';
 import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
+import { EditEnvType } from '../req_res_panel/action';
 
 const { Content, Sider } = Layout;
 
 interface TeamStateProps {
+
+    activeTeam: string;
 
     collapsed: boolean;
 
@@ -27,6 +30,10 @@ interface TeamStateProps {
     teams: DtoTeam[];
 
     environments: _.Dictionary<DtoEnvironment[]>;
+
+    isEditEnvDlgOpen: boolean;
+
+    editedEnvironment?: string;
 }
 
 interface TeamDispatchProps {
@@ -43,6 +50,8 @@ interface TeamDispatchProps {
 
     createTeam(team: DtoTeam);
 
+    selectTeam(teamId: string);
+
     removeUser(teamId: string, userId: string);
 
     invite(teamId: string, emails: string[]);
@@ -52,31 +61,29 @@ interface TeamDispatchProps {
     updateEnv(env: DtoEnvironment);
 
     delEnv(envId: string, teamId: string);
+
+    editEnvCompleted();
+
+    editEnv(teamId: string, envId: string);
 }
 
 type TeamProps = TeamStateProps & TeamDispatchProps;
 
-interface TeamState {
-
-    activeTeam: string;
-}
+interface TeamState { }
 
 class Team extends React.Component<TeamProps, TeamState> {
 
     constructor(props: TeamProps) {
         super(props);
-        this.state = {
-            activeTeam: props.teams.length > 0 ? (props.teams[0].id || '') : ''
-        };
     }
 
     isSelectTeamOwn = () => {
-        const team = this.props.teams.find(t => t.id === this.state.activeTeam);
+        const team = this.props.teams.find(t => t.id === this.props.activeTeam);
         return !!team && !!team.owner && team.owner.id === this.props.user.id;
     }
 
     getSelectTeamMembers = () => {
-        const team = this.props.teams.find(t => t.id === this.state.activeTeam);
+        const team = this.props.teams.find(t => t.id === this.props.activeTeam);
         if (!team || !team.members) {
             return [];
         }
@@ -84,12 +91,12 @@ class Team extends React.Component<TeamProps, TeamState> {
     }
 
     getSelectTeamEnvironments = () => {
-        const env = this.props.environments[this.state.activeTeam];
+        const env = this.props.environments[this.props.activeTeam];
         return _.sortBy(env, e => e.name);
     }
 
     public render() {
-        const { user, collapsed, collapsedLeftPanel, teams, leftPanelWidth, disbandTeam, quitTeam, updateTeam, createTeam, removeUser, invite, createEnv, updateEnv, delEnv } = this.props;
+        const { user, collapsed, collapsedLeftPanel, teams, leftPanelWidth, disbandTeam, quitTeam, selectTeam, updateTeam, createTeam, removeUser, invite, createEnv, updateEnv, delEnv, isEditEnvDlgOpen, editedEnvironment, activeTeam, editEnvCompleted, editEnv } = this.props;
 
         return (
             <Layout className="main-panel">
@@ -101,8 +108,8 @@ class Team extends React.Component<TeamProps, TeamState> {
                     collapsed={collapsed}
                     onCollapse={collapsedLeftPanel}>
                     <TeamList
-                        activeTeam={this.state.activeTeam}
-                        selectTeam={(id) => this.setState({ ...this.state, activeTeam: id })}
+                        activeTeam={activeTeam}
+                        selectTeam={(id) => selectTeam(id)}
                         user={user}
                         teams={teams}
                         disbandTeam={disbandTeam}
@@ -114,7 +121,7 @@ class Team extends React.Component<TeamProps, TeamState> {
                 <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
                 <Content className="team-right-panel">
                     <Members
-                        activeTeam={this.state.activeTeam}
+                        activeTeam={activeTeam}
                         isOwner={this.isSelectTeamOwn()}
                         members={this.getSelectTeamMembers()}
                         removeUser={removeUser}
@@ -125,8 +132,12 @@ class Team extends React.Component<TeamProps, TeamState> {
                         environments={this.getSelectTeamEnvironments()}
                         createEnv={createEnv}
                         updateEnv={updateEnv}
-                        activeTeam={this.state.activeTeam}
-                        delEnv={envId => delEnv(envId, this.state.activeTeam)}
+                        activeTeam={activeTeam}
+                        delEnv={envId => delEnv(envId, activeTeam)}
+                        isEditEnvDlgOpen={isEditEnvDlgOpen}
+                        editedEnvironment={editedEnvironment}
+                        editEnvCompleted={editEnvCompleted}
+                        editEnv={editEnv}
                     />
                 </Content>
             </Layout>
@@ -136,15 +147,18 @@ class Team extends React.Component<TeamProps, TeamState> {
 
 const mapStateToProps = (state: State): TeamStateProps => {
     const { leftPanelWidth, collapsed } = state.uiState;
-    const teams = state.teamState.teams;
+    const { activeTeam, teams } = state.teamState;
     const user = state.userState.userInfo as DtoUser;
 
     return {
-        leftPanelWidth: leftPanelWidth,
-        collapsed: collapsed,
-        user: user,
+        activeTeam,
+        leftPanelWidth,
+        collapsed,
+        user,
         teams: _.chain(teams).values<DtoTeam>().sortBy('name').sortBy(t => t.owner.id !== user.id).value(),
-        environments: state.environmentState.environments
+        environments: state.environmentState.environments,
+        isEditEnvDlgOpen: state.environmentState.isEditEnvDlgOpen,
+        editedEnvironment: state.environmentState.editedEnvironment
     };
 };
 
@@ -156,11 +170,14 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): TeamDispatchProps => {
         quitTeam: (team) => { dispatch(actionCreator(QuitTeamType, team)); },
         updateTeam: (team) => dispatch(actionCreator(SaveTeamType, { isNew: false, team })),
         createTeam: (team) => dispatch(actionCreator(SaveTeamType, { isNew: true, team })),
+        selectTeam: (teamId) => dispatch(actionCreator(ActiveTeamType, teamId)),
         removeUser: (teamId, userId) => { dispatch(actionCreator(RemoveUserType, { teamId, userId })); },
         invite: (teamId, emails) => { dispatch(actionCreator(InviteMemberType, { teamId, emails })); },
         createEnv: (env) => { dispatch(actionCreator(SaveEnvironmentType, { isNew: true, env })); },
         updateEnv: (env) => { dispatch(actionCreator(SaveEnvironmentType, { isNew: false, env })); },
-        delEnv: (envId, teamId) => { dispatch(actionCreator(DelEnvironmentType, { envId, teamId })); }
+        delEnv: (envId, teamId) => { dispatch(actionCreator(DelEnvironmentType, { envId, teamId })); },
+        editEnvCompleted: () => { dispatch(actionCreator(EditEnvCompletedType)); },
+        editEnv: (teamId, envId) => dispatch(actionCreator(EditEnvType, { teamId, envId }))
     };
 };
 

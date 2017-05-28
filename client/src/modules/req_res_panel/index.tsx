@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { Tabs, Badge, Modal, Button, Tooltip } from 'antd';
+import { Tabs, Badge, Modal, Button, Tooltip, Select } from 'antd';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
-import { activeTabAction, sendRequestAction, addTabAction, removeTabAction, updateRecordAction, cancelRequestAction, saveRecordAction, saveAsRecordAction, UpdateTabRecordId } from './action';
+import { activeTabAction, sendRequestAction, addTabAction, removeTabAction, updateRecordAction, cancelRequestAction, saveRecordAction, saveAsRecordAction, UpdateTabRecordId, SwitchEnvtype, EditEnvType } from './action';
 import './style/index.less';
-import { ResponseState, State, RecordState } from '../../state';
+import { ResponseState, State, RecordState, EnvironmentState } from '../../state';
 import RequestPanel from './request_panel';
 import ResPanel, { nonResPanel } from './response_panel';
 import ResponseLoadingPanel from './res_loading_panel';
@@ -16,6 +16,9 @@ import { RecordCategory } from '../../common/record_category';
 import * as _ from 'lodash';
 import { actionCreator } from '../../action';
 
+const Option = Select.Option;
+const noEnvironment = 'no environment';
+
 interface ReqResPanelStateProps {
 
     activeKey: string;
@@ -25,6 +28,10 @@ interface ReqResPanelStateProps {
     responseState: ResponseState;
 
     collectionTreeData: TreeData[];
+
+    collections: _.Dictionary<DtoCollection>;
+
+    envState: EnvironmentState;
 }
 
 interface ReqResPanelDispatchProps {
@@ -35,7 +42,7 @@ interface ReqResPanelDispatchProps {
 
     activeTab(key: string);
 
-    sendRequest(record: DtoRecord);
+    sendRequest(record: DtoRecord, environment: string);
 
     onChanged(record: DtoRecord);
 
@@ -46,6 +53,10 @@ interface ReqResPanelDispatchProps {
     saveAs(record: DtoRecord);
 
     updateTabRecordId(oldId: string, newId: string);
+
+    switchEnv(teamId: string, envId: string);
+
+    editEnv(teamId: string, envId: string);
 }
 
 type ReqResPanelProps = ReqResPanelStateProps & ReqResPanelDispatchProps;
@@ -106,6 +117,14 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         return this.props.responseState[this.props.activeKey];
     }
 
+    private get activeRecordTeamId(): string {
+        return this.activeRecord.collectionId ? this.props.collections[this.activeRecord.collectionId].teamId : '';
+    }
+
+    private get activeEnvId(): string {
+        return this.props.envState.activeEnv[this.activeRecordTeamId] || noEnvironment;
+    }
+
     constructor(props: ReqResPanelProps) {
         super(props);
         this.state = {
@@ -157,20 +176,14 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 
     private onEdit = (key, action) => {
-        this[action](key);
-    }
-
-    add = () => {
-        this.props.addTab();
-    }
-
-    remove = (key) => {
-        const index = this.props.recordState.findIndex(r => r.record.id === key);
-        if (key.startsWith('@new') || (index >= 0 && !this.props.recordState[index].isChanged)) {
-            this.props.removeTab(key);
-            return;
+        if (key === 'remove') {
+            const index = this.props.recordState.findIndex(r => r.record.id === key);
+            if (key.startsWith('@new') || (index >= 0 && !this.props.recordState[index].isChanged)) {
+                this.props.removeTab(key);
+                return;
+            }
+            this.setState({ ...this.state, currentEditKey: key, isConfirmCloseDlgOpen: true });
         }
-        this.setState({ ...this.state, currentEditKey: key, isConfirmCloseDlgOpen: true });
     }
 
     private closeTabWithoutSave = () => {
@@ -185,13 +198,40 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         this.setState({ ...this.state, currentEditKey: '', isConfirmCloseDlgOpen: false });
     }
 
-    private setReqResPanel = (ele: any) => {
-        this.reqResPanel = ele;
+    private onEnvChanged = (value) => {
+        this.props.switchEnv(this.activeRecordTeamId, value);
+    }
+
+    private editEnv = () => {
+        this.props.editEnv(this.activeRecordTeamId, this.activeEnvId);
+    }
+
+    private getTabExtraContent = () => {
+        const envs = this.props.envState.environments[this.activeRecordTeamId] || [];
+
+        return (
+            <div>
+                <Tooltip mouseEnterDelay={1} placement="left" title="new tab">
+                    <Button className="icon-btn record-add-btn" type="primary" icon="plus" onClick={this.props.addTab} />
+                </Tooltip>
+                <span className="req-tab-extra-env">
+                    <Select value={this.activeEnvId} className="req-tab-extra-env-select" onChange={(this.onEnvChanged)}>
+                        <Option key={noEnvironment} value={noEnvironment}>No Environment</Option>
+                        {
+                            envs.map(e => (
+                                <Option key={e.id} value={e.id}>{e.name}</Option>
+                            ))
+                        }
+                    </Select>
+                    <Button className="icon-btn record-add-btn" icon="edit" onClick={this.editEnv} />
+                </span>
+            </div>
+        );
     }
 
     public render() {
         return (
-            <div className="request-tab" ref={this.setReqResPanel}>
+            <div className="request-tab" ref={ele => this.reqResPanel = ele}>
                 <Tabs
                     activeKey={this.activeRecord.id}
                     type="editable-card"
@@ -199,11 +239,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                     onEdit={this.onEdit}
                     animated={false}
                     hideAdd={true}
-                    tabBarExtraContent={(
-                        <Tooltip mouseEnterDelay={1} placement="left" title="new tab">
-                            <Button className="icon-btn record-add-btn" type="primary" icon="plus" onClick={this.add} />
-                        </Tooltip>)
-                    }
+                    tabBarExtraContent={this.getTabExtraContent()}
                 >
                     {
                         this.props.recordState.map(recordState => {
@@ -221,7 +257,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                                             style={reqStyle}
                                             activeRecord={record}
                                             collectionTreeData={this.props.collectionTreeData}
-                                            sendRequest={this.props.sendRequest}
+                                            sendRequest={r => this.props.sendRequest(r, this.activeEnvId)}
                                             isRequesting={isRequesting}
                                             onChanged={this.props.onChanged}
                                             onResize={this.updateReqPanelHeight}
@@ -288,21 +324,25 @@ const selectCollectionTreeData = (collectionsInfo: DtoCollectionWithRecord) => {
 const mapStateToProps = (state: State): ReqResPanelStateProps => {
     return {
         ...state.displayRecordsState,
-        collectionTreeData: selectCollectionTreeData(state.collectionState.collectionsInfo)
+        collectionTreeData: selectCollectionTreeData(state.collectionState.collectionsInfo),
+        collections: state.collectionState.collectionsInfo.collections,
+        envState: state.environmentState
     };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): ReqResPanelDispatchProps => {
     return {
         activeTab: (key) => dispatch(activeTabAction(key)),
-        sendRequest: (record: DtoRecord) => dispatch(sendRequestAction({ record, environment: '' })),
+        sendRequest: (record: DtoRecord, environment: string) => dispatch(sendRequestAction({ record, environment })),
         addTab: () => dispatch(addTabAction()),
         removeTab: (key) => dispatch(removeTabAction(key)),
         onChanged: (record) => dispatch(updateRecordAction(record)),
         cancelRequest: (id) => dispatch(cancelRequestAction(id)),
         save: (record) => dispatch(saveRecordAction(record)),
         saveAs: (record) => dispatch(saveAsRecordAction(record)),
-        updateTabRecordId: (oldId, newId) => dispatch(actionCreator(UpdateTabRecordId, { oldId, newId }))
+        updateTabRecordId: (oldId, newId) => dispatch(actionCreator(UpdateTabRecordId, { oldId, newId })),
+        switchEnv: (teamId, envId) => dispatch(actionCreator(SwitchEnvtype, { teamId, envId })),
+        editEnv: (teamId, envId) => dispatch(actionCreator(EditEnvType, { teamId, envId }))
     };
 };
 

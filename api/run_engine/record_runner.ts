@@ -28,7 +28,7 @@ export class RecordRunner {
 
     static handleRes(res: request.RequestResponse, err: Error, record: Record, pipeRes: ServerResponse, elapsed: number, needPipe?: boolean): RunResult {
 
-        const testRst = !err || record.test ? TestRunner.test(res, record.test, elapsed) : {};
+        const testRst = !err && record.test ? TestRunner.test(res, record.test, elapsed) : {};
         const pRes: Partial<request.RequestResponse> = res || {};
         const finalRes: RunResult = {
             error: err,
