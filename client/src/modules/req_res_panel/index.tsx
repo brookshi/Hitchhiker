@@ -15,6 +15,8 @@ import { DtoCollectionWithRecord, DtoCollection } from '../../../../api/interfac
 import { RecordCategory } from '../../common/record_category';
 import * as _ from 'lodash';
 import { actionCreator } from '../../action';
+import { SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType } from '../../action/ui_action';
+import { ReqResUIState, reqResUIDefaultValue } from '../../state/ui_state';
 
 const Option = Select.Option;
 const noEnvironment = 'no environment';
@@ -23,7 +25,7 @@ interface ReqResPanelStateProps {
 
     activeKey: string;
 
-    recordState: RecordState[];
+    recordStates: RecordState[];
 
     responseState: ResponseState;
 
@@ -32,6 +34,8 @@ interface ReqResPanelStateProps {
     collections: _.Dictionary<DtoCollection>;
 
     envState: EnvironmentState;
+
+    reqResUIState: ReqResUIState;
 }
 
 interface ReqResPanelDispatchProps {
@@ -57,17 +61,19 @@ interface ReqResPanelDispatchProps {
     switchEnv(teamId: string, envId: string);
 
     editEnv(teamId: string, envId: string);
+
+    selectReqTab(recordId: string, tab: string);
+
+    selectResTab(recordId: string, tab: string);
+
+    toggleReqPanelVisible(recordId: string, visible: boolean);
+
+    resizeResHeight(recordId: string, height: number);
 }
 
 type ReqResPanelProps = ReqResPanelStateProps & ReqResPanelDispatchProps;
 
 interface ReqResPanelState {
-
-    reqPanelVisible: { [id: string]: boolean };
-
-    resHeights: { [id: string]: number };
-
-    activeResTab: string;
 
     isConfirmCloseDlgOpen: boolean;
 
@@ -77,12 +83,14 @@ interface ReqResPanelState {
 class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
     private reqResPanel: any;
+    private reqHeight: number;
 
     private get responsePanel() {
+        const { activeKey, cancelRequest, reqResUIState, selectResTab } = this.props;
         return this.activeRecordState && this.activeRecordState.isRequesting ? (
             <ResponseLoadingPanel
-                activeKey={this.props.activeKey}
-                cancelRequest={this.props.cancelRequest}
+                activeKey={activeKey}
+                cancelRequest={cancelRequest}
             />
         ) : (
                 this.activeResponse ? (
@@ -90,11 +98,12 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                         <ResErrorPanel url={this.activeRecord.url} error={this.activeResponse.error} /> :
                         (
                             <ResPanel
-                                activeTab={this.state.activeResTab}
-                                onTabChanged={this.onResTabChanged}
-                                height={this.state.resHeights[this.props.activeKey]}
+                                activeTab={reqResUIState.activeResTab}
+                                onTabChanged={key => selectResTab(activeKey, key)}
+                                height={reqResUIState.resHeight}
                                 res={this.activeResponse}
                                 toggleResPanelMaximize={this.toggleReqPanelVisible}
+                                isReqPanelHidden={reqResUIState.isReqPanelHidden}
                             />
                         )
                 ) : nonResPanel
@@ -102,7 +111,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 
     private get activeRecordState(): RecordState {
-        const recordState = this.props.recordState.find(r => r.record.id === this.props.activeKey);
+        const recordState = this.props.recordStates.find(r => r.record.id === this.props.activeKey);
         if (recordState) {
             return recordState;
         }
@@ -128,16 +137,9 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     constructor(props: ReqResPanelProps) {
         super(props);
         this.state = {
-            reqPanelVisible: {},
-            resHeights: {},
-            activeResTab: 'content',
             isConfirmCloseDlgOpen: false,
             currentEditKey: ''
         };
-    }
-
-    private onResTabChanged = (key: string) => {
-        this.setState({ ...this.state, activeResTab: key });
     }
 
     private updateReqPanelHeight = (reqHeight: number) => {
@@ -145,31 +147,24 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 
     private adjustResPanelHeight = (reqHeight: number) => {
+        this.reqHeight = reqHeight;
         if (!this.reqResPanel || !reqHeight) {
             return;
         }
+
         const resHeight = this.reqResPanel.clientHeight - reqHeight - 88;
-        if (resHeight !== this.state.resHeights[this.props.activeKey]) {
-            this.setState({
-                ...this.state,
-                resHeights: { ...this.state.resHeights, [this.props.activeKey]: resHeight }
-            });
+        if (resHeight !== this.props.reqResUIState.resHeight) {
+            this.props.resizeResHeight(this.props.activeKey, resHeight);
         }
     }
 
-    private toggleReqPanelVisible = (resPanelStatus: 'up' | 'down') => {
-        const status = resPanelStatus === 'up' ? true : false;
-        this.setState({
-            ...this.state,
-            reqPanelVisible: {
-                ...this.state.reqPanelVisible,
-                [this.props.activeKey]: status
-            }
-        }, () => this.adjustResPanelHeight(0.1));
+    private toggleReqPanelVisible = () => {
+        this.props.toggleReqPanelVisible(this.props.activeKey, this.props.reqResUIState.isReqPanelHidden);
+        this.adjustResPanelHeight(0.1);
     }
 
     private onTabChanged = (key) => {
-        const recordState = this.props.recordState.find(r => r.record.id === key);
+        const recordState = this.props.recordStates.find(r => r.record.id === key);
         if (recordState) {
             this.props.activeTab(recordState.record.id);
         }
@@ -177,8 +172,8 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
     private onEdit = (key, action) => {
         if (key === 'remove') {
-            const index = this.props.recordState.findIndex(r => r.record.id === key);
-            if (key.startsWith('@new') || (index >= 0 && !this.props.recordState[index].isChanged)) {
+            const index = this.props.recordStates.findIndex(r => r.record.id === key);
+            if (key.startsWith('@new') || (index >= 0 && !this.props.recordStates[index].isChanged)) {
                 this.props.removeTab(key);
                 return;
             }
@@ -192,8 +187,8 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 
     private closeTabWithSave = () => {
-        const index = this.props.recordState.findIndex(r => r.record.id === this.state.currentEditKey);
-        this.props.save(this.props.recordState[index].record);
+        const index = this.props.recordStates.findIndex(r => r.record.id === this.state.currentEditKey);
+        this.props.save(this.props.recordStates[index].record);
         this.props.removeTab(this.state.currentEditKey);
         this.setState({ ...this.state, currentEditKey: '', isConfirmCloseDlgOpen: false });
     }
@@ -230,10 +225,12 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 
     public render() {
+        const { activeKey, reqResUIState, recordStates, collectionTreeData, sendRequest, onChanged, save, saveAs, updateTabRecordId, selectReqTab } = this.props;
+
         return (
-            <div className="request-tab" ref={ele => this.reqResPanel = ele}>
+            <div className="request-tab" ref={ele => { this.reqResPanel = ele; this.adjustResPanelHeight(this.reqHeight); }}>
                 <Tabs
-                    activeKey={this.activeRecord.id}
+                    activeKey={activeKey}
                     type="editable-card"
                     onChange={this.onTabChanged}
                     onEdit={this.onEdit}
@@ -242,10 +239,9 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                     tabBarExtraContent={this.getTabExtraContent()}
                 >
                     {
-                        this.props.recordState.map(recordState => {
+                        recordStates.map(recordState => {
                             const { name, record, isRequesting } = recordState;
-                            const includeKey = Object.keys(this.state.reqPanelVisible).indexOf(record.id) > -1;
-                            const reqStyle = (includeKey && !this.state.reqPanelVisible[record.id]) ? { display: 'none' } : {};
+                            const reqStyle = reqResUIState.isReqPanelHidden ? { display: 'none' } : {};
                             return (
                                 <Tabs.TabPane
                                     key={record.id}
@@ -256,14 +252,16 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                                         <RequestPanel
                                             style={reqStyle}
                                             activeRecord={record}
-                                            collectionTreeData={this.props.collectionTreeData}
-                                            sendRequest={r => this.props.sendRequest(r, this.activeEnvId)}
+                                            activeTabKey={reqResUIState.activeReqTab}
+                                            collectionTreeData={collectionTreeData}
+                                            sendRequest={r => sendRequest(r, this.activeEnvId)}
                                             isRequesting={isRequesting}
-                                            onChanged={this.props.onChanged}
+                                            onChanged={onChanged}
                                             onResize={this.updateReqPanelHeight}
-                                            save={this.props.save}
-                                            saveAs={this.props.saveAs}
-                                            updateTabRecordId={this.props.updateTabRecordId}
+                                            save={save}
+                                            saveAs={saveAs}
+                                            updateTabRecordId={updateTabRecordId}
+                                            selectReqTab={selectReqTab}
                                         />
                                         {this.responsePanel}
                                     </div>
@@ -326,7 +324,8 @@ const mapStateToProps = (state: State): ReqResPanelStateProps => {
         ...state.displayRecordsState,
         collectionTreeData: selectCollectionTreeData(state.collectionState.collectionsInfo),
         collections: state.collectionState.collectionsInfo.collections,
-        envState: state.environmentState
+        envState: state.environmentState,
+        reqResUIState: { ...reqResUIDefaultValue, ...state.uiState.reqResUIState[state.displayRecordsState.activeKey] }
     };
 };
 
@@ -342,7 +341,11 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): ReqResPanelDispatchProps =
         saveAs: (record) => dispatch(saveAsRecordAction(record)),
         updateTabRecordId: (oldId, newId) => dispatch(actionCreator(UpdateTabRecordId, { oldId, newId })),
         switchEnv: (teamId, envId) => dispatch(actionCreator(SwitchEnvtype, { teamId, envId })),
-        editEnv: (teamId, envId) => dispatch(actionCreator(EditEnvType, { teamId, envId }))
+        editEnv: (teamId, envId) => dispatch(actionCreator(EditEnvType, { teamId, envId })),
+        selectReqTab: (recordId, tab) => dispatch(actionCreator(SelectReqTabType, { recordId, tab })),
+        selectResTab: (recordId, tab) => dispatch(actionCreator(SelectResTabType, { recordId, tab })),
+        toggleReqPanelVisible: (recordId, visible) => dispatch(actionCreator(ToggleReqPanelVisibleType, { recordId, visible })),
+        resizeResHeight: (recordId, height) => dispatch(actionCreator(ResizeResHeightType, { recordId, height }))
     };
 };
 

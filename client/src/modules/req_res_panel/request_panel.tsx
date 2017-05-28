@@ -14,6 +14,7 @@ import { bodyTypes } from '../../common/body_type';
 import { testSnippets } from '../../common/test_snippet';
 import './style/index.less';
 import { ValidateStatus, KeyValueEditMode, KeyValueEditType, ValidateType } from '../../common/custom_type';
+import { reqResUIDefaultValue } from '../../state/ui_state';
 
 const FItem = Form.Item;
 const Option = Select.Option;
@@ -21,7 +22,6 @@ const DButton = Dropdown.Button as any;
 const TabPane = Tabs.TabPane;
 
 const defaultBodyType = 'application/json';
-const defaultTabKey = 'headers';
 const newRecordFlag = '@new';
 
 interface RequestPanelStateProps {
@@ -34,6 +34,8 @@ interface RequestPanelStateProps {
 
     collectionTreeData?: TreeData[];
 
+    activeTabKey: string;
+
     sendRequest(record: DtoRecord);
 
     onChanged(record: DtoRecord);
@@ -45,6 +47,8 @@ interface RequestPanelStateProps {
     saveAs(record: DtoRecord);
 
     updateTabRecordId(oldId: string, newId: string);
+
+    selectReqTab(recordId: string, tab: string);
 }
 
 interface RequestPanelState {
@@ -60,8 +64,6 @@ interface RequestPanelState {
     isSaveAsDlgOpen: boolean;
 
     selectedFolderId?: string;
-
-    activeTabKey: string;
 }
 
 class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelState> {
@@ -73,8 +75,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         this.state = {
             headersEditMode: KeyValueEditType.keyValueEdit,
             isSaveDlgOpen: false,
-            isSaveAsDlgOpen: false,
-            activeTabKey: defaultTabKey
+            isSaveAsDlgOpen: false
         };
     }
 
@@ -118,9 +119,9 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     private currentBodyType = () => this.props.activeRecord.bodyType || defaultBodyType;
 
     private getTabExtraFunc = () => {
-        const { activeTabKey } = this.state;
+        const { activeTabKey } = this.props;
         return (
-            activeTabKey === defaultTabKey ? (
+            activeTabKey === reqResUIDefaultValue.activeReqTab ? (
                 <Button className="tab-extra-button" onClick={this.onHeaderModeChanged}>
                     {KeyValueEditType.getReverseMode(this.state.headersEditMode)}
                 </Button>
@@ -261,8 +262,8 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         }
     }
 
-    private onTabChanged = (e) => {
-        this.setState({ ...this.state, activeTabKey: e });
+    private onTabChanged = (key) => {
+        this.props.selectReqTab(this.props.activeRecord.id, key);
     }
 
     private sendRequest = () => {
@@ -323,7 +324,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                         <Tabs
                             className="req-res-tabs"
                             defaultActiveKey="headers"
-                            activeKey={this.state.activeTabKey}
+                            activeKey={this.props.activeTabKey}
                             animated={false}
                             onChange={this.onTabChanged}
                             tabBarExtraContent={this.getTabExtraFunc()}>

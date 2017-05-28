@@ -146,7 +146,7 @@ class Team extends React.Component<TeamProps, TeamState> {
 }
 
 const mapStateToProps = (state: State): TeamStateProps => {
-    const { leftPanelWidth, collapsed } = state.uiState;
+    const { leftPanelWidth, collapsed } = state.uiState.appUIState;
     const { activeTeam, teams } = state.teamState;
     const user = state.userState.userInfo as DtoUser;
 

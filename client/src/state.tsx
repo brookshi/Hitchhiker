@@ -5,6 +5,7 @@ import { StringUtil } from './utils/string_util';
 import { RecordCategory } from './common/record_category';
 import { RunResult } from '../../api/interfaces/dto_run_result';
 import { DtoEnvironment } from '../../api/interfaces/dto_environment';
+import { UIState, uiDefaultValue } from './state/ui_state';
 
 export function getDefaultRecord(isInit: boolean = false): DtoRecord {
     return {
@@ -31,7 +32,7 @@ export interface DisplayRecordsState {
 
     activeKey: string;
 
-    recordState: RecordState[];
+    recordStates: RecordState[];
 
     responseState: ResponseState;
 }
@@ -57,15 +58,6 @@ export interface EnvironmentState {
     isEditEnvDlgOpen: boolean;
 
     editedEnvironment?: string;
-}
-
-export interface UIState {
-
-    activeModule: string;
-
-    leftPanelWidth: number;
-
-    collapsed: boolean;
 }
 
 export interface UserInfoState {
@@ -104,11 +96,7 @@ export interface State {
 }
 
 export const initialState: State = {
-    uiState: {
-        activeModule: 'collection',
-        leftPanelWidth: 300,
-        collapsed: false
-    },
+    uiState: uiDefaultValue,
     userState: {
         isLoaded: false,
         userInfo: {
@@ -140,7 +128,7 @@ export const initialState: State = {
     },
     displayRecordsState: {
         activeKey: '@new',
-        recordState: [
+        recordStates: [
             {
                 name: 'new request',
                 record: getDefaultRecord(true),

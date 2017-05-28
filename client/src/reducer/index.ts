@@ -40,11 +40,11 @@ function root(state: State = initialState, action: any): State {
             if (cid) {
                 isChanged = !_.isEqual(state.collectionState.collectionsInfo.records[record.collectionId][record.id], record);
             }
-            const recordState = state.displayRecordsState.recordState;
+            const recordState = state.displayRecordsState.recordStates;
             const index = recordState.findIndex(r => r.record.id === action.record.id);
             recordState[index].record = { ...action.record };
             recordState[index].isChanged = isChanged;
-            return { ...state, displayRecordsState: { ...state.displayRecordsState, recordState: [...recordState] } };
+            return { ...state, displayRecordsState: { ...state.displayRecordsState, recordStates: [...recordState] } };
         }
         default: return state;
     }

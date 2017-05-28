@@ -164,10 +164,11 @@ class App extends React.Component<AppProps, AppState> {
 }
 
 const mapStateToProps = (state: State): AppStateProps => {
+  const { leftPanelWidth, collapsed, activeModule } = state.uiState.appUIState;
   return {
-    leftPanelWidth: state.uiState.leftPanelWidth,
-    collapsed: state.uiState.collapsed,
-    activeModule: state.uiState.activeModule,
+    leftPanelWidth,
+    collapsed,
+    activeModule,
     isLogin: state.userState.isLoaded,
     isFetchCollection: state.collectionState.isLoaded
   };

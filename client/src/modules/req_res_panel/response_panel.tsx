@@ -16,15 +16,14 @@ interface ResPanelProps {
 
     activeTab: string;
 
-    toggleResPanelMaximize: (status: 'up' | 'down') => void;
+    isReqPanelHidden: boolean;
 
-    onTabChanged: (key: string) => void;
+    toggleResPanelMaximize();
+
+    onTabChanged(key: string);
 }
 
-interface ResPanelState {
-
-    panelStatus: 'up' | 'down';
-}
+interface ResPanelState { }
 
 /*const contentExtra = (
     <div>
@@ -72,12 +71,6 @@ class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
         };
     }
 
-    private toggleMaximize = () => {
-        const status = this.state.panelStatus === 'up' ? 'down' : 'up';
-        this.setState({ ...this.state, panelStatus: status });
-        this.props.toggleResPanelMaximize(status);
-    }
-
     public render() {
         let { body, elapsed, status, statusMessage, cookies, headers, tests } = this.props.res;
         if (!body) {
@@ -90,7 +83,7 @@ class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
                 <span className="res-status">{status} {statusMessage}</span>
                 <span style={{ marginLeft: '16px' }}>Time:</span>
                 <span className="res-status">{elapsed}ms</span>
-                <span><Button className="res-toggle-size-btn" icon={this.state.panelStatus} onClick={this.toggleMaximize} /></span>
+                <span><Button className="res-toggle-size-btn" icon={this.props.isReqPanelHidden ? 'down' : 'up'} onClick={this.props.toggleResPanelMaximize} /></span>
             </div>
         );
 
