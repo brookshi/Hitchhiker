@@ -8,12 +8,12 @@ import Environments from './environments';
 import { DtoTeam } from '../../../../api/interfaces/dto_team';
 import { State } from '../../state';
 import { actionCreator, UpdateLeftPanelType, ResizeLeftPanelType } from '../../action';
-import { DisbandTeamType, QuitTeamType, SaveTeamType, RemoveUserType, InviteMemberType, SaveEnvironmentType, DelEnvironmentType, ActiveTeamType, EditEnvCompletedType } from './action';
+import { DisbandTeamType, QuitTeamType, SaveTeamType, RemoveUserType, InviteMemberType, SaveEnvironmentType, DelEnvironmentType, ActiveTeamType, EditEnvCompletedType } from '../../action/team';
 import './style/index.less';
 import * as _ from 'lodash';
 import { DtoUser } from '../../../../api/interfaces/dto_user';
 import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
-import { EditEnvType } from '../req_res_panel/action';
+import { EditEnvType } from '../../action/record';
 
 const { Content, Sider } = Layout;
 

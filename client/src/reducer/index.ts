@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { root as displayRecordsState, collectionState } from './collection';
 import { State } from '../state';
-import { UpdateTabChangedType } from '../modules/req_res_panel/action';
+import { UpdateTabChangedType } from '../action/record';
 import * as _ from 'lodash';
 import { uiState } from './ui';
 import { userState } from './user';

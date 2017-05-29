@@ -29,7 +29,7 @@ export enum SyncType {
 
 export interface SyncItem {
 
-    type: SyncType;
+    type: string;
 
     method: HttpMethodType;
 

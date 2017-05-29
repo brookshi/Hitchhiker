@@ -1,10 +1,12 @@
-import { take, actionChannel, call, spawn, put } from 'redux-saga/effects';
-import { refreshCollection, deleteRecord, saveCollection, deleteCollection, moveRecord } from './modules/collection_tree/action';
-import { sendRequest, saveRecord, saveAsRecord } from './modules/req_res_panel/action';
-import RequestManager, { SyncItem } from './utils/request_manager';
+import { take, actionChannel, call, spawn, put, takeEvery } from 'redux-saga/effects';
+import { refreshCollection } from './collection';
+import { sendRequest, saveRecord, saveAsRecord } from './record';
+import RequestManager, { SyncItem } from '../utils/request_manager';
 import { delay } from 'redux-saga';
-import { login } from './modules/login/action';
-import { saveTeam, quitTeam, disbandTeam, removeUser, inviteMember, saveEnvironment, delEnvironment } from './modules/team/action';
+import { login } from './login';
+import { saveTeam, quitTeam, disbandTeam, removeUser, inviteMember, saveEnvironment, delEnvironment } from './team';
+import { channelActions } from './collection';
+import * as _ from 'lodash';
 
 export const ResizeLeftPanelType = 'resize_left_panel_type';
 export const UpdateLeftPanelType = 'collapse_left_panel_type';
@@ -20,16 +22,17 @@ export function syncFailedAction(syncItem: SyncItem) { return { type: SyncFailed
 const RetryTimes = 3;
 
 export function* rootSaga() {
+
     yield [
         spawn(login),
         spawn(refreshCollection),
         spawn(sendRequest),
         spawn(saveRecord),
         spawn(saveAsRecord),
-        spawn(deleteRecord),
-        spawn(moveRecord),
-        spawn(saveCollection),
-        spawn(deleteCollection),
+        // spawn(deleteRecord),
+        // spawn(moveRecord),
+        // spawn(saveCollection),
+        // spawn(deleteCollection),
         spawn(saveTeam),
         spawn(quitTeam),
         spawn(disbandTeam),
@@ -37,9 +40,19 @@ export function* rootSaga() {
         spawn(inviteMember),
         spawn(saveEnvironment),
         spawn(delEnvironment),
+        ..._.keys(channelActions).map(c => spawn(function* () { yield takeAction(c, channelActions[c].getSyncItem); })),
         spawn(sync)
     ];
 };
+
+export function* takeAction(type: string, func: any) {
+    yield takeEvery(type, function* (action: any) { yield pushToChannel(func(action)); });
+}
+
+function* pushToChannel(syncItem: any) {
+    const channelAction = syncAction(syncItem);
+    yield put(channelAction);
+}
 
 function* sync() {
     const channel = yield actionChannel(SyncActionType);

@@ -9,11 +9,11 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import './style/perfect-scrollbar.min.css';
 import { State } from './state';
 import { connect, Dispatch } from 'react-redux';
-import { refreshCollectionAction } from './modules/collection_tree/action';
 import Splitter from './components/splitter';
 import { actionCreator, ResizeLeftPanelType, UpdateLeftPanelType } from './action';
-import { LoginType } from './modules/login/action';
+import { LoginType } from './action/login';
 import Config from './common/config';
+import { RefreshCollectionType } from './action/collection';
 
 const { Header, Content, Sider } = Layout;
 
@@ -176,7 +176,7 @@ const mapStateToProps = (state: State): AppStateProps => {
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): AppDispatchProps => {
   return {
-    getCollection: () => dispatch(refreshCollectionAction()),
+    getCollection: () => dispatch(actionCreator(RefreshCollectionType)),
     login: () => dispatch(actionCreator(LoginType)),
     resizeLeftPanel: (width) => dispatch(actionCreator(ResizeLeftPanelType, width)),
     updateLeftPanelStatus: (collapsed, activeModule) => dispatch(actionCreator(UpdateLeftPanelType, { collapsed, activeModule }))

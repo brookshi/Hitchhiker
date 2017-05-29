@@ -1,5 +1,5 @@
-import { FetchCollectionType, ActiveRecordType, DeleteRecordType, SaveCollectionType, DeleteCollectionType, MoveRecordType } from '../modules/collection_tree/action';
-import { ActiveTabType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, UpdateTabRecordId, SaveAsRecordType } from '../modules/req_res_panel/action';
+import { FetchCollectionSuccessType, ActiveRecordType, DeleteRecordType, SaveCollectionType, DeleteCollectionType, MoveRecordType } from '../action/collection';
+import { ActiveTabType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, UpdateTabRecordId, SaveAsRecordType } from '../action/record';
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
 import { RecordCategory } from '../common/record_category';
@@ -17,7 +17,7 @@ const getNewRecordState: () => RecordState = () => {
 
 export function collectionState(state: CollectionState = collectionDefaultValue, action: any): CollectionState {
     switch (action.type) {
-        case FetchCollectionType: {
+        case FetchCollectionSuccessType: {
             console.log(action.collections);
             return _.cloneDeep({ collectionsInfo: action.collections, isLoaded: true });
         }
@@ -98,7 +98,7 @@ function activeKey(state: string = displayRecordsDefaultValue.activeKey, action:
         case ActiveTabType:
             return action.key;
         case ActiveRecordType:
-            return action.record.id;
+            return action.value.id;
         case UpdateTabRecordId:
             return action.value.newId;
         default:
@@ -137,13 +137,13 @@ function recordStates(states: RecordState[] = displayRecordsDefaultValue.recordS
             return [...states];
         }
         case ActiveRecordType: {
-            const isNotExist = !states.find(r => r.record.id === action.record.id);
+            const isNotExist = !states.find(r => r.record.id === action.value.id);
             if (isNotExist) {
-                action.record.collectionId = action.record.collection.id;
+                action.value.collectionId = action.value.collection.id;
                 states = [
                     ...states,
                     {
-                        name: action.record.name, record: { ..._.cloneDeep(action.record) }, isChanged: false,
+                        name: action.value.name, record: { ..._.cloneDeep(action.value) }, isChanged: false,
                         isRequesting: false
                     }
                 ];

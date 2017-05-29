@@ -1,6 +1,6 @@
-import { SaveTeamType, QuitTeamType, DisbandTeamType, ActiveTeamType } from '../modules/team/action';
-import { LoginSuccessType } from '../modules/login/action';
-import { EditEnvType } from '../modules/req_res_panel/action';
+import { SaveTeamType, QuitTeamType, DisbandTeamType, ActiveTeamType } from '../action/team';
+import { LoginSuccessType } from '../action/login';
+import { EditEnvType } from '../action/record';
 import * as _ from 'lodash';
 import { TeamState, teamDefaultValue } from '../state/team_state';
 

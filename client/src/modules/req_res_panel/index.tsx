@@ -3,7 +3,7 @@ import { connect, Dispatch } from 'react-redux';
 import { Tabs, Badge, Modal, Button, Tooltip, Select } from 'antd';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
-import { activeTabAction, sendRequestAction, addTabAction, removeTabAction, updateRecordAction, cancelRequestAction, saveRecordAction, saveAsRecordAction, UpdateTabRecordId, SwitchEnvType, EditEnvType } from './action';
+import { activeTabAction, sendRequestAction, addTabAction, removeTabAction, updateRecordAction, cancelRequestAction, saveRecordAction, saveAsRecordAction, UpdateTabRecordId, SwitchEnvType, EditEnvType } from '../../action/record';
 import './style/index.less';
 import { State } from '../../state';
 import { ResponseState, RecordState } from '../../state/collection_state';
@@ -17,7 +17,7 @@ import { DtoCollectionWithRecord, DtoCollection } from '../../../../api/interfac
 import { RecordCategory } from '../../common/record_category';
 import * as _ from 'lodash';
 import { actionCreator } from '../../action';
-import { SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType } from '../../action/ui_action';
+import { SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType } from '../../action/ui';
 import { ReqResUIState, reqResUIDefaultValue } from '../../state/ui_state';
 
 const Option = Select.Option;

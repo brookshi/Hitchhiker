@@ -1,4 +1,4 @@
-import { LoginSuccessType } from '../modules/login/action';
+import { LoginSuccessType } from '../action/login';
 import { UserInfoState, userInfoDefaultValue } from '../state/user_state';
 
 export function userState(state: UserInfoState = userInfoDefaultValue, action: any): UserInfoState {

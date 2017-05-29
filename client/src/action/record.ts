@@ -1,10 +1,10 @@
-import { DtoRecordRun } from '../../../../api/interfaces/dto_record_run';
-import { RunResult } from '../../../../api/interfaces/dto_run_result';
+import { DtoRecordRun } from '../../../api/interfaces/dto_record_run';
+import { RunResult } from '../../../api/interfaces/dto_run_result';
 import { takeEvery, call, put } from 'redux-saga/effects';
-import RequestManager, { SyncType } from '../../utils/request_manager';
-import { DtoRecord } from '../../../../api/interfaces/dto_record';
-import { syncAction } from '../../action';
-import { HttpMethod } from '../../common/http_method';
+import RequestManager, { SyncType } from '../utils/request_manager';
+import { DtoRecord } from '../../../api/interfaces/dto_record';
+import { syncAction } from '../action';
+import { HttpMethod } from '../common/http_method';
 
 export const AddTabType = 'add_tab_type';
 export const RemoveTabType = 'remove_tab_type';
@@ -57,7 +57,7 @@ function* sendRequestFulfilled(action: any) {
 }
 
 export function* saveRecord() {
-    yield takeEvery(SaveRecordType, pushSaveRecordToChannel);
+    yield takeEvery(SaveRecordType, function* (action) { yield pushSaveRecordToChannel(action); });
 }
 
 export function* saveAsRecord() {
@@ -66,6 +66,6 @@ export function* saveAsRecord() {
 
 function* pushSaveRecordToChannel(action: any) {
     const method = action.value.isNew ? HttpMethod.POST : HttpMethod.PUT;
-    const channelAction = syncAction({ type: SyncType.addRecord, method: method, url: 'http://localhost:3000/api/record', body: action.value.record });
+    const channelAction = syncAction({ type: SyncType.addRecord.toString(), method: method, url: 'http://localhost:3000/api/record', body: action.value.record });
     yield put(channelAction);
 }
