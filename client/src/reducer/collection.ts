@@ -1,9 +1,9 @@
-import { initialState, getDefaultRecord, DisplayRecordsState, RecordState, CollectionState } from '../state';
 import { FetchCollectionType, ActiveRecordType, DeleteRecordType, SaveCollectionType, DeleteCollectionType, MoveRecordType } from '../modules/collection_tree/action';
 import { ActiveTabType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, UpdateTabRecordId, SaveAsRecordType } from '../modules/req_res_panel/action';
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
 import { RecordCategory } from '../common/record_category';
+import { CollectionState, collectionDefaultValue, RecordState, getDefaultRecord, DisplayRecordsState, displayRecordsDefaultValue } from '../state/collection_state';
 
 const getNewRecordState: () => RecordState = () => {
     const newRecord = getDefaultRecord();
@@ -15,7 +15,7 @@ const getNewRecordState: () => RecordState = () => {
     };
 };
 
-export function collectionState(state: CollectionState = initialState.collectionState, action: any): CollectionState {
+export function collectionState(state: CollectionState = collectionDefaultValue, action: any): CollectionState {
     switch (action.type) {
         case FetchCollectionType: {
             console.log(action.collections);
@@ -81,11 +81,11 @@ export function collectionState(state: CollectionState = initialState.collection
     }
 }
 
-export function root(state: DisplayRecordsState = initialState.displayRecordsState, action: any): DisplayRecordsState {
+export function root(state: DisplayRecordsState = displayRecordsDefaultValue, action: any): DisplayRecordsState {
     const intermediateState = combineReducers<DisplayRecordsState>({
         activeKey,
         recordStates,
-        responseState: (s = initialState.displayRecordsState.responseState, a) => s
+        responseState: (s = displayRecordsDefaultValue.responseState, a) => s
     })(state, action);
 
     const finalState = recordWithResState(intermediateState, action);
@@ -93,7 +93,7 @@ export function root(state: DisplayRecordsState = initialState.displayRecordsSta
     return finalState;
 }
 
-function activeKey(state: string = initialState.displayRecordsState.activeKey, action: any): string {
+function activeKey(state: string = displayRecordsDefaultValue.activeKey, action: any): string {
     switch (action.type) {
         case ActiveTabType:
             return action.key;
@@ -106,7 +106,7 @@ function activeKey(state: string = initialState.displayRecordsState.activeKey, a
     }
 }
 
-function recordStates(states: RecordState[] = initialState.displayRecordsState.recordStates, action: any): RecordState[] {
+function recordStates(states: RecordState[] = displayRecordsDefaultValue.recordStates, action: any): RecordState[] {
     switch (action.type) {
         case SendRequestType: {
             let index = states.findIndex(r => r.record.id === action.recordRun.record.id);
@@ -165,7 +165,7 @@ function recordStates(states: RecordState[] = initialState.displayRecordsState.r
     }
 }
 
-function recordWithResState(state: DisplayRecordsState = initialState.displayRecordsState, action: any): DisplayRecordsState {
+function recordWithResState(state: DisplayRecordsState = displayRecordsDefaultValue, action: any): DisplayRecordsState {
     let { recordStates, activeKey } = state;
     switch (action.type) {
         case AddTabType:

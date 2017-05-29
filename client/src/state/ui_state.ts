@@ -7,15 +7,6 @@ export interface AppUIState {
     collapsed: boolean;
 }
 
-export const appUIDefaultValue = {
-
-    activeModule: 'collection',
-
-    leftPanelWidth: 300,
-
-    collapsed: false
-};
-
 export interface ReqResUIState {
 
     isReqPanelHidden: boolean;
@@ -27,17 +18,6 @@ export interface ReqResUIState {
     activeReqTab: string;
 }
 
-export const reqResUIDefaultValue = {
-
-    isReqPanelHidden: false,
-
-    activeResTab: 'content',
-
-    activeReqTab: 'headers',
-
-    resHeights: 0
-};
-
 export interface UIState {
 
     appUIState: AppUIState;
@@ -45,9 +25,20 @@ export interface UIState {
     reqResUIState: _.Dictionary<ReqResUIState>;
 }
 
+export const appUIDefaultValue = {
+    activeModule: 'collection',
+    leftPanelWidth: 300,
+    collapsed: false
+};
+
+export const reqResUIDefaultValue = {
+    isReqPanelHidden: false,
+    activeResTab: 'content',
+    activeReqTab: 'headers',
+    resHeights: 0
+};
+
 export const uiDefaultValue = {
-
     appUIState: appUIDefaultValue,
-
     reqResUIState: {}
 };

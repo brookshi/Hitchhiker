@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import { root as displayRecordsState, collectionState } from './collection';
-import { State, initialState } from '../state';
+import { State } from '../state';
 import { UpdateTabChangedType } from '../modules/req_res_panel/action';
 import * as _ from 'lodash';
 import { uiState } from './ui';
@@ -16,7 +16,7 @@ export const reduceReducers = (...reducers) => {
         );
 };
 
-export function rootReducer(state: State = initialState, action: any): State {
+export function rootReducer(state: State, action: any): State {
     const intermediateState = combineReducers<State>({
         collectionState,
         displayRecordsState,
@@ -31,7 +31,7 @@ export function rootReducer(state: State = initialState, action: any): State {
     return finalState;
 };
 
-function root(state: State = initialState, action: any): State {
+function root(state: State, action: any): State {
     switch (action.type) {
         case UpdateTabChangedType: {
             const record = action.record;

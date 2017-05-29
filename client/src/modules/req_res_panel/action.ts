@@ -17,7 +17,7 @@ export const CancelRequestType = 'cancel_request_type';
 export const SaveRecordType = 'save_record_type';
 export const SaveAsRecordType = 'save_as_record_type';
 export const UpdateTabRecordId = 'update_tab_record_id';
-export const SwitchEnvtype = 'switch_env_type';
+export const SwitchEnvType = 'switch_env_type';
 export const EditEnvType = 'edit_env_type';
 
 export const addTabAction = () => ({ type: AddTabType });

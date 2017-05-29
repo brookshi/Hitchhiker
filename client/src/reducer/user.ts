@@ -1,7 +1,7 @@
-import { initialState, UserInfoState } from '../state';
 import { LoginSuccessType } from '../modules/login/action';
+import { UserInfoState, userInfoDefaultValue } from '../state/user_state';
 
-export function userState(state: UserInfoState = initialState.userState, action: any): UserInfoState {
+export function userState(state: UserInfoState = userInfoDefaultValue, action: any): UserInfoState {
     switch (action.type) {
         case LoginSuccessType: {
             console.log(action.value);

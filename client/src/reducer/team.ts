@@ -1,10 +1,10 @@
-import { initialState, TeamState } from '../state';
 import { SaveTeamType, QuitTeamType, DisbandTeamType, ActiveTeamType } from '../modules/team/action';
 import { LoginSuccessType } from '../modules/login/action';
 import { EditEnvType } from '../modules/req_res_panel/action';
 import * as _ from 'lodash';
+import { TeamState, teamDefaultValue } from '../state/team_state';
 
-export function teamState(state: TeamState = initialState.teamState, action: any): TeamState {
+export function teamState(state: TeamState = teamDefaultValue, action: any): TeamState {
     switch (action.type) {
         case LoginSuccessType: {
             const teams = action.value.result.teams;

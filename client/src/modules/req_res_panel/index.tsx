@@ -3,9 +3,11 @@ import { connect, Dispatch } from 'react-redux';
 import { Tabs, Badge, Modal, Button, Tooltip, Select } from 'antd';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
-import { activeTabAction, sendRequestAction, addTabAction, removeTabAction, updateRecordAction, cancelRequestAction, saveRecordAction, saveAsRecordAction, UpdateTabRecordId, SwitchEnvtype, EditEnvType } from './action';
+import { activeTabAction, sendRequestAction, addTabAction, removeTabAction, updateRecordAction, cancelRequestAction, saveRecordAction, saveAsRecordAction, UpdateTabRecordId, SwitchEnvType, EditEnvType } from './action';
 import './style/index.less';
-import { ResponseState, State, RecordState, EnvironmentState } from '../../state';
+import { State } from '../../state';
+import { ResponseState, RecordState } from '../../state/collection_state';
+import { EnvironmentState } from '../../state/environment_state';
 import RequestPanel from './request_panel';
 import ResPanel, { nonResPanel } from './response_panel';
 import ResponseLoadingPanel from './res_loading_panel';
@@ -340,7 +342,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): ReqResPanelDispatchProps =
         save: (record) => dispatch(saveRecordAction(record)),
         saveAs: (record) => dispatch(saveAsRecordAction(record)),
         updateTabRecordId: (oldId, newId) => dispatch(actionCreator(UpdateTabRecordId, { oldId, newId })),
-        switchEnv: (teamId, envId) => dispatch(actionCreator(SwitchEnvtype, { teamId, envId })),
+        switchEnv: (teamId, envId) => dispatch(actionCreator(SwitchEnvType, { teamId, envId })),
         editEnv: (teamId, envId) => dispatch(actionCreator(EditEnvType, { teamId, envId })),
         selectReqTab: (recordId, tab) => dispatch(actionCreator(SelectReqTabType, { recordId, tab })),
         selectResTab: (recordId, tab) => dispatch(actionCreator(SelectResTabType, { recordId, tab })),
