@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { Menu, Dropdown, Icon, Button, Modal, TreeSelect, Input, Tooltip } from 'antd';
-import { DeleteRecordType, DeleteCollectionType, SaveCollectionType, MoveRecordType } from '../../action/collection';
 import { State } from '../../state';
 import RecordFolder from './record_folder';
 import RecordItem from './record_item';
@@ -12,11 +11,11 @@ import * as _ from 'lodash';
 import { DtoCollection } from '../../../../api/interfaces/dto_collection';
 import { RecordCategory } from '../../common/record_category';
 import { actionCreator } from '../../action';
-import { removeTabAction, SaveRecordType } from '../../action/record';
+import { DeleteCollectionType, SaveCollectionType } from '../../action/collection';
+import { DeleteRecordType, SaveRecordType, RemoveTabType, ActiveRecordType, MoveRecordType } from '../../action/record';
 import { StringUtil } from '../../utils/string_util';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import './style/index.less';
-import { ActiveRecordType } from '../../action/collection';
 
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
@@ -339,9 +338,9 @@ const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps
             const record = records[id];
             if (record.category === RecordCategory.folder) {
                 const children = _.values(records).filter(r => r.pid === id);
-                children.forEach(r => dispatch(removeTabAction(r.id)));
+                children.forEach(r => dispatch(actionCreator(RemoveTabType, r.id)));
             }
-            dispatch(removeTabAction(id));
+            dispatch(actionCreator(RemoveTabType, id));
             dispatch(actionCreator(DeleteRecordType, record));
         },
         deleteCollection: id => { dispatch(actionCreator(DeleteCollectionType, id)); },

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import './style/App.less';
 import CollectionList from './modules/collection_tree';
 import { Layout, Menu, Icon, Tooltip, Button } from 'antd';
 import { ClickParam } from 'antd/lib/menu';
@@ -10,10 +9,12 @@ import './style/perfect-scrollbar.min.css';
 import { State } from './state';
 import { connect, Dispatch } from 'react-redux';
 import Splitter from './components/splitter';
-import { actionCreator, ResizeLeftPanelType, UpdateLeftPanelType } from './action';
-import { LoginType } from './action/login';
 import Config from './common/config';
+import { actionCreator } from './action';
+import { LoginType } from './action/login';
 import { RefreshCollectionType } from './action/collection';
+import { ResizeLeftPanelType, UpdateLeftPanelType } from './action/ui';
+import './style/App.less';
 
 const { Header, Content, Sider } = Layout;
 

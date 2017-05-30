@@ -3,8 +3,6 @@ import { connect, Dispatch } from 'react-redux';
 import { Tabs, Badge, Modal, Button, Tooltip, Select } from 'antd';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
-import { activeTabAction, sendRequestAction, addTabAction, removeTabAction, updateRecordAction, cancelRequestAction, saveRecordAction, saveAsRecordAction, UpdateTabRecordId, SwitchEnvType, EditEnvType } from '../../action/record';
-import './style/index.less';
 import { State } from '../../state';
 import { ResponseState, RecordState } from '../../state/collection_state';
 import { EnvironmentState } from '../../state/environment_state';
@@ -15,10 +13,13 @@ import ResErrorPanel from '../../components/res_error_panel';
 import { TreeData } from 'antd/lib/tree-select/interface';
 import { DtoCollectionWithRecord, DtoCollection } from '../../../../api/interfaces/dto_collection';
 import { RecordCategory } from '../../common/record_category';
-import * as _ from 'lodash';
 import { actionCreator } from '../../action';
+import { UpdateTabRecordId, AddTabType, RemoveTabType, UpdateTabChangedType, SendRequestType, CancelRequestType, ActiveTabType, SaveRecordType, SaveAsRecordType } from '../../action/record';
+import { SwitchEnvType, EditEnvType } from '../../action/team';
 import { SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType } from '../../action/ui';
 import { ReqResUIState, reqResUIDefaultValue } from '../../state/ui_state';
+import * as _ from 'lodash';
+import './style/index.less';
 
 const Option = Select.Option;
 const noEnvironment = 'no environment';
@@ -333,14 +334,14 @@ const mapStateToProps = (state: State): ReqResPanelStateProps => {
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): ReqResPanelDispatchProps => {
     return {
-        activeTab: (key) => dispatch(activeTabAction(key)),
-        sendRequest: (record: DtoRecord, environment: string) => dispatch(sendRequestAction({ record, environment })),
-        addTab: () => dispatch(addTabAction()),
-        removeTab: (key) => dispatch(removeTabAction(key)),
-        onChanged: (record) => dispatch(updateRecordAction(record)),
-        cancelRequest: (id) => dispatch(cancelRequestAction(id)),
-        save: (record) => dispatch(saveRecordAction(record)),
-        saveAs: (record) => dispatch(saveAsRecordAction(record)),
+        activeTab: (key) => dispatch(actionCreator(ActiveTabType, key)),
+        sendRequest: (record: DtoRecord, environment: string) => dispatch(actionCreator(SendRequestType, { record, environment })),
+        addTab: () => dispatch(actionCreator(AddTabType)),
+        removeTab: (key) => dispatch(actionCreator(RemoveTabType, key)),
+        onChanged: (record) => dispatch(actionCreator(UpdateTabChangedType, record)),
+        cancelRequest: (id) => dispatch(actionCreator(CancelRequestType, id)),
+        save: (record) => dispatch(actionCreator(SaveRecordType, record)),
+        saveAs: (record) => dispatch(actionCreator(SaveAsRecordType, record)),
         updateTabRecordId: (oldId, newId) => dispatch(actionCreator(UpdateTabRecordId, { oldId, newId })),
         switchEnv: (teamId, envId) => dispatch(actionCreator(SwitchEnvType, { teamId, envId })),
         editEnv: (teamId, envId) => dispatch(actionCreator(EditEnvType, { teamId, envId })),

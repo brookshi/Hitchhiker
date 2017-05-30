@@ -1,63 +1,52 @@
-import { DtoRecordRun } from '../../../api/interfaces/dto_record_run';
-import { RunResult } from '../../../api/interfaces/dto_run_result';
 import { takeEvery, call, put } from 'redux-saga/effects';
-import RequestManager, { SyncType } from '../utils/request_manager';
-import { DtoRecord } from '../../../api/interfaces/dto_record';
-import { syncAction } from '../action';
+import RequestManager from '../utils/request_manager';
 import { HttpMethod } from '../common/http_method';
+import { syncAction, actionCreator } from './index';
 
-export const AddTabType = 'add_tab_type';
-export const RemoveTabType = 'remove_tab_type';
-export const UpdateTabChangedType = 'update_tab_changed_type';
-export const ActiveTabType = 'active_tab_type';
-export const SendRequestType = 'send_request_type';
-export const SendRequestFulfilledType = 'send_request_fulfilled_type';
-export const SendRequestFailedType = 'send_request_failed_type';
-export const CancelRequestType = 'cancel_request_type';
-export const SaveRecordType = 'save_record_type';
-export const SaveAsRecordType = 'save_as_record_type';
-export const UpdateTabRecordId = 'update_tab_record_id';
-export const SwitchEnvType = 'switch_env_type';
-export const EditEnvType = 'edit_env_type';
+export const AddTabType = 'add tab';
 
-export const addTabAction = () => ({ type: AddTabType });
+export const RemoveTabType = 'remove tab';
 
-export const removeTabAction = (key) => ({ type: RemoveTabType, key });
+export const UpdateTabChangedType = 'update changed tab';
 
-export const updateRecordAction = (record) => ({ type: UpdateTabChangedType, record });
+export const ActiveTabType = 'active tab';
 
-export const sendRequestAction = (recordRun: DtoRecordRun) => ({ type: SendRequestType, recordRun });
+export const UpdateTabRecordId = 'update tab record id';
 
-export const cancelRequestAction = (id: string) => ({ type: CancelRequestType, id });
+export const SendRequestType = 'send request';
 
-export const sendRequestFulfilledAction = (result: { id: string, runResult: RunResult }) => ({ type: SendRequestFulfilledType, result });
+export const SendRequestFulfilledType = 'send request fulfill';
 
-export const activeTabAction = (key: string) => ({ type: ActiveTabType, key });
+export const CancelRequestType = 'cancel request';
 
-export const saveRecordAction = (record: DtoRecord) => ({ type: SaveRecordType, value: { isNew: record.id.startsWith('@new'), record } });
+export const SaveRecordType = 'save record';
 
-export const saveAsRecordAction = (record: DtoRecord) => ({ type: SaveAsRecordType, value: { isNew: true, record } });
+export const SaveAsRecordType = 'save as record';
+
+export const ActiveRecordType = 'active record';
+
+export const DeleteRecordType = 'delete record';
+
+export const MoveRecordType = 'move record';
 
 export function* sendRequest() {
-    yield takeEvery(SendRequestType, sendRequestFulfilled);
-}
-
-function* sendRequestFulfilled(action: any) {
-    let runResult;
-    try {
-        const res = yield call(RequestManager.post, 'http://localhost:3000/api/record/run', action.recordRun);
-        if (RequestManager.checkCanceledThenRemove(action.recordRun.record.id)) {
-            return;
+    yield takeEvery(SendRequestType, function* (action: any) {
+        let runResult: any = {};
+        try {
+            const res = yield call(RequestManager.post, 'http://localhost:3000/api/record/run', action.record);
+            if (RequestManager.checkCanceledThenRemove(action.value.record.id)) {
+                return;
+            }
+            runResult = yield res.json();
+        } catch (err) {
+            runResult.error = err;
         }
-        runResult = yield res.json();
-    } catch (err) {
-        runResult.error = err;
-    }
-    yield put(sendRequestFulfilledAction({ id: action.recordRun.record.id, runResult }));
+        yield put(actionCreator(SendRequestFulfilledType, { id: action.value.record.id, runResult }));
+    });
 }
 
 export function* saveRecord() {
-    yield takeEvery(SaveRecordType, function* (action) { yield pushSaveRecordToChannel(action); });
+    yield takeEvery(SaveRecordType, pushSaveRecordToChannel);
 }
 
 export function* saveAsRecord() {
@@ -66,6 +55,20 @@ export function* saveAsRecord() {
 
 function* pushSaveRecordToChannel(action: any) {
     const method = action.value.isNew ? HttpMethod.POST : HttpMethod.PUT;
-    const channelAction = syncAction({ type: SyncType.addRecord.toString(), method: method, url: 'http://localhost:3000/api/record', body: action.value.record });
+    const channelAction = syncAction({ type: SaveRecordType, method: method, url: 'http://localhost:3000/api/record', body: action.value.record });
     yield put(channelAction);
+}
+
+export function* deleteRecord() {
+    yield takeEvery(DeleteRecordType, function* (action: any) {
+        const channelAction = syncAction({ type: DeleteRecordType, method: HttpMethod.DELETE, url: `http://localhost:3000/api/record/${action.value.id}` });
+        yield put(channelAction);
+    });
+}
+
+export function* moveRecord() {
+    yield takeEvery(MoveRecordType, function* (action: any) {
+        const channelAction = syncAction({ type: MoveRecordType, method: HttpMethod.PUT, url: 'http://localhost:3000/api/record', body: action.value.record });
+        yield put(channelAction);
+    });
 }

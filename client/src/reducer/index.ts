@@ -34,15 +34,15 @@ export function rootReducer(state: State, action: any): State {
 function root(state: State, action: any): State {
     switch (action.type) {
         case UpdateTabChangedType: {
-            const record = action.record;
+            const record = action.value;
             const cid = record.collectionId;
             let isChanged = true;
             if (cid) {
                 isChanged = !_.isEqual(state.collectionState.collectionsInfo.records[record.collectionId][record.id], record);
             }
             const recordState = state.displayRecordsState.recordStates;
-            const index = recordState.findIndex(r => r.record.id === action.record.id);
-            recordState[index].record = { ...action.record };
+            const index = recordState.findIndex(r => r.record.id === action.value.id);
+            recordState[index].record = { ...action.value };
             recordState[index].isChanged = isChanged;
             return { ...state, displayRecordsState: { ...state.displayRecordsState, recordStates: [...recordState] } };
         }

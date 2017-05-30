@@ -1,7 +1,11 @@
-export const SelectReqTabType = 'select_req_tab_type';
+export const SelectReqTabType = 'select req paneltab';
 
-export const SelectResTabType = 'select_res_tab_type';
+export const SelectResTabType = 'select res panel tab';
 
-export const ToggleReqPanelVisibleType = 'toggle_req_panel_visible_type';
+export const ToggleReqPanelVisibleType = 'toggle req panel visible';
 
-export const ResizeResHeightType = 'resize_res_height_type';
+export const ResizeResHeightType = 'resize res panel height';
+
+export const ResizeLeftPanelType = 'resize left panel';
+
+export const UpdateLeftPanelType = 'collapse left panel';

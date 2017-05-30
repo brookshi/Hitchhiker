@@ -16,7 +16,7 @@
     ☐ log
     ✔ message @done (2017/4/2 下午10:11:44)
     ✔ auto generate accout for invite user @done (2017/4/9 下午10:59:31) // TODO: need mail password??
-    ☐ team
+    ✔ team @done (2017/5/30 下午12:46:19)
     ✔ tab change/unchange status @done (5/16/2017, 12:47:02 PM)
     ✔ confirm when close changed tab @done (5/16/2017, 1:36:26 PM)
     ✔ request header/body option @done (2017/5/16 下午10:05:11)
@@ -32,6 +32,7 @@
     ✔ split line @done (2017/5/20 下午9:48:09)
     ✔ tip @done (5/22/2017, 2:00:46 PM)
     ✔ input spell check @done (5/22/2017, 5:59:42 PM)
+    ☐ request error handle
     ☐ local storage for record states & refresh merge with tabs
     ☐ sync status
     ☐ top banner

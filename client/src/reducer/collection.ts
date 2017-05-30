@@ -1,5 +1,5 @@
-import { FetchCollectionSuccessType, ActiveRecordType, DeleteRecordType, SaveCollectionType, DeleteCollectionType, MoveRecordType } from '../action/collection';
-import { ActiveTabType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, UpdateTabRecordId, SaveAsRecordType } from '../action/record';
+import { FetchCollectionSuccessType, SaveCollectionType, DeleteCollectionType } from '../action/collection';
+import { ActiveTabType, ActiveRecordType, DeleteRecordType, MoveRecordType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, UpdateTabRecordId, SaveAsRecordType } from '../action/record';
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
 import { RecordCategory } from '../common/record_category';
@@ -18,8 +18,8 @@ const getNewRecordState: () => RecordState = () => {
 export function collectionState(state: CollectionState = collectionDefaultValue, action: any): CollectionState {
     switch (action.type) {
         case FetchCollectionSuccessType: {
-            console.log(action.collections);
-            return _.cloneDeep({ collectionsInfo: action.collections, isLoaded: true });
+            console.log(action.value);
+            return _.cloneDeep({ collectionsInfo: action.value, isLoaded: true });
         }
         case SaveAsRecordType:
         case SaveRecordType:
@@ -96,7 +96,7 @@ export function root(state: DisplayRecordsState = displayRecordsDefaultValue, ac
 function activeKey(state: string = displayRecordsDefaultValue.activeKey, action: any): string {
     switch (action.type) {
         case ActiveTabType:
-            return action.key;
+            return action.value;
         case ActiveRecordType:
             return action.value.id;
         case UpdateTabRecordId:
@@ -109,7 +109,7 @@ function activeKey(state: string = displayRecordsDefaultValue.activeKey, action:
 function recordStates(states: RecordState[] = displayRecordsDefaultValue.recordStates, action: any): RecordState[] {
     switch (action.type) {
         case SendRequestType: {
-            let index = states.findIndex(r => r.record.id === action.recordRun.record.id);
+            let index = states.findIndex(r => r.record.id === action.value.record.id);
             states[index].isRequesting = true;
             return [...states];
         }
@@ -132,7 +132,7 @@ function recordStates(states: RecordState[] = displayRecordsDefaultValue.recordS
             return states;
         }
         case CancelRequestType: {
-            const index = states.findIndex(r => r.record.id === action.id);
+            const index = states.findIndex(r => r.record.id === action.value);
             states[index].isRequesting = false;
             return [...states];
         }
@@ -179,7 +179,7 @@ function recordWithResState(state: DisplayRecordsState = displayRecordsDefaultVa
                 activeKey: newRecordState.record.id
             };
         case RemoveTabType: {
-            let index = recordStates.findIndex(r => r.record.id === action.key);
+            let index = recordStates.findIndex(r => r.record.id === action.value);
             if (index > -1) {
                 const activeIndex = recordStates.findIndex(r => r.record.id === activeKey);
                 recordStates.splice(index, 1);
@@ -195,14 +195,14 @@ function recordWithResState(state: DisplayRecordsState = displayRecordsDefaultVa
             return state;
         }
         case SendRequestFulfilledType: {
-            const index = recordStates.findIndex(r => r.record.id === action.result.id);
+            const index = recordStates.findIndex(r => r.record.id === action.value.id);
             recordStates[index].isRequesting = false;
             return {
                 ...state,
                 recordStates: [...recordStates],
                 responseState: {
                     ...state.responseState,
-                    [action.result.id]: action.result.runResult
+                    [action.value.id]: action.value.runResult
                 }
             };
         }

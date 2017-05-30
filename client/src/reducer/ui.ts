@@ -1,8 +1,7 @@
-import { ResizeLeftPanelType, UpdateLeftPanelType } from '../action';
-import { EditEnvType } from '../action/record';
+import { EditEnvType } from '../action/team';
 import { UIState, AppUIState, appUIDefaultValue, ReqResUIState, uiDefaultValue } from '../state/ui_state';
 import { combineReducers } from 'redux';
-import { SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType } from '../action/ui';
+import { ResizeLeftPanelType, UpdateLeftPanelType, SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType } from '../action/ui';
 
 export function uiState(state: UIState = uiDefaultValue, action: any): UIState {
     return combineReducers<UIState>({

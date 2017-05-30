@@ -7,13 +7,13 @@ import Members from './members';
 import Environments from './environments';
 import { DtoTeam } from '../../../../api/interfaces/dto_team';
 import { State } from '../../state';
-import { actionCreator, UpdateLeftPanelType, ResizeLeftPanelType } from '../../action';
-import { DisbandTeamType, QuitTeamType, SaveTeamType, RemoveUserType, InviteMemberType, SaveEnvironmentType, DelEnvironmentType, ActiveTeamType, EditEnvCompletedType } from '../../action/team';
-import './style/index.less';
-import * as _ from 'lodash';
+import { actionCreator } from '../../action';
+import { UpdateLeftPanelType, ResizeLeftPanelType } from '../../action/ui';
+import { EditEnvType, DisbandTeamType, QuitTeamType, SaveTeamType, RemoveUserType, InviteMemberType, SaveEnvironmentType, DelEnvironmentType, ActiveTeamType, EditEnvCompletedType } from '../../action/team';
 import { DtoUser } from '../../../../api/interfaces/dto_user';
 import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
-import { EditEnvType } from '../../action/record';
+import * as _ from 'lodash';
+import './style/index.less';
 
 const { Content, Sider } = Layout;
 

@@ -2,77 +2,75 @@ import { takeEvery, put } from 'redux-saga/effects';
 import { syncAction } from './index';
 import { HttpMethod } from '../common/http_method';
 
-export const QuitTeamType = 'quit_team_type';
-export const DisbandTeamType = 'disband_team_type';
-export const SaveTeamType = 'save_team_type';
-export const ActiveTeamType = 'active_team_type';
-export const RemoveUserType = 'remove_user_type';
-export const InviteMemberType = 'invite_member_type';
-export const SaveEnvironmentType = 'save_env_type';
-export const DelEnvironmentType = 'del_env_type';
-export const EditEnvCompletedType = 'edit_env_completed_type';
+export const QuitTeamType = 'quit team';
+
+export const DisbandTeamType = 'disband team';
+
+export const SaveTeamType = 'save team';
+
+export const ActiveTeamType = 'active team';
+
+export const InviteMemberType = 'invite members';
+
+export const RemoveUserType = 'remove user';
+
+export const SaveEnvironmentType = 'save environment';
+
+export const DelEnvironmentType = 'delete environment';
+
+export const EditEnvCompletedType = 'edit environment completed';
+
+export const SwitchEnvType = 'switch environment';
+
+export const EditEnvType = 'edit environment';
 
 export function* quitTeam() {
-    yield takeEvery(QuitTeamType, pushQuitTeamToChannel);
+    yield takeEvery(QuitTeamType, function* (action: any) {
+        const channelAction = syncAction({ type: QuitTeamType, method: HttpMethod.DELETE, url: `http://localhost:3000/api/team/${action.value.id}/own` });
+        yield put(channelAction);
+    });
 }
 
 export function* disbandTeam() {
-    yield takeEvery(DisbandTeamType, pushDisbandTeamToChannel);
+    yield takeEvery(DisbandTeamType, function* (action: any) {
+        const channelAction = syncAction({ type: DisbandTeamType, method: HttpMethod.DELETE, url: `http://localhost:3000/api/team/${action.value.id}` });
+        yield put(channelAction);
+    });
 }
 
 export function* saveTeam() {
-    yield takeEvery(SaveTeamType, pushSaveTeamToChannel);
-}
-
-export function* removeUser() {
-    yield takeEvery(RemoveUserType, pushRemoveUserToChannel);
+    yield takeEvery(SaveTeamType, function* (action: any) {
+        const method = action.value.isNew ? HttpMethod.POST : HttpMethod.PUT;
+        const channelAction = syncAction({ type: SaveTeamType, method, url: `http://localhost:3000/api/team`, body: action.value.team });
+        yield put(channelAction);
+    });
 }
 
 export function* inviteMember() {
-    yield takeEvery(InviteMemberType, pushInviteMemberToChannel);
+    yield takeEvery(InviteMemberType, function* (action: any) {
+        const channelAction = syncAction({ type: InviteMemberType, method: HttpMethod.POST, url: `http://localhost:3000/api/team/${action.value.teamId}`, body: { emails: action.value.emails } });
+        yield put(channelAction);
+    });
+}
+
+export function* removeUser() {
+    yield takeEvery(RemoveUserType, function* (action: any) {
+        const channelAction = syncAction({ type: RemoveUserType, method: HttpMethod.DELETE, url: `http://localhost:3000/api/team/${action.value.teamId}/user/${action.value.userId}` });
+        yield put(channelAction);
+    });
 }
 
 export function* saveEnvironment() {
-    yield takeEvery(SaveEnvironmentType, pushSaveEnvToChannel);
+    yield takeEvery(SaveEnvironmentType, function* (action: any) {
+        const method = action.value.isNew ? HttpMethod.POST : HttpMethod.PUT;
+        const channelAction = syncAction({ type: SaveEnvironmentType, method: method, url: `http://localhost:3000/api/environment`, body: action.value.env });
+        yield put(channelAction);
+    });
 }
 
 export function* delEnvironment() {
-    yield takeEvery(DelEnvironmentType, pushDelEnvToChannel);
-}
-
-function* pushQuitTeamToChannel(action: any) {
-    const channelAction = syncAction({ type: QuitTeamType, method: HttpMethod.DELETE, url: `http://localhost:3000/api/team/${action.value.id}/own` });
-    yield put(channelAction);
-}
-
-function* pushDisbandTeamToChannel(action: any) {
-    const channelAction = syncAction({ type: DisbandTeamType, method: HttpMethod.DELETE, url: `http://localhost:3000/api/team/${action.value.id}` });
-    yield put(channelAction);
-}
-
-function* pushRemoveUserToChannel(action: any) {
-    const channelAction = syncAction({ type: RemoveUserType, method: HttpMethod.DELETE, url: `http://localhost:3000/api/team/${action.value.teamId}/user/${action.value.userId}` });
-    yield put(channelAction);
-}
-
-function* pushSaveTeamToChannel(action: any) {
-    const method = action.value.isNew ? HttpMethod.POST : HttpMethod.PUT;
-    const channelAction = syncAction({ type: SaveTeamType, method, url: `http://localhost:3000/api/team`, body: action.value.team });
-    yield put(channelAction);
-}
-
-function* pushInviteMemberToChannel(action: any) {
-    const channelAction = syncAction({ type: InviteMemberType, method: HttpMethod.POST, url: `http://localhost:3000/api/team/${action.value.teamId}`, body: { emails: action.value.emails } });
-    yield put(channelAction);
-}
-
-function* pushSaveEnvToChannel(action: any) {
-    const method = action.value.isNew ? HttpMethod.POST : HttpMethod.PUT;
-    const channelAction = syncAction({ type: SaveEnvironmentType, method: method, url: `http://localhost:3000/api/environment`, body: action.value.env });
-    yield put(channelAction);
-}
-
-function* pushDelEnvToChannel(action: any) {
-    const channelAction = syncAction({ type: DelEnvironmentType, method: HttpMethod.DELETE, url: `http://localhost:3000/api/environment/${action.value.envId}` });
-    yield put(channelAction);
+    yield takeEvery(DelEnvironmentType, function* (action: any) {
+        const channelAction = syncAction({ type: DelEnvironmentType, method: HttpMethod.DELETE, url: `http://localhost:3000/api/environment/${action.value.envId}` });
+        yield put(channelAction);
+    });
 }
