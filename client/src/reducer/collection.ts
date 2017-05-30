@@ -3,7 +3,7 @@ import { ActiveTabType, ActiveRecordType, DeleteRecordType, MoveRecordType, Send
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
 import { RecordCategory } from '../common/record_category';
-import { CollectionState, collectionDefaultValue, RecordState, getDefaultRecord, DisplayRecordsState, displayRecordsDefaultValue } from '../state/collection_state';
+import { CollectionState, collectionDefaultValue, RecordState, getDefaultRecord, DisplayRecordsState, displayRecordsDefaultValue } from '../state/collection';
 
 const getNewRecordState: () => RecordState = () => {
     const newRecord = getDefaultRecord();

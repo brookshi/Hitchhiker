@@ -1,7 +1,7 @@
 import { LoginSuccessType } from '../action/login';
 import { SwitchEnvType, EditEnvType, QuitTeamType, DisbandTeamType, SaveEnvironmentType, DelEnvironmentType, EditEnvCompletedType } from '../action/team';
 import * as _ from 'lodash';
-import { EnvironmentState, environmentDefaultValue } from '../state/environment_state';
+import { EnvironmentState, environmentDefaultValue } from '../state/environment';
 
 export function environmentState(state: EnvironmentState = environmentDefaultValue, action: any): EnvironmentState {
     switch (action.type) {

@@ -1,5 +1,5 @@
 import { LoginSuccessType } from '../action/login';
-import { UserInfoState, userInfoDefaultValue } from '../state/user_state';
+import { UserInfoState, userInfoDefaultValue } from '../state/user';
 
 export function userState(state: UserInfoState = userInfoDefaultValue, action: any): UserInfoState {
     switch (action.type) {

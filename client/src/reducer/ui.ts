@@ -1,5 +1,5 @@
 import { EditEnvType } from '../action/team';
-import { UIState, AppUIState, appUIDefaultValue, ReqResUIState, uiDefaultValue } from '../state/ui_state';
+import { UIState, AppUIState, appUIDefaultValue, ReqResUIState, uiDefaultValue } from '../state/ui';
 import { combineReducers } from 'redux';
 import { ResizeLeftPanelType, UpdateLeftPanelType, SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType } from '../action/ui';
 

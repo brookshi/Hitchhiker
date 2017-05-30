@@ -14,7 +14,7 @@ import { bodyTypes } from '../../common/body_type';
 import { testSnippets } from '../../common/test_snippet';
 import './style/index.less';
 import { ValidateStatus, KeyValueEditMode, KeyValueEditType, ValidateType } from '../../common/custom_type';
-import { reqResUIDefaultValue } from '../../state/ui_state';
+import { reqResUIDefaultValue } from '../../state/ui';
 
 const FItem = Form.Item;
 const Option = Select.Option;

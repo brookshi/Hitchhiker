@@ -1,7 +1,7 @@
 import { EditEnvType, SaveTeamType, QuitTeamType, DisbandTeamType, ActiveTeamType } from '../action/team';
 import { LoginSuccessType } from '../action/login';
 import * as _ from 'lodash';
-import { TeamState, teamDefaultValue } from '../state/team_state';
+import { TeamState, teamDefaultValue } from '../state/team';
 
 export function teamState(state: TeamState = teamDefaultValue, action: any): TeamState {
     switch (action.type) {

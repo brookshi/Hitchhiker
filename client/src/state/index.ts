@@ -1,8 +1,8 @@
-import { UIState } from './ui_state';
-import { TeamState } from './team_state';
-import { UserInfoState } from './user_state';
-import { EnvironmentState } from './environment_state';
-import { CollectionState, DisplayRecordsState } from './collection_state';
+import { UIState } from './ui';
+import { TeamState } from './team';
+import { UserInfoState } from './user';
+import { EnvironmentState } from './environment';
+import { CollectionState, DisplayRecordsState } from './collection';
 
 export interface State {
 
