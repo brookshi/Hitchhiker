@@ -4,6 +4,7 @@ import { Layout, Menu, Icon, Tooltip, Button } from 'antd';
 import { ClickParam } from 'antd/lib/menu';
 import ReqResPanel from './modules/req_res_panel';
 import Team from './modules/team';
+import HeaderPanel from './modules/header';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import './style/perfect-scrollbar.min.css';
 import { State } from './state';
@@ -115,7 +116,10 @@ class App extends React.Component<AppProps, AppState> {
   render() {
     return (
       <Layout className="layout">
-        <Header ><Button style={{ display: 'none' }} /></Header>
+        <Header >
+          <Button style={{ display: 'none' }} />
+          <HeaderPanel />
+        </Header>
         <Layout>
           <Sider style={{ maxWidth: Config.ToolBarWidth }}>
             <Menu

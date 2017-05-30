@@ -99,5 +99,8 @@
       "js"
     ],
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$"
+  },
+  "theme": {
+    "@icon-url": "'/style/fonts/iconfont'"
   }
 }

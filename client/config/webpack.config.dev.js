@@ -8,8 +8,7 @@ var InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 var getClientEnvironment = require('./env');
 var paths = require('./paths');
-
-
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
@@ -20,6 +19,8 @@ var publicPath = '/';
 var publicUrl = '';
 // Get environment variables to inject into our app.
 var env = getClientEnvironment(publicUrl);
+
+var theme = require(paths.appPackageJson).theme;
 
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
@@ -51,6 +52,16 @@ module.exports = {
     // initialization, it doesn't blow up the WebpackDevServer client, and
     // changing JS code would still trigger a refresh.
   ],
+  // babel: {
+  //   plugins: [
+  //     [
+  //       'import', {
+  //         libraryName: 'antd',
+  //         style: true
+  //       }
+  //     ],
+  //   ]
+  // },
   output: {
     // Next line is not used in dev but WebpackDevServer crashes without it:
     path: paths.appBuild,
@@ -139,6 +150,14 @@ module.exports = {
       {
         test: /\.less$/,
         loader: 'style!css!less?strictMath=true'
+      },
+      {
+        test: /\.module\.less$/,
+        loader: ExtractTextPlugin.extract(
+          'css?sourceMap&modules&localIdentName=[local]___[hash:base64:5]!!' +
+          'postcss!' +
+          `less-loader?{"sourceMap":true,"modifyVars":${JSON.stringify(theme)}}`
+        ),
       },
       // JSON is not enabled by default in Webpack but both Node and Browserify
       // allow it implicitly so we also enable it.

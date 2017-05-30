@@ -39,8 +39,11 @@ const cssFilename = 'static/css/[name].[contenthash:8].css';
 // To have this structure working with relative paths, we have to use custom options.
 const extractTextPluginOptions = shouldUseRelativeAssetPaths
   // Making sure that the publicPath goes back to to build folder.
-  ? { publicPath: Array(cssFilename.split('/').length).join('../') }
-  : undefined;
+  ?
+  {
+    publicPath: Array(cssFilename.split('/').length).join('../')
+  } :
+  undefined;
 
 // This is the production configuration.
 // It compiles slowly and is focused on producing a fast and minimal bundle.
@@ -85,17 +88,15 @@ module.exports = {
       'react-native': 'react-native-web'
     }
   },
-  
+
   module: {
     // First, run the linter.
     // It's important to do this before Babel processes the JS.
-    preLoaders: [
-      {
-        test: /\.(ts|tsx)$/,
-        loader: 'tslint',
-        include: paths.appSrc,
-      }
-    ],
+    preLoaders: [{
+      test: /\.(ts|tsx)$/,
+      loader: 'tslint',
+      include: paths.appSrc,
+    }],
     loaders: [
       // ** ADDING/UPDATING LOADERS **
       // The "url" loader handles all assets unless explicitly excluded.
@@ -166,7 +167,7 @@ module.exports = {
     ]
   },
   // We use PostCSS for autoprefixing only.
-  postcss: function() {
+  postcss: function () {
     return [
       autoprefixer({
         browsers: [

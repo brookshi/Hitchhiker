@@ -33,7 +33,7 @@ export function* sendRequest() {
     yield takeEvery(SendRequestType, function* (action: any) {
         let runResult: any = {};
         try {
-            const res = yield call(RequestManager.post, 'http://localhost:3000/api/record/run', action.record);
+            const res = yield call(RequestManager.post, 'http://localhost:3000/api/record/run', action.value);
             if (RequestManager.checkCanceledThenRemove(action.value.record.id)) {
                 return;
             }

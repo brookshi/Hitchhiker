@@ -210,7 +210,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         return (
             <div>
                 <Tooltip mouseEnterDelay={1} placement="left" title="new tab">
-                    <Button className="icon-btn record-add-btn" type="primary" icon="plus" onClick={this.props.addTab} />
+                    <Button className="record-add-btn" type="primary" icon="plus" onClick={this.props.addTab} />
                 </Tooltip>
                 <span className="req-tab-extra-env">
                     <Select value={this.activeEnvId} className="req-tab-extra-env-select" onChange={(this.onEnvChanged)}>
@@ -221,7 +221,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                             ))
                         }
                     </Select>
-                    <Button className="icon-btn record-add-btn" icon="edit" onClick={this.editEnv} />
+                    <Button className="record-add-btn" icon="edit" onClick={this.editEnv} />
                 </span>
             </div>
         );
