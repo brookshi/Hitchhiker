@@ -10,6 +10,7 @@
     "koa-query": "^0.0.6",
     "koa-router": "^7.0.1",
     "koa-session-minimal": "^3.0.2",
+    "koa-static": "^3.0.0",
     "lodash": "^4.17.4",
     "log4js": "^1.1.1",
     "mysql": "^2.13.0",
@@ -21,13 +22,16 @@
     "webapi-router": "^1.0.2"
   },
   "devDependencies": {
-    "@types/reflect-metadata": "^0.0.5",
+    "@types/koa": "^2.0.39",
+    "@types/koa-static": "^2.0.22",
     "@types/lodash": "^4.14.55",
-    "@types/shortid": "^0.0.28",
-    "@types/node": "^7.0.8",
-    "@types/request": "^0.0.42",
     "@types/log4js": "^0.0.32",
-    "@types/koa": "^2.0.39"
+    "@types/node": "^7.0.8",
+    "@types/reflect-metadata": "^0.0.5",
+    "@types/request": "^0.0.42",
+    "@types/shortid": "^0.0.28",
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -3,7 +3,23 @@
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [
+    "configurations": [{
+            "type": "node",
+            "request": "launch",
+            "name": "webpack debug",
+            "args": [],
+            "cwd": "${workspaceRoot}/client",
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "outDir": "${workspaceRoot}/client",
+            "program": "${workspaceRoot}/client/debugwebpack.js",
+            "runtimeArgs": [
+                "--nolazy"
+            ],
+            "sourceMaps": true,
+            "stopOnEntry": false
+        },
         {
             "type": "node",
             "request": "launch",

@@ -101,6 +101,6 @@
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$"
   },
   "theme": {
-    "@icon-url": "'/style/fonts/iconfont'"
+    "@icon-url": "'/static/media/iconfont.{hash}'"
   }
 }

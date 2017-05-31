@@ -9,6 +9,7 @@ var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeMod
 var getClientEnvironment = require('./env');
 var paths = require('./paths');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var shortId = require('shortid');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
@@ -20,8 +21,14 @@ var publicUrl = '';
 // Get environment variables to inject into our app.
 var env = getClientEnvironment(publicUrl);
 
-var theme = require(paths.appPackageJson).theme;
+var cssFilename = 'static/css/[name].[contenthash:8].css';
 
+var hash = shortId.generate();
+
+var theme = require(paths.appPackageJson).theme;
+if (theme['@icon-url']) {
+  theme['@icon-url'] = theme['@icon-url'].replace('{hash}', hash)
+}
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
 // The production configuration is different and lives in a separate file.
@@ -124,40 +131,56 @@ module.exports = {
           /\.less$/,
           /\.css$/,
           /\.json$/,
-          /\.svg$/
+          /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+          // /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+          // /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+          // /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+          // /\.eot(\?v=\d+\.\d+\.\d+)?$/,
         ],
         loader: 'url',
         query: {
           limit: 10000,
-          name: 'static/media/[name].[hash:8].[ext]'
+          name: `static/media/[name].${hash}.[ext]`
         }
       },
       // Compile .tsx?
       {
         test: /\.(ts|tsx)$/,
         include: paths.appSrc,
-        loader: 'babel!ts',
+        loader: 'babel!ts'
       },
       // "postcss" loader applies autoprefixer to our CSS.
       // "css" loader resolves paths in CSS and adds assets as dependencies.
       // "style" loader turns CSS into JS modules that inject <style> tags.
       // In production, we use a plugin to extract that CSS to a file, but
       // in development "style" loader enables hot editing of CSS.
+      // {
+      //   test: /\.css$/,
+      //   loader: 'style!css?importLoaders=1!postcss'
+      // },
       {
         test: /\.css$/,
-        loader: 'style!css?importLoaders=1!postcss'
+        loader: ExtractTextPlugin.extract(
+          `${require.resolve('css-loader')}` +
+          `?sourceMap&-restructuring&modules` +
+          `${require.resolve('postcss-loader')}`
+        )
       },
       {
         test: /\.less$/,
-        loader: 'style!css!less?strictMath=true'
+        include: paths.appSrc,
+        loader: 'style!css!postcss!less?strictMath=true'
       },
       {
-        test: /\.module\.less$/,
+        test: /\.less$/,
+        exclude: paths.appSrc,
         loader: ExtractTextPlugin.extract(
-          'css?sourceMap&modules&localIdentName=[local]___[hash:base64:5]!!' +
-          'postcss!' +
-          `less-loader?{"sourceMap":true,"modifyVars":${JSON.stringify(theme)}}`
-        ),
+          `${require.resolve('css-loader')}?` +
+          `sourceMap&modules` +
+          `${require.resolve('postcss-loader')}!` +
+          `${require.resolve('less-loader')}?` +
+          `{"sourceMap":true,"modifyVars":${JSON.stringify(theme)}}`
+        )
       },
       // JSON is not enabled by default in Webpack but both Node and Browserify
       // allow it implicitly so we also enable it.
@@ -167,12 +190,30 @@ module.exports = {
       },
       // "file" loader for svg
       {
-        test: /\.svg$/,
-        loader: 'file',
-        query: {
-          name: 'static/media/[name].[hash:8].[ext]'
-        }
-      }
+        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+        loader: `${require.resolve('url-loader')}?` +
+          `limit=10000&minetype=image/svg+xml`,
+      },
+      // {
+      //   test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+      //   loader: `${require.resolve('url-loader')}?` +
+      //     `limit=10000&name=static/fonts/[name].[ext]&minetype=application/font-woff`,
+      // },
+      // {
+      //   test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+      //   loader: `${require.resolve('url-loader')}?` +
+      //     `limit=10000&minetype=application/font-woff`,
+      // },
+      // {
+      //   test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+      //   loader: `${require.resolve('url-loader')}?` +
+      //     `limit=10000&minetype=application/octet-stream`,
+      // },
+      // {
+      //   test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+      //   loader: `${require.resolve('url-loader')}?` +
+      //     `limit=10000&minetype=application/vnd.ms-fontobject`,
+      // },
       // ** STOP ** Are you adding a new loader?
       // Remember to add the new extension(s) to the "url" loader exclusion list.
     ]
@@ -200,6 +241,10 @@ module.exports = {
     new HtmlWebpackPlugin({
       inject: true,
       template: paths.appHtml,
+    }),
+    new ExtractTextPlugin('static/css/[name].[contenthash:8].css', {
+      disable: false,
+      allChunks: true,
     }),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `./env.js`.

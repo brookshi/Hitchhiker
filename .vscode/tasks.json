@@ -1,10 +1,23 @@
 {
     // See https://go.microsoft.com/fwlink/?LinkId=733558
     // for the documentation about the tasks.json format
-    "version": "0.1.0",
-    "command": "tsc",
-    "isShellCommand": true,
-    "args": ["-p", "."],
-    "showOutput": "silent",
-    "problemMatcher": "$tsc"
+    "version": "2.0.0",
+    "tasks": [{
+        "taskName": "gulp",
+        "command": "gulp",
+        "args": [
+            "copy"
+        ],
+        "isShellCommand": true
+    }, {
+        "taskName": "build",
+        "command": "tsc",
+        "isShellCommand": true,
+        "dependsOn": ["gulp"],
+        "args": [
+            "-p",
+            "."
+        ],
+        "problemMatcher": "$tsc-watch"
+    }]
 }
