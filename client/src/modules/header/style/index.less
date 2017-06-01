@@ -23,4 +23,25 @@
 
 .header-sync{
     color: white;
+    font-size: 24px;
+}
+
+.header-sync-anim{
+    animation-name: syncrotate;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+.header-right{
+    float: right;
+}
+
+@keyframes syncrotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }

@@ -1,3 +1,5 @@
+import { SyncItem } from '../utils/request_manager';
+
 export interface AppUIState {
 
     activeModule: string;
@@ -5,6 +7,15 @@ export interface AppUIState {
     leftPanelWidth: number;
 
     collapsed: boolean;
+}
+
+export interface SyncState {
+
+    syncCount: number;
+
+    message?: string;
+
+    syncItems: Array<SyncItem>;
 }
 
 export interface ReqResUIState {
@@ -23,22 +34,30 @@ export interface UIState {
     appUIState: AppUIState;
 
     reqResUIState: _.Dictionary<ReqResUIState>;
+
+    syncState: SyncState;
 }
 
-export const appUIDefaultValue = {
+export const appUIDefaultValue: AppUIState = {
     activeModule: 'collection',
     leftPanelWidth: 300,
     collapsed: false
 };
 
-export const reqResUIDefaultValue = {
+export const reqResUIDefaultValue: ReqResUIState = {
     isReqPanelHidden: false,
     activeResTab: 'content',
     activeReqTab: 'headers',
-    resHeights: 0
+    resHeight: 0
 };
+
+export const syncDefaultValue: SyncState = {
+    syncCount: 0,
+    syncItems: []
+}
 
 export const uiDefaultValue = {
     appUIState: appUIDefaultValue,
-    reqResUIState: {}
+    reqResUIState: {},
+    syncState: syncDefaultValue
 };

@@ -1,32 +1,5 @@
 import { HttpMethod, HttpMethodType } from '../common/http_method';
 
-export enum SyncType {
-
-    updateRecord = 0,
-
-    addRecord = 1,
-
-    delRecord = 2,
-
-    addCollection = 3,
-
-    updateCollection = 4,
-
-    delCollection = 5,
-
-    saveTeam = 6,
-
-    disbandTeam = 7,
-
-    quitTeam = 8,
-
-    inviteMember = 9,
-
-    saveEnvironment = 10,
-
-    delEnvironment = 11
-}
-
 export interface SyncItem {
 
     type: string;

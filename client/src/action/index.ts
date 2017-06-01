@@ -8,17 +8,13 @@ import { login } from './login';
 
 export const SyncType = 'sync';
 
-export const SyncFailedType = 'sync failed';
-
-export const SyncSuccessType = 'sync failed';
+export const SyncSuccessType = 'sync success';
 
 export const SyncRetryType = 'sync retry';
 
 export function actionCreator<T>(type: string, value?: T) { return { type, value }; };
 
 export const syncAction = (syncItem: SyncItem) => ({ type: SyncType, syncItem });
-
-const RetryTimes = 3;
 
 export function* rootSaga() {
 
@@ -53,18 +49,20 @@ function* sync() {
 }
 
 function* handleRequest(syncItem: SyncItem) {
-    for (let i = 0; i <= RetryTimes; i++) {
+    let delayTime = 1000;
+    for (let i = 0; i <= Number.MAX_VALUE; i++) {
         try {
-            yield call(RequestManager.sync, syncItem);
+            const res = yield call(RequestManager.sync, syncItem);
+            console.log(res);
+            if (res.status >= 400) {
+                throw new Error(res.statusText);
+            }
             yield put(actionCreator(SyncSuccessType, syncItem));
             return;
         } catch (e) {
-            if (i !== RetryTimes) {
-                yield put(actionCreator(SyncRetryType, { time: i + 1, syncItem }));
-                yield call(delay, 1000);
-            } else {
-                yield put(actionCreator(SyncFailedType, syncItem));
-            }
+            delayTime *= 2;
+            yield put(actionCreator(SyncRetryType, { errMsg: e.toString(), delay: delayTime, time: i + 1, syncItem }));
+            yield call(delay, delayTime);
         }
     }
 }
