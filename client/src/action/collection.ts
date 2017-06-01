@@ -1,5 +1,4 @@
 import { call, put, takeLatest, takeEvery } from 'redux-saga/effects';
-import { errorAction } from '../common/action';
 import RequestManager from '../utils/request_manager';
 import { HttpMethod } from '../common/http_method';
 import { syncAction, actionCreator } from './index';
@@ -21,7 +20,7 @@ export function* refreshCollection() {
             const body = yield res.json();
             yield put(actionCreator(FetchCollectionSuccessType, body));
         } catch (err) {
-            yield put(errorAction(FetchCollectionFailedType, err));
+            yield put(actionCreator(FetchCollectionFailedType, err));
         }
     });
 }

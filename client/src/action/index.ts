@@ -4,7 +4,7 @@ import RequestManager, { SyncItem } from '../utils/request_manager';
 import { sendRequest, saveRecord, saveAsRecord, deleteRecord, moveRecord } from './record';
 import { saveTeam, quitTeam, disbandTeam, removeUser, inviteMember, saveEnvironment, delEnvironment } from './team';
 import { deleteCollection, saveCollection, refreshCollection } from './collection';
-import { login } from './login';
+import { login, logout } from './login';
 
 export const SyncType = 'sync';
 
@@ -20,6 +20,7 @@ export function* rootSaga() {
 
     yield [
         spawn(login),
+        spawn(logout),
         spawn(refreshCollection),
         spawn(deleteCollection),
         spawn(saveCollection),
@@ -53,10 +54,10 @@ function* handleRequest(syncItem: SyncItem) {
     for (let i = 0; i <= Number.MAX_VALUE; i++) {
         try {
             const res = yield call(RequestManager.sync, syncItem);
-            console.log(res);
             if (res.status >= 400) {
                 throw new Error(res.statusText);
             }
+            // TODO: check result success or failed;
             yield put(actionCreator(SyncSuccessType, syncItem));
             return;
         } catch (e) {

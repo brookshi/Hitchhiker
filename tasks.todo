@@ -32,11 +32,12 @@
     ✔ split line @done (2017/5/20 下午9:48:09)
     ✔ tip @done (5/22/2017, 2:00:46 PM)
     ✔ input spell check @done (5/22/2017, 5:59:42 PM)
-    ☐ request error handle
+    ✔ request error handle @done (2017/6/1 下午10:33:09)
     ☐ local storage for record states & refresh merge with tabs
-    ☐ sync status
-    ☐ top banner
+    ✔ sync status @done (2017/6/1 下午10:33:11)
+    ✔ top banner @done (2017/6/1 下午10:33:13)
     ☐ record change time line (db)
+    ☐ default open collection
 0.2.0:
     ☐ body type
     ☐ record auth

@@ -3,6 +3,7 @@ import { UIState, AppUIState, appUIDefaultValue, ReqResUIState, uiDefaultValue, 
 import { combineReducers } from 'redux';
 import { ResizeLeftPanelType, UpdateLeftPanelType, SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType } from '../action/ui';
 import { SyncType, SyncSuccessType, SyncRetryType } from '../action/index';
+import { LoginFailedType } from '../action/login';
 
 export function uiState(state: UIState = uiDefaultValue, action: any): UIState {
     return combineReducers<UIState>({
@@ -42,6 +43,9 @@ function syncState(state: SyncState = syncDefaultValue, action: any): SyncState 
         case SyncRetryType: {
             const { errMsg, delay, time, syncItem } = action.value;
             return { ...state, message: `${syncItem.type} failed, ${errMsg}, Retry ${time}th time after ${delay}s` };
+        }
+        case LoginFailedType: {
+            return { ...state, message: `Logout failed, ${action.value.toString()}` };
         }
         default:
             return state;

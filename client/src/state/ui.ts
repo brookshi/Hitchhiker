@@ -54,7 +54,7 @@ export const reqResUIDefaultValue: ReqResUIState = {
 export const syncDefaultValue: SyncState = {
     syncCount: 0,
     syncItems: []
-}
+};
 
 export const uiDefaultValue = {
     appUIState: appUIDefaultValue,

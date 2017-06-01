@@ -11,7 +11,6 @@ import { DateUtil } from "../utils/date_util";
 import { Setting } from "../utils/setting";
 import { StringUtil } from "../utils/string_util";
 import { MailService } from "../services/mail_service";
-import { TeamService } from "../services/team_service";
 import { ValidateUtil } from "../utils/validate_util";
 import * as _ from "lodash";
 import { Password } from "../interfaces/password";
@@ -38,7 +37,7 @@ export default class UserController extends BaseController {
         return checkLogin;
     }
 
-    @GET('/logout')
+    @GET('/user/logout')
     logout(ctx: Koa.Context): ResObject {
         SessionService.logout(ctx);
         return { success: true, message: Message.userLogout };
