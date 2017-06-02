@@ -4,6 +4,7 @@ import { combineReducers } from 'redux';
 import { ResizeLeftPanelType, UpdateLeftPanelType, SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType } from '../action/ui';
 import { SyncType, SyncSuccessType, SyncRetryType } from '../action/index';
 import { LoginFailedType } from '../action/login';
+import { RemoveTabType } from "../action/record";
 
 export function uiState(state: UIState = uiDefaultValue, action: any): UIState {
     return combineReducers<UIState>({
@@ -69,6 +70,10 @@ function reqResUIState(state: _.Dictionary<ReqResUIState> = {}, action: any): _.
         case ResizeResHeightType: {
             const { recordId, height } = action.value;
             return { ...state, [recordId]: { ...state[recordId], resHeight: height } };
+        }
+        case RemoveTabType: {
+            Reflect.deleteProperty(state, action.value);
+            return { ...state };
         }
         default:
             return state;

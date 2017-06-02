@@ -5,6 +5,7 @@ import { sendRequest, saveRecord, saveAsRecord, deleteRecord, moveRecord } from 
 import { saveTeam, quitTeam, disbandTeam, removeUser, inviteMember, saveEnvironment, delEnvironment } from './team';
 import { deleteCollection, saveCollection, refreshCollection } from './collection';
 import { login, logout } from './login';
+import { storeLocalData, fetchLocalData } from './local_data';
 
 export const SyncType = 'sync';
 
@@ -21,6 +22,8 @@ export function* rootSaga() {
     yield [
         spawn(login),
         spawn(logout),
+        spawn(fetchLocalData),
+        spawn(storeLocalData),
         spawn(refreshCollection),
         spawn(deleteCollection),
         spawn(saveCollection),

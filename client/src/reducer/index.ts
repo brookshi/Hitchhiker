@@ -7,6 +7,9 @@ import { uiState } from './ui';
 import { userState } from './user';
 import { teamState } from './team';
 import { environmentState } from './environment';
+import { FetchLocalDataSuccessType } from "../action/local_data";
+import { localDataState } from "./local_data";
+import { syncDefaultValue } from "../state/ui";
 
 export const reduceReducers = (...reducers) => {
     return (state, action) =>
@@ -18,6 +21,7 @@ export const reduceReducers = (...reducers) => {
 
 export function rootReducer(state: State, action: any): State {
     const intermediateState = combineReducers<State>({
+        localDataState,
         collectionState,
         displayRecordsState,
         uiState,
@@ -45,6 +49,27 @@ function root(state: State, action: any): State {
             recordState[index].record = { ...action.value };
             recordState[index].isChanged = isChanged;
             return { ...state, displayRecordsState: { ...state.displayRecordsState, recordStates: [...recordState] } };
+        }
+        case FetchLocalDataSuccessType: {
+            const { displayRecordsState, uiState, collectionState, teamState, environmentState } = action.value;
+            return {
+                ...state,
+                displayRecordsState,
+                uiState: { ...uiState, syncState: syncDefaultValue },
+                collectionState: {
+                    ...state.collectionState,
+                    selectedTeam: collectionState.selectedTeam,
+                    openKeys: collectionState.openKeys
+                },
+                teamState: {
+                    ...state.teamState,
+                    activeTeam: teamState.activeTeam
+                },
+                environmentState: {
+                    ...state.environmentState,
+                    activeEnv: environmentState.activeEnv
+                }
+            };
         }
         default: return state;
     }

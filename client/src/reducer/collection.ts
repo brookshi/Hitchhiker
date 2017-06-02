@@ -1,4 +1,4 @@
-import { FetchCollectionSuccessType, SaveCollectionType, DeleteCollectionType } from '../action/collection';
+import { FetchCollectionSuccessType, SaveCollectionType, DeleteCollectionType, SelectedTeamChangedType, CollectionOpenKeysType } from '../action/collection';
 import { ActiveTabType, ActiveRecordType, DeleteRecordType, MoveRecordType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, UpdateTabRecordId, SaveAsRecordType } from '../action/record';
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
@@ -19,7 +19,13 @@ export function collectionState(state: CollectionState = collectionDefaultValue,
     switch (action.type) {
         case FetchCollectionSuccessType: {
             console.log(action.value);
-            return _.cloneDeep({ collectionsInfo: action.value, isLoaded: true });
+            return { ...state, collectionsInfo: _.cloneDeep(action.value), isLoaded: true };
+        }
+        case SelectedTeamChangedType: {
+            return { ...state, selectedTeam: action.value };
+        }
+        case CollectionOpenKeysType: {
+            return { ...state, openKeys: action.value };
         }
         case SaveAsRecordType:
         case SaveRecordType:
@@ -166,7 +172,7 @@ function recordStates(states: RecordState[] = displayRecordsDefaultValue.recordS
 }
 
 function recordWithResState(state: DisplayRecordsState = displayRecordsDefaultValue, action: any): DisplayRecordsState {
-    let { recordStates, activeKey } = state;
+    let { recordStates, activeKey, responseState } = state;
     switch (action.type) {
         case AddTabType:
             const newRecordState = getNewRecordState();
@@ -180,6 +186,7 @@ function recordWithResState(state: DisplayRecordsState = displayRecordsDefaultVa
             };
         case RemoveTabType: {
             let index = recordStates.findIndex(r => r.record.id === action.value);
+            Reflect.deleteProperty(responseState, action.value);
             if (index > -1) {
                 const activeIndex = recordStates.findIndex(r => r.record.id === activeKey);
                 recordStates.splice(index, 1);

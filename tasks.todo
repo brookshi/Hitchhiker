@@ -36,11 +36,17 @@
     ☐ local storage for record states & refresh merge with tabs
     ✔ sync status @done (2017/6/1 下午10:33:11)
     ✔ top banner @done (2017/6/1 下午10:33:13)
+    ☐ cookie invalid indirect to login page
     ☐ record change time line (db)
     ☐ default open collection
+    ☐ login ui / logout redirect
+    ☐ team share collection/env for own
+    ☐ build to live
+    ☐ unit test
 0.2.0:
+    ☐ fetch data per 30s
+    ☐ team share collection/env
     ☐ body type
-    ☐ record auth
     ☐ schedule
     ☐ run batch
 0.3.0:
@@ -48,6 +54,7 @@
     ☐ team permission
 0.4.0:
     ☐ api document
+    ☐ record auth
 
 4a0a4b0cb56b86075a895be24d8eba06
 59ce656014dd6b3b447af812112d5c2618cbed9e

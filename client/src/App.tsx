@@ -16,6 +16,7 @@ import { LoginType } from './action/login';
 import { RefreshCollectionType } from './action/collection';
 import { ResizeLeftPanelType, UpdateLeftPanelType } from './action/ui';
 import './style/App.less';
+import { FetchLocalDataType } from "./action/local_data";
 
 const { Header, Content, Sider } = Layout;
 
@@ -29,6 +30,8 @@ interface AppStateProps {
 
   isFetchCollection: boolean;
 
+  isFetchLocalData: boolean;
+
   leftPanelWidth: number;
 }
 
@@ -41,6 +44,8 @@ interface AppDispatchProps {
   login();
 
   resizeLeftPanel(width: number);
+
+  fetchLocalData();
 }
 
 type AppProps = AppStateProps & AppDispatchProps;
@@ -62,6 +67,9 @@ class App extends React.Component<AppProps, AppState> {
   componentWillReceiveProps(nextProps: AppProps) {
     if (nextProps.isLogin && !nextProps.isFetchCollection) {
       this.props.getCollection();
+    }
+    if (nextProps.isLogin && nextProps.isFetchCollection && !nextProps.isFetchLocalData) {
+      this.props.fetchLocalData();
     }
   }
 
@@ -175,7 +183,8 @@ const mapStateToProps = (state: State): AppStateProps => {
     collapsed,
     activeModule,
     isLogin: state.userState.isLoaded,
-    isFetchCollection: state.collectionState.isLoaded
+    isFetchCollection: state.collectionState.isLoaded,
+    isFetchLocalData: state.localDataState.isLocalDataLoaded
   };
 };
 
@@ -184,7 +193,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): AppDispatchProps => {
     getCollection: () => dispatch(actionCreator(RefreshCollectionType)),
     login: () => dispatch(actionCreator(LoginType)),
     resizeLeftPanel: (width) => dispatch(actionCreator(ResizeLeftPanelType, width)),
-    updateLeftPanelStatus: (collapsed, activeModule) => dispatch(actionCreator(UpdateLeftPanelType, { collapsed, activeModule }))
+    updateLeftPanelStatus: (collapsed, activeModule) => dispatch(actionCreator(UpdateLeftPanelType, { collapsed, activeModule })),
+    fetchLocalData: () => dispatch(actionCreator(FetchLocalDataType))
   };
 };
 

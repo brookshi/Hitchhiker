@@ -11,15 +11,15 @@ import * as _ from 'lodash';
 import { DtoCollection } from '../../../../api/interfaces/dto_collection';
 import { RecordCategory } from '../../common/record_category';
 import { actionCreator } from '../../action';
-import { DeleteCollectionType, SaveCollectionType } from '../../action/collection';
+import { DeleteCollectionType, SaveCollectionType, SelectedTeamChangedType, CollectionOpenKeysType } from '../../action/collection';
 import { DeleteRecordType, SaveRecordType, RemoveTabType, ActiveRecordType, MoveRecordType } from '../../action/record';
 import { StringUtil } from '../../utils/string_util';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { AllTeam } from '../../state/collection';
 import './style/index.less';
 
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
-const AllTeam = 'All';
 const NewCollectionName = 'New collection';
 
 interface CollectionListStateProps {
@@ -31,6 +31,10 @@ interface CollectionListStateProps {
     activeKey: string;
 
     teams: { id: string, name: string }[];
+
+    openKeys: string[];
+
+    selectedTeam: string;
 }
 
 interface CollectionListDispatchProps {
@@ -52,6 +56,10 @@ interface CollectionListDispatchProps {
     createFolder(record: DtoRecord);
 
     moveRecord(record: DtoRecord);
+
+    openKeysChanged(openKeys: string[]);
+
+    selectTeam(teamid: string);
 }
 
 type CollectionListProps = CollectionListStateProps & CollectionListDispatchProps;
@@ -59,8 +67,6 @@ type CollectionListProps = CollectionListStateProps & CollectionListDispatchProp
 interface CollectionListState {
 
     openKeys: string[];
-
-    selectedTeam: string;
 
     isAddCollectionDlgOpen: boolean;
 
@@ -79,19 +85,9 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         super(props);
         this.state = {
             openKeys: [],
-            selectedTeam: AllTeam,
             isAddCollectionDlgOpen: false,
             newCollectionName: NewCollectionName
         };
-    }
-
-    componentWillReceiveProps(nextProps: CollectionListProps) {
-        const openKeys = this.state.openKeys;
-        if (this.currentNewFolder &&
-            this.currentNewFolder.collectionId &&
-            openKeys.indexOf(this.currentNewFolder.collectionId) < 0) {
-            this.setState({ ...this.state, openKeys: [...openKeys, this.currentNewFolder.collectionId] });
-        }
     }
 
     componentDidUpdate(prevProps: CollectionListProps, prevState: CollectionListState) {
@@ -102,7 +98,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     }
 
     private onOpenChanged = (openKeys: string[]) => {
-        this.setState({ openKeys: openKeys });
+        this.props.openKeysChanged(openKeys);
     }
 
     private onSelectChanged = (param: SelectParam) => {
@@ -110,8 +106,13 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     }
 
     private createFolder = (folder: DtoRecord) => {
-        this.props.createFolder(folder);
         this.currentNewFolder = folder;
+        if (folder &&
+            folder.collectionId &&
+            this.props.openKeys.indexOf(folder.collectionId) < 0) {
+            this.props.openKeysChanged([...this.props.openKeys, folder.collectionId]);
+        }
+        this.props.createFolder(folder);
     }
 
     private changeFolderName = (folder: DtoRecord, name: string) => {
@@ -142,13 +143,13 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     }
 
     private onTeamChanged = (e) => {
-        this.setState({ ...this.state, selectedTeam: e.key });
+        this.props.selectTeam(e.key);
     }
 
     private getTeamMenu = () => {
         const teams = this.props.teams;
         return (
-            <Menu style={{ minWidth: 150 }} onClick={this.onTeamChanged} selectedKeys={[this.state.selectedTeam]}>
+            <Menu style={{ minWidth: 150 }} onClick={this.onTeamChanged} selectedKeys={[this.props.selectedTeam]}>
                 <Menu.Item key={AllTeam}>{AllTeam}</Menu.Item>
                 {teams.map(t => <Menu.Item key={t.id}>{t.name}</Menu.Item>)}
             </Menu>
@@ -156,23 +157,23 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     }
 
     private getCurrentTeam = () => {
-        return this.props.teams.find(t => t.id === this.state.selectedTeam) || { id: AllTeam, name: AllTeam };
+        return this.props.teams.find(t => t.id === this.props.selectedTeam) || { id: AllTeam, name: AllTeam };
     }
 
     private getOpenKeys = () => {
-        const openKeys = this.state.openKeys;
-        if (this.state.selectedTeam === AllTeam) {
+        const openKeys = this.props.openKeys;
+        if (this.props.selectedTeam === AllTeam) {
             return openKeys;
         }
-        return _.filter(openKeys, k => this.props.collections[k] && this.props.collections[k].teamId === this.state.selectedTeam);
+        return _.filter(openKeys, k => this.props.collections[k] && this.props.collections[k].teamId === this.props.selectedTeam);
     }
 
     private getDisplayCollections = () => {
         const collections = _.chain(this.props.collections).values<DtoCollection>().sortBy('name').value();
-        if (this.state.selectedTeam === AllTeam) {
+        if (this.props.selectedTeam === AllTeam) {
             return collections;
         }
-        return _.filter(collections, c => c.teamId === this.state.selectedTeam);
+        return _.filter(collections, c => c.teamId === this.props.selectedTeam);
     }
 
     private addCollection = () => {
@@ -200,7 +201,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             const { records } = this.props;
 
             if (r.category === RecordCategory.folder) {
-                const isOpen = this.state.openKeys.indexOf(r.id) > -1;
+                const isOpen = this.props.openKeys.indexOf(r.id) > -1;
                 const children = _.remove(data, (d) => d.pid === r.id);
                 return (
                     <SubMenu className="folder" key={r.id} title={(
@@ -322,12 +323,16 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
 }
 
 const mapStateToProps = (state: State): CollectionListStateProps => {
+    const { collectionsInfo, openKeys, selectedTeam } = state.collectionState;
     let teams = _.values(state.teamState.teams).map(t => ({ id: t.id ? t.id : '', name: t.name ? t.name : '' }));
+
     return {
-        collections: state.collectionState.collectionsInfo.collections,
-        records: state.collectionState.collectionsInfo.records,
+        collections: collectionsInfo.collections,
+        records: collectionsInfo.records,
         activeKey: state.displayRecordsState.activeKey,
-        teams: _.sortBy(teams, t => t.name)
+        teams: _.sortBy(teams, t => t.name),
+        openKeys,
+        selectedTeam
     };
 };
 
@@ -349,7 +354,9 @@ const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps
         updateCollection: (collection) => { dispatch(actionCreator(SaveCollectionType, { isNew: false, collection })); },
         duplicateRecord: (record) => dispatch(actionCreator(SaveRecordType, { isNew: true, record: { ...record, id: StringUtil.generateUID(), name: `${record.name}.copy` } })),
         createFolder: (record) => dispatch(actionCreator(SaveRecordType, { isNew: true, record })),
-        moveRecord: record => dispatch(actionCreator(MoveRecordType, { record }))
+        moveRecord: record => dispatch(actionCreator(MoveRecordType, { record })),
+        openKeysChanged: openKeys => dispatch(actionCreator(CollectionOpenKeysType, openKeys)),
+        selectTeam: teamId => dispatch(actionCreator(SelectedTeamChangedType, teamId))
     };
 };
 

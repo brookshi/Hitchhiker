@@ -3,8 +3,11 @@ import { TeamState } from './team';
 import { UserInfoState } from './user';
 import { EnvironmentState } from './environment';
 import { CollectionState, DisplayRecordsState } from './collection';
+import { LocalDataState } from './local_data';
 
 export interface State {
+
+    localDataState: LocalDataState;
 
     uiState: UIState;
 

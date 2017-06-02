@@ -174,7 +174,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 
     private onEdit = (key, action) => {
-        if (key === 'remove') {
+        if (action === 'remove') {
             const index = this.props.recordStates.findIndex(r => r.record.id === key);
             if (key.startsWith('@new') || (index >= 0 && !this.props.recordStates[index].isChanged)) {
                 this.props.removeTab(key);
@@ -340,8 +340,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): ReqResPanelDispatchProps =
         removeTab: (key) => dispatch(actionCreator(RemoveTabType, key)),
         onChanged: (record) => dispatch(actionCreator(UpdateTabChangedType, record)),
         cancelRequest: (id) => dispatch(actionCreator(CancelRequestType, id)),
-        save: (record) => dispatch(actionCreator(SaveRecordType, record)),
-        saveAs: (record) => dispatch(actionCreator(SaveAsRecordType, record)),
+        save: (record) => dispatch(actionCreator(SaveRecordType, { isNew: false, record })),
+        saveAs: (record) => dispatch(actionCreator(SaveAsRecordType, { isNew: true, record })),
         updateTabRecordId: (oldId, newId) => dispatch(actionCreator(UpdateTabRecordId, { oldId, newId })),
         switchEnv: (teamId, envId) => dispatch(actionCreator(SwitchEnvType, { teamId, envId })),
         editEnv: (teamId, envId) => dispatch(actionCreator(EditEnvType, { teamId, envId })),

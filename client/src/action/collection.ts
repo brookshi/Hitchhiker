@@ -13,6 +13,10 @@ export const DeleteCollectionType = 'delete collection';
 
 export const SaveCollectionType = 'save collection';
 
+export const SelectedTeamChangedType = 'select team';
+
+export const CollectionOpenKeysType = 'open/close collection';
+
 export function* refreshCollection() {
     yield takeLatest(RefreshCollectionType, function* () {
         try {

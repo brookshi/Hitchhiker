@@ -14,9 +14,15 @@ export function getDefaultRecord(isInit: boolean = false): DtoRecord {
     };
 }
 
+export const AllTeam = 'All';
+
 export interface CollectionState {
 
     collectionsInfo: DtoCollectionWithRecord;
+
+    openKeys: string[];
+
+    selectedTeam: string;
 
     isLoaded: boolean;
 }
@@ -48,6 +54,8 @@ export interface ResponseState {
 
 export const collectionDefaultValue: CollectionState = {
     isLoaded: false,
+    openKeys: [],
+    selectedTeam: AllTeam,
     collectionsInfo: {
         collections: {},
         records: {}
