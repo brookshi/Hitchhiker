@@ -1,6 +1,7 @@
 import { takeLatest, call, put } from 'redux-saga/effects';
 import { actionCreator } from './index';
 import LocalStore from '../utils/local_store';
+import { delay } from 'redux-saga';
 
 export const FetchLocalDataType = 'fetch local data';
 
@@ -25,6 +26,7 @@ export function* storeLocalData() {
     yield takeLatest(StoreLocalDataType, function* (action: any) {
         try {
             console.log('store');
+            yield delay(1000);
             yield call(LocalStore.setState, action.value);
         } catch (err) {
             console.error(err);

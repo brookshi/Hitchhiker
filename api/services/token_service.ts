@@ -24,8 +24,8 @@ export class TokenService {
         return token;
     }
 
-    static buildInviteToTeamToken(userEmail: string, inviterId: string, inviterEmail: string): string {
-        const info: InviteToTeamToken = { userEmail: userEmail, inviterId: inviterId, inviterEmail: inviterEmail, date: new Date(), uid: uuid.v1() };
+    static buildInviteToTeamToken(userEmail: string, teamId: string, inviterId: string, inviterEmail: string): string {
+        const info: InviteToTeamToken = { userEmail, inviterId, inviterEmail, teamId, date: new Date(), uid: uuid.v1() };
         const token = TokenService.buildToken(info);
         TokenService.tokens[token] = 1;
 

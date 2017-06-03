@@ -29,7 +29,7 @@ export default class UserController extends BaseController {
             return checkLogin;
         }
 
-        SessionService.login(ctx, (<User>checkLogin.result).id);
+        SessionService.login(ctx, (<User>checkLogin.result.user).id);
 
         checkLogin.message = Message.userLoginSuccess;
         (<User>checkLogin.result).password = undefined;

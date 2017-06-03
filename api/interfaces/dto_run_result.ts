@@ -16,4 +16,6 @@ export interface RunResult {
     headers: { [key: string]: string };
 
     cookies: string[];
+
+    host: string;
 }

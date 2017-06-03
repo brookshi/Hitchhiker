@@ -10,7 +10,9 @@ export class SessionService {
             'api/user/login',
             'api/user',
             'api/user/regconfirm',
-            'api/user/findpwd'
+            'api/user/findpwd',
+            '/',
+            '/index.html'
         ];
     }
 
@@ -29,8 +31,8 @@ export class SessionService {
     }
 
     static async isSessionValid(ctx: Koa.Context): Promise<boolean> {
-        (<any>ctx).session.userId = 'Hk3wQ60ix';
-        const userId = 'Hk3wQ60ix';//(<any>ctx).session.userId;
+        //(<any>ctx).session.userId = 'Hk3wQ60ix';
+        const userId = (<any>ctx).session.userId;//'Hk3wQ60ix';//(<any>ctx).session.userId;
         let validUser = !!userId;
         if (validUser) {
             const checkRst = await UserService.checkUserById(userId);

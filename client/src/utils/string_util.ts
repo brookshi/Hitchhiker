@@ -16,6 +16,12 @@ export class StringUtil {
         return word[0].toUpperCase() + word.substr(1);
     }
 
+    static readCookie(cookie: string): _.Dictionary<string> {
+        const cookieDict: _.Dictionary<string> = {};
+        cookie.split(';').map(c => c.trim()).forEach(c => cookieDict[c.substr(0, c.indexOf('=') || c.length)] = c);
+        return cookieDict;
+    }
+
     static stringToKeyValues(str: string): Array<KeyValuePair> {
         return str.split('\n').map(k => {
             let [key, ...values] = k.split(':');

@@ -18,6 +18,7 @@ import { UpdateTabRecordId, AddTabType, RemoveTabType, UpdateTabChangedType, Sen
 import { SwitchEnvType, EditEnvType } from '../../action/team';
 import { SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType } from '../../action/ui';
 import { ReqResUIState, reqResUIDefaultValue } from '../../state/ui';
+import { StringUtil } from '../../utils/string_util';
 import * as _ from 'lodash';
 import './style/index.less';
 
@@ -39,6 +40,8 @@ interface ReqResPanelStateProps {
     envState: EnvironmentState;
 
     reqResUIState: ReqResUIState;
+
+    cookies: _.Dictionary<_.Dictionary<string>>;
 }
 
 interface ReqResPanelDispatchProps {
@@ -49,7 +52,7 @@ interface ReqResPanelDispatchProps {
 
     activeTab(key: string);
 
-    sendRequest(record: DtoRecord, environment: string);
+    sendRequest(record: DtoRecord, environment: string, cookies: _.Dictionary<_.Dictionary<string>>);
 
     onChanged(record: DtoRecord);
 
@@ -227,8 +230,24 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         );
     }
 
+    private sendRequest = (record: DtoRecord, environment: string, cookies: _.Dictionary<_.Dictionary<string>>) => {
+        const headers = [...record.headers || []];
+        const hostName = new URL(record.url || '').hostname;
+        const localCookies = hostName ? cookies[hostName] || [] : [];
+        const cookieHeader = headers.find(h => h.key === 'Cookie');
+
+        let recordCookies: _.Dictionary<string> = {};
+        if (cookieHeader) {
+            recordCookies = StringUtil.readCookie(cookieHeader.value || '');
+        }
+        const allCookies = { ...localCookies, ...recordCookies };
+        _.remove(headers, h => h.key === 'Cookie');
+
+        this.props.sendRequest({ ...record, headers: [...headers, { key: 'Cookie', value: _.values(allCookies).join('; '), isActive: true }] }, environment, cookies);
+    }
+
     public render() {
-        const { activeKey, reqResUIState, recordStates, collectionTreeData, sendRequest, onChanged, save, saveAs, updateTabRecordId, selectReqTab } = this.props;
+        const { activeKey, reqResUIState, recordStates, collectionTreeData, onChanged, save, saveAs, updateTabRecordId, selectReqTab, cookies } = this.props;
 
         return (
             <div className="request-tab" ref={ele => { this.reqResPanel = ele; this.adjustResPanelHeight(this.reqHeight); }}>
@@ -257,7 +276,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                                             activeRecord={record}
                                             activeTabKey={reqResUIState.activeReqTab}
                                             collectionTreeData={collectionTreeData}
-                                            sendRequest={r => sendRequest(r, this.activeEnvId)}
+                                            sendRequest={r => this.sendRequest(r, this.activeEnvId, cookies)}
                                             isRequesting={isRequesting}
                                             onChanged={onChanged}
                                             onResize={this.updateReqPanelHeight}
@@ -328,7 +347,8 @@ const mapStateToProps = (state: State): ReqResPanelStateProps => {
         collectionTreeData: selectCollectionTreeData(state.collectionState.collectionsInfo),
         collections: state.collectionState.collectionsInfo.collections,
         envState: state.environmentState,
-        reqResUIState: { ...reqResUIDefaultValue, ...state.uiState.reqResUIState[state.displayRecordsState.activeKey] }
+        reqResUIState: { ...reqResUIDefaultValue, ...state.uiState.reqResUIState[state.displayRecordsState.activeKey] },
+        cookies: state.localDataState.cookies
     };
 };
 

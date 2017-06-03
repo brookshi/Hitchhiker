@@ -108,6 +108,7 @@ module.exports = {
       loader: 'tslint',
       include: paths.appSrc,
     }],
+    noParse: /[\/\\]node_modules[\/\\]localforage[\/\\]dist[\/\\]localforage\.js$/,
     loaders: [
       // ** ADDING/UPDATING LOADERS **
       // The "url" loader handles all assets unless explicitly excluded.

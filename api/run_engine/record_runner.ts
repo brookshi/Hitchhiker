@@ -31,6 +31,7 @@ export class RecordRunner {
         const testRst = !err && record.test ? TestRunner.test(res, record.test, elapsed) : {};
         const pRes: Partial<request.RequestResponse> = res || {};
         const finalRes: RunResult = {
+            host: pRes.request ? pRes.request.host : new URL(record.url).hostname,
             error: err,
             body: pRes.body,
             tests: testRst,

@@ -8,4 +8,6 @@ export interface InviteToTeamToken {
     date: Date;
 
     uid: string;
+
+    teamId: string
 }

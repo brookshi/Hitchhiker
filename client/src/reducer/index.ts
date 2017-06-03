@@ -7,9 +7,9 @@ import { uiState } from './ui';
 import { userState } from './user';
 import { teamState } from './team';
 import { environmentState } from './environment';
-import { FetchLocalDataSuccessType } from "../action/local_data";
-import { localDataState } from "./local_data";
-import { syncDefaultValue } from "../state/ui";
+import { FetchLocalDataSuccessType } from '../action/local_data';
+import { localDataState } from './local_data';
+import { syncDefaultValue } from '../state/ui';
 
 export const reduceReducers = (...reducers) => {
     return (state, action) =>
@@ -44,14 +44,29 @@ function root(state: State, action: any): State {
             if (cid) {
                 isChanged = !_.isEqual(state.collectionState.collectionsInfo.records[record.collectionId][record.id], record);
             }
-            const recordState = state.displayRecordsState.recordStates;
-            const index = recordState.findIndex(r => r.record.id === action.value.id);
-            recordState[index].record = { ...action.value };
-            recordState[index].isChanged = isChanged;
-            return { ...state, displayRecordsState: { ...state.displayRecordsState, recordStates: [...recordState] } };
+            const recordStates = state.displayRecordsState.recordStates;
+            const index = recordStates.findIndex(r => r.record.id === action.value.id);
+            recordStates[index].record = { ...action.value };
+            recordStates[index].isChanged = isChanged;
+            return { ...state, displayRecordsState: { ...state.displayRecordsState, recordStates: [...recordStates] } };
         }
         case FetchLocalDataSuccessType: {
-            const { displayRecordsState, uiState, collectionState, teamState, environmentState } = action.value;
+            if (!action.value) {
+                return state;
+            }
+            const { displayRecordsState, uiState, collectionState, teamState, environmentState } = action.value as State;
+            const onlineRecords = state.collectionState.collectionsInfo.records;
+
+            displayRecordsState.recordStates.forEach(recordState => {
+                const onlineRecordDict = onlineRecords[recordState.record.collectionId];
+                if (onlineRecordDict && onlineRecordDict[recordState.record.id]) {
+                    recordState.name = onlineRecordDict[recordState.record.id].name;
+                    if (!recordState.isChanged) {
+                        recordState.record = onlineRecordDict[recordState.record.id];
+                    }
+                }
+            });
+            // TODO: should give some tip for the different between online and local data.
             return {
                 ...state,
                 displayRecordsState,

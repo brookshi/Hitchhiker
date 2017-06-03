@@ -47,7 +47,7 @@ export class UserService {
         return { success: !!user, message: !!user ? '' : Message.userNotExist, result: user };
     }
 
-    static async createUser(name: string, email: string, pwd: string): Promise<ResObject> {
+    static async createUser(name: string, email: string, pwd: string, isAutoGenerate: boolean = false): Promise<ResObject> {
         let checkRst = ValidateUtil.checkEmail(email);
         if (checkRst.success) { checkRst = ValidateUtil.checkPassword(pwd); }
         if (checkRst.success) { checkRst = ValidateUtil.checkUserName(name); }
@@ -61,17 +61,17 @@ export class UserService {
         }
 
         const user = UserService.create(name, email, pwd);
-        user.isActive = !Setting.instance.needRegisterMailCheck;
+        user.isActive = isAutoGenerate || !Setting.instance.needRegisterMailCheck;
         UserService.save(user);
 
         if (!user.isActive) {
             MailService.registerMail(user);
         }
 
-        return { success: true, message: Message.userCreateSuccess };
+        return { success: true, message: Message.userCreateSuccess, result: user };
     }
 
-    static async createUserByEmail(email: string): Promise<ResObject> {
+    static async createUserByEmail(email: string, isAutoGenerate: boolean = false): Promise<ResObject> {
         let checkRst = ValidateUtil.checkEmail(email);
         if (!checkRst.success) {
             return checkRst;
@@ -79,7 +79,7 @@ export class UserService {
 
         const name = email.substr(0, email.indexOf('@'));
         const password = Setting.instance.app.defaultPassword;
-        return await UserService.createUser(name, email, password);
+        return await UserService.createUser(name, email, password, isAutoGenerate);
     }
 
     static async IsUserEmailExist(email: string): Promise<boolean> {

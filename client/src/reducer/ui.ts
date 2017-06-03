@@ -4,7 +4,7 @@ import { combineReducers } from 'redux';
 import { ResizeLeftPanelType, UpdateLeftPanelType, SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType } from '../action/ui';
 import { SyncType, SyncSuccessType, SyncRetryType } from '../action/index';
 import { LoginFailedType } from '../action/login';
-import { RemoveTabType } from "../action/record";
+import { RemoveTabType } from '../action/record';
 
 export function uiState(state: UIState = uiDefaultValue, action: any): UIState {
     return combineReducers<UIState>({

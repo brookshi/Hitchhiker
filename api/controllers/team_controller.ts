@@ -14,6 +14,7 @@ import { Team } from "../models/team";
 import { UserTeamService } from "../services/user_team_service";
 import { ValidateUtil } from "../utils/validate_util";
 import * as _ from "lodash";
+import { Setting } from "../utils/setting";
 
 export default class TeamController extends BaseController {
 
@@ -44,10 +45,9 @@ export default class TeamController extends BaseController {
     }
 
     //TODO: add relative page to display and redirect to login page is missing session
-    @GET('/team/:teamid/user')
-    async join(ctx: Koa.Context, @PathParam('teamid') teamId: string, @QueryParam('token') token: string): Promise<ResObject> {
-        const userId = SessionService.getUserId(ctx);
-        const validateRst = await this.validateInfo(userId, teamId, token);
+    @GET('/team/join')
+    async join(ctx: Koa.Context, @QueryParam('teamid') teamId: string, @QueryParam('token') token: string): Promise<ResObject> {
+        const validateRst = await this.validateInfo(teamId, token);
 
         if (!validateRst.success) {
             return validateRst;
@@ -64,13 +64,12 @@ export default class TeamController extends BaseController {
 
         MailService.joinTeamMail(data.info.inviterEmail, data.info.userEmail, data.team.name);
 
-        return { success: true, message: Message.joinTeamSuccess };
+        ctx.redirect(Setting.instance.app.host);
     }
 
-    @GET('/team/:teamid/reject')
-    async reject(ctx: Koa.Context, @PathParam('teamid') teamId: string, @QueryParam('token') token: string) {
-        const userId = SessionService.getUserId(ctx);
-        const validateRst = await this.validateInfo(userId, teamId, token);
+    @GET('/team/reject')
+    async reject( @QueryParam('teamid') teamId: string, @QueryParam('token') token: string) {
+        const validateRst = await this.validateInfo(teamId, token);
 
         if (!validateRst.success) {
             return validateRst;
@@ -82,29 +81,28 @@ export default class TeamController extends BaseController {
         return { success: true, message: Message.rejectTeamSuccess };
     }
 
-    private async validateInfo(userId: string, teamId: string, token: string): Promise<ResObject> {
+    private async validateInfo(teamId: string, token: string): Promise<ResObject> {
         if (!TokenService.isValidToken(token)) {
             return { success: false, message: Message.tokenInvalid };
         }
 
         const info = TokenService.parseToken<InviteToTeamToken>(token);
-        const user = await UserService.getUserById(userId, true);
 
-        if (!user) {
-            return { success: false, message: Message.userNotExist };
-        }
-
-        if (user.email !== info.userEmail) {
+        if (teamId !== info.teamId) {
             return { success: false, message: Message.tokenInvalid };
         }
 
         const team = await TeamService.getTeam(teamId);
+
         if (!team) {
             return { success: false, message: Message.teamNotExist };
         }
 
         TokenService.removeToken(token);
-        return { success: true, message: '', result: { info: info, user: user, team: team } };
+
+        const userRst = await UserService.createUserByEmail(info.userEmail);
+
+        return { success: true, message: '', result: { info: info, user: userRst.result, team: team } };
     }
 
     @POST('/team/:tid')
@@ -127,13 +125,17 @@ export default class TeamController extends BaseController {
         }
 
         const user = (<any>ctx).session.user;
-        const results = await Promise.all(emailArr.map(email => MailService.teamInviterMail(email, user, team)));
+        const results = await Promise.all(emailArr.map(email => this.sendEmailAndCreateUser(email, user, team)));
         const success = results.every(rst => !rst.err);
 
-        if (success) { //TODO: add in transaction is the better way
-            await Promise.all(emailArr.map(email => UserService.createUserByEmail(email)));
-        }
-
         return { success: success, message: results.map(rst => rst.err).join(';') };
+    }
+
+    async sendEmailAndCreateUser(email: string, user: User, team: Team): Promise<{ err: any, body: any }> {
+        const rst = await MailService.teamInviterMail(email, user, team);
+        if (!rst.err) {
+            await UserService.createUserByEmail(email);
+        }
+        return rst;
     }
 }

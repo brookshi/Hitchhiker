@@ -16,7 +16,7 @@ import { LoginType } from './action/login';
 import { RefreshCollectionType } from './action/collection';
 import { ResizeLeftPanelType, UpdateLeftPanelType } from './action/ui';
 import './style/App.less';
-import { FetchLocalDataType } from "./action/local_data";
+import { FetchLocalDataType } from './action/local_data';
 
 const { Header, Content, Sider } = Layout;
 

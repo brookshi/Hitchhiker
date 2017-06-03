@@ -38,7 +38,7 @@ export default class RequestManager {
     }
 
     static request(url: string, method: HttpMethodType, body?: any): Promise<Response> {
-        return fetch(url, { method: method, headers: jsonHeaders, body: body ? JSON.stringify(body) : undefined });
+        return fetch(url, { method: method, headers: jsonHeaders, body: body ? JSON.stringify(body) : undefined, credentials: 'same-origin' });
     }
 
     static cancelRequest(id: string) {
