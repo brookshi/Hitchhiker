@@ -44,12 +44,13 @@
     ☐ invite user / test
     ☐ record change time line (db)
     ☐ document db
-    ☐ default open collection
+    ✔ default open collection @done (2017/6/3 下午9:57:22)
     ☐ login ui / logout redirect
     ☐ team share collection/env for own
     ☐ build to live
     ☐ unit test
 0.2.0:
+    ☐ save all tabs, close all tabs
     ☐ set cookie record
     ☐ fetch data per 30s
     ☐ team share collection/env

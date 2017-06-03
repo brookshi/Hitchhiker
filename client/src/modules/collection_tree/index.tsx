@@ -66,8 +66,6 @@ type CollectionListProps = CollectionListStateProps & CollectionListDispatchProp
 
 interface CollectionListState {
 
-    openKeys: string[];
-
     isAddCollectionDlgOpen: boolean;
 
     selectedNewCollectionTeam?: string;
@@ -84,7 +82,6 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     constructor(props: CollectionListProps) {
         super(props);
         this.state = {
-            openKeys: [],
             isAddCollectionDlgOpen: false,
             newCollectionName: NewCollectionName
         };

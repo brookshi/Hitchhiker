@@ -4,6 +4,7 @@ import { combineReducers } from 'redux';
 import * as _ from 'lodash';
 import { RecordCategory } from '../common/record_category';
 import { CollectionState, collectionDefaultValue, RecordState, getDefaultRecord, DisplayRecordsState, displayRecordsDefaultValue } from '../state/collection';
+import { DtoCollectionWithRecord } from '../../../api/interfaces/dto_collection';
 
 const getNewRecordState: () => RecordState = () => {
     const newRecord = getDefaultRecord();
@@ -19,7 +20,9 @@ export function collectionState(state: CollectionState = collectionDefaultValue,
     switch (action.type) {
         case FetchCollectionSuccessType: {
             console.log(action.value);
-            return { ...state, collectionsInfo: _.cloneDeep(action.value), isLoaded: true };
+            const collectionInfo = action.value as DtoCollectionWithRecord;
+            const keys = _.keys(collectionInfo.collections);
+            return { ...state, collectionsInfo: _.cloneDeep(collectionInfo), isLoaded: true, openKeys: keys.length > 0 ? [keys[0]] : [] };
         }
         case SelectedTeamChangedType: {
             return { ...state, selectedTeam: action.value };

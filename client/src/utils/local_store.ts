@@ -13,6 +13,7 @@ export default class LocalStore {
 
     static async setState(state: State): Promise<void> {
         await localForage.setItem('state', state);
+        console.log('store completed');
     }
 
     static async getState(): Promise<State> {
