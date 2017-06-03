@@ -123,6 +123,7 @@ function recordStates(states: RecordState[] = displayRecordsDefaultValue.recordS
             const index = states.findIndex(r => r.record.id === action.value.record.id);
             if (index > -1) {
                 states[index].record = { ..._.cloneDeep(action.value.record) };
+                states[index].name = action.value.record.name;
                 states[index].isChanged = false;
                 return [...states];
             }
