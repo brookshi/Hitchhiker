@@ -145,11 +145,13 @@ function recordStates(states: RecordState[] = displayRecordsDefaultValue.recordS
         case ActiveRecordType: {
             const isNotExist = !states.find(r => r.record.id === action.value.id);
             if (isNotExist) {
-                action.value.collectionId = action.value.collection.id;
+                if (!action.value.collectionId && action.value.collection) {
+                    action.value.collectionId = action.value.collection.id;
+                }
                 states = [
                     ...states,
                     {
-                        name: action.value.name, record: { ..._.cloneDeep(action.value) }, isChanged: false,
+                        name: action.value.name, record: _.cloneDeep(action.value), isChanged: false,
                         isRequesting: false
                     }
                 ];

@@ -38,7 +38,7 @@
     ✔ top banner @done (2017/6/1 下午10:33:13)
     ☐ cookie invalid indirect to login page
     ☐ udpate tab name after saving request
-    ☐ can't open the same record after delete its tab
+    ✔ can't open the same record after delete its tab @done (2017/6/3 下午9:34:58)
     ☐ own team
     ✔ store cookie after request @done (2017/6/3 下午7:48:39)
     ☐ invite user / test
@@ -50,6 +50,7 @@
     ☐ build to live
     ☐ unit test
 0.2.0:
+    ☐ set cookie record
     ☐ fetch data per 30s
     ☐ team share collection/env
     ☐ body type
