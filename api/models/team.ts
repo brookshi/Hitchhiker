@@ -25,6 +25,9 @@ export class Team {
     @Column({ nullable: true })
     note: string;
 
+    @Column({ default: false })
+    isMe: boolean;
+
     @JoinColumn()
     @OneToOne(type => User)
     owner: User;

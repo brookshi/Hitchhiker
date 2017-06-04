@@ -51,6 +51,7 @@
     ☐ unit test
 0.2.0:
     ☐ save all tabs, close all tabs
+    ☐ collection tree follow active tab
     ☐ set cookie record
     ☐ fetch data per 30s
     ☐ team share collection/env

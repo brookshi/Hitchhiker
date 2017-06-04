@@ -25,8 +25,8 @@ export function configureStore() {
         const state: State = store.getState() as State;
         if (!isStoring && state.localDataState && state.localDataState.isLocalDataLoaded) {
             isStoring = true;
-            console.log(store.getState());
-            store.dispatch(actionCreator(StoreLocalDataType, store.getState()));
+            console.log(state);
+            store.dispatch(actionCreator(StoreLocalDataType, { userId: state.userState.userInfo.id, state }));
             isStoring = false;
         }
     });

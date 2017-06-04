@@ -17,6 +17,7 @@ import { StringUtil } from '../../utils/string_util';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { AllTeam } from '../../state/collection';
 import './style/index.less';
+import { DtoTeam } from '../../../../api/interfaces/dto_team';
 
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
@@ -321,13 +322,19 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
 
 const mapStateToProps = (state: State): CollectionListStateProps => {
     const { collectionsInfo, openKeys, selectedTeam } = state.collectionState;
-    let teams = _.values(state.teamState.teams).map(t => ({ id: t.id ? t.id : '', name: t.name ? t.name : '' }));
+    let teams = _.chain(state.teamState.teams)
+        .values<DtoTeam>()
+        .sortBy('name')
+        .sortBy(t => t.owner.id !== state.userState.userInfo.id)
+        .sortBy(t => t.isMe ? 0 : 1)
+        .value()
+        .map(t => ({ id: t.id ? t.id : '', name: t.name ? t.name : '' }));
 
     return {
         collections: collectionsInfo.collections,
         records: collectionsInfo.records,
         activeKey: state.displayRecordsState.activeKey,
-        teams: _.sortBy(teams, t => t.name),
+        teams,
         openKeys,
         selectedTeam
     };

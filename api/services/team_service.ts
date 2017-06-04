@@ -82,6 +82,18 @@ export class TeamService {
         return { success: true, message: Message.teamSaveSuccess };
     }
 
+    static async createOwnTeam(owner: User): Promise<Team> {
+        const connection = await ConnectionManager.getInstance();
+        let team = TeamService.create(StringUtil.generateUID());
+        team.name = 'Me';
+        team.owner = owner;
+        team.isMe = true;
+        team.members.push(owner);
+
+        return await connection.getRepository(Team).persist(team);
+    }
+
+
     static async updateTeam(dtoTeam: DtoTeam): Promise<ResObject> {
         const connection = await ConnectionManager.getInstance();
 

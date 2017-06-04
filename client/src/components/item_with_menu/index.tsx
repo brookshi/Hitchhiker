@@ -15,6 +15,8 @@ interface ItemWithMenuProps {
     className?: string;
 
     onNameChanged?(name: string);
+
+    disableMenu?: boolean;
 }
 
 interface ItemWithMenuState {
@@ -78,7 +80,7 @@ class ItemWithMenu extends React.Component<ItemWithMenuProps, ItemWithMenuState>
     }
 
     public render() {
-        const { icon, menu, className, subName } = this.props;
+        const { icon, menu, className, subName, disableMenu } = this.props;
         const { isEdit, isVisible, name } = this.state;
         const iconClassName = 'item-with-menu-icon' + (isVisible ? ' item-with-menu-icon-visible' : '');
         const nameStyle = isEdit ? {} : { display: 'none' };
@@ -110,9 +112,13 @@ class ItemWithMenu extends React.Component<ItemWithMenuProps, ItemWithMenuState>
                         ) : ''
                     }
                 </span>
-                <Dropdown onVisibleChange={this.onMenuVisibleChanged} overlay={menu} placement="bottomRight">
-                    <Icon className={iconClassName} onClick={this.stopPropagation} type="ellipsis" />
-                </Dropdown>
+                {
+                    disableMenu ? '' : (
+                        <Dropdown onVisibleChange={this.onMenuVisibleChanged} overlay={menu} placement="bottomRight">
+                            <Icon className={iconClassName} onClick={this.stopPropagation} type="ellipsis" />
+                        </Dropdown>
+                    )
+                }
             </span>
         );
     }

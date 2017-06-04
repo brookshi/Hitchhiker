@@ -13,6 +13,8 @@ export interface DtoTeam {
 
     environments?: DtoEnvironment[];
 
+    isMe?: boolean;
+
     owner: Partial<DtoUser>;
 
     createDate?: Date;

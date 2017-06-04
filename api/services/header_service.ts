@@ -1,7 +1,7 @@
 import { Header } from "../models/header";
 import { DtoHeader } from "../interfaces/dto_header";
-import { ResObject } from "../common/res_object";
 import { ConnectionManager } from "./connection_manager";
+import { StringUtil } from "../utils/string_util";
 
 export class HeaderService {
     static fromDto(dtoHeader: DtoHeader): Header {
@@ -10,6 +10,7 @@ export class HeaderService {
         header.value = dtoHeader.value;
         header.isActive = dtoHeader.isActive;
         header.sort = dtoHeader.sort;
+        header.id = dtoHeader.id || StringUtil.generateUID();
         return header;
     }
 

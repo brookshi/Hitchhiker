@@ -77,13 +77,17 @@ class Team extends React.Component<TeamProps, TeamState> {
         super(props);
     }
 
+    getSelectedTeam = () => {
+        return this.props.teams.find(t => t.id === this.props.activeTeam);
+    }
+
     isSelectTeamOwn = () => {
-        const team = this.props.teams.find(t => t.id === this.props.activeTeam);
+        const team = this.getSelectedTeam();
         return !!team && !!team.owner && team.owner.id === this.props.user.id;
     }
 
     getSelectTeamMembers = () => {
-        const team = this.props.teams.find(t => t.id === this.props.activeTeam);
+        const team = this.getSelectedTeam();
         if (!team || !team.members) {
             return [];
         }
@@ -96,6 +100,7 @@ class Team extends React.Component<TeamProps, TeamState> {
     }
 
     public render() {
+        const team = this.getSelectedTeam();
         const { user, collapsed, collapsedLeftPanel, teams, leftPanelWidth, disbandTeam, quitTeam, selectTeam, updateTeam, createTeam, removeUser, invite, createEnv, updateEnv, delEnv, isEditEnvDlgOpen, editedEnvironment, activeTeam, editEnvCompleted, editEnv } = this.props;
 
         return (
@@ -120,14 +125,20 @@ class Team extends React.Component<TeamProps, TeamState> {
                 </Sider>
                 <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
                 <Content className="team-right-panel">
-                    <Members
-                        activeTeam={activeTeam}
-                        isOwner={this.isSelectTeamOwn()}
-                        members={this.getSelectTeamMembers()}
-                        removeUser={removeUser}
-                        invite={invite}
-                    />
-                    <div style={{ height: 12 }} />
+                    {
+                        team && team.isMe ? '' : (
+                            <div>
+                                <Members
+                                    activeTeam={activeTeam}
+                                    isOwner={this.isSelectTeamOwn()}
+                                    members={this.getSelectTeamMembers()}
+                                    removeUser={removeUser}
+                                    invite={invite}
+                                />
+                                <div style={{ height: 12 }} />
+                            </div>
+                        )
+                    }
                     <Environments
                         environments={this.getSelectTeamEnvironments()}
                         createEnv={createEnv}
@@ -155,7 +166,7 @@ const mapStateToProps = (state: State): TeamStateProps => {
         leftPanelWidth,
         collapsed,
         user,
-        teams: _.chain(teams).values<DtoTeam>().sortBy('name').sortBy(t => t.owner.id !== user.id).value(),
+        teams: _.chain(teams).values<DtoTeam>().sortBy('name').sortBy(t => t.owner.id !== user.id).sortBy(t => t.isMe ? 0 : 1).value(),
         environments: state.environmentState.environments,
         isEditEnvDlgOpen: state.environmentState.isEditEnvDlgOpen,
         editedEnvironment: state.environmentState.editedEnvironment

@@ -68,6 +68,8 @@ export class UserService {
             MailService.registerMail(user);
         }
 
+        await TeamService.createOwnTeam(user);
+
         return { success: true, message: Message.userCreateSuccess, result: user };
     }
 

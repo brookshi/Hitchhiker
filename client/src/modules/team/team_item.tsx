@@ -77,6 +77,7 @@ class TeamItem extends React.Component<TeamItemProps, TeamItemState> {
                     onNameChanged={this.props.onNameChanged}
                     icon={<Icon className="c-icon" type="team" />}
                     name={name}
+                    disableMenu={team.isMe}
                     subName={<div>{`${count} member${count > 1 ? 's' : ''}`}</div>}
                     menu={this.getMenu()}
                 />

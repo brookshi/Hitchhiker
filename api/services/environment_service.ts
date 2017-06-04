@@ -61,6 +61,9 @@ export class EnvironmentService {
     }
 
     static async getEnvironments(ids: string[], needVariables: boolean = true, needTeam: boolean = true): Promise<Environment[]> {
+        if (!ids || ids.length === 0) {
+            return [];
+        }
         const connection = await ConnectionManager.getInstance();
 
         let rep = connection.getRepository(Environment).createQueryBuilder('environment');

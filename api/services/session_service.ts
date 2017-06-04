@@ -17,7 +17,7 @@ export class SessionService {
     }
 
     static get maxAge() {
-        return DateUtil.DAY * 2;
+        return DateUtil.DAY * 7;
     }
 
     static login(ctx: Koa.Context, userId: string) {

@@ -28,6 +28,8 @@ interface AppStateProps {
 
   isLogin: boolean;
 
+  userId: string;
+
   isFetchCollection: boolean;
 
   isFetchLocalData: boolean;
@@ -45,7 +47,7 @@ interface AppDispatchProps {
 
   resizeLeftPanel(width: number);
 
-  fetchLocalData();
+  fetchLocalData(userId: string);
 }
 
 type AppProps = AppStateProps & AppDispatchProps;
@@ -69,7 +71,7 @@ class App extends React.Component<AppProps, AppState> {
       this.props.getCollection();
     }
     if (nextProps.isLogin && nextProps.isFetchCollection && !nextProps.isFetchLocalData) {
-      this.props.fetchLocalData();
+      this.props.fetchLocalData(this.props.userId);
     }
   }
 
@@ -184,7 +186,8 @@ const mapStateToProps = (state: State): AppStateProps => {
     activeModule,
     isLogin: state.userState.isLoaded,
     isFetchCollection: state.collectionState.isLoaded,
-    isFetchLocalData: state.localDataState.isLocalDataLoaded
+    isFetchLocalData: state.localDataState.isLocalDataLoaded,
+    userId: state.userState.userInfo.id
   };
 };
 
@@ -194,7 +197,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): AppDispatchProps => {
     login: () => dispatch(actionCreator(LoginType)),
     resizeLeftPanel: (width) => dispatch(actionCreator(ResizeLeftPanelType, width)),
     updateLeftPanelStatus: (collapsed, activeModule) => dispatch(actionCreator(UpdateLeftPanelType, { collapsed, activeModule })),
-    fetchLocalData: () => dispatch(actionCreator(FetchLocalDataType))
+    fetchLocalData: (userId) => dispatch(actionCreator(FetchLocalDataType, userId))
   };
 };
 
