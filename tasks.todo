@@ -39,7 +39,7 @@
     ☐ cookie invalid indirect to login page
     ✔ udpate tab name after saving request @done (2017/6/3 下午9:38:49)
     ✔ can't open the same record after delete its tab @done (2017/6/3 下午9:34:58)
-    ☐ own team
+    ✔ own team @done (2017/6/4 下午12:24:39)
     ✔ store cookie after request @done (2017/6/3 下午7:48:39)
     ☐ invite user / test
     ☐ record change time line (db)

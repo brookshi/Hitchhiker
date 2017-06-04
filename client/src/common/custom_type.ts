@@ -28,3 +28,24 @@ export class KeyValueEditType {
         return KeyValueEditType.isBulkEdit(mode) ? KeyValueEditType.keyValueEdit : KeyValueEditType.bulkEdit;
     }
 }
+
+export type TeamSelectedDialogMode = 'share' | 'create';
+
+export class TeamSelectedDialogType {
+
+    static share: TeamSelectedDialogMode = 'share';
+
+    static create: TeamSelectedDialogMode = 'create';
+
+    static getTitle(mode: TeamSelectedDialogMode): string {
+        return TeamSelectedDialogType.isCreateMode(mode) ? 'Create new collection' : 'Share collection';
+    }
+
+    static getDescription(mode: TeamSelectedDialogMode): string {
+        return TeamSelectedDialogType.isCreateMode(mode) ? 'Select team for this collection:' : 'Share to team:';
+    }
+
+    static isCreateMode(mode: TeamSelectedDialogMode): boolean {
+        return mode === TeamSelectedDialogType.create;
+    }
+}

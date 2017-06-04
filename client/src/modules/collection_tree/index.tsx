@@ -18,6 +18,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import { AllTeam } from '../../state/collection';
 import './style/index.less';
 import { DtoTeam } from '../../../../api/interfaces/dto_team';
+import { TeamSelectedDialogMode, TeamSelectedDialogType } from '../../common/custom_type';
 
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
@@ -67,11 +68,15 @@ type CollectionListProps = CollectionListStateProps & CollectionListDispatchProp
 
 interface CollectionListState {
 
-    isAddCollectionDlgOpen: boolean;
+    isTeamSelectedDlgOpen: boolean;
 
-    selectedNewCollectionTeam?: string;
+    teamSelectedDlgMode: TeamSelectedDialogMode;
+
+    selectedTeamInDlg?: string;
 
     newCollectionName: string;
+
+    shareCollectionId: string;
 }
 
 class CollectionList extends React.Component<CollectionListProps, CollectionListState> {
@@ -83,8 +88,10 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     constructor(props: CollectionListProps) {
         super(props);
         this.state = {
-            isAddCollectionDlgOpen: false,
-            newCollectionName: NewCollectionName
+            teamSelectedDlgMode: TeamSelectedDialogType.create,
+            isTeamSelectedDlgOpen: false,
+            newCollectionName: NewCollectionName,
+            shareCollectionId: ''
         };
     }
 
@@ -175,22 +182,26 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     }
 
     private addCollection = () => {
-        this.setState({ ...this.state, isAddCollectionDlgOpen: true }, () => this.newCollectionNameRef && this.newCollectionNameRef.focus());
+        this.setState({ ...this.state, isTeamSelectedDlgOpen: true }, () => this.newCollectionNameRef && this.newCollectionNameRef.focus());
     }
 
-    private onCreateCollection = () => {
-        if (!this.state.selectedNewCollectionTeam) {
+    private createCollection = () => {
+        if (!this.state.selectedTeamInDlg) {
             return;
         }
 
         const collection: DtoCollection = {
             id: StringUtil.generateUID(),
             name: this.state.newCollectionName,
-            teamId: this.state.selectedNewCollectionTeam,
+            teamId: this.state.selectedTeamInDlg,
             description: ''
         };
         this.props.saveCollection(collection);
-        this.setState({ ...this.state, isAddCollectionDlgOpen: false, newCollectionName: NewCollectionName, selectedNewCollectionTeam: undefined });
+        this.setState({ ...this.state, isTeamSelectedDlgOpen: false, newCollectionName: NewCollectionName, selectedTeamInDlg: undefined });
+    }
+
+    private shareCollection = () => {
+        console.log('share');
     }
 
     private loopRecords = (data: DtoRecord[], cid: string, inFolder: boolean = false) => {
@@ -230,6 +241,41 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                 </MenuItem>
             );
         });
+    }
+
+    private get teamSelectedDialog() {
+        const { teamSelectedDlgMode, isTeamSelectedDlgOpen } = this.state;
+        const description = TeamSelectedDialogType.getDescription(teamSelectedDlgMode);
+        return (
+            <Modal
+                title={TeamSelectedDialogType.getTitle(teamSelectedDlgMode)}
+                visible={isTeamSelectedDlgOpen}
+                okText="OK"
+                cancelText="Cancel"
+                onOk={TeamSelectedDialogType.isCreateMode(teamSelectedDlgMode) ? this.createCollection : this.shareCollection}
+                onCancel={() => this.setState({ ...this.state, isTeamSelectedDlgOpen: false })}
+            >
+                {
+                    TeamSelectedDialogType.isCreateMode(teamSelectedDlgMode) ? (
+                        <div>
+                            <div style={{ marginBottom: '8px' }}>Enter new collection name:</div>
+                            <Input spellCheck={false} ref={ele => this.newCollectionNameRef = ele} style={{ width: '100%', marginBottom: '8px' }} value={this.state.newCollectionName} onChange={e => this.setState({ ...this.state, newCollectionName: e.currentTarget.value })} />
+                        </div>
+                    ) : ''
+                }
+
+                <div style={{ marginBottom: '8px' }}>{description}</div>
+                <TreeSelect
+                    allowClear={true}
+                    style={{ width: '100%' }}
+                    dropdownStyle={{ maxHeight: 500, overflow: 'auto' }}
+                    placeholder="Please select team"
+                    treeDefaultExpandAll={true}
+                    value={this.state.selectedTeamInDlg}
+                    onChange={(e) => this.setState({ ...this.state, selectedTeamInDlg: e })}
+                    treeData={this.props.teams.map(t => ({ key: t.id, value: t.id, label: t.name }))} />
+            </Modal>
+        );
     }
 
     render() {
@@ -279,6 +325,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                                                     deleteCollection={() => this.props.deleteCollection(c.id)}
                                                     moveToCollection={this.moveToCollection}
                                                     createFolder={this.createFolder}
+                                                    shareCollection={id => this.setState({ ...this.state, isTeamSelectedDlgOpen: true, teamSelectedDlgMode: TeamSelectedDialogType.share, shareCollectionId: id })}
                                                 />
                                             )}>
                                             {
@@ -294,27 +341,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                         {displayCollections.length === 0 ? '' : <div className="collection-tree-bottom" />}
                     </PerfectScrollbar>
                 </div>
-                <Modal
-                    title="Create new collection"
-                    visible={this.state.isAddCollectionDlgOpen}
-                    okText="OK"
-                    cancelText="Cancel"
-                    onOk={this.onCreateCollection}
-                    onCancel={() => this.setState({ ...this.state, isAddCollectionDlgOpen: false })}
-                >
-                    <div style={{ marginBottom: '8px' }}>Select team for this collection:</div>
-                    <Input spellCheck={false} ref={ele => this.newCollectionNameRef = ele} style={{ width: '100%', marginBottom: '8px' }} value={this.state.newCollectionName} onChange={e => this.setState({ ...this.state, newCollectionName: e.currentTarget.value })} />
-                    <div style={{ marginBottom: '8px' }}>Select team for this collection:</div>
-                    <TreeSelect
-                        allowClear={true}
-                        style={{ width: '100%' }}
-                        dropdownStyle={{ maxHeight: 500, overflow: 'auto' }}
-                        placeholder="Please select team"
-                        treeDefaultExpandAll={true}
-                        value={this.state.selectedNewCollectionTeam}
-                        onChange={(e) => this.setState({ ...this.state, selectedNewCollectionTeam: e })}
-                        treeData={this.props.teams.map(t => ({ key: t.id, value: t.id, label: t.name }))} />
-                </Modal>
+                {this.teamSelectedDialog}
             </div>
         );
     }

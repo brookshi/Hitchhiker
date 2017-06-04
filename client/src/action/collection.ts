@@ -13,6 +13,8 @@ export const DeleteCollectionType = 'delete collection';
 
 export const SaveCollectionType = 'save collection';
 
+export const ShareCollectionType = 'share collection';
+
 export const SelectedTeamChangedType = 'select team';
 
 export const CollectionOpenKeysType = 'open/close collection';
@@ -32,6 +34,14 @@ export function* refreshCollection() {
 export function* deleteCollection() {
     yield takeEvery(DeleteCollectionType, function* (action: any) {
         const channelAction = syncAction({ type: DeleteCollectionType, method: HttpMethod.DELETE, url: `http://localhost:3000/api/collection/${action.value}` });
+        yield put(channelAction);
+    });
+}
+
+export function* shareCollection() { // TODO: improve: share collection with environments.
+    yield takeEvery(ShareCollectionType, function* (action: any) {
+        const { collectionId, teamId } = action.value;
+        const channelAction = syncAction({ type: ShareCollectionType, method: HttpMethod.GET, url: `http://localhost:3000/api/collection/share/${collectionId}/to/${teamId}` });
         yield put(channelAction);
     });
 }

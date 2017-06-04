@@ -29,6 +29,9 @@ export class Collection {
     @Column({ default: false })
     recycle: boolean;
 
+    @Column({ default: true })
+    public: boolean;
+
     @CreateDateColumn()
     createDate: Date;
 

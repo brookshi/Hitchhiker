@@ -20,7 +20,9 @@ interface CollectionItemProps {
 
     createFolder(record: DtoRecord);
 
-    moveToCollection(record: DtoRecord, collection?: string);
+    moveToCollection(record: DtoRecord, collectionId?: string);
+
+    shareCollection(collectionId: string);
 }
 
 interface CollectionItemState {
@@ -57,6 +59,9 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
                 <Menu.Item key="createFolder">
                     <Icon type="folder" /> Create folder
                 </Menu.Item>
+                {/*<Menu.Item key="share">
+                    <Icon type="share-alt" /> Share
+                </Menu.Item>*/}
                 <Menu.Item key="delete">
                     <Icon type="delete" /> Delete
                 </Menu.Item>
@@ -69,6 +74,8 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
     }
 
     delete = () => confirmDlg('collection', () => this.props.deleteCollection());
+
+    share = () => this.props.shareCollection(this.props.collection.id);
 
     edit = () => {
         if (this.itemWithMenu) {
