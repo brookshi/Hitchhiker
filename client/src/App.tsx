@@ -17,6 +17,7 @@ import { RefreshCollectionType } from './action/collection';
 import { ResizeLeftPanelType, UpdateLeftPanelType } from './action/ui';
 import './style/App.less';
 import { FetchLocalDataType } from './action/local_data';
+import LoginPanel from './modules/login';
 
 const { Header, Content, Sider } = Layout;
 
@@ -61,9 +62,9 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   componentWillMount() {
-    if (!this.props.isLogin) {
-      this.props.login();
-    }
+    // if (!this.props.isLogin) {
+    //   this.props.login();
+    // }
   }
 
   componentWillReceiveProps(nextProps: AppProps) {
@@ -123,10 +124,16 @@ class App extends React.Component<AppProps, AppState> {
     }
   }
 
-  render() {
+  private get loginPanel() {
+    return (
+      <LoginPanel />
+    );
+  }
+
+  private get mainPanel() {
     return (
       <Layout className="layout">
-        <Header >
+        <Header>
           <Button style={{ display: 'none' }} />
           <HeaderPanel />
         </Header>
@@ -175,6 +182,11 @@ class App extends React.Component<AppProps, AppState> {
         </Layout>
       </Layout>
     );
+  }
+
+  render() {
+    const { isLogin, isFetchCollection, isFetchLocalData } = this.props;
+    return isLogin && isFetchCollection && isFetchLocalData ? this.mainPanel : this.loginPanel;
   }
 }
 

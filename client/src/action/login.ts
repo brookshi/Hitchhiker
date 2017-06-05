@@ -17,7 +17,7 @@ export const LogoutFailedType = 'logout failed';
 export function* login() {
     yield takeLatest(LoginType, function* () {
         try {
-            const res = yield call(RequestManager.post, 'http://localhost:3000/api/user/login', { email: 'brook.shi@163.com', password: '123456' });
+            const res = yield call(RequestManager.post, 'http://localhost:3000/api/user/login', { email: 'iwxiaot@gmail.com', password: '123456' });
             const body = yield res.json();
             if (body.success) {
                 yield put(actionCreator(LoginSuccessType, body));

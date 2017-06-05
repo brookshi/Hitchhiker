@@ -100,7 +100,8 @@ export default class TeamController extends BaseController {
 
         TokenService.removeToken(token);
 
-        const userRst = await UserService.createUserByEmail(info.userEmail);
+        const user = await UserService.getUserByEmail(info.userEmail, true);
+        const userRst = user || (await UserService.createUserByEmail(info.userEmail, true)).result;
 
         return { success: true, message: '', result: { info: info, user: userRst.result, team: team } };
     }
@@ -125,17 +126,9 @@ export default class TeamController extends BaseController {
         }
 
         const user = (<any>ctx).session.user;
-        const results = await Promise.all(emailArr.map(email => this.sendEmailAndCreateUser(email, user, team)));
+        const results = await Promise.all(emailArr.map(email => MailService.teamInviterMail(email, user, team)));
         const success = results.every(rst => !rst.err);
 
         return { success: success, message: results.map(rst => rst.err).join(';') };
-    }
-
-    async sendEmailAndCreateUser(email: string, user: User, team: Team): Promise<{ err: any, body: any }> {
-        const rst = await MailService.teamInviterMail(email, user, team);
-        if (!rst.err) {
-            await UserService.createUserByEmail(email);
-        }
-        return rst;
     }
 }
