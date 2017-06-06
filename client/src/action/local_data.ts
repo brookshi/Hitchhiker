@@ -7,6 +7,8 @@ export const FetchLocalDataType = 'fetch local data';
 
 export const FetchLocalDataSuccessType = 'fetch local data success';
 
+export const FetchLocalDataFailedType = 'fetch local data failed';
+
 export const StoreLocalDataType = 'store local data';
 
 export function* fetchLocalData() {

@@ -3,6 +3,7 @@ import { DtoRecord } from '../../../api/interfaces/dto_record';
 import { RunResult } from '../../../api/interfaces/dto_run_result';
 import { StringUtil } from '../utils/string_util';
 import { RecordCategory } from '../common/record_category';
+import { requestStateDefaultValue, RequestState } from './index';
 
 export function getDefaultRecord(isInit: boolean = false): DtoRecord {
     return {
@@ -24,7 +25,7 @@ export interface CollectionState {
 
     selectedTeam: string;
 
-    isLoaded: boolean;
+    fetchCollectionStatus: RequestState;
 }
 
 export interface DisplayRecordsState {
@@ -53,7 +54,7 @@ export interface ResponseState {
 }
 
 export const collectionDefaultValue: CollectionState = {
-    isLoaded: false,
+    fetchCollectionStatus: requestStateDefaultValue,
     openKeys: [],
     selectedTeam: AllTeam,
     collectionsInfo: {

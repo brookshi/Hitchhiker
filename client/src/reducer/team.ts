@@ -1,5 +1,5 @@
 import { EditEnvType, SaveTeamType, QuitTeamType, DisbandTeamType, ActiveTeamType } from '../action/team';
-import { LoginSuccessType } from '../action/login';
+import { LoginSuccessType } from '../action/user';
 import * as _ from 'lodash';
 import { TeamState, teamDefaultValue } from '../state/team';
 

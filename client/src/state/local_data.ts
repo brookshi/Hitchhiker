@@ -1,12 +1,13 @@
+import { RequestState, requestStateDefaultValue } from './index';
 
 export class LocalDataState {
 
-    isLocalDataLoaded: boolean;
+    fetchLocalDataStatus: RequestState;
 
     cookies: _.Dictionary<_.Dictionary<string>>;
 }
 
 export const localDataDefaultValue: LocalDataState = {
-    isLocalDataLoaded: false,
-    cookies: {}
+    cookies: {},
+    fetchLocalDataStatus: requestStateDefaultValue
 };

@@ -1,10 +1,11 @@
-import { FetchCollectionSuccessType, SaveCollectionType, DeleteCollectionType, SelectedTeamChangedType, CollectionOpenKeysType } from '../action/collection';
+import { FetchCollectionSuccessType, SaveCollectionType, DeleteCollectionType, SelectedTeamChangedType, CollectionOpenKeysType, FetchCollectionFailedType } from '../action/collection';
 import { ActiveTabType, ActiveRecordType, DeleteRecordType, MoveRecordType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, UpdateTabRecordId, SaveAsRecordType } from '../action/record';
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
 import { RecordCategory } from '../common/record_category';
 import { CollectionState, collectionDefaultValue, RecordState, getDefaultRecord, DisplayRecordsState, displayRecordsDefaultValue } from '../state/collection';
 import { DtoCollectionWithRecord } from '../../../api/interfaces/dto_collection';
+import { RequestStatus } from '../common/request_status';
 
 const getNewRecordState: () => RecordState = () => {
     const newRecord = getDefaultRecord();
@@ -22,7 +23,10 @@ export function collectionState(state: CollectionState = collectionDefaultValue,
             console.log(action.value);
             const collectionInfo = action.value as DtoCollectionWithRecord;
             const keys = _.keys(collectionInfo.collections);
-            return { ...state, collectionsInfo: _.cloneDeep(collectionInfo), isLoaded: true, openKeys: keys.length > 0 ? [keys[0]] : [] };
+            return { ...state, collectionsInfo: _.cloneDeep(collectionInfo), fetchCollectionStatus: { status: RequestStatus.success, message: '' }, openKeys: keys.length > 0 ? [keys[0]] : [] };
+        }
+        case FetchCollectionFailedType: {
+            return { ...state, fetchCollectionStatus: { status: RequestStatus.failed, message: action.value } };
         }
         case SelectedTeamChangedType: {
             return { ...state, selectedTeam: action.value };

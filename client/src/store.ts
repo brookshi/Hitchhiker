@@ -5,6 +5,7 @@ import createSagaMiddleware from 'redux-saga';
 import { rootSaga, actionCreator } from './action';
 import { StoreLocalDataType } from './action/local_data';
 import { State } from './state/index';
+import { RequestStatus } from './common/request_status';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -23,7 +24,7 @@ export function configureStore() {
     sagaMiddleware.run(rootSaga);
     store.subscribe(() => {
         const state: State = store.getState() as State;
-        if (!isStoring && state.localDataState && state.localDataState.isLocalDataLoaded) {
+        if (!isStoring && state.localDataState && state.localDataState.fetchLocalDataStatus.status === RequestStatus.success) {
             isStoring = true;
             console.log(state);
             store.dispatch(actionCreator(StoreLocalDataType, { userId: state.userState.userInfo.id, state }));

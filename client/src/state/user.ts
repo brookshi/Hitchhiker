@@ -1,14 +1,16 @@
 import { DtoResUser } from '../../../api/interfaces/dto_res';
+import { RequestState, requestStateDefaultValue } from './index';
 
 export interface UserInfoState {
 
     userInfo: DtoResUser;
 
-    isLoaded: boolean;
+    loginStatus: RequestState;
+
+    registerStatus: RequestState;
 }
 
 export const userInfoDefaultValue: UserInfoState = {
-    isLoaded: false,
     userInfo: {
         teams: [],
         id: '',
@@ -18,5 +20,7 @@ export const userInfoDefaultValue: UserInfoState = {
         isActive: false,
         createDate: new Date(),
         updateDate: new Date(),
-    }
+    },
+    loginStatus: requestStateDefaultValue,
+    registerStatus: requestStateDefaultValue
 };

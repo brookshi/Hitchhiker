@@ -4,7 +4,7 @@ import RequestManager, { SyncItem } from '../utils/request_manager';
 import { sendRequest, saveRecord, saveAsRecord, deleteRecord, moveRecord } from './record';
 import { saveTeam, quitTeam, disbandTeam, removeUser, inviteMember, saveEnvironment, delEnvironment } from './team';
 import { deleteCollection, saveCollection, refreshCollection } from './collection';
-import { login, logout } from './login';
+import { login, logout, register } from './user';
 import { storeLocalData, fetchLocalData } from './local_data';
 
 export const SyncType = 'sync';
@@ -21,6 +21,7 @@ export function* rootSaga() {
 
     yield [
         spawn(login),
+        spawn(register),
         spawn(logout),
         spawn(fetchLocalData),
         spawn(storeLocalData),

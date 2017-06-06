@@ -12,12 +12,10 @@ import { connect, Dispatch } from 'react-redux';
 import Splitter from './components/splitter';
 import Config from './common/config';
 import { actionCreator } from './action';
-import { LoginType } from './action/login';
-import { RefreshCollectionType } from './action/collection';
 import { ResizeLeftPanelType, UpdateLeftPanelType } from './action/ui';
-import './style/App.less';
-import { FetchLocalDataType } from './action/local_data';
 import LoginPanel from './modules/login';
+import { RequestStatus } from "./common/request_status";
+import './style/App.less';
 
 const { Header, Content, Sider } = Layout;
 
@@ -27,13 +25,9 @@ interface AppStateProps {
 
   collapsed: boolean;
 
-  isLogin: boolean;
-
   userId: string;
 
-  isFetchCollection: boolean;
-
-  isFetchLocalData: boolean;
+  isFetchDataSuccess: boolean;
 
   leftPanelWidth: number;
 }
@@ -42,13 +36,7 @@ interface AppDispatchProps {
 
   updateLeftPanelStatus(collapsed: boolean, activeModule: string);
 
-  getCollection();
-
-  login();
-
   resizeLeftPanel(width: number);
-
-  fetchLocalData(userId: string);
 }
 
 type AppProps = AppStateProps & AppDispatchProps;
@@ -59,21 +47,6 @@ class App extends React.Component<AppProps, AppState> {
 
   constructor(props: AppProps) {
     super(props);
-  }
-
-  componentWillMount() {
-    // if (!this.props.isLogin) {
-    //   this.props.login();
-    // }
-  }
-
-  componentWillReceiveProps(nextProps: AppProps) {
-    if (nextProps.isLogin && !nextProps.isFetchCollection) {
-      this.props.getCollection();
-    }
-    if (nextProps.isLogin && nextProps.isFetchCollection && !nextProps.isFetchLocalData) {
-      this.props.fetchLocalData(this.props.userId);
-    }
   }
 
   private onCollapse = (collapsed) => {
@@ -185,31 +158,28 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   render() {
-    const { isLogin, isFetchCollection, isFetchLocalData } = this.props;
-    return isLogin && isFetchCollection && isFetchLocalData ? this.mainPanel : this.loginPanel;
+    return this.props.isFetchDataSuccess ? this.mainPanel : this.loginPanel;
   }
 }
 
 const mapStateToProps = (state: State): AppStateProps => {
   const { leftPanelWidth, collapsed, activeModule } = state.uiState.appUIState;
+  const isFetchDataSuccess = state.userState.loginStatus.status === RequestStatus.success &&
+    state.collectionState.fetchCollectionStatus.status === RequestStatus.success &&
+    state.localDataState.fetchLocalDataStatus.status === RequestStatus.success;
   return {
     leftPanelWidth,
     collapsed,
     activeModule,
-    isLogin: state.userState.isLoaded,
-    isFetchCollection: state.collectionState.isLoaded,
-    isFetchLocalData: state.localDataState.isLocalDataLoaded,
+    isFetchDataSuccess,
     userId: state.userState.userInfo.id
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): AppDispatchProps => {
   return {
-    getCollection: () => dispatch(actionCreator(RefreshCollectionType)),
-    login: () => dispatch(actionCreator(LoginType)),
     resizeLeftPanel: (width) => dispatch(actionCreator(ResizeLeftPanelType, width)),
-    updateLeftPanelStatus: (collapsed, activeModule) => dispatch(actionCreator(UpdateLeftPanelType, { collapsed, activeModule })),
-    fetchLocalData: (userId) => dispatch(actionCreator(FetchLocalDataType, userId))
+    updateLeftPanelStatus: (collapsed, activeModule) => dispatch(actionCreator(UpdateLeftPanelType, { collapsed, activeModule }))
   };
 };
 

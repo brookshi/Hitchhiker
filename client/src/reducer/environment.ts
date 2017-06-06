@@ -1,4 +1,4 @@
-import { LoginSuccessType } from '../action/login';
+import { LoginSuccessType } from '../action/user';
 import { SwitchEnvType, EditEnvType, QuitTeamType, DisbandTeamType, SaveEnvironmentType, DelEnvironmentType, EditEnvCompletedType } from '../action/team';
 import * as _ from 'lodash';
 import { EnvironmentState, environmentDefaultValue } from '../state/environment';

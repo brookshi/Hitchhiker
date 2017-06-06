@@ -4,7 +4,7 @@ import './style/index.less';
 import { Icon, Badge, notification, Dropdown, Menu } from 'antd';
 import { State } from '../../state/index';
 import { actionCreator } from '../../action/index';
-import { LogoutType } from '../../action/login';
+import { LogoutType } from '../../action/user';
 
 interface HeaderPanelStateProps {
 
