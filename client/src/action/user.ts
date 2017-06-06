@@ -4,15 +4,21 @@ import { actionCreator } from './index';
 
 export const LoginType = 'login';
 
+export const LoginPendingType = 'login pending';
+
 export const LoginSuccessType = 'login success';
 
 export const LoginFailedType = 'login failed';
 
 export const RegisterType = 'register';
 
+export const RegisterPendingType = 'register pending';
+
 export const RegisterSuccessType = 'register success';
 
 export const RegisterFailedType = 'register failed';
+
+export const RegisterResetType = 'register reset';
 
 export const LogoutType = 'logout';
 
@@ -23,6 +29,7 @@ export const LogoutFailedType = 'logout failed';
 export function* login() {
     yield takeLatest(LoginType, function* (action: any) {
         try {
+            yield put(actionCreator(LoginPendingType));
             const res = yield call(RequestManager.post, 'http://localhost:3000/api/user/login', action.value);
             const body = yield res.json();
             if (body.success) {
@@ -39,6 +46,7 @@ export function* login() {
 export function* register() {
     yield takeLatest(RegisterType, function* (action: any) {
         try {
+            yield put(actionCreator(RegisterPendingType));
             const res = yield call(RequestManager.post, 'http://localhost:3000/api/user', action.value);
             const body = yield res.json();
             if (body.success) {

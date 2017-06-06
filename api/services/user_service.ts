@@ -62,7 +62,7 @@ export class UserService {
 
         const user = UserService.create(name, email, pwd);
         user.isActive = isAutoGenerate || !Setting.instance.needRegisterMailCheck;
-        UserService.save(user);
+        await UserService.save(user);
 
         if (!user.isActive) {
             MailService.registerMail(user);

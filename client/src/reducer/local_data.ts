@@ -1,5 +1,5 @@
 import { LocalDataState, localDataDefaultValue } from '../state/local_data';
-import { FetchLocalDataSuccessType, FetchLocalDataFailedType } from '../action/local_data';
+import { FetchLocalDataSuccessType, FetchLocalDataFailedType, FetchLocalDataPendingType } from '../action/local_data';
 import { SendRequestFulfilledType } from '../action/record';
 import { RunResult } from '../../../api/interfaces/dto_run_result';
 import { RequestStatus } from '../common/request_status';
@@ -7,7 +7,10 @@ import { RequestStatus } from '../common/request_status';
 export function localDataState(state: LocalDataState = localDataDefaultValue, action: any): LocalDataState {
     switch (action.type) {
         case FetchLocalDataSuccessType: {
-            return { ...state, fetchLocalDataStatus: { status: RequestStatus.success, message: '' } };
+            return { ...state, fetchLocalDataStatus: { status: RequestStatus.success } };
+        }
+        case FetchLocalDataPendingType: {
+            return { ...state, fetchLocalDataStatus: { status: RequestStatus.pending } };
         }
         case FetchLocalDataFailedType: {
             return { ...state, fetchLocalDataStatus: { status: RequestStatus.failed, message: action.value } };

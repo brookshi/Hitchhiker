@@ -14,7 +14,7 @@ import Config from './common/config';
 import { actionCreator } from './action';
 import { ResizeLeftPanelType, UpdateLeftPanelType } from './action/ui';
 import LoginPanel from './modules/login';
-import { RequestStatus } from "./common/request_status";
+import { RequestStatus } from './common/request_status';
 import './style/App.less';
 
 const { Header, Content, Sider } = Layout;

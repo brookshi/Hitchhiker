@@ -8,7 +8,7 @@
         "defaultPassword": "123456"
     },
     "user": {
-        "registerMailCheck": true
+        "registerMailCheck": false
     },
     "mail": {
         "host": "http://localhost:82/api/mail/"

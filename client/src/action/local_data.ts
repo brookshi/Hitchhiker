@@ -5,6 +5,8 @@ import { delay } from 'redux-saga';
 
 export const FetchLocalDataType = 'fetch local data';
 
+export const FetchLocalDataPendingType = 'fetch local data pending';
+
 export const FetchLocalDataSuccessType = 'fetch local data success';
 
 export const FetchLocalDataFailedType = 'fetch local data failed';
@@ -14,6 +16,7 @@ export const StoreLocalDataType = 'store local data';
 export function* fetchLocalData() {
     yield takeLatest(FetchLocalDataType, function* (action: any) {
         try {
+            yield put(actionCreator(FetchLocalDataPendingType));
             const state = yield call(LocalStore.getState, action.value);
             console.log('fetch');
             console.log(state);

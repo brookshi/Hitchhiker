@@ -1,4 +1,4 @@
-import { FetchCollectionSuccessType, SaveCollectionType, DeleteCollectionType, SelectedTeamChangedType, CollectionOpenKeysType, FetchCollectionFailedType } from '../action/collection';
+import { FetchCollectionSuccessType, SaveCollectionType, DeleteCollectionType, SelectedTeamChangedType, CollectionOpenKeysType, FetchCollectionFailedType, FetchCollectionPendingType } from '../action/collection';
 import { ActiveTabType, ActiveRecordType, DeleteRecordType, MoveRecordType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, UpdateTabRecordId, SaveAsRecordType } from '../action/record';
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
@@ -23,7 +23,10 @@ export function collectionState(state: CollectionState = collectionDefaultValue,
             console.log(action.value);
             const collectionInfo = action.value as DtoCollectionWithRecord;
             const keys = _.keys(collectionInfo.collections);
-            return { ...state, collectionsInfo: _.cloneDeep(collectionInfo), fetchCollectionStatus: { status: RequestStatus.success, message: '' }, openKeys: keys.length > 0 ? [keys[0]] : [] };
+            return { ...state, collectionsInfo: _.cloneDeep(collectionInfo), fetchCollectionStatus: { status: RequestStatus.success }, openKeys: keys.length > 0 ? [keys[0]] : [] };
+        }
+        case FetchCollectionPendingType: {
+            return { ...state, fetchCollectionStatus: { status: RequestStatus.pending } };
         }
         case FetchCollectionFailedType: {
             return { ...state, fetchCollectionStatus: { status: RequestStatus.failed, message: action.value } };

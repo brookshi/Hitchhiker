@@ -5,6 +5,8 @@ import { syncAction, actionCreator } from './index';
 
 export const RefreshCollectionType = 'refresh collection';
 
+export const FetchCollectionPendingType = 'fetch collection pending';
+
 export const FetchCollectionSuccessType = 'fetch collection success';
 
 export const FetchCollectionFailedType = 'fetch collection failed';
@@ -22,6 +24,7 @@ export const CollectionOpenKeysType = 'open/close collection';
 export function* refreshCollection() {
     yield takeLatest(RefreshCollectionType, function* () {
         try {
+            yield put(actionCreator(FetchCollectionPendingType));
             const res = yield call(RequestManager.get, 'http://localhost:3000/api/collections');
             const body = yield res.json();
             yield put(actionCreator(FetchCollectionSuccessType, body));

@@ -79,6 +79,16 @@ export class StringUtil {
         return pattern.test(email);
     }
 
+    static checkPassword(password: string): boolean {
+        const pattern = /^[\da-zA-Z]{6,16}$/;
+
+        return pattern.test(password);
+    }
+
+    static getNameFromEmail(email: string): string {
+        return email ? email.substr(0, email.lastIndexOf('@')) : '';
+    }
+
     static checkEmails(emails: string | string[]): { success: boolean, message: string, emails: string[] } {
         const separator = ';';
         const emailArr = emails instanceof Array ? emails : emails.split(separator);

@@ -1,16 +1,20 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { Row, Col, Form, Input, Icon, Button } from 'antd';
+import { Row, Col, Form, Input, Icon, Button, message } from 'antd';
 import './style/index.less';
 import { State, RequestState } from '../../state/index';
-import { LoginType, RegisterType } from '../../action/user';
+import { LoginType, RegisterType, RegisterResetType } from '../../action/user';
 import { actionCreator } from '../../action/index';
+import { RequestStatus } from '../../common/request_status';
+import { StringUtil } from '../../utils/string_util';
 
 const FormItem = Form.Item;
 
 interface LoginPanelStateProps {
 
     loginStatus: RequestState;
+
+    registerStatus: RequestState;
 
     fetchCollectionStatus: RequestState;
 
@@ -19,44 +23,63 @@ interface LoginPanelStateProps {
 
 interface LoginPanelDispatchProps {
 
-    login(email: string, password: string);
+    login(value: { email: string, password: string });
 
-    register(email: string, password: string);
+    register(value: { name: string, email: string, password: string });
+
+    resetRegister();
 }
 
-type LoginPanelProps = LoginPanelStateProps & LoginPanelDispatchProps;
+type LoginPanelProps = LoginPanelStateProps & LoginPanelDispatchProps & { form: any };
 
 interface LoginPanelState {
 
     showLoginPanel: boolean;
 
     isConfirmPwdModified: boolean;
-
-    isLogging: boolean;
-
-    isRegistering: boolean;
 }
 
-class LoginPanel extends React.Component<LoginPanelProps & any, LoginPanelState> {
+class LoginPanel extends React.Component<LoginPanelProps, LoginPanelState> {
 
     private loginInput: any;
+
+    private needCheckRequestState: boolean;
 
     constructor(props: LoginPanelProps & any) {
         super(props);
         this.state = {
             showLoginPanel: true,
-            isConfirmPwdModified: false,
-            isLogging: false,
-            isRegistering: false
+            isConfirmPwdModified: false
         };
+    }
+
+    public componentDidMount() {
+        this.props.form.getFieldInstance('email').focus();
+    }
+
+    public componentWillReceiveProps(nextProps: LoginPanelProps) {
+        if (this.needCheckRequestState) {
+            if (nextProps.loginStatus.message) {
+                (nextProps.loginStatus.status === RequestStatus.success ? message.success : message.warning)(nextProps.loginStatus.message);
+                this.needCheckRequestState = false;
+            } else if (nextProps.registerStatus.message) {
+                const isRegisterSuccess = nextProps.registerStatus.status === RequestStatus.success;
+                (isRegisterSuccess ? message.success : message.warning)(nextProps.registerStatus.message);
+                if (isRegisterSuccess) {
+                    this.switchPanel(true);
+                    this.props.resetRegister();
+                }
+                this.needCheckRequestState = false;
+            }
+        }
     }
 
     private signIn = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                this.setState({ ...this.state, isLogging: true });
-
+                this.needCheckRequestState = true;
+                this.props.login(values);
             }
         });
     }
@@ -65,7 +88,8 @@ class LoginPanel extends React.Component<LoginPanelProps & any, LoginPanelState>
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
+                this.needCheckRequestState = true;
+                this.props.register({ name: StringUtil.getNameFromEmail(values.reg_email), email: values.reg_email, password: values.reg_password });
             }
         });
     }
@@ -86,16 +110,12 @@ class LoginPanel extends React.Component<LoginPanelProps & any, LoginPanelState>
 
     private checkConfirm = (rule, value, callback) => {
         const form = this.props.form;
-        if (value.length < 6 || value.length > 24) {
-            callback(`Password's length should between 6 and 24.`);
+        if (!value || !StringUtil.checkPassword(value)) {
+            callback(`6 - 16 characters, letter or numeral.`);
         } else if (value && this.state.isConfirmPwdModified) {
             form.validateFields(['confirm'], { force: true });
         }
         callback();
-    }
-
-    componentDidMount() {
-        this.props.form.getFieldInstance('email').focus();
     }
 
     private switchPanel = (showLoginPanel: boolean) => {
@@ -108,7 +128,7 @@ class LoginPanel extends React.Component<LoginPanelProps & any, LoginPanelState>
         const { getFieldDecorator } = this.props.form;
 
         return (
-            <Form onSubmit={this.signIn} className="login-panel-form">
+            <Form onSubmit={this.signUp} className="login-panel-form">
                 <FormItem ref={ele => this.loginInput = ele} hasFeedback={true}>
                     <div> Email </div>
                     {
@@ -146,7 +166,7 @@ class LoginPanel extends React.Component<LoginPanelProps & any, LoginPanelState>
                         )}
                 </FormItem>
                 <FormItem>
-                    <Button loading={this.state.isRegistering} style={{ background: '#269f42' }} type="primary" htmlType="submit" className="login-panel-form-button">
+                    <Button loading={this.props.registerStatus.status === RequestStatus.pending} style={{ background: '#269f42' }} type="primary" htmlType="submit" className="login-panel-form-button">
                         Sign up
                     </Button>
                     Have an account already? <a onClick={() => this.switchPanel(true)}>Sign in.</a>
@@ -158,7 +178,7 @@ class LoginPanel extends React.Component<LoginPanelProps & any, LoginPanelState>
     private get loginPanel() {
         const { getFieldDecorator } = this.props.form;
         return (
-            <Form onSubmit={this.signUp} className="login-panel-form">
+            <Form onSubmit={this.signIn} className="login-panel-form">
                 <FormItem>
                     <div>
                         Email
@@ -174,7 +194,7 @@ class LoginPanel extends React.Component<LoginPanelProps & any, LoginPanelState>
                 </FormItem>
                 <FormItem>
                     <div>
-                        Password <a className="login-panel-form-forgot" href="">Forgot password?</a>
+                        Password <a tabIndex={4} className="login-panel-form-forgot" href="">Forgot password?</a>
                     </div>
                     {
                         getFieldDecorator('password', {
@@ -186,7 +206,7 @@ class LoginPanel extends React.Component<LoginPanelProps & any, LoginPanelState>
                     }
                 </FormItem>
                 <FormItem>
-                    <Button loading={this.state.isLogging} type="primary" htmlType="submit" className="login-panel-form-button">
+                    <Button loading={this.props.loginStatus.status === RequestStatus.pending} type="primary" htmlType="submit" className="login-panel-form-button">
                         Sign in
                     </Button>
                     New to Hitchhiker? <a onClick={() => this.switchPanel(false)}>Create an account.</a>
@@ -222,6 +242,7 @@ class LoginPanel extends React.Component<LoginPanelProps & any, LoginPanelState>
 const mapStateToProps = (state: State): LoginPanelStateProps => {
     return {
         loginStatus: state.userState.loginStatus,
+        registerStatus: state.userState.registerStatus,
         fetchCollectionStatus: state.collectionState.fetchCollectionStatus,
         fetchLocalDataStatus: state.localDataState.fetchLocalDataStatus,
     };
@@ -229,8 +250,9 @@ const mapStateToProps = (state: State): LoginPanelStateProps => {
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): LoginPanelDispatchProps => {
     return {
-        login: (email, password) => dispatch(actionCreator(LoginType, { email, password })),
-        register: (email, password) => dispatch(actionCreator(RegisterType, { email, password }))
+        login: (value) => dispatch(actionCreator(LoginType, value)),
+        register: (value) => dispatch(actionCreator(RegisterType, value)),
+        resetRegister: () => dispatch(actionCreator(RegisterResetType))
     };
 };
 

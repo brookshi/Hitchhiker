@@ -10,7 +10,7 @@ export interface RequestState {
 
     status: RequestStatus;
 
-    message: string;
+    message?: string;
 }
 
 export const requestStateDefaultValue = { status: RequestStatus.none, message: '' };

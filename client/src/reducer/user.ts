@@ -1,4 +1,4 @@
-import { LoginSuccessType, LoginFailedType, RegisterSuccessType, RegisterFailedType } from '../action/user';
+import { LoginSuccessType, LoginFailedType, RegisterSuccessType, RegisterFailedType, LoginPendingType, RegisterPendingType, RegisterResetType } from '../action/user';
 import { UserInfoState, userInfoDefaultValue } from '../state/user';
 import { RequestStatus } from '../common/request_status';
 
@@ -10,11 +10,20 @@ export function userState(state: UserInfoState = userInfoDefaultValue, action: a
         case LoginFailedType: {
             return { ...state, loginStatus: { status: RequestStatus.failed, message: action.value } };
         }
+        case LoginPendingType: {
+            return { ...state, loginStatus: { status: RequestStatus.pending } };
+        }
         case RegisterSuccessType: {
-            return { ...state, registerStatus: { status: RequestStatus.success, message: '' } };
+            return { ...state, registerStatus: { status: RequestStatus.success, message: 'register success, please login' } };
         }
         case RegisterFailedType: {
             return { ...state, registerStatus: { status: RequestStatus.failed, message: action.value } };
+        }
+        case RegisterPendingType: {
+            return { ...state, registerStatus: { status: RequestStatus.pending } };
+        }
+        case RegisterResetType: {
+            return { ...state, registerStatus: { status: RequestStatus.none, message: '' } };
         }
         default:
             return state;

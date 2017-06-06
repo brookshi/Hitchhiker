@@ -66,7 +66,7 @@ function root(state: State, action: any): State {
                     }
                 }
             });
-            // TODO: should give some tip for the different between online and local data.
+            // TODO: should give some tip for the different between online data and local data.
             return {
                 ...state,
                 displayRecordsState,
