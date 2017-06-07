@@ -22,7 +22,7 @@ export function* fetchLocalData() {
             console.log(state);
             yield put(actionCreator(FetchLocalDataSuccessType, state));
         } catch (err) {
-            console.error(err);
+            console.error(err.toString());
         }
     });
 }

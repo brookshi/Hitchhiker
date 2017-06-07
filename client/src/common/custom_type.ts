@@ -49,3 +49,5 @@ export class TeamSelectedDialogType {
         return mode === TeamSelectedDialogType.create;
     }
 }
+
+export type LoginPageMode = 'login' | 'register' | 'findPassword';

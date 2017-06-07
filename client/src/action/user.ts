@@ -26,6 +26,14 @@ export const LogoutSuccessType = 'logout success';
 
 export const LogoutFailedType = 'logout failed';
 
+export const FindPasswordType = 'find password';
+
+export const FindPasswordPendingType = 'find password pending';
+
+export const FindPasswordSuccessType = 'find password success';
+
+export const FindPasswordFailedType = 'find password failed';
+
 export function* login() {
     yield takeLatest(LoginType, function* (action: any) {
         try {
@@ -38,7 +46,7 @@ export function* login() {
                 yield put(actionCreator(LoginFailedType, body.message));
             }
         } catch (err) {
-            yield put(actionCreator(LoginFailedType, err));
+            yield put(actionCreator(LoginFailedType, err.toString()));
         }
     });
 }
@@ -55,7 +63,7 @@ export function* register() {
                 yield put(actionCreator(RegisterFailedType, body.message));
             }
         } catch (err) {
-            yield put(actionCreator(RegisterFailedType, err));
+            yield put(actionCreator(RegisterFailedType, err.toString()));
         }
     });
 }
@@ -66,7 +74,24 @@ export function* logout() { // TODO: should logout after all sync task completed
             yield call(RequestManager.get, 'http://localhost:3000/api/user/logout');
             yield put(actionCreator(LogoutSuccessType));
         } catch (err) {
-            yield put(actionCreator(LogoutFailedType, err));
+            yield put(actionCreator(LogoutFailedType, err.toString()));
+        }
+    });
+}
+
+export function* findPassword() {
+    yield takeLatest(FindPasswordType, function* (action: any) {
+        try {
+            yield put(actionCreator(FindPasswordPendingType));
+            const res = yield call(RequestManager.get, `http://localhost:3000/api/user/findpwd?email=${action.value}`);
+            const body = yield res.json();
+            if (body.success) {
+                yield put(actionCreator(FindPasswordSuccessType, body.message));
+            } else {
+                yield put(actionCreator(FindPasswordFailedType, body.message));
+            }
+        } catch (err) {
+            yield put(actionCreator(FindPasswordFailedType, err.toString()));
         }
     });
 }

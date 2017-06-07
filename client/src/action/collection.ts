@@ -29,7 +29,7 @@ export function* refreshCollection() {
             const body = yield res.json();
             yield put(actionCreator(FetchCollectionSuccessType, body));
         } catch (err) {
-            yield put(actionCreator(FetchCollectionFailedType, err));
+            yield put(actionCreator(FetchCollectionFailedType, err.toString()));
         }
     });
 }
