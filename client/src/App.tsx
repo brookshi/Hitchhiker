@@ -54,7 +54,6 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   private onClick = (param: ClickParam) => {
-
     const { collapsed, activeModule, updateLeftPanelStatus } = this.props;
     if (activeModule === param.key) {
       updateLeftPanelStatus(!collapsed, collapsed ? activeModule : '');
