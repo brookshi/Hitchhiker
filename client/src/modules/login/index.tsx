@@ -63,7 +63,7 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
         return (
             <div className="login-page">
                 {
-                    this.props.loginStatus.status === RequestStatus.success ? <LoadingScreen /> :
+                    this.props.fetchCollectionStatus.status === RequestStatus.failed ?
                         (
                             <div style={{ height: '100%' }}>
                                 <Row style={{ height: '80%', marginLeft: 18, marginRight: 18 }} type="flex" justify="center" align="middle" gutter={36}>
@@ -104,7 +104,8 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
                                     </Col>
                                 </Row>
                             </div>
-                        )}
+                        ) : <LoadingScreen />
+                }
             </div>
         );
     }
