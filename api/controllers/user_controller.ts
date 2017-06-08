@@ -37,6 +37,12 @@ export default class UserController extends BaseController {
         return checkLogin;
     }
 
+    @GET('/user/me')
+    async getUserInfo(ctx: Koa.Context): Promise<ResObject> {
+        const user = <User>(<any>ctx).session.user;
+        return this.login(ctx, user);
+    }
+
     @GET('/user/logout')
     logout(ctx: Koa.Context): ResObject {
         SessionService.logout(ctx);

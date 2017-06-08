@@ -20,6 +20,7 @@ export function* fetchLocalData() {
             const state = yield call(LocalStore.getState, action.value);
             console.log('fetch');
             console.log(state);
+            yield delay(1000);
             yield put(actionCreator(FetchLocalDataSuccessType, state));
         } catch (err) {
             console.error(err.toString());

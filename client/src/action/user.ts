@@ -34,11 +34,30 @@ export const FindPasswordSuccessType = 'find password success';
 
 export const FindPasswordFailedType = 'find password failed';
 
+export const GetUserInfoType = 'get user info';
+
 export function* login() {
     yield takeLatest(LoginType, function* (action: any) {
         try {
             yield put(actionCreator(LoginPendingType));
             const res = yield call(RequestManager.post, 'http://localhost:3000/api/user/login', action.value);
+            const body = yield res.json();
+            if (body.success) {
+                yield put(actionCreator(LoginSuccessType, body));
+            } else {
+                yield put(actionCreator(LoginFailedType, body.message));
+            }
+        } catch (err) {
+            yield put(actionCreator(LoginFailedType, err.toString()));
+        }
+    });
+}
+
+export function* getUserInfo() {
+    yield takeLatest(GetUserInfoType, function* (action: any) {
+        try {
+            yield put(actionCreator(LoginPendingType));
+            const res = yield call(RequestManager.get, 'http://localhost:3000/api/user/me');
             const body = yield res.json();
             if (body.success) {
                 yield put(actionCreator(LoginSuccessType, body));

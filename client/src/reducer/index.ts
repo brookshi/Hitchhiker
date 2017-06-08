@@ -74,7 +74,7 @@ function root(state: State, action: any): State {
                 collectionState: {
                     ...state.collectionState,
                     selectedTeam: collectionState.selectedTeam,
-                    openKeys: collectionState.openKeys
+                    openKeys: collectionState.openKeys.length > 0 ? collectionState.openKeys : state.collectionState.openKeys
                 },
                 teamState: {
                     ...state.teamState,

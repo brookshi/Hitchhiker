@@ -3,6 +3,11 @@ import { UserService } from "./user_service";
 import { ResObject } from "../common/res_object";
 import { Message } from "../common/message";
 import { TeamService } from "./team_service";
+import { User } from "../models/user";
+import { Team } from "../models/team";
+import { Environment } from "../models/environment";
+import { EnvironmentService } from "./environment_service";
+import * as _ from "lodash";
 
 export class UserTeamService {
 
@@ -28,5 +33,13 @@ export class UserTeamService {
         await TeamService.save(team);
         await TeamService.delete(team.id);
         return { success: true, message: Message.teamDisbandSuccess };
+    }
+
+    static async getUserInfo(user: User): Promise<{ user: User, teams: _.Dictionary<Team>, environments: _.Dictionary<Environment[]> }> {
+        const environments = _.groupBy(await EnvironmentService.getEnvironments(_.flatten(user.teams.map(t => t.environments.map(e => e.id)))), e => e.team.id);
+        user.teams.forEach(t => t.environments = undefined);
+        const teams = _.keyBy(user.teams, 'id');
+        user.teams = undefined;
+        return { user, teams, environments };
     }
 }

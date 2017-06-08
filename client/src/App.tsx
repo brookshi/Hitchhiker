@@ -163,7 +163,7 @@ class App extends React.Component<AppProps, AppState> {
 
 const mapStateToProps = (state: State): AppStateProps => {
   const { leftPanelWidth, collapsed, activeModule } = state.uiState.appUIState;
-  const isFetchDataSuccess = state.userState.loginStatus.status === RequestStatus.success &&
+  const isFetchDataSuccess = state.userState.loginStatus.status !== RequestStatus.failed &&
     state.collectionState.fetchCollectionStatus.status === RequestStatus.success &&
     state.localDataState.fetchLocalDataStatus.status === RequestStatus.success;
   return {

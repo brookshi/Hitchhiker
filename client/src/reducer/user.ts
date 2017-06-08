@@ -1,6 +1,7 @@
 import { LoginSuccessType, LoginFailedType, RegisterSuccessType, RegisterFailedType, LoginPendingType, RegisterPendingType, RegisterResetType, FindPasswordSuccessType, FindPasswordPendingType, FindPasswordFailedType } from '../action/user';
 import { UserInfoState, userInfoDefaultValue } from '../state/user';
 import { RequestStatus } from '../common/request_status';
+import { SessionInvalidType } from '../action/index';
 
 export function userState(state: UserInfoState = userInfoDefaultValue, action: any): UserInfoState {
     switch (action.type) {
@@ -33,6 +34,9 @@ export function userState(state: UserInfoState = userInfoDefaultValue, action: a
         }
         case FindPasswordPendingType: {
             return { ...state, findPasswordStatus: { status: RequestStatus.pending } };
+        }
+        case SessionInvalidType: {
+            return { ...state, loginStatus: { status: RequestStatus.failed, message: 'session is invalid, please login' } };
         }
         default:
             return state;

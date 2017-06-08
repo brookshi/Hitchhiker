@@ -4,14 +4,18 @@ import RequestManager, { SyncItem } from '../utils/request_manager';
 import { sendRequest, saveRecord, saveAsRecord, deleteRecord, moveRecord } from './record';
 import { saveTeam, quitTeam, disbandTeam, removeUser, inviteMember, saveEnvironment, delEnvironment } from './team';
 import { deleteCollection, saveCollection, refreshCollection } from './collection';
-import { login, logout, register, findPassword } from './user';
+import { login, logout, register, findPassword, getUserInfo } from './user';
 import { storeLocalData, fetchLocalData } from './local_data';
 
 export const SyncType = 'sync';
 
 export const SyncSuccessType = 'sync success';
 
+export const SyncFailedType = 'sync failed';
+
 export const SyncRetryType = 'sync retry';
+
+export const SessionInvalidType = 'session invalid';
 
 export function actionCreator<T>(type: string, value?: T) { return { type, value }; };
 
@@ -21,6 +25,7 @@ export function* rootSaga() {
 
     yield [
         spawn(login),
+        spawn(getUserInfo),
         spawn(register),
         spawn(logout),
         spawn(findPassword),
@@ -59,7 +64,9 @@ function* handleRequest(syncItem: SyncItem) {
     for (let i = 0; i <= Number.MAX_VALUE; i++) {
         try {
             const res = yield call(RequestManager.sync, syncItem);
-            if (res.status >= 400) {
+            if (res.status === 403) {
+                yield put(actionCreator(SessionInvalidType));
+            } else if (res.status >= 400) {
                 throw new Error(res.statusText);
             }
             // TODO: check result success or failed;

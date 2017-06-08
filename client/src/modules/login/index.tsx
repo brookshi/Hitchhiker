@@ -3,7 +3,7 @@ import { connect, Dispatch } from 'react-redux';
 import { Row, Col } from 'antd';
 import './style/index.less';
 import { State, RequestState } from '../../state/index';
-import { LoginType, RegisterType, RegisterResetType, FindPasswordType } from '../../action/user';
+import { LoginType, RegisterType, RegisterResetType, FindPasswordType, GetUserInfoType } from '../../action/user';
 import { actionCreator } from '../../action/index';
 import RegisterPanel from './register';
 import LoginPanel from './login';
@@ -30,6 +30,8 @@ interface LoginPageStateProps {
 interface LoginPageDispatchProps {
 
     login(value: { email: string, password: string });
+
+    getUserInfo();
 
     register(value: { name: string, email: string, password: string });
 
@@ -110,18 +112,20 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
     }
 
     public render() {
-        const { fetchCollectionData, fetchCollectionStatus, fetchLocalData, fetchLocalDataStatus } = this.props;
+        const { getUserInfo, fetchCollectionData, fetchCollectionStatus, fetchLocalData, fetchLocalDataStatus, loginStatus } = this.props;
         return (
             <div className="login-page">
                 {
-                    this.props.loginStatus.status === RequestStatus.success ? (
+                    loginStatus.status === RequestStatus.failed ? this.loginRelativedPanel : (
                         <LoadingScreen
                             fetchCollectionData={fetchCollectionData}
                             fetchCollectionDataStatus={fetchCollectionStatus}
                             fetchLocalData={fetchLocalData}
                             fetchLocalDataStatus={fetchLocalDataStatus}
+                            getUserInfo={getUserInfo}
+                            loginStatus={loginStatus}
                         />
-                    ) : this.loginRelativedPanel
+                    )
                 }
             </div>
         );
@@ -142,6 +146,7 @@ const mapStateToProps = (state: State): LoginPageStateProps => {
 const mapDispatchToProps = (dispatch: Dispatch<any>): LoginPageDispatchProps => {
     return {
         login: (value) => dispatch(actionCreator(LoginType, value)),
+        getUserInfo: () => dispatch(actionCreator(GetUserInfoType)),
         register: (value) => dispatch(actionCreator(RegisterType, value)),
         resetRegister: () => dispatch(actionCreator(RegisterResetType)),
         findPassword: (email) => dispatch(actionCreator(FindPasswordType, email)),

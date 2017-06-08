@@ -1,7 +1,7 @@
 import { call, put, takeLatest, takeEvery } from 'redux-saga/effects';
 import RequestManager from '../utils/request_manager';
 import { HttpMethod } from '../common/http_method';
-import { syncAction, actionCreator } from './index';
+import { syncAction, actionCreator, SessionInvalidType } from './index';
 
 export const RefreshCollectionType = 'refresh collection';
 
@@ -26,8 +26,16 @@ export function* refreshCollection() {
         try {
             yield put(actionCreator(FetchCollectionPendingType));
             const res = yield call(RequestManager.get, 'http://localhost:3000/api/collections');
-            const body = yield res.json();
-            yield put(actionCreator(FetchCollectionSuccessType, body));
+            if (res.status === 403) {
+                yield put(actionCreator(SessionInvalidType));
+            } else {
+                const body = yield res.json();
+                if (!body.success) {
+                    yield put(actionCreator(FetchCollectionFailedType, body.message));
+                } else {
+                    yield put(actionCreator(FetchCollectionSuccessType, body.result));
+                }
+            }
         } catch (err) {
             yield put(actionCreator(FetchCollectionFailedType, err.toString()));
         }

@@ -8,7 +8,7 @@ import { MailService } from "./mail_service";
 import { StringUtil } from "../utils/string_util";
 import { TeamService } from "./team_service";
 import * as _ from "lodash";
-import { EnvironmentService } from "./environment_service";
+import { UserTeamService } from "./user_team_service";
 
 export class UserService {
 
@@ -30,11 +30,8 @@ export class UserService {
         const user = await UserService.getUserByEmail(email, true);
         if (user && user.password === pwd) {//TODO: md5
             if (user.isActive) {
-                const environments = _.groupBy(await EnvironmentService.getEnvironments(_.flatten(user.teams.map(t => t.environments.map(e => e.id)))), e => e.team.id);
-                user.teams.forEach(t => t.environments = undefined);
-                const teams = _.keyBy(user.teams, 'id');
-                user.teams = undefined;
-                return { success: true, message: '', result: { user, teams, environments } };
+                const userInfo = await UserTeamService.getUserInfo(user);
+                return { success: true, message: '', result: userInfo };
             } else {
                 return { success: false, message: Message.accountNotActive };
             }
@@ -112,14 +109,12 @@ export class UserService {
     static async getUserById(id: string, needTeam?: boolean): Promise<User> {
         const connection = await ConnectionManager.getInstance();
 
-        let rep = await connection.getRepository(User)
+        const user = await connection.getRepository(User)
             .createQueryBuilder("user")
+            .leftJoinAndSelect('user.teams', 'team')
             .where(`user.id = :id`)
-            .setParameter('id', id);
-
-        if (needTeam) { rep = rep.leftJoinAndSelect('user.teams', 'team'); };
-
-        const user = await rep.getOne();
+            .setParameter('id', id)
+            .getOne();
 
         if (user && needTeam) {
             user.teams = await TeamService.getTeams(user.teams.map(t => t.id), true, false, true, true);

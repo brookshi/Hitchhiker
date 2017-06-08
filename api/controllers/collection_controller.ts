@@ -15,14 +15,18 @@ import { DtoRecord } from "../interfaces/dto_record";
 export default class CollectionController extends BaseController {
 
     @GET('/collections')
-    async getCollections(ctx: Koa.Context): Promise<DtoCollectionWithRecord> {
+    async getCollections(ctx: Koa.Context): Promise<ResObject> {
         const userId = SessionService.getUserId(ctx);
         const { collections, recordsList } = await UserCollectionService.getUserCollections(userId);
         let records: _.Dictionary<_.Dictionary<DtoRecord>> = {};
         _.keys(recordsList).forEach(k => records[k] = _.chain(recordsList[k]).map(r => RecordService.toDto(r)).keyBy('id').value());
         return {
-            collections: _.keyBy<DtoCollection>(collections.map(c => CollectionService.toDto(c)), 'id'),
-            records
+            success: true,
+            message: 'fetch collections success',
+            result: {
+                collections: _.keyBy<DtoCollection>(collections.map(c => CollectionService.toDto(c)), 'id'),
+                records
+            }
         };
     }
 
