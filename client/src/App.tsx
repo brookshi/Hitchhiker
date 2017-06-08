@@ -13,7 +13,7 @@ import Splitter from './components/splitter';
 import Config from './common/config';
 import { actionCreator } from './action';
 import { ResizeLeftPanelType, UpdateLeftPanelType } from './action/ui';
-import LoginPanel from './modules/login';
+import LoginPage from './modules/login';
 import { RequestStatus } from './common/request_status';
 import './style/App.less';
 
@@ -96,9 +96,9 @@ class App extends React.Component<AppProps, AppState> {
     }
   }
 
-  private get loginPanel() {
+  private get loginPage() {
     return (
-      <LoginPanel />
+      <LoginPage />
     );
   }
 
@@ -157,7 +157,7 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   render() {
-    return this.props.isFetchDataSuccess ? this.mainPanel : this.loginPanel;
+    return this.props.isFetchDataSuccess ? this.mainPanel : this.loginPage;
   }
 }
 
