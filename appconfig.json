@@ -7,6 +7,9 @@
         "autoGeneratorAccount": true,
         "defaultPassword": "123456"
     },
+    "batch": {
+        "checkDuration": 5
+    },
     "user": {
         "registerMailCheck": false
     },

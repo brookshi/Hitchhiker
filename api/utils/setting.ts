@@ -19,4 +19,8 @@ export class Setting {
     get app() {
         return this._setting.app;
     }
+
+    get batch() {
+        return this._setting.batch;
+    }
 }
