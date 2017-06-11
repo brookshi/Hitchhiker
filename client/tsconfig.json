@@ -24,7 +24,8 @@
     "emitDecoratorMetadata": true
   },
   "include": [
-    "./src/**/*"
+    "./src/**/*",
+    "../api/interfaces/**/*"
   ],
   "exclude": [
     "node_modules",
@@ -33,8 +34,7 @@
     "acceptance-tests",
     "webpack",
     "jest",
-    "src/setupTests.ts",
-    "../api/**/*"
+    "src/setupTests.ts"
   ],
   "types": [
     "typePatches"

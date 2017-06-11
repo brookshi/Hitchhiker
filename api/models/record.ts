@@ -50,6 +50,9 @@ export class Record {
     @Column({ nullable: true, type: 'int' })
     sort: number;
 
+    @Column({ nullable: true })
+    version: number; // TODO: need increase for each changing
+
     @CreateDateColumn()
     createDate: Date;
 

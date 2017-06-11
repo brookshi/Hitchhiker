@@ -144,6 +144,36 @@ module.exports = {
           name: `static/media/[name].${hash}.[ext]`
         }
       },
+      {
+        test: /\.ts$/,
+        include: paths.interfaceSrc,
+        loader: 'babel!ts',
+        options: {
+          compilerOptions: {
+            outDir: "build/dist",
+            module: "es6",
+            target: "es6",
+            lib: [
+              "es6",
+              "dom"
+            ],
+            sourceMap: true,
+            allowJs: true,
+            moduleResolution: "node",
+            rootDir: "../",
+            forceConsistentCasingInFileNames: false,
+            noImplicitReturns: true,
+            noImplicitThis: true,
+            noImplicitAny: false,
+            strictNullChecks: true,
+            suppressImplicitAnyIndexErrors: true,
+            noUnusedLocals: true,
+            allowSyntheticDefaultImports: true,
+            experimentalDecorators: true,
+            emitDecoratorMetadata: true
+          }
+        }
+      },
       // Compile .tsx?
       {
         test: /\.(ts|tsx)$/,

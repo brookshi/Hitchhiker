@@ -21,9 +21,9 @@ import { ReqResUIState, reqResUIDefaultValue } from '../../state/ui';
 import { StringUtil } from '../../utils/string_util';
 import * as _ from 'lodash';
 import './style/index.less';
+import { noEnvironment } from "../../common/constants";
 
 const Option = Select.Option;
-const noEnvironment = 'no environment';
 
 interface ReqResPanelStateProps {
 

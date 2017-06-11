@@ -40,22 +40,23 @@
     ✔ can't open the same record after delete its tab @done (2017/6/3 下午9:34:58)
     ✔ own team @done (2017/6/4 下午12:24:39)
     ✔ store cookie after request @done (2017/6/3 下午7:48:39)
+    ☐ schedule
     ☐ invite user / test
     ☐ record change time line (db)
     ☐ document db
     ✔ default open collection @done (2017/6/3 下午9:57:22)
     ☐ login ui / logout redirect
     ☐ cookie invalid indirect to login page
+    ☐ user password should hide
     ☐ build to live
     ☐ unit test
 0.2.0:
-    ☐ save all tabs, close all tabs
+    ☐ save all tabs, close all tabs, close all but active.
     ☐ collection tree follow active tab
     ☐ set cookie record
     ☐ fetch data per 30s
     ☐ team share collection/env
     ☐ body type
-    ☐ schedule
     ☐ team share collection/env for own
 0.3.0:
     ☐ data mock

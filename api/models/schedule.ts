@@ -24,6 +24,9 @@ export class Schedule {
     @Column({ type: 'int', default: 0 })
     period: Period;
 
+    @Column()
+    hour: number;
+
     @Column({ type: 'int', default: 2 })
     notification: NotificationMode;
 
@@ -31,7 +34,13 @@ export class Schedule {
     emails: string;
 
     @Column()
+    needOrder: boolean;
+
+    @Column()
     recordsOrder: string;
+
+    @Column()
+    suspend: boolean;
 
     @OneToMany(type => ScheduleRecord, scheduleRecord => scheduleRecord.schedule)
     ScheduleRecords: ScheduleRecord[];
@@ -39,6 +48,9 @@ export class Schedule {
     @JoinColumn()
     @OneToOne(type => User)
     owner: User;
+
+    @Column()
+    lastRunDate: number;
 
     @CreateDateColumn()
     createDate: Date;

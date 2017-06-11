@@ -71,7 +71,7 @@ class TeamItem extends React.Component<TeamItemProps, TeamItemState> {
 
         return (
             <div>
-                {isOwner ? <div className="team-item-own" /> : ''}
+                {isOwner ? <div className="item-own" /> : ''}
                 <ItemWithMenu
                     ref={ele => this.itemWithMenu = ele}
                     onNameChanged={this.props.onNameChanged}

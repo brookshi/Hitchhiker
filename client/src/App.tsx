@@ -4,6 +4,7 @@ import { Layout, Menu, Icon, Tooltip, Button } from 'antd';
 import { ClickParam } from 'antd/lib/menu';
 import ReqResPanel from './modules/req_res_panel';
 import Team from './modules/team';
+import Schedule from './modules/schedule';
 import HeaderPanel from './modules/header';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import './style/perfect-scrollbar.min.css';
@@ -15,6 +16,7 @@ import { actionCreator } from './action';
 import { ResizeLeftPanelType, UpdateLeftPanelType } from './action/ui';
 import LoginPage from './modules/login';
 import { RequestStatus } from './common/request_status';
+import Perf from 'react-addons-perf';
 import './style/App.less';
 
 const { Header, Content, Sider } = Layout;
@@ -47,6 +49,7 @@ class App extends React.Component<AppProps, AppState> {
 
   constructor(props: AppProps) {
     super(props);
+    window['Perf'] = Perf;
   }
 
   private onCollapse = (collapsed) => {
@@ -91,6 +94,8 @@ class App extends React.Component<AppProps, AppState> {
         return this.collectionModule();
       case 'team':
         return <Team />;
+      case 'schedule':
+        return <Schedule />;
       default:
         return this.collectionModule();
     }

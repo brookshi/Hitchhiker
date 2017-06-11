@@ -57,7 +57,6 @@
             "single",
             "jsx-double"
         ],
-        "radix": true,
         "semicolon": [
             true,
             "always"

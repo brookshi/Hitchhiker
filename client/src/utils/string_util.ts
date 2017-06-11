@@ -74,6 +74,11 @@ export class StringUtil {
         }
     }
 
+    static isNumberString(str: string): boolean {
+        const pattern = /^\d+$/;
+        return pattern.test(str);
+    }
+
     static checkEmail(email: string): boolean {
         const pattern = /^[^@]+@[^\.@]+\.[a-zA-Z]+$/;
         return pattern.test(email);

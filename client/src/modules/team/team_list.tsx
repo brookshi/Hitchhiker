@@ -75,7 +75,7 @@ class TeamList extends React.Component<TeamListProps, TeamListState> {
             <div>
                 <div className="small-toolbar">
                     <span>Teams</span>
-                    <Tooltip mouseEnterDelay={1} placement="bottom" title="create collection">
+                    <Tooltip mouseEnterDelay={1} placement="bottom" title="create team">
                         <Button className="icon-btn team-add-btn" type="primary" icon="usergroup-add" onClick={this.createTeam} />
                     </Tooltip>
                 </div>
