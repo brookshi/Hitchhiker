@@ -1,5 +1,5 @@
-import { Period } from "./period";
-import { NotificationMode } from "./notification_mode";
+import { Period } from "../../client/src/common/period";
+import { NotificationMode } from "../../client/src/common/notification_mode";
 import { DtoScheduleRecord } from "./dto_schedule_record";
 
 export interface DtoSchedule {

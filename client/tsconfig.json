@@ -24,8 +24,7 @@
     "emitDecoratorMetadata": true
   },
   "include": [
-    "./src/**/*",
-    "../api/interfaces/**/*"
+    "./src/**/*"
   ],
   "exclude": [
     "node_modules",

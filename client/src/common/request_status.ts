@@ -1,4 +1,5 @@
-import { Period } from "../../../api/interfaces/period";
+
+import { Period } from "./period";
 
 export enum RequestStatus {
 
@@ -12,8 +13,6 @@ export enum RequestStatus {
 
     cancel = 4
 }
-
-
 
 export class PeriodStr {
 

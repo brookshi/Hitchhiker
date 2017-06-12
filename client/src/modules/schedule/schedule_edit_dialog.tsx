@@ -2,11 +2,11 @@ import React from 'react';
 import { Select, Form, Modal, Input } from 'antd';
 import { DtoSchedule } from '../../../../api/interfaces/dto_schedule';
 import { noEnvironment } from '../../common/constants';
-import { Period } from '../../../../api/interfaces/period';
 import { StringUtil } from '../../utils/string_util';
 import * as _ from 'lodash';
-import { NotificationMode, NotificationStr } from '../../../../api/interfaces/notification_mode';
 import { PeriodStr } from "../../common/request_status";
+import { Period } from "../../common/period";
+import { NotificationMode, NotificationStr } from "../../common/notification_mode";
 
 const FormItem = Form.Item;
 
@@ -112,7 +112,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
     }
 
     private onScheduleChanged = (field: string, value: any) => {
-        this.setState({ ...this.state, schedule: { ...this.state.schedule, [field]: value } });
+        //this.setState({ ...this.state, schedule: { ...this.state.schedule, [field]: value } });
     }
 
     public render() {

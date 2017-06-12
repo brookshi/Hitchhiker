@@ -133,7 +133,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 
     private get activeRecordTeamId(): string {
-        return this.activeRecord.collectionId ? this.props.collections[this.activeRecord.collectionId].teamId : '';
+        return this.activeRecord.collectionId && this.props.collections[this.activeRecord.collectionId] ? this.props.collections[this.activeRecord.collectionId].teamId : '';
     }
 
     private get activeEnvId(): string {

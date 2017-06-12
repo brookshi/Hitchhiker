@@ -1,8 +1,8 @@
 import { Entity, PrimaryColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne, JoinColumn } from "typeorm";
 import { Collection } from "./collection";
 import { Environment } from "./environment";
-import { Period } from "../interfaces/period";
-import { NotificationMode } from "../interfaces/notification_mode";
+import { Period } from "../../client/src/common/period";
+import { NotificationMode } from "../../client/src/common/notification_mode";
 import { ScheduleRecord } from "./schedule_record";
 import { User } from "./user";
 
