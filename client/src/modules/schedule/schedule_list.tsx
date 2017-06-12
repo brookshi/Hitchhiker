@@ -6,9 +6,10 @@ import { DtoUser } from '../../../../api/interfaces/dto_user';
 import { StringUtil } from '../../utils/string_util';
 import { Tooltip, Button, Menu } from 'antd';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-// import ScheduleEditDialog from './schedule_edit_dialog';
+import ScheduleEditDialog from './schedule_edit_dialog';
 import { Period } from "../../common/period";
 import { NotificationMode } from "../../common/notification_mode";
+import { noEnvironment } from "../../common/constants";
 
 interface ScheduleListProps {
 
@@ -46,7 +47,7 @@ const createDefaultSchedule: (user: DtoUser) => DtoSchedule = (user: DtoUser) =>
         name: 'New Schedule',
         ownerId: user.id,
         collectionId: '',
-        environmentId: '',
+        environmentId: noEnvironment,
         period: Period.daily,
         hour: 7,
         notification: NotificationMode.none,
@@ -73,10 +74,10 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
         this.props.selectSchedule(param.item.props.data.id);
     }
 
-    // private createSchedule = (schedule) => {
-    //     this.setState({ ...this.state, isEditDlgOpen: false });
-    //     this.props.createSchedule(schedule);
-    // }
+    private createSchedule = (schedule) => {
+        this.setState({ ...this.state, isEditDlgOpen: false });
+        this.props.createSchedule(schedule);
+    }
 
     private editSchedule = (schedule) => {
 
@@ -121,14 +122,14 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                         }
                     </Menu>
                 </PerfectScrollbar>
-                {/*<ScheduleEditDialog
+                <ScheduleEditDialog
                     schedule={this.state.schedule}
                     collections={this.props.collections}
                     environments={this.props.environments}
                     isEditDlgOpen={this.state.isEditDlgOpen}
-                    onCancel={this.setState({ ...this.state, isEditDlgOpen: false })}
+                    onCancel={() => this.setState({ ...this.state, isEditDlgOpen: false })}
                     onOk={schedule => this.createSchedule(schedule)}
-                />*/}
+                />
             </div>
         );
     }

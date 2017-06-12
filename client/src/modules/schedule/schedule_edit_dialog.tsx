@@ -29,7 +29,7 @@ interface ScheduleEditDialogProps {
 
 interface ScheduleEditDialogState {
 
-    schedule: DtoSchedule;
+    showEmails: boolean;
 }
 
 class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { form: any }, ScheduleEditDialogState> {
@@ -37,13 +37,13 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
     constructor(props: ScheduleEditDialogProps & { form: any }) {
         super(props);
         this.state = {
-            schedule: props.schedule
-        }
+            showEmails: props.schedule.notification === NotificationMode.custom
+        };
     }
 
     private generateCollectionSelect = () => {
         return (
-            <Select defaultValue={this.state.schedule.collectionId} onChange={v => this.onScheduleChanged('collectionId', v.toString())} style={{ width: 100 }}>
+            <Select>
                 {
                     Object.keys(this.props.collections).map(k =>
                         <Option key={k} value={k}>{this.props.collections[k]}</Option>)
@@ -54,7 +54,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
 
     private generateEnvSelect = () => {
         return (
-            <Select value={this.state.schedule.environmentId} onChange={v => this.onScheduleChanged('environmentId', v === noEnvironment ? '' : v.toString())}>
+            <Select >
                 <Option key={noEnvironment} value={noEnvironment}>No Environment</Option>
                 {
                     Object.keys(this.props.environments).map(k =>
@@ -66,7 +66,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
 
     private generatePeriodSelect = () => {
         return (
-            <Select value={this.state.schedule.period.toString()} onChange={v => this.onScheduleChanged('period', parseInt(v.toString()) as Period)}>
+            <Select dropdownMenuStyle={{ maxHeight: 300 }}>
                 {
                     Object.keys(Period).filter(k => StringUtil.isNumberString(k)).map(k =>
                         <Option key={k} value={k}>{PeriodStr.convert(parseInt(k) as Period)}</Option>)
@@ -77,10 +77,10 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
 
     private generateHourSelect = () => {
         return (
-            <Select value={this.state.schedule.hour.toString()} onChange={v => this.onScheduleChanged('hour', parseInt(v.toString()))}>
+            <Select>
                 {
                     _.times(24, Number).map(k =>
-                        <Option key={k} value={k}>{k === 0 ? '12:00 AM' : (k < 12 ? `${k}:00 AM` : `${k === 12 ? 12 : k - 12}:00 PM`)}</Option>)
+                        <Option key={k.toString()} value={k.toString()}>{k === 0 ? '12:00 AM' : (k < 12 ? `${k}:00 AM` : `${k === 12 ? 12 : k - 12}:00 PM`)}</Option>)
                 }
             </Select>
         );
@@ -88,7 +88,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
 
     private generateNotificationSelect = () => {
         return (
-            <Select value={this.state.schedule.notification.toString()} onChange={v => this.onScheduleChanged('notification', parseInt(v.toString()) as NotificationMode)}>
+            <Select onChange={v => this.setState({ ...this.state, showEmails: v.toString() === NotificationMode.custom.toString() })}>
                 {
                     Object.keys(NotificationMode).filter(k => StringUtil.isNumberString(k)).map(k =>
                         <Option key={k} value={k}>{NotificationStr.convert(parseInt(k) as NotificationMode)}</Option>)
@@ -98,26 +98,20 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
     }
 
     private generateEmailsSelect = () => {
+        const display = this.state.showEmails ? '' : 'none';
         return (
             <Select
                 mode="tags"
-                style={{ width: '100%' }}
+                style={{ width: '100%', height: 46, display }}
                 placeholder="sample@hitchhiker.com;"
-                value={this.state.schedule.emails}
-                onChange={v => this.onScheduleChanged('emails', v)}
                 tokenSeparators={[';']}
                 dropdownStyle={{ display: 'none' }}
             />
         );
     }
 
-    private onScheduleChanged = (field: string, value: any) => {
-        //this.setState({ ...this.state, schedule: { ...this.state.schedule, [field]: value } });
-    }
-
     public render() {
-        const { isEditDlgOpen, onCancel, onOk } = this.props;
-        const { name } = this.state.schedule;
+        const { isEditDlgOpen, onCancel, onOk, schedule } = this.props;
         const { getFieldDecorator } = this.props.form;
 
         return (
@@ -126,56 +120,65 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
                 title="Schedule"
                 okText="Save"
                 onCancel={onCancel}
-                onOk={() => onOk(this.state.schedule)}
+                onOk={() => onOk(this.props.schedule)}
             >
                 <Form layout="vertical">
                     <FormItem label="Name">
                         {getFieldDecorator('name', {
+                            initialValue: schedule.name,
                             rules: [{ required: true, message: 'Please enter the name of schedule' }],
                         })(
-                            <Input spellCheck={true} value={name} onChange={e => this.onScheduleChanged('name', e.currentTarget.value)} />
+                            <Input spellCheck={true} />
                             )}
                     </FormItem>
                     <FormItem label="Collection">
                         {getFieldDecorator('collectionId', {
+                            initialValue: schedule.collectionId,
                             rules: [{ required: true, message: 'Please select a collection' }],
                         })(
                             this.generateCollectionSelect()
                             )}
                     </FormItem>
                     <FormItem label="Environment">
-                        {getFieldDecorator('environmentId')(
+                        {getFieldDecorator('environmentId', {
+                            initialValue: schedule.environmentId,
+                        })(
                             this.generateEnvSelect()
-                        )}
+                            )}
                     </FormItem>
                     <FormItem label="Period">
                         {getFieldDecorator('period', {
+                            initialValue: schedule.period.toString(),
                             rules: [{ required: true, message: 'Please select a period' }],
                         })(
                             this.generatePeriodSelect()
                             )}
                     </FormItem>
                     <FormItem>
-                        {getFieldDecorator('hour')(
+                        {getFieldDecorator('hour', {
+                            initialValue: schedule.hour.toString(),
+                        })(
                             this.generateHourSelect()
-                        )}
+                            )}
                     </FormItem>
                     <FormItem label="Notification">
-                        {getFieldDecorator('notification')(
+                        {getFieldDecorator('notification', {
+                            initialValue: schedule.notification.toString(),
+                        })(
                             this.generateNotificationSelect()
-                        )}
+                            )}
                     </FormItem>
                     { // TODO: check emails
-                        this.state.schedule.notification === NotificationMode.custom ?
-                            getFieldDecorator('emails')(
-                                this.generateEmailsSelect()
-                            ) : ''
+                        /*getFieldDecorator('emails', {
+                            initialValue: schedule.emails,
+                        })(*/
+                        this.generateEmailsSelect()
+                        /*)*/
                     }
-
                 </Form>
             </Modal>
         );
     }
 }
 
-export default Form.create(ScheduleEditDialog);
+export default Form.create()(ScheduleEditDialog);
