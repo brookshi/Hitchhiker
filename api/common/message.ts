@@ -53,6 +53,11 @@ export class Message {
     static recordSaveSuccess: string = 'record save success';
     static recordDeleteSuccess: string = 'record delete success';
 
+    static scheduleCreateSuccess: string = 'create schedule success';
+    static scheduleCreateFailed: string = 'create schedule failed';
+    static scheduleUpdateSuccess: string = 'update schedule success';
+    static scheduleDeleteSuccess: string = 'delete schedule success';
+
     static apiNotExist: string = 'this api does not exist';
 
     static sessionInvalid: string = 'session is invalid';

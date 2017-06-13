@@ -43,7 +43,7 @@ export class Schedule {
     suspend: boolean;
 
     @OneToMany(type => ScheduleRecord, scheduleRecord => scheduleRecord.schedule)
-    ScheduleRecords: ScheduleRecord[];
+    scheduleRecords: ScheduleRecord[];
 
     @JoinColumn()
     @OneToOne(type => User)
