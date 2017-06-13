@@ -1,12 +1,12 @@
 import React from 'react';
-import { Select, Form, Modal, Input } from 'antd';
+import { Select, Form, Modal, Input, Row, Col } from 'antd';
 import { DtoSchedule } from '../../../../api/interfaces/dto_schedule';
 import { noEnvironment } from '../../common/constants';
 import { StringUtil } from '../../utils/string_util';
 import * as _ from 'lodash';
-import { PeriodStr } from "../../common/request_status";
-import { Period } from "../../common/period";
-import { NotificationMode, NotificationStr } from "../../common/notification_mode";
+import { PeriodStr } from '../../common/request_status';
+import { Period } from '../../common/period';
+import { NotificationMode, NotificationStr } from '../../common/notification_mode';
 
 const FormItem = Form.Item;
 
@@ -119,10 +119,11 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
                 visible={isEditDlgOpen}
                 title="Schedule"
                 okText="Save"
+                cancelText="Cancel"
                 onCancel={onCancel}
                 onOk={() => onOk(this.props.schedule)}
             >
-                <Form layout="vertical">
+                <Form>
                     <FormItem label="Name">
                         {getFieldDecorator('name', {
                             initialValue: schedule.name,
@@ -139,26 +140,30 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
                             this.generateCollectionSelect()
                             )}
                     </FormItem>
+                    <FormItem label="Period" labelCol={{ span: 24 }}>
+                        <Row gutter={8}>
+                            <Col span={12}>
+                                {getFieldDecorator('period', {
+                                    initialValue: schedule.period.toString(),
+                                    rules: [{ required: true, message: 'Please select a period' }],
+                                })(
+                                    this.generatePeriodSelect()
+                                    )}
+                            </Col>
+                            <Col span={12}>
+                                {getFieldDecorator('hour', {
+                                    initialValue: schedule.hour.toString(),
+                                })(
+                                    this.generateHourSelect()
+                                    )}
+                            </Col>
+                        </Row>
+                    </FormItem>
                     <FormItem label="Environment">
                         {getFieldDecorator('environmentId', {
                             initialValue: schedule.environmentId,
                         })(
                             this.generateEnvSelect()
-                            )}
-                    </FormItem>
-                    <FormItem label="Period">
-                        {getFieldDecorator('period', {
-                            initialValue: schedule.period.toString(),
-                            rules: [{ required: true, message: 'Please select a period' }],
-                        })(
-                            this.generatePeriodSelect()
-                            )}
-                    </FormItem>
-                    <FormItem>
-                        {getFieldDecorator('hour', {
-                            initialValue: schedule.hour.toString(),
-                        })(
-                            this.generateHourSelect()
                             )}
                     </FormItem>
                     <FormItem label="Notification">

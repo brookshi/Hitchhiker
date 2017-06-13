@@ -7,9 +7,9 @@ import { StringUtil } from '../../utils/string_util';
 import { Tooltip, Button, Menu } from 'antd';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import ScheduleEditDialog from './schedule_edit_dialog';
-import { Period } from "../../common/period";
-import { NotificationMode } from "../../common/notification_mode";
-import { noEnvironment } from "../../common/constants";
+import { Period } from '../../common/period';
+import { NotificationMode } from '../../common/notification_mode';
+import { noEnvironment } from '../../common/constants';
 
 interface ScheduleListProps {
 
@@ -67,7 +67,7 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
             schedule: createDefaultSchedule(props.user),
             isCreateNew: true,
             isEditDlgOpen: false
-        }
+        };
     }
 
     private onSelectChanged = (param: SelectParam) => {
