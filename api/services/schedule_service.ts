@@ -7,6 +7,8 @@ import { User } from "../models/user";
 import { ConnectionManager } from "./connection_manager";
 import { Message } from "../common/message";
 import { ResObject } from "../common/res_object";
+import { UserCollectionService } from "./user_collection_service";
+import { ObjectLiteral } from "typeorm/common/ObjectLiteral";
 
 export class ScheduleService {
 
@@ -52,6 +54,37 @@ export class ScheduleService {
             rep = rep.leftJoinAndSelect('schedule.scheduleRecords', 'records');
         }
         return await rep.where('schedule.id=:id', { id: id }).getOne();
+    }
+
+    static async getByUserId(userId: string): Promise<Schedule[]> {
+        const collections = await UserCollectionService.getUserTeamCollections(userId);
+        const collectionIds = collections.map(c => c.id);
+        if (!collectionIds || collectionIds.length === 0) {
+            return [];
+        }
+
+        const connection = await ConnectionManager.getInstance();
+
+        const parameters: ObjectLiteral = {};
+        const whereStrings = collectionIds.map((id, index) => {
+            parameters[`id_${index}`] = id;
+            return `collection.id=:id_${index}`;
+        });
+        const whereStr = whereStrings.length > 1 ? "(" + whereStrings.join(" OR ") + ")" : whereStrings[0];
+
+        return await connection.getRepository(Schedule)
+            .createQueryBuilder("schedule")
+            .leftJoinAndSelect('schedule.owner', 'owner')
+            .leftJoinAndSelect('schedule.scheduleRecords', 'scheduleRecords')
+            .leftJoinAndSelect('schedule.collection', 'collection')
+            .leftJoinAndSelect('schedule.environment', 'environment')
+            .where(whereStr, parameters)
+            .getMany();
+    }
+
+    static async getAll(): Promise<Schedule[]> {
+        const connection = await ConnectionManager.getInstance();
+        return await connection.getRepository(Schedule).find();
     }
 
     static async createNew(dtoSchedule: DtoSchedule, owner: User): Promise<ResObject> {

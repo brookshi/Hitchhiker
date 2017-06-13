@@ -20,4 +20,10 @@ export default class ScheduleController extends BaseController {
     async delete( @PathParam('id') id: string): Promise<ResObject> {
         return ScheduleService.delete(id);
     }
+
+    @GET('/schedules')
+    async getSchedules(ctx: Koa.Context): Promise<ResObject> {
+        const schedules = await ScheduleService.getByUserId((<any>ctx).session.userId);
+        return { success: true, message: '', result: schedules };
+    }
 }

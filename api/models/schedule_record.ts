@@ -7,7 +7,7 @@ export class ScheduleRecord {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(type => Schedule, schedule => schedule.ScheduleRecords)
+    @ManyToOne(type => Schedule, schedule => schedule.scheduleRecords)
     schedule: Schedule;
 
     @Column()

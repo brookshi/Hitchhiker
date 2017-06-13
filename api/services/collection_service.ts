@@ -130,7 +130,7 @@ export class CollectionService {
     }
 
     static async getByTeamIds(teamIds: string[]): Promise<Collection[]> {
-        if (!teamIds) {
+        if (!teamIds || teamIds.length === 0) {
             return [];
         }
 
