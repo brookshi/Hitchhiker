@@ -1,7 +1,5 @@
 import { DtoSchedule } from "../interfaces/dto_schedule";
 import { Schedule } from "../models/schedule";
-import { Collection } from "../models/collection";
-import { Environment } from "../models/environment";
 import { StringUtil } from "../utils/string_util";
 import { User } from "../models/user";
 import { ConnectionManager } from "./connection_manager";
@@ -15,11 +13,9 @@ export class ScheduleService {
 
     static fromDto(dtoSchedule: DtoSchedule): Schedule {
         const schedule = new Schedule();
-        schedule.collection = new Collection();
-        schedule.collection.id = dtoSchedule.collectionId;
+        schedule.collectionId = dtoSchedule.collectionId;
         if (dtoSchedule.environmentId) {
-            schedule.environment = new Environment();
-            schedule.environment.id = dtoSchedule.environmentId;
+            schedule.environmentId = dtoSchedule.environmentId;
         }
         schedule.emails = dtoSchedule.emails;
         schedule.hour = dtoSchedule.hour;
@@ -37,10 +33,10 @@ export class ScheduleService {
     static toDto(schedule: Schedule): DtoSchedule {
         return {
             ...schedule,
-            collectionId: schedule.collection.id,
-            environmentId: schedule.environment.id,
-            scheduleRecords: schedule.scheduleRecords.map(s => ScheduleRecordService.toDto(s)),
-            ownerId: schedule.owner.id
+            collectionId: schedule.collectionId,
+            environmentId: schedule.environmentId,
+            scheduleRecords: schedule.scheduleRecords ? schedule.scheduleRecords.map(s => ScheduleRecordService.toDto(s)) : [],
+            ownerId: schedule.ownerId
         };
     }
 
@@ -49,46 +45,32 @@ export class ScheduleService {
         await connection.getRepository(Schedule).persist(schedule);
     }
 
-    static async getById(id: string, needOwner: boolean = false, needCollection: boolean = false, needEnv: boolean = false, needRecords: boolean = false): Promise<Schedule> {
+    static async getById(id: string): Promise<Schedule> {
         const connection = await ConnectionManager.getInstance();
-        let rep = connection.getRepository(Schedule).createQueryBuilder("schedule");
-        if (needOwner) {
-            rep = rep.leftJoinAndSelect('schedule.owner', 'owner');
-        }
-        if (needCollection) {
-            rep = rep.leftJoinAndSelect('schedule.collection', 'collection');
-        }
-        if (needEnv) {
-            rep = rep.leftJoinAndSelect('schedule.environment', 'environment');
-        }
-        if (needRecords) {
-            rep = rep.leftJoinAndSelect('schedule.scheduleRecords', 'records');
-        }
-        return await rep.where('schedule.id=:id', { id: id }).getOne();
+
+        return await connection.getRepository(Schedule)
+            .createQueryBuilder("schedule")
+            .where('schedule.id=:id', { id: id })
+            .getOne();
     }
 
     static async getByUserId(userId: string): Promise<Schedule[]> {
         const collections = await UserCollectionService.getUserTeamCollections(userId);
-        const collectionIds = collections.map(c => c.id);
-        if (!collectionIds || collectionIds.length === 0) {
+        if (!collections || collections.length === 0) {
             return [];
         }
-
+        const collectionIds = collections.map(c => c.id);
         const connection = await ConnectionManager.getInstance();
 
         const parameters: ObjectLiteral = {};
         const whereStrings = collectionIds.map((id, index) => {
             parameters[`id_${index}`] = id;
-            return `collection.id=:id_${index}`;
+            return `collectionId=:id_${index}`;
         });
         const whereStr = whereStrings.length > 1 ? "(" + whereStrings.join(" OR ") + ")" : whereStrings[0];
 
         return await connection.getRepository(Schedule)
             .createQueryBuilder("schedule")
-            .leftJoinAndSelect('schedule.owner', 'owner')
-            .leftJoinAndSelect('schedule.scheduleRecords', 'scheduleRecords')
-            .leftJoinAndSelect('schedule.collection', 'collection')
-            .leftJoinAndSelect('schedule.environment', 'environment')
             .where(whereStr, parameters)
             .getMany();
     }
@@ -100,7 +82,7 @@ export class ScheduleService {
 
     static async createNew(dtoSchedule: DtoSchedule, owner: User): Promise<ResObject> {
         const schedule = ScheduleService.fromDto(dtoSchedule);
-        schedule.owner = owner;
+        schedule.ownerId = owner.id;
         await ScheduleService.save(schedule);
         return { message: Message.scheduleCreateSuccess, success: true };
     }

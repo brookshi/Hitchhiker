@@ -10,6 +10,7 @@ import ScheduleEditDialog from './schedule_edit_dialog';
 import { Period } from '../../common/period';
 import { NotificationMode } from '../../common/notification_mode';
 import { noEnvironment } from '../../common/constants';
+import { DateUtil } from "../../utils/date_util";
 
 interface ScheduleListProps {
 
@@ -49,9 +50,9 @@ const createDefaultSchedule: (user: DtoUser) => DtoSchedule = (user: DtoUser) =>
         collectionId: '',
         environmentId: noEnvironment,
         period: Period.daily,
-        hour: 7,
+        hour: DateUtil.localHourToUTC(7),
         notification: NotificationMode.none,
-        emails: undefined,
+        emails: '',
         needOrder: false,
         recordsOrder: '',
         suspend: false,
@@ -93,7 +94,7 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
             ...this.state,
             isEditDlgOpen: true,
             isCreateNew: false,
-            schedule
+            schedule: { ...schedule, environmentId: schedule.environmentId || noEnvironment }
         });
     }
 
@@ -126,6 +127,7 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                                         <ScheduleItem
                                             schedule={t}
                                             collectionName={this.props.collections[t.collectionId]}
+                                            environmentName={this.props.environments[t.environmentId]}
                                             isOwner={t.ownerId === this.props.user.id}
                                             delete={() => this.props.deleteSchedule(t.id)}
                                             edit={() => this.editSchedule(t)}

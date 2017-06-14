@@ -42,7 +42,7 @@ export class UserTeamService {
         user.teams.forEach(t => t.environments = undefined);
         const teams = _.keyBy(user.teams, 'id');
         user.teams = undefined;
-        const schedules = _.keyBy((await ScheduleService.getByUserId(user.id)).map(s => ScheduleService.toDto(s), 'id'));
+        const schedules = _.keyBy((await ScheduleService.getByUserId(user.id)).map(s => ScheduleService.toDto(s)), 'id');
         return { user, teams, environments, schedules };
     }
 }

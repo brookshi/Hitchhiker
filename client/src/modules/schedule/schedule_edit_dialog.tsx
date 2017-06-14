@@ -4,9 +4,9 @@ import { DtoSchedule } from '../../../../api/interfaces/dto_schedule';
 import { noEnvironment } from '../../common/constants';
 import { StringUtil } from '../../utils/string_util';
 import * as _ from 'lodash';
-import { PeriodStr } from '../../common/request_status';
-import { Period } from '../../common/period';
+import { Period, PeriodStr } from '../../common/period';
 import { NotificationMode, NotificationStr } from '../../common/notification_mode';
+import { DateUtil } from '../../utils/date_util';
 
 const FormItem = Form.Item;
 
@@ -80,7 +80,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
             <Select>
                 {
                     _.times(24, Number).map(k =>
-                        <Option key={k.toString()} value={k.toString()}>{k === 0 ? '12:00 AM' : (k < 12 ? `${k}:00 AM` : `${k === 12 ? 12 : k - 12}:00 PM`)}</Option>)
+                        <Option key={k.toString()} value={k.toString()}>{DateUtil.getDisplayHour(k)}</Option>)
                 }
             </Select>
         );
@@ -98,15 +98,24 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
     }
 
     private generateEmailsSelect = () => {
-        const display = this.state.showEmails ? '' : 'none';
         return (
             <Select
                 mode="tags"
-                style={{ width: '100%', height: 46, display }}
+                style={{ width: '100%', height: 46 }}
                 placeholder="sample@hitchhiker.com;"
                 tokenSeparators={[';']}
+                dropdownStyle={{ display: 'none' }}
             />
         );
+    }
+
+    private checkEmails = (rule, value, callback) => {
+        const result = StringUtil.checkEmails(value);
+        if (!value || value.length === 0 || result.success) {
+            callback();
+        } else {
+            callback(result.message);
+        }
     }
 
     private onOk = () => {
@@ -114,12 +123,29 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
             if (err) {
                 return;
             }
-            this.props.onOk({ ...this.props.schedule, ...values });
+            this.reset();
+            this.props.onOk({
+                ...this.props.schedule,
+                ...values,
+                emails: values.emails.join(';'),
+                environmentId: values.environmentId === noEnvironment ? undefined : values.environmentId,
+                hour: DateUtil.localHourToUTC(Number.parseInt(values.hour))
+            });
         });
     }
 
+    private onCancel = () => {
+        this.reset();
+        this.props.onCancel();
+    }
+
+    private reset = () => {
+        this.props.form.resetFields();
+        this.setState({ ...this.state, showEmails: false });
+    }
+
     public render() {
-        const { isEditDlgOpen, onCancel, schedule } = this.props;
+        const { isEditDlgOpen, schedule } = this.props;
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
             labelCol: { span: 5 },
@@ -133,7 +159,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
                 okText="Save"
                 cancelText="Cancel"
                 width={700}
-                onCancel={onCancel}
+                onCancel={this.onCancel}
                 onOk={this.onOk}
             >
                 <Form>
@@ -167,7 +193,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
                             <Col span={12}>
                                 <FormItem>
                                     {getFieldDecorator('hour', {
-                                        initialValue: schedule.hour.toString(),
+                                        initialValue: DateUtil.utcHourToLocal(schedule.hour).toString(),
                                     })(
                                         this.generateHourSelect()
                                         )}
@@ -189,9 +215,11 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
                             this.generateNotificationSelect()
                             )}
                     </FormItem>
-                    <FormItem {...formItemLayout}>
-                        {/* TODO: check emails*/}
+                    <FormItem style={{ display: this.state.showEmails ? '' : 'none' }} {...formItemLayout} label="Emails">
                         {getFieldDecorator('emails', {
+                            rules: [{
+                                validator: this.checkEmails,
+                            }],
                             initialValue: schedule.emails ? schedule.emails.split(';') : []
                         })(this.generateEmailsSelect())}
                     </FormItem>

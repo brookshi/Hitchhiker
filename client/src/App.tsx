@@ -49,7 +49,7 @@ class App extends React.Component<AppProps, AppState> {
 
   constructor(props: AppProps) {
     super(props);
-    window['Perf'] = Perf;
+    (window as any).Perf = Perf;
   }
 
   private onCollapse = (collapsed) => {

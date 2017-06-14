@@ -1,10 +1,7 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne, JoinColumn } from "typeorm";
-import { Collection } from "./collection";
-import { Environment } from "./environment";
+import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
 import { Period } from "../interfaces/period";
 import { NotificationMode } from "../interfaces/notification_mode";
 import { ScheduleRecord } from "./schedule_record";
-import { User } from "./user";
 
 @Entity()
 export class Schedule {
@@ -15,11 +12,11 @@ export class Schedule {
     @Column()
     name: string;
 
-    @ManyToOne(type => Collection)
-    collection: Collection;
+    @Column()
+    collectionId: string;
 
-    @ManyToOne(type => Environment)
-    environment: Environment;
+    @Column({ nullable: true })
+    environmentId: string;
 
     @Column({ type: 'int', default: 0 })
     period: Period;
@@ -45,16 +42,15 @@ export class Schedule {
     @OneToMany(type => ScheduleRecord, scheduleRecord => scheduleRecord.schedule)
     scheduleRecords: ScheduleRecord[];
 
-    @JoinColumn()
-    @OneToOne(type => User)
-    owner: User;
-
     @Column()
-    lastRunDate: number;
+    ownerId: string;
+
+    @Column({ nullable: true })
+    lastRunDate: Date;
 
     @CreateDateColumn()
     createDate: Date;
 
     @UpdateDateColumn()
-    updateDate: Date;
+    udpateDate: Date;
 }

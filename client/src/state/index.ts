@@ -5,7 +5,7 @@ import { EnvironmentState } from './environment';
 import { CollectionState, DisplayRecordsState } from './collection';
 import { LocalDataState } from './local_data';
 import { RequestStatus } from '../common/request_status';
-import { ScheduleState } from "./schedule";
+import { ScheduleState } from './schedule';
 
 export interface RequestState {
 

@@ -24,7 +24,7 @@ interface ScheduleStateProps {
 
     activeSchedule: string;
 
-    schedules: _.Dictionary<DtoSchedule>;
+    schedules: DtoSchedule[];
 
     collections: _.Dictionary<string>;
 
@@ -53,7 +53,7 @@ interface ScheduleState { }
 class Schedule extends React.Component<ScheduleProps, ScheduleState> {
 
     public render() {
-        const { collapsed, leftPanelWidth, collapsedLeftPanel, createSchedule, selectSchedule, updateSchedule, deleteSchedule, user, activeSchedule, collections, environments } = this.props;
+        const { collapsed, leftPanelWidth, collapsedLeftPanel, createSchedule, selectSchedule, updateSchedule, deleteSchedule, user, activeSchedule, collections, environments, schedules } = this.props;
 
         return (
             <Layout className="main-panel">
@@ -65,7 +65,7 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
                     collapsed={collapsed}
                     onCollapse={collapsedLeftPanel}>
                     <ScheduleList
-                        schedules={[]}
+                        schedules={schedules}
                         user={user}
                         activeSchedule={activeSchedule}
                         collections={collections}
@@ -99,7 +99,7 @@ const mapStateToProps = (state: State): ScheduleStateProps => {
         activeSchedule: activeSchedule,
         collections,
         environments,
-        schedules: schedules
+        schedules: _.chain(schedules).values<DtoSchedule>().sortBy('name').value()
     };
 };
 
