@@ -105,14 +105,26 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
                 style={{ width: '100%', height: 46, display }}
                 placeholder="sample@hitchhiker.com;"
                 tokenSeparators={[';']}
-                dropdownStyle={{ display: 'none' }}
             />
         );
     }
 
+    private onOk = () => {
+        this.props.form.validateFields((err, values) => {
+            if (err) {
+                return;
+            }
+            this.props.onOk({ ...this.props.schedule, ...values });
+        });
+    }
+
     public render() {
-        const { isEditDlgOpen, onCancel, onOk, schedule } = this.props;
+        const { isEditDlgOpen, onCancel, schedule } = this.props;
         const { getFieldDecorator } = this.props.form;
+        const formItemLayout = {
+            labelCol: { span: 5 },
+            wrapperCol: { span: 17 },
+        };
 
         return (
             <Modal
@@ -120,11 +132,12 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
                 title="Schedule"
                 okText="Save"
                 cancelText="Cancel"
+                width={700}
                 onCancel={onCancel}
-                onOk={() => onOk(this.props.schedule)}
+                onOk={this.onOk}
             >
                 <Form>
-                    <FormItem label="Name">
+                    <FormItem {...formItemLayout} label="Name">
                         {getFieldDecorator('name', {
                             initialValue: schedule.name,
                             rules: [{ required: true, message: 'Please enter the name of schedule' }],
@@ -132,7 +145,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
                             <Input spellCheck={true} />
                             )}
                     </FormItem>
-                    <FormItem label="Collection">
+                    <FormItem {...formItemLayout} label="Collection">
                         {getFieldDecorator('collectionId', {
                             initialValue: schedule.collectionId,
                             rules: [{ required: true, message: 'Please select a collection' }],
@@ -140,46 +153,48 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
                             this.generateCollectionSelect()
                             )}
                     </FormItem>
-                    <FormItem label="Period" labelCol={{ span: 24 }}>
+                    <FormItem {...formItemLayout} label="Period" >
                         <Row gutter={8}>
                             <Col span={12}>
-                                {getFieldDecorator('period', {
-                                    initialValue: schedule.period.toString(),
-                                    rules: [{ required: true, message: 'Please select a period' }],
-                                })(
-                                    this.generatePeriodSelect()
-                                    )}
+                                <FormItem>
+                                    {getFieldDecorator('period', {
+                                        initialValue: schedule.period.toString()
+                                    })(
+                                        this.generatePeriodSelect()
+                                        )}
+                                </FormItem>
                             </Col>
                             <Col span={12}>
-                                {getFieldDecorator('hour', {
-                                    initialValue: schedule.hour.toString(),
-                                })(
-                                    this.generateHourSelect()
-                                    )}
+                                <FormItem>
+                                    {getFieldDecorator('hour', {
+                                        initialValue: schedule.hour.toString(),
+                                    })(
+                                        this.generateHourSelect()
+                                        )}
+                                </FormItem>
                             </Col>
                         </Row>
                     </FormItem>
-                    <FormItem label="Environment">
+                    <FormItem {...formItemLayout} label="Environment">
                         {getFieldDecorator('environmentId', {
                             initialValue: schedule.environmentId,
                         })(
                             this.generateEnvSelect()
                             )}
                     </FormItem>
-                    <FormItem label="Notification">
+                    <FormItem {...formItemLayout} label="Notification">
                         {getFieldDecorator('notification', {
                             initialValue: schedule.notification.toString(),
                         })(
                             this.generateNotificationSelect()
                             )}
                     </FormItem>
-                    { // TODO: check emails
-                        /*getFieldDecorator('emails', {
-                            initialValue: schedule.emails,
-                        })(*/
-                        this.generateEmailsSelect()
-                        /*)*/
-                    }
+                    <FormItem {...formItemLayout}>
+                        {/* TODO: check emails*/}
+                        {getFieldDecorator('emails', {
+                            initialValue: schedule.emails ? schedule.emails.split(';') : []
+                        })(this.generateEmailsSelect())}
+                    </FormItem>
                 </Form>
             </Modal>
         );

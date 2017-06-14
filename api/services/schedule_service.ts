@@ -9,10 +9,11 @@ import { Message } from "../common/message";
 import { ResObject } from "../common/res_object";
 import { UserCollectionService } from "./user_collection_service";
 import { ObjectLiteral } from "typeorm/common/ObjectLiteral";
+import { ScheduleRecordService } from "./schedule_record_service";
 
 export class ScheduleService {
 
-    static fromDTO(dtoSchedule: DtoSchedule): Schedule {
+    static fromDto(dtoSchedule: DtoSchedule): Schedule {
         const schedule = new Schedule();
         schedule.collection = new Collection();
         schedule.collection.id = dtoSchedule.collectionId;
@@ -31,6 +32,16 @@ export class ScheduleService {
         schedule.suspend = dtoSchedule.suspend;
         //schedule.ScheduleRecords = dtoSchedule.ScheduleRecords;
         return schedule;
+    }
+
+    static toDto(schedule: Schedule): DtoSchedule {
+        return {
+            ...schedule,
+            collectionId: schedule.collection.id,
+            environmentId: schedule.environment.id,
+            scheduleRecords: schedule.scheduleRecords.map(s => ScheduleRecordService.toDto(s)),
+            ownerId: schedule.owner.id
+        };
     }
 
     static async save(schedule: Schedule): Promise<any> {
@@ -88,14 +99,14 @@ export class ScheduleService {
     }
 
     static async createNew(dtoSchedule: DtoSchedule, owner: User): Promise<ResObject> {
-        const schedule = ScheduleService.fromDTO(dtoSchedule);
+        const schedule = ScheduleService.fromDto(dtoSchedule);
         schedule.owner = owner;
         await ScheduleService.save(schedule);
         return { message: Message.scheduleCreateSuccess, success: true };
     }
 
     static async update(dtoSchedule: DtoSchedule): Promise<ResObject> {
-        const schedule = ScheduleService.fromDTO(dtoSchedule);
+        const schedule = ScheduleService.fromDto(dtoSchedule);
         await ScheduleService.save(schedule);
         return { message: Message.scheduleUpdateSuccess, success: true };
     }

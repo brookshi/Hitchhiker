@@ -18,7 +18,7 @@ export interface DtoSchedule {
 
     notification: NotificationMode;
 
-    emails: string;
+    emails?: string;
 
     needOrder: boolean;
 
@@ -26,7 +26,7 @@ export interface DtoSchedule {
 
     suspend: boolean;
 
-    ScheduleRecords: DtoScheduleRecord[];
+    scheduleRecords: DtoScheduleRecord[];
 
     ownerId: string;
 }

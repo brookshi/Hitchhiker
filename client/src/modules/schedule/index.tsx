@@ -10,6 +10,7 @@ import { actionCreator } from '../../action/index';
 import { Layout } from 'antd/lib';
 import Splitter from '../../components/splitter';
 import { UpdateLeftPanelType, ResizeLeftPanelType } from '../../action/ui';
+import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType } from '../../action/schedule';
 
 const { Content, Sider } = Layout;
 
@@ -22,6 +23,8 @@ interface ScheduleStateProps {
     user: DtoUser;
 
     activeSchedule: string;
+
+    schedules: _.Dictionary<DtoSchedule>;
 
     collections: _.Dictionary<string>;
 
@@ -40,7 +43,7 @@ interface ScheduleDispatchProps {
 
     updateSchedule(schedule: DtoSchedule);
 
-    deleteSchedule(schedule: DtoSchedule);
+    deleteSchedule(scheduleId: string);
 }
 
 type ScheduleProps = ScheduleStateProps & ScheduleDispatchProps;
@@ -84,6 +87,7 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
 
 const mapStateToProps = (state: State): ScheduleStateProps => {
     const { leftPanelWidth, collapsed } = state.uiState.appUIState;
+    const { schedules, activeSchedule } = state.scheduleState;
     let collections: _.Dictionary<string> = {};
     let environments: _.Dictionary<string> = {};
     _.values(state.collectionState.collectionsInfo.collections).forEach(c => collections[c.id] = c.name);
@@ -92,18 +96,19 @@ const mapStateToProps = (state: State): ScheduleStateProps => {
         leftPanelWidth,
         collapsed,
         user: state.userState.userInfo,
-        activeSchedule: '',
+        activeSchedule: activeSchedule,
         collections,
-        environments
+        environments,
+        schedules: schedules
     };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): ScheduleDispatchProps => {
     return {
-        createSchedule: (schedule) => dispatch(actionCreator('', schedule)),
-        updateSchedule: (schedule) => dispatch(actionCreator('', schedule)),
-        deleteSchedule: (schedule) => dispatch(actionCreator('', schedule)),
-        selectSchedule: (schedule) => dispatch(actionCreator('', schedule)),
+        createSchedule: (schedule) => dispatch(actionCreator(SaveScheduleType, { isNew: true, schedule })),
+        updateSchedule: (schedule) => dispatch(actionCreator(SaveScheduleType, { isNew: false, schedule })),
+        deleteSchedule: (scheduleId) => dispatch(actionCreator(DeleteScheduleType, scheduleId)),
+        selectSchedule: (scheduleId) => dispatch(actionCreator(ActiveScheduleType, scheduleId)),
         collapsedLeftPanel: (collapsed) => dispatch(actionCreator(UpdateLeftPanelType, collapsed)),
         resizeLeftPanel: (width) => dispatch(actionCreator(ResizeLeftPanelType, width)),
     };

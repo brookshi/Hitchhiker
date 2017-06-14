@@ -29,7 +29,7 @@ interface ScheduleListProps {
 
     updateSchedule(schedule: DtoSchedule);
 
-    deleteSchedule(schedule: DtoSchedule);
+    deleteSchedule(scheduleId: string);
 }
 
 interface ScheduleListState {
@@ -51,11 +51,11 @@ const createDefaultSchedule: (user: DtoUser) => DtoSchedule = (user: DtoUser) =>
         period: Period.daily,
         hour: 7,
         notification: NotificationMode.none,
-        emails: '',
+        emails: undefined,
         needOrder: false,
         recordsOrder: '',
         suspend: false,
-        ScheduleRecords: []
+        scheduleRecords: []
     };
 };
 
@@ -74,13 +74,27 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
         this.props.selectSchedule(param.item.props.data.id);
     }
 
-    private createSchedule = (schedule) => {
+    private onCreateSchedule = () => {
+        this.setState({
+            ...this.state,
+            isEditDlgOpen: true,
+            isCreateNew: true,
+            schedule: createDefaultSchedule(this.props.user)
+        });
+    }
+
+    private saveSchedule = (schedule) => {
         this.setState({ ...this.state, isEditDlgOpen: false });
-        this.props.createSchedule(schedule);
+        this.state.isCreateNew ? this.props.createSchedule(schedule) : this.props.updateSchedule(schedule);
     }
 
     private editSchedule = (schedule) => {
-
+        this.setState({
+            ...this.state,
+            isEditDlgOpen: true,
+            isCreateNew: false,
+            schedule
+        });
     }
 
     public render() {
@@ -93,7 +107,7 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                             className="icon-btn schedule-add-btn"
                             type="primary"
                             icon="file-add"
-                            onClick={() => this.setState({ ...this.state, isEditDlgOpen: true, schedule: createDefaultSchedule(this.props.user) })}
+                            onClick={this.onCreateSchedule}
                         />
                     </Tooltip>
                 </div>
@@ -113,7 +127,7 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                                             schedule={t}
                                             collectionName={this.props.collections[t.collectionId]}
                                             isOwner={t.ownerId === this.props.user.id}
-                                            delete={() => this.props.deleteSchedule(t)}
+                                            delete={() => this.props.deleteSchedule(t.id)}
                                             edit={() => this.editSchedule(t)}
                                         />
                                     </Menu.Item>
@@ -128,7 +142,7 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                     environments={this.props.environments}
                     isEditDlgOpen={this.state.isEditDlgOpen}
                     onCancel={() => this.setState({ ...this.state, isEditDlgOpen: false })}
-                    onOk={schedule => this.createSchedule(schedule)}
+                    onOk={schedule => this.saveSchedule(schedule)}
                 />
             </div>
         );

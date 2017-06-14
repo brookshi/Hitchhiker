@@ -10,6 +10,7 @@ import { environmentState } from './environment';
 import { FetchLocalDataSuccessType } from '../action/local_data';
 import { localDataState } from './local_data';
 import { syncDefaultValue } from '../state/ui';
+import { scheduleState } from './schedule';
 
 export const reduceReducers = (...reducers) => {
     return (state, action) =>
@@ -27,7 +28,8 @@ export function rootReducer(state: State, action: any): State {
         uiState,
         userState,
         teamState,
-        environmentState
+        environmentState,
+        scheduleState
     })(state, action);
 
     const finalState = root(intermediateState, action);
