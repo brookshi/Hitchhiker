@@ -18,6 +18,12 @@ export class Schedule {
     @Column({ nullable: true })
     environmentId: string;
 
+    @Column({ default: false })
+    needCompare: boolean;
+
+    @Column({ nullable: true })
+    compareEnvironmentId: string;
+
     @Column({ type: 'int', default: 0 })
     period: Period;
 
@@ -33,7 +39,7 @@ export class Schedule {
     @Column()
     needOrder: boolean;
 
-    @Column()
+    @Column({ type: 'text' })
     recordsOrder: string;
 
     @Column()
@@ -52,5 +58,5 @@ export class Schedule {
     createDate: Date;
 
     @UpdateDateColumn()
-    udpateDate: Date;
+    updateDate: Date;
 }

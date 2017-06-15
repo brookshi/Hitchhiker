@@ -13,7 +13,7 @@ export class ScheduleRecord {
     @Column()
     duration: number;
 
-    @Column()
+    @Column({ type: 'text' })
     result: string;
 
     @Column()

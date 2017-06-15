@@ -12,6 +12,10 @@ export interface DtoSchedule {
 
     environmentId: string;
 
+    needCompare: boolean;
+
+    compareEnvironmentId: string;
+
     period: Period;
 
     hour: number;

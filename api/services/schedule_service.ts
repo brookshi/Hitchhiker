@@ -17,6 +17,8 @@ export class ScheduleService {
         if (dtoSchedule.environmentId) {
             schedule.environmentId = dtoSchedule.environmentId;
         }
+        schedule.needCompare = dtoSchedule.needCompare;
+        schedule.compareEnvironmentId = dtoSchedule.compareEnvironmentId;
         schedule.emails = dtoSchedule.emails;
         schedule.hour = dtoSchedule.hour;
         schedule.id = dtoSchedule.id || StringUtil.generateUID();
@@ -33,8 +35,6 @@ export class ScheduleService {
     static toDto(schedule: Schedule): DtoSchedule {
         return {
             ...schedule,
-            collectionId: schedule.collectionId,
-            environmentId: schedule.environmentId,
             scheduleRecords: schedule.scheduleRecords ? schedule.scheduleRecords.map(s => ScheduleRecordService.toDto(s)) : [],
             ownerId: schedule.ownerId
         };
@@ -75,9 +75,9 @@ export class ScheduleService {
             .getMany();
     }
 
-    static async getAll(): Promise<Schedule[]> {
+    static async getAllNeedRun(): Promise<Schedule[]> {
         const connection = await ConnectionManager.getInstance();
-        return await connection.getRepository(Schedule).find();
+        return await connection.getRepository(Schedule).find({ 'suspend': 0 });
     }
 
     static async createNew(dtoSchedule: DtoSchedule, owner: User): Promise<ResObject> {
@@ -101,5 +101,17 @@ export class ScheduleService {
             .delete()
             .execute();
         return { success: true, message: Message.scheduleDeleteSuccess };
+    }
+
+    static checkScheduleNeedRun(schedule: Schedule): boolean {
+        const isRunFinish = new Date(schedule.lastRunDate + ' UTC').toDateString() === new Date().toDateString();
+        if (isRunFinish) {
+            return false;
+        }
+        const now = new Date();
+        const UTCPeriod = schedule.hour >= 0 ? schedule.period : schedule.period - 1;
+        const UTCDay = UTCPeriod === 0 ? 6 : UTCPeriod - 1;
+        const isPeriodRight = schedule.period === 0 || UTCDay === now.getUTCDay();
+        return isPeriodRight && schedule.hour === now.getUTCHours();
     }
 }

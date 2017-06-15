@@ -1,6 +1,8 @@
 
 export interface RunResult {
 
+    id: string;
+
     error: Error;
 
     body: any;
