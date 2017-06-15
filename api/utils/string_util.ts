@@ -2,6 +2,7 @@ import * as crypto from 'crypto';
 import { Setting } from "./setting";
 import * as uuid from 'uuid';
 import * as shortId from 'shortid';
+import { URL } from 'url';
 
 export class StringUtil {
     static md5(str: string): string {
@@ -50,5 +51,13 @@ export class StringUtil {
 
     static generateShortId(): string {
         return shortId.generate();
+    }
+
+    static getHostFromUrl(url: string): string {
+        try {
+            return url ? new URL(url).hostname : '';
+        } catch (e) {
+            return url;
+        }
     }
 }

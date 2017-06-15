@@ -5,6 +5,7 @@ import { ServerResponse } from "http";
 import { TestRunner } from "./test_runner";
 import * as _ from "lodash";
 import { RunResult } from "../interfaces/dto_run_result";
+import { StringUtil } from "../utils/string_util";
 
 export class RecordRunner {
 
@@ -49,7 +50,7 @@ export class RecordRunner {
         const pRes: Partial<request.RequestResponse> = res || {};
         const finalRes: RunResult = {
             id: record.id,
-            host: pRes.request ? pRes.request.host : new URL(record.url).hostname,
+            host: pRes.request ? pRes.request.host : StringUtil.getHostFromUrl(record.url),
             error: err,
             body: pRes.body,
             tests: testRst,

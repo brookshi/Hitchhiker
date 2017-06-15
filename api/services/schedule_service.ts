@@ -110,8 +110,8 @@ export class ScheduleService {
         }
         const now = new Date();
         const UTCPeriod = schedule.hour >= 0 ? schedule.period : schedule.period - 1;
-        const UTCDay = UTCPeriod === 0 ? 6 : UTCPeriod - 1;
-        const isPeriodRight = schedule.period === 0 || UTCDay === now.getUTCDay();
+        const UTCDay = UTCPeriod === 1 ? 6 : UTCPeriod - 2;
+        const isPeriodRight = schedule.period === 1 || UTCDay === now.getUTCDay();
         return isPeriodRight && schedule.hour === now.getUTCHours();
     }
 }

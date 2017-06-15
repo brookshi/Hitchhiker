@@ -9,11 +9,13 @@ import routeFailed from "./route_failed";
 import errorHandle from "./error_handle";
 import * as KoaStatic from 'koa-static';
 import * as Path from 'path';
+import asyncInit from "./async_init";
 
 export default function middleware(context: Koa) {
     const ctrlRouter = new WebApiRouter();
     return Compose(
         [
+            asyncInit(),
             errorHandle(),
             KoaStatic(Path.join(__dirname, '../')),
             Session({

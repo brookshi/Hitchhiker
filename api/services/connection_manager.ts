@@ -26,4 +26,8 @@ export class ConnectionManager {
         }
         return ConnectionManager.instance;
     }
+
+    static async init(): Promise<any> {
+        await ConnectionManager.getInstance();
+    }
 }

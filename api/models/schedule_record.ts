@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from "typeorm";
 import { Schedule } from "./schedule";
+import { RunResult } from "../interfaces/dto_run_result";
 
 @Entity()
 export class ScheduleRecord {
@@ -13,8 +14,8 @@ export class ScheduleRecord {
     @Column()
     duration: number;
 
-    @Column({ type: 'text' })
-    result: string;
+    @Column({ type: 'json' })
+    result: RunResult[];
 
     @Column()
     success: boolean;

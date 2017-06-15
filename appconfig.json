@@ -8,7 +8,7 @@
         "defaultPassword": "123456"
     },
     "batch": {
-        "checkDuration": 5
+        "checkDuration": 60
     },
     "user": {
         "registerMailCheck": false

@@ -21,7 +21,7 @@ export class UserCollectionService {
         const user = await UserService.getUserById(userId, true);
 
         if (!user) {
-            return null;
+            return [];
         }
 
         const teamIds = user.teams.map(t => t.id);
