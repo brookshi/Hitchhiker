@@ -1,3 +1,5 @@
+import { RunResult } from "./dto_run_result";
+
 export interface DtoScheduleRecord {
 
     id: number;
@@ -6,7 +8,7 @@ export interface DtoScheduleRecord {
 
     duration: number;
 
-    result: string;
+    result: RunResult[];
 
     success: boolean;
 

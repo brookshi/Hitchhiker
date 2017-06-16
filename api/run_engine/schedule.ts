@@ -10,6 +10,7 @@ import { RunResult } from "../interfaces/dto_run_result";
 import { ScheduleRecord } from "../models/schedule_record";
 import { ScheduleRecordService } from "../services/schedule_record_service";
 import { ConnectionManager } from "../services/connection_manager";
+import { DateUtil } from "../utils/date_util";
 
 // process.on('message', data => {
 //     process.send('echo');
@@ -45,15 +46,18 @@ async function runSchedule(schedule: Schedule, records: Record[]): Promise<any> 
     }
     console.log(`run schedule ${schedule.name}`);
     const runResults = await RecordRunner.runRecords(records, schedule.environmentId, schedule.needOrder, schedule.recordsOrder);
+
     const scheduleRecord = new ScheduleRecord();
     scheduleRecord.success = runResults.filter(r => isSuccess(r)).length === runResults.length;
     scheduleRecord.schedule = schedule;
     scheduleRecord.result = runResults;
     scheduleRecord.isScheduleRun = true;
     scheduleRecord.duration = runResults.map(r => r.elapsed).reduce((p, a) => p + a);
+
     console.log(`run schedule finish, ${scheduleRecord.success}`);
     await ScheduleRecordService.create(scheduleRecord);
-    // TODO: udpate schedule last run date
+    schedule.lastRunDate = DateUtil.getUTCDate();
+    await ScheduleService.save(schedule);
 }
 
 async function getAllSchedules(): Promise<Schedule[]> {

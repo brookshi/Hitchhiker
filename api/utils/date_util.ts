@@ -7,4 +7,17 @@ export class DateUtil {
         const timeDiff = Math.abs(end.getTime() - start.getTime());
         return Math.ceil(timeDiff / DateUtil.HOUR);
     }
+
+    static getUTCDate(): Date {
+        const now = new Date();
+        return new Date(
+            now.getUTCFullYear(),
+            now.getUTCMonth(),
+            now.getUTCDate(),
+            now.getUTCHours(),
+            now.getUTCMinutes(),
+            now.getUTCSeconds(),
+            now.getUTCMilliseconds()
+        );
+    }
 }
