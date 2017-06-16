@@ -39,7 +39,7 @@ export function* sendRequest() {
             }
             runResult = yield res.json();
         } catch (err) {
-            runResult.error = err;
+            runResult.error = { message: err.message, stack: err.stack };
         }
         yield put(actionCreator(SendRequestFulfilledType, { id: action.value.record.id, runResult }));
     });

@@ -1,9 +1,12 @@
+import { DTOError } from './dto_error';
 
 export interface RunResult {
 
     id: string;
 
-    error: Error;
+    envId: string;
+
+    error: DTOError;
 
     body: any;
 

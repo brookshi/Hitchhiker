@@ -8,7 +8,7 @@ export interface DtoScheduleRecord {
 
     duration: number;
 
-    result: RunResult[];
+    result: { origin: RunResult[], compare: RunResult[] };
 
     success: boolean;
 
