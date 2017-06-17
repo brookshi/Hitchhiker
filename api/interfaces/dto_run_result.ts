@@ -1,4 +1,4 @@
-import { DTOError } from './dto_error';
+import { DtoError } from './dto_error';
 
 export interface RunResult {
 
@@ -6,7 +6,7 @@ export interface RunResult {
 
     envId: string;
 
-    error: DTOError;
+    error: DtoError;
 
     body: any;
 

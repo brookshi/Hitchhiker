@@ -70,7 +70,7 @@ class App extends React.Component<AppProps, AppState> {
     return (
       <Layout className="main-panel">
         <Sider
-          className="collection-sider"
+          className="main-sider"
           style={{ minWidth: collapsed ? 0 : leftPanelWidth }}
           collapsible={true}
           collapsedWidth="0.1"

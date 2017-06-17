@@ -2,10 +2,11 @@ import React from 'react';
 import { StringUtil } from '../../utils/string_util';
 import './style/index.less';
 import { Input } from 'antd';
+import { DtoError } from '../../../../api/interfaces/dto_error';
 
 interface ResErrorPanelProps {
     url?: string;
-    error?: Error;
+    error?: DtoError;
 }
 
 interface ResErrorPanelState { }

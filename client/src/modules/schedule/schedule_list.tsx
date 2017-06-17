@@ -11,6 +11,7 @@ import { Period } from '../../common/period';
 import { NotificationMode } from '../../common/notification_mode';
 import { noEnvironment } from '../../common/constants';
 import { DateUtil } from "../../utils/date_util";
+import * as _ from "lodash";
 
 interface ScheduleListProps {
 
@@ -49,6 +50,8 @@ const createDefaultSchedule: (user: DtoUser) => DtoSchedule = (user: DtoUser) =>
         ownerId: user.id,
         collectionId: '',
         environmentId: noEnvironment,
+        needCompare: false,
+        compareEnvironmentId: noEnvironment,
         period: Period.daily,
         hour: DateUtil.localHourToUTC(7),
         notification: NotificationMode.none,
@@ -69,6 +72,10 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
             isCreateNew: true,
             isEditDlgOpen: false
         };
+    }
+
+    public shouldComponentUpdate(nextProps: ScheduleListProps, nextState: ScheduleListState) {
+        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
 
     private onSelectChanged = (param: SelectParam) => {

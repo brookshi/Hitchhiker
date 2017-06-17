@@ -1,4 +1,4 @@
-export interface DTOError {
+export interface DtoError {
 
     message: string;
 

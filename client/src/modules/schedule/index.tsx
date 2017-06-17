@@ -11,6 +11,8 @@ import { Layout } from 'antd/lib';
 import Splitter from '../../components/splitter';
 import { UpdateLeftPanelType, ResizeLeftPanelType } from '../../action/ui';
 import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType } from '../../action/schedule';
+import ScheduleInfo from './schedule_info';
+import { noEnvironment } from "../../common/constants";
 
 const { Content, Sider } = Layout;
 
@@ -24,7 +26,7 @@ interface ScheduleStateProps {
 
     activeSchedule: string;
 
-    schedules: DtoSchedule[];
+    schedules: _.Dictionary<DtoSchedule>;
 
     collections: _.Dictionary<string>;
 
@@ -52,20 +54,25 @@ interface ScheduleState { }
 
 class Schedule extends React.Component<ScheduleProps, ScheduleState> {
 
+    private get scheduleArr() {
+        return _.chain(this.props.schedules).values<DtoSchedule>().sortBy('name').value();
+    }
+
     public render() {
         const { collapsed, leftPanelWidth, collapsedLeftPanel, createSchedule, selectSchedule, updateSchedule, deleteSchedule, user, activeSchedule, collections, environments, schedules } = this.props;
+        const schedule = schedules[activeSchedule];
 
         return (
             <Layout className="main-panel">
                 <Sider
-                    className="collection-sider"
+                    className="main-sider"
                     style={{ minWidth: collapsed ? 0 : leftPanelWidth }}
                     collapsible={true}
                     collapsedWidth="0.1"
                     collapsed={collapsed}
                     onCollapse={collapsedLeftPanel}>
                     <ScheduleList
-                        schedules={schedules}
+                        schedules={this.scheduleArr}
                         user={user}
                         activeSchedule={activeSchedule}
                         collections={collections}
@@ -77,8 +84,13 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
                     />
                 </Sider>
                 <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
-                <Content className="team-right-panel">
-
+                <Content className="schedule-content">
+                    <ScheduleInfo
+                        schedule={schedule}
+                        environmentName={environments[schedule.environmentId] || noEnvironment}
+                        compareEnvName={schedule.needCompare && schedule.compareEnvironmentId ? environments[schedule.compareEnvironmentId] : ''}
+                        collectionName={collections[schedule.collectionId]}
+                    />
                 </Content>
             </Layout>
         );
@@ -99,7 +111,7 @@ const mapStateToProps = (state: State): ScheduleStateProps => {
         activeSchedule: activeSchedule,
         collections,
         environments,
-        schedules: _.chain(schedules).values<DtoSchedule>().sortBy('name').value()
+        schedules
     };
 };
 

@@ -41,12 +41,14 @@
     ✔ own team @done (2017/6/4 下午12:24:39)
     ✔ store cookie after request @done (2017/6/3 下午7:48:39)
     ☐ schedule
+    ☐ schedule send emails
+    ☐ schedule need check collection/env valid
     ☐ invite user / test
     ☐ record change time line (db)
     ☐ document db
     ✔ default open collection @done (2017/6/3 下午9:57:22)
     ☐ login ui / logout redirect
-    ☐ cookie invalid indirect to login page
+    ✔ cookie invalid indirect to login page @done (2017/6/17 上午11:33:04)
     ☐ user password should hide
     ☐ build to live
     ☐ unit test
