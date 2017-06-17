@@ -6,7 +6,7 @@ import { ConnectionManager } from "./connection_manager";
 export class ScheduleRecordService {
 
     static toDto(record: ScheduleRecord): DtoScheduleRecord {
-        return { ...record, scheduleId: record.schedule.id };
+        return { ...record, scheduleId: record.schedule ? record.schedule.id : '' };
     }
 
     static async create(record: ScheduleRecord) {

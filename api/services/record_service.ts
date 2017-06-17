@@ -62,7 +62,7 @@ export class RecordService {
         return target;
     }
 
-    static async getByCollectionIds(collectionIds: string[], needCollection?: boolean): Promise<{ [key: string]: Record[] }> {
+    static async getByCollectionIds(collectionIds: string[], excludeFolder?: boolean): Promise<{ [key: string]: Record[] }> {
         if (!collectionIds || collectionIds.length === 0) {
             return {};
         }
@@ -75,12 +75,16 @@ export class RecordService {
         });
         const whereStr = whereStrings.length > 1 ? "(" + whereStrings.join(" OR ") + ")" : whereStrings[0];
 
-        let records = await connection.getRepository(Record).createQueryBuilder("record")
+        let rep = connection.getRepository(Record).createQueryBuilder("record")
             .innerJoinAndSelect("record.collection", "collection")
             .leftJoinAndSelect('record.headers', 'header')
-            .where(whereStr, parameters)
-            .orderBy('record.name')
-            .getMany();
+            .where(whereStr, parameters);
+
+        if (excludeFolder) {
+            rep = rep.andWhere('category=:category', { category: RecordCategory.record });
+        }
+
+        let records = await rep.orderBy('record.name').getMany();
 
         let recordsList = _.groupBy(records, o => o.collection.id);
 

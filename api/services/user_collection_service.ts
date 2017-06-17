@@ -10,7 +10,7 @@ export class UserCollectionService {
     static async getUserCollections(userId: string): Promise<{ collections: Collection[], recordsList: { [key: string]: Record[] } }> {
         let collections = await UserCollectionService.getUserTeamCollections(userId);
 
-        const recordsList = await RecordService.getByCollectionIds(collections.map(o => o.id), true);
+        const recordsList = await RecordService.getByCollectionIds(collections.map(o => o.id));
 
         // collections.forEach(o => o.records = recordsList[o.id]);
 

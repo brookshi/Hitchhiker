@@ -71,6 +71,7 @@ export class ScheduleService {
 
         return await connection.getRepository(Schedule)
             .createQueryBuilder("schedule")
+            .leftJoinAndSelect('schedule.scheduleRecords', 'record')
             .where(whereStr, parameters)
             .getMany();
     }

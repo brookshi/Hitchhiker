@@ -12,7 +12,9 @@ import Splitter from '../../components/splitter';
 import { UpdateLeftPanelType, ResizeLeftPanelType } from '../../action/ui';
 import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType } from '../../action/schedule';
 import ScheduleInfo from './schedule_info';
+import ScheduleRunHistoryGrid from './schedule_run_history_grid';
 import { noEnvironment } from "../../common/constants";
+import { DtoRecord } from "../../../../api/interfaces/dto_record";
 
 const { Content, Sider } = Layout;
 
@@ -31,6 +33,8 @@ interface ScheduleStateProps {
     collections: _.Dictionary<string>;
 
     environments: _.Dictionary<string>;
+
+    records: _.Dictionary<DtoRecord>;
 }
 
 interface ScheduleDispatchProps {
@@ -59,8 +63,10 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
     }
 
     public render() {
-        const { collapsed, leftPanelWidth, collapsedLeftPanel, createSchedule, selectSchedule, updateSchedule, deleteSchedule, user, activeSchedule, collections, environments, schedules } = this.props;
+        const { collapsed, leftPanelWidth, collapsedLeftPanel, createSchedule, selectSchedule, updateSchedule, deleteSchedule, user, activeSchedule, collections, environments, records, schedules } = this.props;
         const schedule = schedules[activeSchedule];
+        const envName = environments[schedule.environmentId] || noEnvironment;
+        const compareEnvName = schedule.compareEnvironmentId ? environments[schedule.compareEnvironmentId] : ''
 
         return (
             <Layout className="main-panel">
@@ -87,9 +93,16 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
                 <Content className="schedule-content">
                     <ScheduleInfo
                         schedule={schedule}
-                        environmentName={environments[schedule.environmentId] || noEnvironment}
-                        compareEnvName={schedule.needCompare && schedule.compareEnvironmentId ? environments[schedule.compareEnvironmentId] : ''}
+                        environmentName={envName}
+                        compareEnvName={compareEnvName}
                         collectionName={collections[schedule.collectionId]}
+                    />
+                    <ScheduleRunHistoryGrid
+                        scheduleRecords={schedule.scheduleRecords}
+                        envName={envName}
+                        compareEnvName={compareEnvName}
+                        envNames={environments}
+                        recordNames={records}
                     />
                 </Content>
             </Layout>
@@ -111,7 +124,8 @@ const mapStateToProps = (state: State): ScheduleStateProps => {
         activeSchedule: activeSchedule,
         collections,
         environments,
-        schedules
+        schedules,
+        records: _.chain(state.collectionState.collectionsInfo.records).values<_.Dictionary<DtoRecord>>().value().reduce((p, c) => ({ ...p, ...c }))
     };
 };
 

@@ -6,7 +6,7 @@ export interface RunResult {
 
     envId: string;
 
-    error: DtoError;
+    error?: DtoError;
 
     body: any;
 

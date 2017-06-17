@@ -5,6 +5,7 @@ import './style/index.less';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
 import { StringUtil } from '../../utils/string_util';
 import { nameWithTag } from '../../components/name_with_tag';
+import { successColor, failColor } from '../../common/constants';
 
 const TabPane = Tabs.TabPane;
 
@@ -54,7 +55,7 @@ const tabPanelTest = (tests: { [key: string]: boolean }) => (
         {
             tests ? Object.keys(tests).map(key => (
                 <li key={`res-test-${key}`}>
-                    <Tag color={tests[key] ? '#87d068' : '#f50'}>{tests[key] ? 'PASS' : 'FAIL'}</Tag>
+                    <Tag color={tests[key] ? successColor : failColor}>{tests[key] ? 'PASS' : 'FAIL'}</Tag>
                     <span>{key}</span>
                 </li>)
             ) : ''

@@ -33,4 +33,6 @@ export interface DtoSchedule {
     scheduleRecords: DtoScheduleRecord[];
 
     ownerId: string;
+
+    lastRunDate?: Date;
 }

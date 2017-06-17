@@ -17,8 +17,6 @@ interface ScheduleItemProps {
 
     environmentName: string;
 
-    lastRunDate?: Date;
-
     isOwner: boolean;
 
     delete();
@@ -81,12 +79,12 @@ class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState>
                 {notification === NotificationMode.custom ? <div><span>Emails: </span>{emails}</div> : ''}
                 <div><span>Suspend: </span>{suspend.toString()}</div>
             </div>
-        )
+        );
     }
 
     public render() {
-        const { schedule, isOwner, lastRunDate } = this.props;
-        const { name } = schedule;
+        const { schedule, isOwner } = this.props;
+        const { name, lastRunDate } = schedule;
 
         return (
             <Popover mouseEnterDelay={1.5} placement="bottom" title="Schedule information" content={this.scheduleInfo}>
@@ -95,7 +93,7 @@ class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState>
                     ref={ele => this.itemWithMenu = ele}
                     icon={<Icon className="c-icon" type="schedule" />}
                     name={name}
-                    subName={<div>{`Last run time: ${lastRunDate ? lastRunDate.toLocaleDateString() + ' ' + lastRunDate.toLocaleTimeString() : 'never run'}`}</div>}
+                    subName={<div>{`Last run time: ${lastRunDate ? new Date(new Date(lastRunDate) + ' UTC').toLocaleString() : 'never run'}`}</div>}
                     menu={this.getMenu()}
                 />
             </Popover>

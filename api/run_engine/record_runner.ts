@@ -52,7 +52,7 @@ export class RecordRunner {
             id: record.id,
             envId,
             host: pRes.request ? pRes.request.host : StringUtil.getHostFromUrl(record.url),
-            error: { message: err.message, stack: err.stack },
+            error: err ? { message: err.message, stack: err.stack } : undefined,
             body: pRes.body,
             tests: testRst,
             elapsed: elapsed,

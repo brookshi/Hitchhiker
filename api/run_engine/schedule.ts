@@ -32,13 +32,13 @@ export async function run() {
         return;
     }
     console.log('get records by collection ids');
-    const recordDict = await RecordService.getByCollectionIds(_.sortedUniq(schedules.map(s => s.collectionId)));
+    const recordDict = await RecordService.getByCollectionIds(_.sortedUniq(schedules.map(s => s.collectionId)), true);
     await Promise.all(schedules.map(schedule => runSchedule(schedule, recordDict[schedule.collectionId], true)));
 }
 
 export async function runSchedule(schedule: Schedule, records?: Record[], isScheduleRun?: boolean): Promise<any> {
     if (!records) {
-        records = await RecordService.getByCollectionIds([schedule.collectionId])[schedule.collectionId];
+        records = await RecordService.getByCollectionIds([schedule.collectionId], true)[schedule.collectionId];
     }
     if (records.length === 0) {
         console.log(`record's count is 0`);
@@ -51,21 +51,36 @@ export async function runSchedule(schedule: Schedule, records?: Record[], isSche
     await storeRunResult(originRunResults, compareRunResults, schedule, isScheduleRun);
 
     console.log(`run schedule finish`);
-    schedule.lastRunDate = DateUtil.getUTCDate();
+    schedule.lastRunDate = new Date();
     await ScheduleService.save(schedule);
     // TODO: notification
 }
 
 async function storeRunResult(originRunResults: RunResult[], compareRunResults: RunResult[], schedule: Schedule, isScheduleRun?: boolean) {
     const scheduleRecord = new ScheduleRecord();
-    const totalRunResults = { ...originRunResults, ...compareRunResults };
-    scheduleRecord.success = totalRunResults.filter(r => isSuccess(r)).length === originRunResults.length;
+    const totalRunResults = [...originRunResults, ...compareRunResults];
+    scheduleRecord.success = totalRunResults.filter(r => isSuccess(r)).length === originRunResults.length && compare(originRunResults, compareRunResults);
     scheduleRecord.schedule = schedule;
     scheduleRecord.result = { origin: originRunResults, compare: compareRunResults };
     scheduleRecord.isScheduleRun = isScheduleRun;
     scheduleRecord.duration = totalRunResults.map(r => r.elapsed).reduce((p, a) => p + a);
 
     await ScheduleRecordService.create(scheduleRecord);
+}
+
+function compare(originRunResults: RunResult[], compareRunResults: RunResult[]) {
+    if (compareRunResults.length === 0) {
+        return true;
+    }
+    if (originRunResults.length !== compareRunResults.length) {
+        return false;
+    }
+    for (let i = 0; i < originRunResults.length; i++) {
+        if (originRunResults[i].body !== compareRunResults[i].body) {
+            return false;
+        }
+    }
+    return true;
 }
 
 async function getAllSchedules(): Promise<Schedule[]> {
