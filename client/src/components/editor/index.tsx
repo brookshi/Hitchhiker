@@ -21,6 +21,8 @@ interface EditorProps {
 
     height?: number;
 
+    width?: number;
+
     onChange?: (value: string) => void;
 
     fixHeight?: boolean;
@@ -31,14 +33,14 @@ interface EditorState { }
 class Editor extends React.Component<EditorProps, EditorState> {
 
     public render() {
-        const { type, value, height, readOnly, onChange } = this.props;
+        const { type, value, height, width, readOnly, onChange } = this.props;
         const activeHeight = height || 500;
 
         let props = {
             className: 'req-editor',
             mode: type,
             theme: 'eclipse',
-            width: '100%',
+            width: width ? width + 'px' : '100%',
             height: activeHeight + 'px',
             fontSize: 12,
             showGutter: true,

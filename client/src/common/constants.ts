@@ -1,7 +1,11 @@
 
 export const noEnvironment = 'No environment';
 
-export const unknowName = 'unknow';
+export const unknowName = 'unknown';
+
+export const pass = 'PASS';
+
+export const fail = 'FAIL';
 
 export const successColor = '#87d068';
 
