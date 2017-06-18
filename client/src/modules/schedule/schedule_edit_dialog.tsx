@@ -1,5 +1,5 @@
 import React from 'react';
-import { Select, Form, Modal, Input, Row, Col } from 'antd';
+import { Select, Form, Modal, Input, Row, Col, Checkbox } from 'antd';
 import { DtoSchedule } from '../../../../api/interfaces/dto_schedule';
 import { noEnvironment } from '../../common/constants';
 import { StringUtil } from '../../utils/string_util';
@@ -30,6 +30,8 @@ interface ScheduleEditDialogProps {
 interface ScheduleEditDialogState {
 
     showEmails: boolean;
+
+    needCompare: boolean;
 }
 
 class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { form: any }, ScheduleEditDialogState> {
@@ -37,7 +39,8 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
     constructor(props: ScheduleEditDialogProps & { form: any }) {
         super(props);
         this.state = {
-            showEmails: props.schedule.notification === NotificationMode.custom
+            showEmails: props.schedule.notification === NotificationMode.custom,
+            needCompare: props.schedule.needCompare
         };
     }
 
@@ -52,9 +55,9 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
         );
     }
 
-    private generateEnvSelect = () => {
+    private generateEnvSelect = (isCompareEnv?: boolean) => {
         return (
-            <Select >
+            <Select disabled={isCompareEnv && !this.state.needCompare}>
                 <Option key={noEnvironment} value={noEnvironment}>No Environment</Option>
                 {
                     Object.keys(this.props.environments).map(k =>
@@ -118,6 +121,14 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
         }
     }
 
+    private checkCompareEnv = (rule, value, callback) => {
+        if (this.props.form.getFieldValue('environmentId') !== value) {
+            callback();
+        } else {
+            callback('Environments should be different.');
+        }
+    }
+
     private onOk = () => {
         this.props.form.validateFields((err, values) => {
             if (err) {
@@ -158,7 +169,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
                 title="Schedule"
                 okText="Save"
                 cancelText="Cancel"
-                width={700}
+                width={770}
                 onCancel={this.onCancel}
                 onOk={this.onOk}
             >
@@ -202,11 +213,40 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
                         </Row>
                     </FormItem>
                     <FormItem {...formItemLayout} label="Environment">
-                        {getFieldDecorator('environmentId', {
-                            initialValue: schedule.environmentId,
-                        })(
-                            this.generateEnvSelect()
-                            )}
+                        <Row gutter={8}>
+                            <Col span={10}>
+                                <FormItem>
+                                    {getFieldDecorator('environmentId', {
+                                        initialValue: schedule.environmentId,
+                                    })(
+                                        this.generateEnvSelect()
+                                        )}
+                                </FormItem>
+                            </Col>
+                            <Col span={4}>
+                                <FormItem>
+                                    {getFieldDecorator('needCompare', {
+                                        initialValue: schedule.needCompare,
+                                    })(
+                                        <Checkbox onChange={e => {
+                                            this.setState({ ...this.state, needCompare: (e.target as any).checked });
+                                        }}>compare</Checkbox>
+                                        )}
+                                </FormItem>
+                            </Col>
+                            <Col span={10}>
+                                <FormItem>
+                                    {getFieldDecorator('compareEnvironmentId', {
+                                        rules: [{
+                                            validator: this.checkCompareEnv,
+                                        }],
+                                        initialValue: schedule.compareEnvironmentId,
+                                    })(
+                                        this.generateEnvSelect(true)
+                                        )}
+                                </FormItem>
+                            </Col>
+                        </Row>
                     </FormItem>
                     <FormItem {...formItemLayout} label="Notification">
                         {getFieldDecorator('notification', {

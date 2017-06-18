@@ -4,7 +4,7 @@ import { DtoScheduleRecord } from '../../../../api/interfaces/dto_schedule_recor
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
 import * as _ from 'lodash';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
-import { noEnvironment, unknowName, successColor, failColor, pass, fail } from '../../common/constants';
+import { noEnvironment, unknowName, successColor, failColor, pass, fail, match, unmatch } from '../../common/constants';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { StringUtil } from '../../utils/string_util';
 import Editor from '../../components/editor';
@@ -46,7 +46,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
             const compareResult = needCompare && compareDict[r.id].body === r.body;
             displayRunResults.push({ ...r, isOrigin: true, compareResult, rowSpan: needCompare ? 2 : 1 });
             if (needCompare) {
-                displayRunResults.push({ ...compareDict[r.id], isOrigin: false, compareResult, rowSpan: 0 });
+                displayRunResults.push({ ...compareDict[r.id], id: r.id + 'c', isOrigin: false, compareResult, rowSpan: 0 });
             }
         });
 
@@ -88,7 +88,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                             title="Compare"
                             dataIndex="compareResult"
                             key="compareResult"
-                            render={(text, runResult) => ({ children: <span className={runResult.compareResult ? 'schedule-success' : 'schedule-failed'}>{runResult.compareResult ? 'match' : 'unmatch'}</span>, props: { rowSpan: runResult.rowSpan } })}
+                            render={(text, runResult) => ({ children: <span className={runResult.compareResult ? 'schedule-success' : 'schedule-failed'}>{runResult.compareResult ? match : unmatch}</span>, props: { rowSpan: runResult.rowSpan } })}
                         />
                     )
                 }
@@ -165,14 +165,14 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
 
         const originResultDescription = this.getRunResultDescription(envName, origin.length, originFailedResults.length);
         const compareResultDescription = compare.length === 0 ? '' : this.getRunResultDescription(compareEnvName, compare.length, compareFailedResults.length);
-        const compareDescription = compare.length === 0 ? '' : (<span>Compare: <span className={isEqual ? 'schedule-success' : 'schedule-failed'}>{isEqual ? pass : fail}</span></span>);
+        const compareDescription = compare.length === 0 ? '' : (<span><span className="schedule-item-key">Compare: </span><span className={isEqual ? 'schedule-success' : 'schedule-failed'}>{isEqual ? match : unmatch}</span></span>);
         return (<div>{originResultDescription}{compareResultDescription}{compareDescription}</div>);
     }
 
     private getRunResultDescription = (envName: string, total: number, failed: number) => {
         return (
             <span>
-                {`${envName}: `}
+                <span className="schedule-item-key">{`${envName}: `}</span>
                 <span className="schedule-success">{failed === 0 ? 'all ' : total - failed} {pass}</span>
                 {failed === 0 ? '' : <span>, <span className="schedule-failed">{failed} {fail}; </span></span>}
             </span>
