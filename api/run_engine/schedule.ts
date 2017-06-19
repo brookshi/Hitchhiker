@@ -36,7 +36,7 @@ export async function run() {
     await Promise.all(schedules.map(schedule => runSchedule(schedule, recordDict[schedule.collectionId], true)));
 }
 
-export async function runSchedule(schedule: Schedule, records?: Record[], isScheduleRun?: boolean): Promise<any> {
+export async function runSchedule(schedule: Schedule, records?: Record[], isScheduleRun?: boolean, trace?: (msg: string) => void): Promise<any> {
     if (!records) {
         records = await RecordService.getByCollectionIds([schedule.collectionId], true)[schedule.collectionId];
     }
@@ -53,6 +53,9 @@ export async function runSchedule(schedule: Schedule, records?: Record[], isSche
     console.log(`run schedule finish`);
     schedule.lastRunDate = new Date();
     await ScheduleService.save(schedule);
+    if (trace) {
+        trace(JSON.stringify({ ...schedule, scheduleRecords: [...originRunResults, ...compareRunResults] }));
+    }
     // TODO: notification
 }
 

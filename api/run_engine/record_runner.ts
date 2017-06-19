@@ -9,7 +9,7 @@ import { StringUtil } from "../utils/string_util";
 
 export class RecordRunner {
 
-    static async runRecords(records: Record[], environmentId: string, needOrder: boolean = false, orderRecordIds: string = ''): Promise<RunResult[]> {
+    static async runRecords(records: Record[], environmentId: string, needOrder: boolean = false, orderRecordIds: string = '', trace?: (msg: string) => void): Promise<RunResult[]> {
         if (needOrder && orderRecordIds) {
             records = _.sortBy(records, 'name');
             const recordDict = _.keyBy(records, 'id');
@@ -17,11 +17,21 @@ export class RecordRunner {
             records = _.unionBy(orderRecords, records, 'id');
             const runResults = new Array<RunResult>();
             for (let record of records) {
-                runResults.push(await RecordRunner.runRecord(environmentId, record));
+                const result = await RecordRunner.runRecord(environmentId, record);
+                runResults.push(result);
+                if (trace) {
+                    trace(JSON.stringify(result));
+                }
             }
             return runResults;
         } else {
-            return await Promise.all(records.map(r => RecordRunner.runRecord(environmentId, r)));
+            return await Promise.all(records.map(async r => {
+                const result = await RecordRunner.runRecord(environmentId, r);
+                if (trace) {
+                    trace(JSON.stringify(result));
+                }
+                return result;
+            }));
         }
     }
 

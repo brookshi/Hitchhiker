@@ -5,6 +5,7 @@ import { Log } from "./utils/log";
 import { ScheduleProcess } from "./run_engine/schedule_process";
 import * as WS from 'ws';
 import "reflect-metadata";
+import { WebSocketService } from "./services/web_socket_service";
 
 let app = new Koa();
 
@@ -16,10 +17,4 @@ app.use(Middleware(app));
 
 const server = app.listen(81);
 
-const wss = new WS.Server({ server });
-
-wss.on('connection', (ws, req) => {
-    console.log('connection');
-    ws.send('server data');
-    ws.on('message', data => console.log(data));
-});
+new WebSocketService(server).start();
