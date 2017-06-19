@@ -40,9 +40,13 @@
     ✔ can't open the same record after delete its tab @done (2017/6/3 下午9:34:58)
     ✔ own team @done (2017/6/4 下午12:24:39)
     ✔ store cookie after request @done (2017/6/3 下午7:48:39)
-    ☐ schedule
+    ☐ schedule run now
+    ☐ should not show info if there is no schedule
+    ☐ schedule suspend
     ☐ schedule send emails
-    ☐ schedule need check collection/env valid
+    ☐ schedule record order
+    ☐ improve performance
+    ✔ schedule need check collection/env valid @done (6/19/2017, 9:47:51 AM)
     ☐ invite user / test
     ☐ record change time line (db)
     ☐ document db

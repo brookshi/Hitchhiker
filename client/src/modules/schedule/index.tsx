@@ -64,9 +64,9 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
 
     public render() {
         const { collapsed, leftPanelWidth, collapsedLeftPanel, createSchedule, selectSchedule, updateSchedule, deleteSchedule, user, activeSchedule, collections, environments, records, schedules } = this.props;
-        const schedule = schedules[activeSchedule];
+        const schedule = schedules[activeSchedule] || {};
         const envName = environments[schedule.environmentId] || noEnvironment;
-        const compareEnvName = schedule.compareEnvironmentId ? environments[schedule.compareEnvironmentId] : ''
+        const compareEnvName = schedule.compareEnvironmentId ? environments[schedule.compareEnvironmentId] : '';
 
         return (
             <Layout className="main-panel">

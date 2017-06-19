@@ -19,7 +19,8 @@
     "shortid": "^2.2.6",
     "typeorm": "^0.0.9",
     "uuid": "^3.0.1",
-    "webapi-router": "^1.0.2"
+    "webapi-router": "^1.0.2",
+    "ws": "^3.0.0"
   },
   "devDependencies": {
     "@types/koa": "^2.0.39",
@@ -30,6 +31,7 @@
     "@types/reflect-metadata": "^0.0.5",
     "@types/request": "^0.0.42",
     "@types/shortid": "^0.0.28",
+    "@types/ws": "^3.0.0",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2"
   },

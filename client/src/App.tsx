@@ -50,6 +50,15 @@ class App extends React.Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props);
     (window as any).Perf = Perf;
+
+    let connection = new WebSocket('ws://localhost:3000/ws');
+    connection.onmessage = evt => {
+      console.log(evt);
+    };
+    connection.onopen = evt => {
+      console.log(evt);
+      connection.send('client send');
+    };
   }
 
   private onCollapse = (collapsed) => {
