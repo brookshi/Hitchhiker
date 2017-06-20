@@ -5,6 +5,7 @@ export abstract class WebSocketHandler {
     private socket: WS;
 
     handle(socket: WS) {
+        this.socket = socket;
         socket.on('message', data => this.onReceive(data as string));
         socket.on('close', this.onClose);
     }
@@ -19,7 +20,6 @@ export abstract class WebSocketHandler {
     }
 
     close(data?: string) {
-        console.log(`close connection`);
-        this.socket.close(200, data);
+        this.socket.close(1000, data);
     }
 }

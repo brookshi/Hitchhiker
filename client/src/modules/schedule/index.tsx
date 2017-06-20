@@ -13,8 +13,9 @@ import { UpdateLeftPanelType, ResizeLeftPanelType } from '../../action/ui';
 import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType } from '../../action/schedule';
 import ScheduleInfo from './schedule_info';
 import ScheduleRunHistoryGrid from './schedule_run_history_grid';
-import { noEnvironment } from "../../common/constants";
-import { DtoRecord } from "../../../../api/interfaces/dto_record";
+import { noEnvironment } from '../../common/constants';
+import { DtoRecord } from '../../../../api/interfaces/dto_record';
+import { RunResult } from '../../../../api/interfaces/dto_run_result';
 
 const { Content, Sider } = Layout;
 
@@ -35,6 +36,10 @@ interface ScheduleStateProps {
     environments: _.Dictionary<string>;
 
     records: _.Dictionary<DtoRecord>;
+
+    isRunning: boolean;
+
+    consoleRunResults: RunResult[];
 }
 
 interface ScheduleDispatchProps {
@@ -63,7 +68,7 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
     }
 
     public render() {
-        const { collapsed, leftPanelWidth, collapsedLeftPanel, createSchedule, selectSchedule, updateSchedule, deleteSchedule, user, activeSchedule, collections, environments, records, schedules } = this.props;
+        const { collapsed, leftPanelWidth, collapsedLeftPanel, createSchedule, selectSchedule, isRunning, consoleRunResults, updateSchedule, deleteSchedule, user, activeSchedule, collections, environments, records, schedules } = this.props;
         const schedule = schedules[activeSchedule] || {};
         const envName = environments[schedule.environmentId] || noEnvironment;
         const compareEnvName = schedule.compareEnvironmentId ? environments[schedule.compareEnvironmentId] : '';
@@ -103,6 +108,8 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
                         compareEnvName={compareEnvName}
                         envNames={environments}
                         recordNames={records}
+                        isRunning={isRunning}
+                        consoleRunResults={consoleRunResults}
                     />
                 </Content>
             </Layout>
@@ -112,7 +119,7 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
 
 const mapStateToProps = (state: State): ScheduleStateProps => {
     const { leftPanelWidth, collapsed } = state.uiState.appUIState;
-    const { schedules, activeSchedule } = state.scheduleState;
+    const { schedules, activeSchedule, isRunning, consoleRunResults } = state.scheduleState;
     let collections: _.Dictionary<string> = {};
     let environments: _.Dictionary<string> = {};
     _.values(state.collectionState.collectionsInfo.collections).forEach(c => collections[c.id] = c.name);
@@ -125,7 +132,9 @@ const mapStateToProps = (state: State): ScheduleStateProps => {
         collections,
         environments,
         schedules,
-        records: _.chain(state.collectionState.collectionsInfo.records).values<_.Dictionary<DtoRecord>>().value().reduce((p, c) => ({ ...p, ...c }))
+        records: _.chain(state.collectionState.collectionsInfo.records).values<_.Dictionary<DtoRecord>>().value().reduce((p, c) => ({ ...p, ...c })),
+        isRunning,
+        consoleRunResults
     };
 };
 

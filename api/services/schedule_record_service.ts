@@ -1,4 +1,3 @@
-
 import { ScheduleRecord } from "../models/schedule_record";
 import { DtoScheduleRecord } from "../interfaces/dto_schedule_record";
 import { ConnectionManager } from "./connection_manager";

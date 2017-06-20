@@ -3,7 +3,7 @@ import { ScheduleService } from "./schedule_service";
 import { runSchedule } from "../run_engine/schedule";
 import { WebSocketHandler } from "./base/web_socket_handler";
 
-export class ScheduleOndemandService extends WebSocketHandler {
+export class ScheduleOnDemandService extends WebSocketHandler {
 
     onReceive(data: string) {
         console.log(`receive data: ${data}`);

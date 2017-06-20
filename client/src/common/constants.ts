@@ -1,7 +1,7 @@
 
 export const noEnvironment = 'No environment';
 
-export const unknowName = 'unknown';
+export const unknownName = 'unknown';
 
 export const pass = 'PASS';
 
@@ -9,7 +9,7 @@ export const fail = 'FAIL';
 
 export const match = 'MATCH';
 
-export const unmatch = 'UNMATCH';
+export const notMatch = 'NOT MATCH';
 
 export const successColor = '#87d068';
 

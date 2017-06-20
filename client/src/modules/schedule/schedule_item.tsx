@@ -7,7 +7,7 @@ import './style/index.less';
 import { PeriodStr } from '../../common/period';
 import { DateUtil } from '../../utils/date_util';
 import { NotificationStr, NotificationMode } from '../../common/notification_mode';
-import { noEnvironment } from "../../common/constants";
+import { noEnvironment } from '../../common/constants';
 
 interface ScheduleItemProps {
 

@@ -10,8 +10,8 @@ import ScheduleEditDialog from './schedule_edit_dialog';
 import { Period } from '../../common/period';
 import { NotificationMode } from '../../common/notification_mode';
 import { noEnvironment } from '../../common/constants';
-import { DateUtil } from "../../utils/date_util";
-import * as _ from "lodash";
+import { DateUtil } from '../../utils/date_util';
+import * as _ from 'lodash';
 
 interface ScheduleListProps {
 

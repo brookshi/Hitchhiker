@@ -26,7 +26,6 @@ export function configureStore() {
         const state: State = store.getState() as State;
         if (!isStoring && state.localDataState && state.localDataState.fetchLocalDataStatus.status === RequestStatus.success) {
             isStoring = true;
-            //console.log(state);
             store.dispatch(actionCreator(StoreLocalDataType, { userId: state.userState.userInfo.id, state }));
             isStoring = false;
         }

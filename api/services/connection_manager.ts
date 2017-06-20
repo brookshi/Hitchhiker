@@ -19,10 +19,15 @@ const connectionOptions: ConnectionOptions = {
 
 export class ConnectionManager {
     private static instance: Connection = null;
+    private static isInitialize = false;
 
     static async getInstance(): Promise<Connection> {
-        if (ConnectionManager.instance === null) {
+        if (!ConnectionManager.isInitialize) {
+            ConnectionManager.isInitialize = true;
             ConnectionManager.instance = await createConnection(connectionOptions);
+        }
+        while (ConnectionManager.instance === null) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
         }
         return ConnectionManager.instance;
     }

@@ -1,7 +1,7 @@
 import { LoginSuccessType } from '../action/user';
 import * as _ from 'lodash';
 import { ScheduleState, scheduleDefaultValue } from '../state/schedule';
-import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType } from '../action/schedule';
+import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType, RunScheduleType, RunScheduleFulfillType, ScheduleChunkDataType } from '../action/schedule';
 import { DtoSchedule } from '../../../api/interfaces/dto_schedule';
 
 export function scheduleState(state: ScheduleState = scheduleDefaultValue, action: any): ScheduleState {
@@ -23,6 +23,15 @@ export function scheduleState(state: ScheduleState = scheduleDefaultValue, actio
             const schedules = state.schedules;
             Reflect.deleteProperty(schedules, action.value.id);
             return { ...state, schedules: { ...schedules } };
+        }
+        case RunScheduleType: {
+            return { ...state, isRunning: true };
+        }
+        case ScheduleChunkDataType: {
+            return { ...state, consoleRunResults: [...state.consoleRunResults, action.value] };
+        }
+        case RunScheduleFulfillType: {
+            return { ...state, isRunning: false, consoleRunResults: [] };
         }
         default:
             return state;
