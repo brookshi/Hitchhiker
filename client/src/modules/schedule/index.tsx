@@ -10,7 +10,7 @@ import { actionCreator } from '../../action/index';
 import { Layout } from 'antd/lib';
 import Splitter from '../../components/splitter';
 import { UpdateLeftPanelType, ResizeLeftPanelType } from '../../action/ui';
-import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType } from '../../action/schedule';
+import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType, RunScheduleType } from '../../action/schedule';
 import ScheduleInfo from './schedule_info';
 import ScheduleRunHistoryGrid from './schedule_run_history_grid';
 import { noEnvironment } from '../../common/constants';
@@ -55,6 +55,8 @@ interface ScheduleDispatchProps {
     updateSchedule(schedule: DtoSchedule);
 
     deleteSchedule(scheduleId: string);
+
+    runSchedule(scheduleId: string);
 }
 
 type ScheduleProps = ScheduleStateProps & ScheduleDispatchProps;
@@ -68,7 +70,7 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
     }
 
     public render() {
-        const { collapsed, leftPanelWidth, collapsedLeftPanel, createSchedule, selectSchedule, isRunning, consoleRunResults, updateSchedule, deleteSchedule, user, activeSchedule, collections, environments, records, schedules } = this.props;
+        const { collapsed, leftPanelWidth, collapsedLeftPanel, createSchedule, selectSchedule, isRunning, consoleRunResults, updateSchedule, deleteSchedule, user, activeSchedule, collections, environments, records, schedules, runSchedule } = this.props;
         const schedule = schedules[activeSchedule] || {};
         const envName = environments[schedule.environmentId] || noEnvironment;
         const compareEnvName = schedule.compareEnvironmentId ? environments[schedule.compareEnvironmentId] : '';
@@ -92,6 +94,7 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
                         selectSchedule={selectSchedule}
                         updateSchedule={updateSchedule}
                         deleteSchedule={deleteSchedule}
+                        runSchedule={runSchedule}
                     />
                 </Sider>
                 <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
@@ -146,6 +149,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): ScheduleDispatchProps => {
         selectSchedule: (scheduleId) => dispatch(actionCreator(ActiveScheduleType, scheduleId)),
         collapsedLeftPanel: (collapsed) => dispatch(actionCreator(UpdateLeftPanelType, collapsed)),
         resizeLeftPanel: (width) => dispatch(actionCreator(ResizeLeftPanelType, width)),
+        runSchedule: (scheduleId) => dispatch(actionCreator(RunScheduleType, scheduleId))
     };
 };
 

@@ -32,6 +32,8 @@ interface ScheduleListProps {
     updateSchedule(schedule: DtoSchedule);
 
     deleteSchedule(scheduleId: string);
+
+    runSchedule(scheduleId: string);
 }
 
 interface ScheduleListState {
@@ -138,6 +140,7 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                                             isOwner={t.ownerId === this.props.user.id}
                                             delete={() => this.props.deleteSchedule(t.id)}
                                             edit={() => this.editSchedule(t)}
+                                            run={() => this.props.runSchedule(t.id)}
                                         />
                                     </Menu.Item>
                                 )

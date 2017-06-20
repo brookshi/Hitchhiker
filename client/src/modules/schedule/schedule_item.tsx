@@ -22,6 +22,8 @@ interface ScheduleItemProps {
     delete();
 
     edit();
+
+    run();
 }
 
 interface ScheduleItemState { }
@@ -65,6 +67,10 @@ class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState>
 
     edit = () => {
         this.props.edit();
+    }
+
+    run = () => {
+        this.props.run();
     }
 
     private get scheduleInfo() {

@@ -38,9 +38,10 @@ export async function run() {
 
 export async function runSchedule(schedule: Schedule, records?: Record[], isScheduleRun?: boolean, trace?: (msg: string) => void): Promise<any> {
     if (!records) {
-        records = await RecordService.getByCollectionIds([schedule.collectionId], true)[schedule.collectionId];
+        const collectionRecords = await RecordService.getByCollectionIds([schedule.collectionId], true);
+        records = collectionRecords[schedule.collectionId];
     }
-    if (records.length === 0) {
+    if (!records || records.length === 0) {
         console.log(`record's count is 0`);
         return;
     }

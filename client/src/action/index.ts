@@ -6,7 +6,7 @@ import { saveTeam, quitTeam, disbandTeam, removeUser, inviteMember, saveEnvironm
 import { deleteCollection, saveCollection, refreshCollection } from './collection';
 import { login, logout, register, findPassword, getUserInfo } from './user';
 import { storeLocalData, fetchLocalData } from './local_data';
-import { deleteSchedule, saveSchedule } from './schedule';
+import { deleteSchedule, saveSchedule, runSchedule } from './schedule';
 
 export const SyncType = 'sync';
 
@@ -49,6 +49,7 @@ export function* rootSaga() {
         spawn(delEnvironment),
         spawn(saveSchedule),
         spawn(deleteSchedule),
+        spawn(runSchedule),
         spawn(sync)
     ];
 };

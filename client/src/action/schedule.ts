@@ -1,7 +1,7 @@
-import { takeEvery, put } from 'redux-saga/effects';
+import { takeEvery, put, call, take } from 'redux-saga/effects';
 import { syncAction, actionCreator } from './index';
 import { HttpMethod } from '../common/http_method';
-import { delay } from 'redux-saga';
+import { eventChannel, END } from 'redux-saga';
 
 export const SaveScheduleType = 'save schedule';
 
@@ -31,18 +31,34 @@ export function* deleteSchedule() {
 
 export function* runSchedule() {
     yield takeEvery(RunScheduleType, function* (action: any) {
+        const wsChannel = yield call(initScheduleWS, action.value);
+        while (true) {
+            const msgAction = yield take(wsChannel);
+            yield put(msgAction);
+        }
+    });
+}
+
+function initScheduleWS(id: string) {
+    return eventChannel(emitter => {
         const socket = new WebSocket('ws://localhost:3000/schedule');
-        socket.onmessage = function* (ev: MessageEvent) {
+        socket.onmessage = (ev: MessageEvent) => {
             console.log(ev);
-            yield put(actionCreator(ScheduleChunkDataType, ev.data));
+            emitter(actionCreator(ScheduleChunkDataType, ev.data));
         };
-        socket.onopen = function* (ev: Event) {
-            socket.send(action.value);
+        socket.onopen = (ev: Event) => {
+            socket.send(id);
         };
-        socket.onclose = function* (ev: CloseEvent) {
+        socket.onclose = (ev: CloseEvent) => {
             console.log(ev);
-            yield delay(2000);
-            yield put(actionCreator(RunScheduleFulfillType, ev));
+            emitter(actionCreator(RunScheduleFulfillType, ev));
+            emitter(END);
+        };
+        socket.onerror = (ev: Event) => {
+            emitter(END);
+        };
+        return () => {
+            console.log('close socket');
         };
     });
 }
