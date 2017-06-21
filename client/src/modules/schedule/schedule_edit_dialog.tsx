@@ -122,7 +122,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
     }
 
     private checkCompareEnv = (rule, value, callback) => {
-        if (this.props.form.getFieldValue('environmentId') !== value) {
+        if (!this.props.form.getFieldValue('needCompare') || this.props.form.getFieldValue('environmentId') !== value) {
             callback();
         } else {
             callback('Environments should be different.');

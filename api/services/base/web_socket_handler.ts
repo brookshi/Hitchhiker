@@ -4,7 +4,7 @@ export abstract class WebSocketHandler {
 
     private socket: WS;
 
-    handle(socket: WS) {
+    handle = (socket: WS) => {
         this.socket = socket;
         socket.on('message', data => this.onReceive(data as string));
         socket.on('close', this.onClose);
@@ -14,12 +14,12 @@ export abstract class WebSocketHandler {
 
     abstract onClose();
 
-    send(data: string) {
+    send = (data: string) => {
         console.log(`send data: ${data}`);
         this.socket.send(data);
     }
 
-    close(data?: string) {
+    close = (data?: string) => {
         this.socket.close(1000, data);
     }
 }

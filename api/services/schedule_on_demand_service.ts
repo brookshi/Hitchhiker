@@ -26,6 +26,6 @@ export class ScheduleOnDemandService extends WebSocketHandler {
             return;
         }
 
-        await runSchedule(schedule, null, false, this.send);
+        await runSchedule(schedule, null, false, data => this.send(data));
     }
 }

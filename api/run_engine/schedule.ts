@@ -20,7 +20,7 @@ function startSchedules() {
     setInterval(() => {
         // console.log('schedule run');
         // run();
-    }, Setting.instance.batch.checkDuration * 1000);
+    }, Setting.instance.schedule.checkDuration * 1000);
 }
 
 export async function run() {
@@ -47,15 +47,15 @@ export async function runSchedule(schedule: Schedule, records?: Record[], isSche
     }
     console.log(`run schedule ${schedule.name}`);
     const needCompare = schedule.needCompare && schedule.compareEnvironmentId;
-    const originRunResults = await RecordRunner.runRecords(records, schedule.environmentId, schedule.needOrder, schedule.recordsOrder);
-    const compareRunResults = needCompare ? await RecordRunner.runRecords(records, schedule.compareEnvironmentId, schedule.needOrder, schedule.recordsOrder) : [];
+    const originRunResults = await RecordRunner.runRecords(records, schedule.environmentId, schedule.needOrder, schedule.recordsOrder, trace);
+    const compareRunResults = needCompare ? await RecordRunner.runRecords(records, schedule.compareEnvironmentId, schedule.needOrder, schedule.recordsOrder, trace) : [];
     await storeRunResult(originRunResults, compareRunResults, schedule, isScheduleRun);
 
     console.log(`run schedule finish`);
     schedule.lastRunDate = new Date();
     await ScheduleService.save(schedule);
     if (trace) {
-        trace(JSON.stringify({ ...schedule, scheduleRecords: [...originRunResults, ...compareRunResults] }));
+        trace(JSON.stringify({ isResult: true, ...schedule, scheduleRecords: [...originRunResults, ...compareRunResults] }));
     }
     // TODO: notification
 }

@@ -20,7 +20,7 @@ export class Setting {
         return this._setting.app;
     }
 
-    get batch() {
-        return this._setting.batch;
+    get schedule() {
+        return this._setting.schedule;
     }
 }

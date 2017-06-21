@@ -182,7 +182,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
         return (
             <span>
                 <span className="schedule-item-key">{`${envName}: `}</span>
-                <span className="schedule-success">{failed === 0 ? 'all ' : total - failed} {pass}</span>
+                <span className="schedule-success">{failed === 0 ? 'ALL ' : total - failed} {pass}</span>
                 {failed === 0 ? '' : <span>, <span className="schedule-failed">{failed} {fail}; </span></span>}
             </span>
         );
@@ -208,6 +208,12 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
 
         return (
             <div>
+                <ScheduleRunConsole
+                    isRunning={isRunning}
+                    runResults={consoleRunResults}
+                    records={recordNames}
+                    envNames={envNames}
+                />
                 <ScheduleRecordTable
                     className="schedule-table"
                     bordered={true}
@@ -237,12 +243,6 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                         render={(text, record) => this.getScheduleDescription(record)}
                     />
                 </ScheduleRecordTable>
-                <ScheduleRunConsole
-                    isRunning={isRunning}
-                    runResults={consoleRunResults}
-                    records={recordNames}
-                    envNames={envNames}
-                />
             </div>
         );
     }

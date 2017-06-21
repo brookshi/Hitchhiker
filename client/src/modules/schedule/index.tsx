@@ -99,12 +99,14 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
                 </Sider>
                 <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
                 <Content className="schedule-content">
-                    <ScheduleInfo
-                        schedule={schedule}
-                        environmentName={envName}
-                        compareEnvName={compareEnvName}
-                        collectionName={collections[schedule.collectionId]}
-                    />
+                    {activeSchedule ? (
+                        <ScheduleInfo
+                            schedule={schedule}
+                            environmentName={envName}
+                            compareEnvName={compareEnvName}
+                            collectionName={collections[schedule.collectionId]}
+                        />
+                    ) : ''}
                     <ScheduleRunHistoryGrid
                         scheduleRecords={schedule.scheduleRecords}
                         envName={envName}

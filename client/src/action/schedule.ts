@@ -44,17 +44,25 @@ function initScheduleWS(id: string) {
         const socket = new WebSocket('ws://localhost:3000/schedule');
         socket.onmessage = (ev: MessageEvent) => {
             console.log(ev);
-            emitter(actionCreator(ScheduleChunkDataType, ev.data));
+            const data = JSON.parse(ev.data);
+            if (data.isResult) {
+                setTimeout(() => {
+                    emitter(actionCreator(RunScheduleFulfillType, data));
+                }, 2000);
+            } else {
+                emitter(actionCreator(ScheduleChunkDataType, data));
+            }
         };
         socket.onopen = (ev: Event) => {
             socket.send(id);
         };
         socket.onclose = (ev: CloseEvent) => {
-            console.log(ev);
-            emitter(actionCreator(RunScheduleFulfillType, ev));
-            emitter(END);
+            setTimeout(() => {
+                emitter(END);
+            }, 2000);
         };
         socket.onerror = (ev: Event) => {
+            console.error(ev);
             emitter(END);
         };
         return () => {
