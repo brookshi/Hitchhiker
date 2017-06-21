@@ -129,6 +129,7 @@ const mapStateToProps = (state: State): ScheduleStateProps => {
     let environments: _.Dictionary<string> = {};
     _.values(state.collectionState.collectionsInfo.collections).forEach(c => collections[c.id] = c.name);
     _.chain(state.environmentState.environments).values().flatten<DtoEnvironment>().value().forEach(e => environments[e.id] = e.name);
+    const records = _.chain(state.collectionState.collectionsInfo.records).values<_.Dictionary<DtoRecord>>().value();
     return {
         leftPanelWidth,
         collapsed,
@@ -137,7 +138,7 @@ const mapStateToProps = (state: State): ScheduleStateProps => {
         collections,
         environments,
         schedules,
-        records: _.chain(state.collectionState.collectionsInfo.records).values<_.Dictionary<DtoRecord>>().value().reduce((p, c) => ({ ...p, ...c })),
+        records: records.length === 0 ? {} : records.reduce((p, c) => ({ ...p, ...c })),
         isRunning,
         consoleRunResults
     };

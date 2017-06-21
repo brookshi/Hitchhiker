@@ -24,13 +24,13 @@ export class Schedule {
     @Column({ nullable: true })
     compareEnvironmentId: string;
 
-    @Column({ type: 'int', default: 0 })
+    @Column('int', { default: 0 })
     period: Period;
 
     @Column()
     hour: number;
 
-    @Column({ type: 'int', default: 2 })
+    @Column('int', { default: 2 })
     notification: NotificationMode;
 
     @Column()
@@ -39,7 +39,7 @@ export class Schedule {
     @Column()
     needOrder: boolean;
 
-    @Column({ type: 'text' })
+    @Column('text')
     recordsOrder: string;
 
     @Column()

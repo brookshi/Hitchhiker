@@ -50,6 +50,10 @@ export class TeamService {
     }
 
     static async getTeams(ids: string[], needOwner: boolean = true, needCollection: boolean = true, needUser: boolean = false, needEnv: boolean = false): Promise<Team[]> {
+        if (ids.length === 0) {
+            throw new Error('at least a team');
+        }
+
         const connection = await ConnectionManager.getInstance();
 
         let rep = connection.getRepository(Team).createQueryBuilder('team');

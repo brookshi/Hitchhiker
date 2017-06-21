@@ -17,7 +17,7 @@ export class Record {
     @Column({ nullable: true, default: '' })
     pid: string;
 
-    @Column({ type: 'int', default: 20 })
+    @Column('int', { default: 20 })
     category: RecordCategory;
 
     @Column()
@@ -35,19 +35,19 @@ export class Record {
     })
     headers: Header[] = [];
 
-    @Column({ nullable: true, type: "text" })
+    @Column('mediumtext', { nullable: true })
     body: string;
 
-    @Column({ nullable: true, type: 'string' })
+    @Column('varchar', { nullable: true, length: 50 })
     bodyType: BodyType;
 
     @Column({ default: 1, type: 'int' })
     dataMode: DataMode;
 
-    @Column({ nullable: true, type: "text" })
+    @Column('text', { nullable: true })
     test: string;
 
-    @Column({ nullable: true, type: 'int' })
+    @Column('int', { nullable: true })
     sort: number;
 
     @Column({ nullable: true })

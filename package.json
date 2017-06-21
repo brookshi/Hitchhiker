@@ -17,7 +17,7 @@
     "reflect-metadata": "^0.1.8",
     "request": "^2.81.0",
     "shortid": "^2.2.6",
-    "typeorm": "^0.0.9",
+    "typeorm": "^0.1.0-alpha",
     "uuid": "^3.0.1",
     "webapi-router": "^1.0.2",
     "ws": "^3.0.0"
