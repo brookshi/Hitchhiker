@@ -16,4 +16,8 @@ export class DateUtil {
         const date = new Date();
         return date.getUTCHours() - date.getHours() + hour;
     }
+
+    static getLocaleDateString(utcDate: Date): string {
+        return new Date(new Date() + ' UTC').toLocaleString();
+    }
 }

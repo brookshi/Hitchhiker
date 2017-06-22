@@ -105,7 +105,7 @@ export class ScheduleService {
     }
 
     static checkScheduleNeedRun(schedule: Schedule): boolean {
-        const isRunFinish = new Date(schedule.lastRunDate + ' UTC').toDateString() === new Date().toDateString();
+        const isRunFinish = new Date(schedule.lastRunDate + ' UTC').toDateString() === new Date().toDateString(); //TODO: may just toDateString is enough.
         if (isRunFinish) {
             return false;
         }

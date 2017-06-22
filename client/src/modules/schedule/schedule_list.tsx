@@ -141,6 +141,7 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                                             delete={() => this.props.deleteSchedule(t.id)}
                                             edit={() => this.editSchedule(t)}
                                             run={() => this.props.runSchedule(t.id)}
+                                            suspend={() => this.props.updateSchedule({ ...t, suspend: !t.suspend })}
                                         />
                                     </Menu.Item>
                                 )

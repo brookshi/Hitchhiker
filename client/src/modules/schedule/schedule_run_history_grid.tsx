@@ -226,7 +226,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                     <ScheduleRecordColumn
                         title="Run Date"
                         dataIndex="createDate"
-                        render={(text, record) => new Date(new Date(record.createDate) + ' UTC').toLocaleString()}
+                        render={(text, record) => new Date(record.createDate).toLocaleString()}
                     />
                     <ScheduleRecordColumn
                         title="Pass"

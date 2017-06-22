@@ -24,6 +24,8 @@ interface ScheduleItemProps {
     edit();
 
     run();
+
+    suspend();
 }
 
 interface ScheduleItemState { }
@@ -40,6 +42,9 @@ class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState>
                 </Menu.Item>
                 <Menu.Item key="edit">
                     <Icon type="edit" /> Edit
+                </Menu.Item>
+                <Menu.Item key="suspend">
+                    <Icon type="pause-circle-o" /> {this.props.schedule.suspend ? 'Resume' : 'Suspend'}
                 </Menu.Item>
                 {
                     this.props.isOwner ? (
@@ -73,6 +78,10 @@ class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState>
         this.props.run();
     }
 
+    suspend = () => {
+        this.props.suspend();
+    }
+
     private get scheduleInfo() {
         const { period, hour, notification, emails, suspend } = this.props.schedule;
         return (
@@ -99,7 +108,7 @@ class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState>
                     ref={ele => this.itemWithMenu = ele}
                     icon={<Icon className="c-icon" type="schedule" />}
                     name={name}
-                    subName={<div>{`Last run time: ${lastRunDate ? new Date(new Date(lastRunDate) + ' UTC').toLocaleString() : 'never run'}`}</div>}
+                    subName={<div>{`Last run time: ${lastRunDate ? new Date(lastRunDate).toLocaleString() : 'never run'}`}</div>}
                     menu={this.getMenu()}
                 />
             </Popover>
