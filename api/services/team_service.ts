@@ -71,7 +71,7 @@ export class TeamService {
         }
 
         return await rep.where('1=1')
-            .andWhereInIds(ids)
+            .andWhereInIds(ids.map(id => ({ id })))
             .getMany();
     }
 

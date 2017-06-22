@@ -113,7 +113,7 @@ export class CollectionService {
             .leftJoinAndSelect('collection.team', 'team')
             .leftJoinAndSelect('collection.owner', 'owner')
             .where('recycle = 0')
-            .andWhereInIds(ids)
+            .andWhereInIds(ids.map(id => ({ id })))
             .getMany();
     }
 

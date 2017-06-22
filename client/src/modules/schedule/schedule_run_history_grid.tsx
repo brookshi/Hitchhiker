@@ -219,8 +219,9 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                     bordered={true}
                     size="middle"
                     rowKey="id"
-                    dataSource={scheduleRecords}
+                    dataSource={_.chain(scheduleRecords).sortBy('createDate').reverse().value()}
                     expandedRowRender={this.expandedTable}
+                    pagination={false}
                 >
                     <ScheduleRecordColumn
                         title="Run Date"

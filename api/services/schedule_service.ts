@@ -78,7 +78,7 @@ export class ScheduleService {
 
     static async getAllNeedRun(): Promise<Schedule[]> {
         const connection = await ConnectionManager.getInstance();
-        return await connection.getRepository(Schedule).find({ 'suspend': 0 });
+        return await connection.getRepository(Schedule).find({ 'suspend': false });
     }
 
     static async createNew(dtoSchedule: DtoSchedule, owner: User): Promise<ResObject> {

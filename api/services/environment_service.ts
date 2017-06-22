@@ -41,7 +41,7 @@ export class EnvironmentService {
         if (needVars) {
             rep = rep.leftJoinAndSelect('env.variables', 'variable');
         }
-        return await rep.where('env.id=:id').addParameters({ 'id': id }).getOne();
+        return await rep.where('env.id=:id', { 'id': id }).getOne();
     }
 
     static async create(dtoEnv: DtoEnvironment): Promise<ResObject> {
@@ -75,7 +75,7 @@ export class EnvironmentService {
         }
 
         return await rep.where('1=1')
-            .andWhereInIds(ids)
+            .andWhereInIds(ids.map(id => ({ id })))
             .getMany();
     }
 

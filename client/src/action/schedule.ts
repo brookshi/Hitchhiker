@@ -47,10 +47,10 @@ function initScheduleWS(id: string) {
             const data = JSON.parse(ev.data);
             if (data.isResult) {
                 setTimeout(() => {
-                    emitter(actionCreator(RunScheduleFulfillType, data));
-                }, 2000);
+                    emitter(actionCreator(RunScheduleFulfillType, { id, data }));
+                }, 1000);
             } else {
-                emitter(actionCreator(ScheduleChunkDataType, data));
+                emitter(actionCreator(ScheduleChunkDataType, { id, data }));
             }
         };
         socket.onopen = (ev: Event) => {

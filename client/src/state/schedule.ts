@@ -7,6 +7,11 @@ export interface ScheduleState {
 
     activeSchedule: string;
 
+    runState: _.Dictionary<ScheduleRunState>;
+}
+
+export interface ScheduleRunState {
+
     isRunning: boolean;
 
     consoleRunResults: RunResult[];
@@ -15,6 +20,5 @@ export interface ScheduleState {
 export const scheduleDefaultValue: ScheduleState = {
     schedules: {},
     activeSchedule: '',
-    isRunning: false,
-    consoleRunResults: []
+    runState: {}
 };

@@ -124,7 +124,7 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
 
 const mapStateToProps = (state: State): ScheduleStateProps => {
     const { leftPanelWidth, collapsed } = state.uiState.appUIState;
-    const { schedules, activeSchedule, isRunning, consoleRunResults } = state.scheduleState;
+    const { schedules, activeSchedule, runState } = state.scheduleState;
     let collections: _.Dictionary<string> = {};
     let environments: _.Dictionary<string> = {};
     _.values(state.collectionState.collectionsInfo.collections).forEach(c => collections[c.id] = c.name);
@@ -134,13 +134,13 @@ const mapStateToProps = (state: State): ScheduleStateProps => {
         leftPanelWidth,
         collapsed,
         user: state.userState.userInfo,
-        activeSchedule: activeSchedule,
+        activeSchedule,
         collections,
         environments,
         schedules,
         records: records.length === 0 ? {} : records.reduce((p, c) => ({ ...p, ...c })),
-        isRunning,
-        consoleRunResults
+        isRunning: runState[activeSchedule] ? runState[activeSchedule].isRunning : false,
+        consoleRunResults: runState[activeSchedule] ? runState[activeSchedule].consoleRunResults : [],
     };
 };
 

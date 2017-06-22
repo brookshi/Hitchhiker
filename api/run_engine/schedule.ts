@@ -49,18 +49,18 @@ export async function runSchedule(schedule: Schedule, records?: Record[], isSche
     const needCompare = schedule.needCompare && schedule.compareEnvironmentId;
     const originRunResults = await RecordRunner.runRecords(records, schedule.environmentId, schedule.needOrder, schedule.recordsOrder, trace);
     const compareRunResults = needCompare ? await RecordRunner.runRecords(records, schedule.compareEnvironmentId, schedule.needOrder, schedule.recordsOrder, trace) : [];
-    await storeRunResult(originRunResults, compareRunResults, schedule, isScheduleRun);
+    const record = await storeRunResult(originRunResults, compareRunResults, schedule, isScheduleRun);
 
     console.log(`run schedule finish`);
     schedule.lastRunDate = new Date();
     await ScheduleService.save(schedule);
     if (trace) {
-        trace(JSON.stringify({ isResult: true, ...schedule, scheduleRecords: [...originRunResults, ...compareRunResults] }));
+        trace(JSON.stringify({ isResult: true, ...record }));
     }
     // TODO: notification
 }
 
-async function storeRunResult(originRunResults: RunResult[], compareRunResults: RunResult[], schedule: Schedule, isScheduleRun?: boolean) {
+async function storeRunResult(originRunResults: RunResult[], compareRunResults: RunResult[], schedule: Schedule, isScheduleRun?: boolean): Promise<ScheduleRecord> {
     const scheduleRecord = new ScheduleRecord();
     const totalRunResults = [...originRunResults, ...compareRunResults];
     scheduleRecord.success = totalRunResults.filter(r => isSuccess(r)).length === originRunResults.length && compare(originRunResults, compareRunResults);
@@ -69,7 +69,7 @@ async function storeRunResult(originRunResults: RunResult[], compareRunResults: 
     scheduleRecord.isScheduleRun = isScheduleRun;
     scheduleRecord.duration = totalRunResults.map(r => r.elapsed).reduce((p, a) => p + a);
 
-    await ScheduleRecordService.create(scheduleRecord);
+    return await ScheduleRecordService.create(scheduleRecord);
 }
 
 function compare(originRunResults: RunResult[], compareRunResults: RunResult[]) {

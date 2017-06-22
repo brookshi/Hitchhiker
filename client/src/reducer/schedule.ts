@@ -25,13 +25,31 @@ export function scheduleState(state: ScheduleState = scheduleDefaultValue, actio
             return { ...state, schedules: { ...schedules } };
         }
         case RunScheduleType: {
-            return { ...state, isRunning: true };
+            return { ...state, runState: { ...state.runState, [action.value]: { isRunning: true, consoleRunResults: [] } } };
         }
         case ScheduleChunkDataType: {
-            return { ...state, consoleRunResults: [...state.consoleRunResults, action.value] };
+            return { ...state, runState: { ...state.runState, [action.value.id]: { isRunning: true, consoleRunResults: [...state.runState[action.value.id].consoleRunResults, action.value.data] } } };
         }
         case RunScheduleFulfillType: {
-            return { ...state, isRunning: false, consoleRunResults: [] };
+            const schedule = state.schedules[action.value.id];
+            return {
+                ...state,
+                schedules: {
+                    ...state.schedules, [action.value.id]: {
+                        ...schedule,
+                        scheduleRecords: [
+                            action.value.data,
+                            ...schedule.scheduleRecords
+                        ]
+                    }
+                },
+                runState: {
+                    ...state.runState,
+                    [action.value.id]: {
+                        isRunning: false, consoleRunResults: []
+                    }
+                }
+            };
         }
         default:
             return state;
