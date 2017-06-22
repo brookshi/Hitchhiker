@@ -42,7 +42,7 @@
     ✔ store cookie after request @done (2017/6/3 下午7:48:39)
     ✔ schedule run now @done (6/22/2017, 6:03:06 PM)
     ✔ should not show info if there is no schedule @done (6/22/2017, 6:03:14 PM)
-    ☐ schedule suspend
+    ✔ schedule suspend @done (2017/6/22 下午10:43:58)
     ☐ schedule send emails
     ☐ schedule record order
     ☐ improve performance

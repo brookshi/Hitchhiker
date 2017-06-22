@@ -54,6 +54,7 @@ export async function runSchedule(schedule: Schedule, records?: Record[], isSche
     console.log(`run schedule finish`);
     schedule.lastRunDate = new Date();
     await ScheduleService.save(schedule);
+
     if (trace) {
         trace(JSON.stringify({ isResult: true, ...record }));
     }
@@ -69,6 +70,9 @@ async function storeRunResult(originRunResults: RunResult[], compareRunResults: 
     scheduleRecord.isScheduleRun = isScheduleRun;
     scheduleRecord.duration = totalRunResults.map(r => r.elapsed).reduce((p, a) => p + a);
 
+    console.log('clear redundant records');
+    await ScheduleRecordService.clearRedundantRecords(schedule.id);
+    console.log('create new record');
     return await ScheduleRecordService.create(scheduleRecord);
 }
 

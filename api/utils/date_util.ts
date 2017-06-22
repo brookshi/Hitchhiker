@@ -8,16 +8,16 @@ export class DateUtil {
         return Math.ceil(timeDiff / DateUtil.HOUR);
     }
 
-    static getUTCDate(): Date {
-        const now = new Date();
+    static getUTCDate(date?: Date): Date {
+        date = date || new Date();
         return new Date(
-            now.getUTCFullYear(),
-            now.getUTCMonth(),
-            now.getUTCDate(),
-            now.getUTCHours(),
-            now.getUTCMinutes(),
-            now.getUTCSeconds(),
-            now.getUTCMilliseconds()
+            date.getUTCFullYear(),
+            date.getUTCMonth(),
+            date.getUTCDate(),
+            date.getUTCHours(),
+            date.getUTCMinutes(),
+            date.getUTCSeconds(),
+            date.getUTCMilliseconds()
         );
     }
 }

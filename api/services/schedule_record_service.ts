@@ -2,8 +2,7 @@ import { ScheduleRecord } from "../models/schedule_record";
 import { DtoScheduleRecord } from "../interfaces/dto_schedule_record";
 import { ConnectionManager } from "./connection_manager";
 import { Setting } from "../utils/setting";
-import { FindManyOptions } from "typeorm";
-import { DeepPartial } from "typeorm/common/DeepPartial";
+import { DateUtil } from "../utils/date_util";
 
 export class ScheduleRecordService {
 
@@ -16,20 +15,26 @@ export class ScheduleRecordService {
         return await connection.getRepository(ScheduleRecord).persist(record);
     }
 
-    static async clearByMaxCount(scheduleId: string) {
+    static async clearRedundantRecords(scheduleId: string) {
         const maxCount = Setting.instance.schedule.storeMaxCount;
         const connection = await ConnectionManager.getInstance();
-        const findOption: FindManyOptions<DeepPartial<ScheduleRecord>> = {
-            order: { createDate: 'DESC' },
-            take: maxCount - 1,
-            where: { schedule: { id: scheduleId } }
-        };
-        const records = await connection.getRepository(ScheduleRecord).find(findOption);
-        if (records.length < maxCount - 1) {
+
+        const records = await connection.getRepository(ScheduleRecord)
+            .createQueryBuilder('record')
+            .limit(maxCount)
+            .where('record.schedule=:id', { id: scheduleId })
+            .orderBy('record.createDate', 'DESC')
+            .getMany();
+        if (records.length < maxCount) {
             return;
         }
 
-        const lastDate = records[maxCount - 2].createDate;
-        //await connection.entityManager.remove(.getRepository(ScheduleRecord).remove()
+        const lastDate = DateUtil.getUTCDate(records[maxCount - 1].createDate);
+        await connection.getRepository(ScheduleRecord)
+            .createQueryBuilder('record')
+            .where('scheduleId=:id', { id: scheduleId })
+            .andWhere('createDate<=:date', { date: lastDate })
+            .delete()
+            .execute();
     }
 }
