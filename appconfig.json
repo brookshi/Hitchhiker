@@ -8,7 +8,7 @@
         "defaultPassword": "123456"
     },
     "schedule": {
-        "checkDuration": 60,
+        "checkDuration": 600,
         "storeMaxCount": 10
     },
     "user": {

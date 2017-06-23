@@ -19,6 +19,8 @@ interface ScheduleItemProps {
 
     isOwner: boolean;
 
+    isRunning: boolean;
+
     delete();
 
     edit();
@@ -98,7 +100,7 @@ class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState>
     }
 
     public render() {
-        const { schedule, isOwner } = this.props;
+        const { schedule, isOwner, isRunning } = this.props;
         const { name, lastRunDate } = schedule;
 
         return (
@@ -107,8 +109,9 @@ class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState>
                 <ItemWithMenu
                     ref={ele => this.itemWithMenu = ele}
                     icon={<Icon className="c-icon" type="schedule" />}
+                    isLoading={isRunning}
                     name={name}
-                    subName={<div>{`Last run time: ${lastRunDate ? new Date(lastRunDate).toLocaleString() : 'never run'}`}</div>}
+                    subName={<div>{`Last run: ${lastRunDate ? new Date(lastRunDate).toLocaleString() : 'never run'}`}</div>}
                     menu={this.getMenu()}
                 />
             </Popover>

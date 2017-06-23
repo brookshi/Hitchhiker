@@ -10,16 +10,15 @@ import { RunResult } from "../interfaces/dto_run_result";
 import { ScheduleRecord } from "../models/schedule_record";
 import { ScheduleRecordService } from "../services/schedule_record_service";
 import { ConnectionManager } from "../services/connection_manager";
-import { DateUtil } from "../utils/date_util";
 
 console.log('schedule start');
 startSchedules();
 
 function startSchedules() {
-    //run();
+    run();
     setInterval(() => {
-        // console.log('schedule run');
-        // run();
+        console.log('schedule run');
+        run();
     }, Setting.instance.schedule.checkDuration * 1000);
 }
 

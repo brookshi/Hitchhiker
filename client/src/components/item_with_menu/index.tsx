@@ -17,6 +17,8 @@ interface ItemWithMenuProps {
     onNameChanged?(name: string);
 
     disableMenu?: boolean;
+
+    isLoading?: boolean;
 }
 
 interface ItemWithMenuState {
@@ -80,7 +82,7 @@ class ItemWithMenu extends React.Component<ItemWithMenuProps, ItemWithMenuState>
     }
 
     public render() {
-        const { icon, menu, className, subName, disableMenu } = this.props;
+        const { icon, menu, className, subName, disableMenu, isLoading } = this.props;
         const { isEdit, isVisible, name } = this.state;
         const iconClassName = 'item-with-menu-icon' + (isVisible ? ' item-with-menu-icon-visible' : '');
         const nameStyle = isEdit ? {} : { display: 'none' };
@@ -88,7 +90,7 @@ class ItemWithMenu extends React.Component<ItemWithMenuProps, ItemWithMenuState>
 
         return (
             <span className={`${className} item-with-menu`}>
-                {icon}
+                {isLoading ? <Icon className="c-icon item-loading-anim" type="sync" /> : icon}
                 <span className="item-with-menu-name">
                     <div className="item-with-menu-title" style={{ lineHeight }}>
                         <Input

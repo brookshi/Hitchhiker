@@ -12,6 +12,7 @@ import { NotificationMode } from '../../common/notification_mode';
 import { noEnvironment } from '../../common/constants';
 import { DateUtil } from '../../utils/date_util';
 import * as _ from 'lodash';
+import { ScheduleRunState } from '../../state/schedule';
 
 interface ScheduleListProps {
 
@@ -24,6 +25,8 @@ interface ScheduleListProps {
     collections: _.Dictionary<string>;
 
     environments: _.Dictionary<string>;
+
+    runState: _.Dictionary<ScheduleRunState>;
 
     createSchedule(schedule: DtoSchedule);
 
@@ -108,6 +111,7 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
     }
 
     public render() {
+        const { runState, activeSchedule, schedules, collections, environments, user, deleteSchedule, runSchedule, updateSchedule } = this.props;
         return (
             <div>
                 <div className="small-toolbar">
@@ -126,22 +130,23 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                         className="team-list"
                         mode="inline"
                         inlineIndent={0}
-                        selectedKeys={[this.props.activeSchedule]}
+                        selectedKeys={[activeSchedule]}
                         onSelect={this.onSelectChanged}
                     >
                         {
-                            this.props.schedules.map(t =>
+                            schedules.map(t =>
                                 (
                                     <Menu.Item key={t.id} data={t}>
                                         <ScheduleItem
                                             schedule={t}
-                                            collectionName={this.props.collections[t.collectionId]}
-                                            environmentName={this.props.environments[t.environmentId]}
-                                            isOwner={t.ownerId === this.props.user.id}
-                                            delete={() => this.props.deleteSchedule(t.id)}
+                                            collectionName={collections[t.collectionId]}
+                                            environmentName={environments[t.environmentId]}
+                                            isOwner={t.ownerId === user.id}
+                                            delete={() => deleteSchedule(t.id)}
                                             edit={() => this.editSchedule(t)}
-                                            run={() => this.props.runSchedule(t.id)}
-                                            suspend={() => this.props.updateSchedule({ ...t, suspend: !t.suspend })}
+                                            run={() => runSchedule(t.id)}
+                                            suspend={() => updateSchedule({ ...t, suspend: !t.suspend })}
+                                            isRunning={runState[t.id] ? runState[t.id].isRunning : false}
                                         />
                                     </Menu.Item>
                                 )
@@ -151,8 +156,8 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                 </PerfectScrollbar>
                 <ScheduleEditDialog
                     schedule={this.state.schedule}
-                    collections={this.props.collections}
-                    environments={this.props.environments}
+                    collections={collections}
+                    environments={environments}
                     isEditDlgOpen={this.state.isEditDlgOpen}
                     onCancel={() => this.setState({ ...this.state, isEditDlgOpen: false })}
                     onOk={schedule => this.saveSchedule(schedule)}

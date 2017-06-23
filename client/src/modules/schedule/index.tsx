@@ -15,7 +15,7 @@ import ScheduleInfo from './schedule_info';
 import ScheduleRunHistoryGrid from './schedule_run_history_grid';
 import { noEnvironment } from '../../common/constants';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
-import { RunResult } from '../../../../api/interfaces/dto_run_result';
+import { ScheduleRunState } from '../../state/schedule';
 
 const { Content, Sider } = Layout;
 
@@ -37,9 +37,7 @@ interface ScheduleStateProps {
 
     records: _.Dictionary<DtoRecord>;
 
-    isRunning: boolean;
-
-    consoleRunResults: RunResult[];
+    runState: _.Dictionary<ScheduleRunState>;
 }
 
 interface ScheduleDispatchProps {
@@ -70,7 +68,7 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
     }
 
     public render() {
-        const { collapsed, leftPanelWidth, collapsedLeftPanel, createSchedule, selectSchedule, isRunning, consoleRunResults, updateSchedule, deleteSchedule, user, activeSchedule, collections, environments, records, schedules, runSchedule } = this.props;
+        const { collapsed, leftPanelWidth, collapsedLeftPanel, createSchedule, selectSchedule, runState, updateSchedule, deleteSchedule, user, activeSchedule, collections, environments, records, schedules, runSchedule } = this.props;
         const schedule = schedules[activeSchedule] || {};
         const envName = environments[schedule.environmentId] || noEnvironment;
         const compareEnvName = schedule.compareEnvironmentId ? environments[schedule.compareEnvironmentId] : '';
@@ -95,6 +93,7 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
                         updateSchedule={updateSchedule}
                         deleteSchedule={deleteSchedule}
                         runSchedule={runSchedule}
+                        runState={runState}
                     />
                 </Sider>
                 <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
@@ -113,8 +112,8 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
                         compareEnvName={compareEnvName}
                         envNames={environments}
                         recordNames={records}
-                        isRunning={isRunning}
-                        consoleRunResults={consoleRunResults}
+                        isRunning={runState[activeSchedule] ? runState[activeSchedule].isRunning : false}
+                        consoleRunResults={runState[activeSchedule] ? runState[activeSchedule].consoleRunResults : []}
                     />
                 </Content>
             </Layout>
@@ -139,8 +138,7 @@ const mapStateToProps = (state: State): ScheduleStateProps => {
         environments,
         schedules,
         records: records.length === 0 ? {} : records.reduce((p, c) => ({ ...p, ...c })),
-        isRunning: runState[activeSchedule] ? runState[activeSchedule].isRunning : false,
-        consoleRunResults: runState[activeSchedule] ? runState[activeSchedule].consoleRunResults : [],
+        runState
     };
 };
 

@@ -43,8 +43,10 @@
     ✔ schedule run now @done (6/22/2017, 6:03:06 PM)
     ✔ should not show info if there is no schedule @done (6/22/2017, 6:03:14 PM)
     ✔ schedule suspend @done (2017/6/22 下午10:43:58)
+    ✔ schedule item loading @done (6/23/2017, 11:08:30 AM)
     ☐ schedule send emails
     ☐ schedule record order
+    ☐ keep schedule process
     ☐ improve performance
     ✔ schedule need check collection/env valid @done (6/19/2017, 9:47:51 AM)
     ☐ invite user / test
