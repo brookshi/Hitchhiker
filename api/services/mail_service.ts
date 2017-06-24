@@ -44,10 +44,32 @@ export class MailService {
         return await MailService.sendMail(mailReqUrl);
     }
 
+    static async scheduleMail(targets: string[], body: any) {
+        const mailReqUrl = `${Setting.instance.mail.host}schedule?targets=${targets.join(';')}&lang=${Setting.instance.app.language}`;
+        return await MailService.postMail(mailReqUrl, body);
+    }
+
     private static sendMail(url: string): Promise<{ err: any, body: any }> {
         return new Promise<{ err: any, body: any }>((resolve, reject) => {
             request.get(url, (err, res, body) => {
                 resolve({ err, body });
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log(body);
+                }
+            });
+        });
+    }
+
+    private static postMail(url: string, body: any): Promise<any> {
+        return MailService.request({ url, body: JSON.stringify(body), headers: { 'content-type': 'application/json' }, method: 'post' });
+    }
+
+    private static request(option: request.Options): Promise<any> {
+        return new Promise<{ err: any, response: request.RequestResponse, body: any }>((resolve, reject) => {
+            request(option, (err, response, body) => {
+                resolve({ err, response, body });
                 if (err) {
                     console.error(err);
                 } else {

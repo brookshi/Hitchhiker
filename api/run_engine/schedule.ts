@@ -10,6 +10,13 @@ import { RunResult } from "../interfaces/dto_run_result";
 import { ScheduleRecord } from "../models/schedule_record";
 import { ScheduleRecordService } from "../services/schedule_record_service";
 import { ConnectionManager } from "../services/connection_manager";
+import { EnvironmentService } from "../services/environment_service";
+import { Environment } from "../models/environment";
+import { NotificationMode } from "../interfaces/notification_mode";
+import { UserService } from "../services/user_service";
+import { CollectionService } from "../services/collection_service";
+import { TeamService } from "../services/team_service";
+import { MailService } from "../services/mail_service";
 
 console.log('schedule start');
 startSchedules();
@@ -41,7 +48,7 @@ export async function runSchedule(schedule: Schedule, records?: Record[], isSche
         records = collectionRecords[schedule.collectionId];
     }
     if (!records || records.length === 0) {
-        console.log(`record's count is 0`);
+        console.log(`record count is 0`);
         return;
     }
     console.log(`run schedule ${schedule.name}`);
@@ -57,7 +64,51 @@ export async function runSchedule(schedule: Schedule, records?: Record[], isSche
     if (trace) {
         trace(JSON.stringify({ isResult: true, ...record }));
     }
-    // TODO: notification
+
+    console.log('send mails');
+    const mails = await getMailsByMode(schedule);
+    if (!mails || mails.length === 0) {
+        console.log('no valid email');
+        return;
+    }
+    await MailService.scheduleMail(mails, await getRecordInfoForMail(record, records, schedule.environmentId, schedule.compareEnvironmentId));
+}
+
+async function getMailsByMode(schedule: Schedule): Promise<string[]> {
+    if (schedule.notification === NotificationMode.me) {
+        const user = await UserService.getUserById(schedule.ownerId);
+        return user ? [user.email] : [];
+    } else if (schedule.notification === NotificationMode.team) {
+        const collection = await CollectionService.getById(schedule.collectionId);
+        if (!collection) {
+            return [];
+        }
+        const team = await TeamService.getTeam(collection.team.id, false, false, true, false);
+        if (!team) {
+            return [];
+        }
+        return team.members.map(m => m.email);
+    } else if (schedule.notification === NotificationMode.custom) {
+        return schedule.emails.split(';');
+    }
+    return [];
+}
+
+async function getRecordInfoForMail(record: ScheduleRecord, records: Record[], originEnvId: string, compareEnvId: string) {
+    const envNames = _.keyBy(await EnvironmentService.getEnvironments([originEnvId, compareEnvId]), 'id');
+    const recordDict = _.keyBy(records, 'id');
+    return {
+        ...record,
+        scheduleName: record.schedule.name,
+        runResults: [...getRunResultForMail(record.result.origin, originEnvId, envNames, recordDict),
+        ...getRunResultForMail(record.result.compare, compareEnvId, envNames, recordDict)]
+    };
+}
+
+function getRunResultForMail(runResults: RunResult[], envId: string, envNames: _.Dictionary<Environment>, recordDict: _.Dictionary<Record>) {
+    const unknownRecord = 'unknown';
+    const unknownEnv = 'No Environment';
+    return runResults.map(r => ({ ...r, isSuccess: isSuccess(r), envName: envNames[envId] ? envNames[envId].name : unknownEnv, recordName: recordDict[r.id] ? recordDict[r.id].name : unknownRecord, duration: r.elapsed }));
 }
 
 async function storeRunResult(originRunResults: RunResult[], compareRunResults: RunResult[], schedule: Schedule, isScheduleRun?: boolean): Promise<ScheduleRecord> {
