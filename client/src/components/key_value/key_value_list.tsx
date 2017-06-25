@@ -17,6 +17,8 @@ interface KeyValueListComponentProps {
     headers: Array<DtoHeader>;
 
     onChanged: (headers: DtoHeader[]) => void;
+
+    disableActive?: boolean;
 }
 
 interface KeyValueListComponentState {
@@ -43,6 +45,7 @@ class KeyValueListComponent extends React.Component<KeyValueListComponentProps, 
                     <this.DragHandle />
                     <Checkbox
                         key={`cb${header.id}`}
+                        style={this.props.disableActive ? { display: 'none' } : {}}
                         onChange={(e) => this.onValueChange('isActive', hIndex, e)}
                         defaultChecked={header.isActive}
                     />

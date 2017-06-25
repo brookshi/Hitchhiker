@@ -7,6 +7,8 @@ import * as _ from 'lodash';
 import { Period, PeriodStr } from '../../common/period';
 import { NotificationMode, NotificationStr } from '../../common/notification_mode';
 import { DateUtil } from '../../utils/date_util';
+import { DtoRecord } from '../../../../api/interfaces/dto_record';
+import SortableListComponent from '../../components/sortable_list';
 
 const FormItem = Form.Item;
 
@@ -22,6 +24,8 @@ interface ScheduleEditDialogProps {
 
     environments: _.Dictionary<string>;
 
+    records: DtoRecord[];
+
     onCancel();
 
     onOk(schedule: DtoSchedule);
@@ -32,21 +36,45 @@ interface ScheduleEditDialogState {
     showEmails: boolean;
 
     needCompare: boolean;
+
+    enableSort: boolean;
+
+    needOrder: boolean;
+
+    sortedRecords: DtoRecord[];
 }
+
+class RecordSortList extends SortableListComponent<DtoRecord> { }
 
 class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { form: any }, ScheduleEditDialogState> {
 
     constructor(props: ScheduleEditDialogProps & { form: any }) {
         super(props);
+
+        let sortedRecords = new Array<DtoRecord>();
+        if (props.schedule.collectionId) {
+            const recordDict = _.keyBy(props.records.filter(r => r.collectionId === props.schedule.collectionId), 'id');
+            props.schedule.recordsOrder.split(';').forEach(id => {
+                if (recordDict[id]) {
+                    sortedRecords.push(recordDict[id]);
+                    Reflect.deleteProperty(recordDict, id);
+                }
+            });
+            sortedRecords = [...sortedRecords, ..._.chain(recordDict).values<DtoRecord>().sortBy('name').value()];
+        }
+
         this.state = {
             showEmails: props.schedule.notification === NotificationMode.custom,
-            needCompare: props.schedule.needCompare
+            needCompare: props.schedule.needCompare,
+            needOrder: props.schedule.needOrder,
+            enableSort: !!props.schedule.collectionId,
+            sortedRecords
         };
     }
 
     private generateCollectionSelect = () => {
         return (
-            <Select>
+            <Select onChange={this.onCollectionChanged}>
                 {
                     Object.keys(this.props.collections).map(k =>
                         <Option key={k} value={k}>{this.props.collections[k]}</Option>)
@@ -129,6 +157,29 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
         }
     }
 
+    private onCollectionChanged = (collectionId: string) => {
+        if (collectionId) {
+            const sortedRecords = _.sortBy(this.props.records.filter(r => r.collectionId === collectionId), 'name');
+            this.setState({ ...this.state, enableSort: true, sortedRecords });
+        } else {
+            this.setState({ ...this.state, enableSort: false, needOrder: false, sortedRecords: [] });
+        }
+    }
+
+    private generateSortRecordsList = () => {
+        return (
+            <RecordSortList
+                datas={this.state.sortedRecords}
+                buildListItem={(item, dragHandler) => (<li className="schedule-dlg-sort-item" key={item.id}>{dragHandler}{item.name}</li>)}
+                onChanged={this.onSort}
+            />
+        );
+    }
+
+    private onSort = (data: DtoRecord[]) => {
+        this.setState({ ...this.state, sortedRecordIds: data.map(d => d.id) });
+    }
+
     private onOk = () => {
         this.props.form.validateFields((err, values) => {
             if (err) {
@@ -140,7 +191,8 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
                 ...values,
                 emails: values.emails.join(';'),
                 environmentId: values.environmentId === noEnvironment ? undefined : values.environmentId,
-                hour: DateUtil.localHourToUTC(Number.parseInt(values.hour))
+                hour: DateUtil.localHourToUTC(Number.parseInt(values.hour)),
+                recordsOrder: this.state.sortedRecords.map(r => r.id).join(';')
             });
         });
     }
@@ -183,13 +235,40 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
                             )}
                     </FormItem>
                     <FormItem {...formItemLayout} label="Collection">
-                        {getFieldDecorator('collectionId', {
-                            initialValue: schedule.collectionId,
-                            rules: [{ required: true, message: 'Please select a collection' }],
-                        })(
-                            this.generateCollectionSelect()
-                            )}
+                        <Row gutter={8}>
+                            <Col span={18}>
+                                <FormItem>
+                                    {getFieldDecorator('collectionId', {
+                                        initialValue: schedule.collectionId,
+                                        rules: [{ required: true, message: 'Please select a collection' }],
+                                    })(
+                                        this.generateCollectionSelect()
+                                        )}
+                                </FormItem>
+                            </Col>
+                            <Col span={6}>
+                                <FormItem>
+                                    {getFieldDecorator('needOrder', {
+                                        initialValue: schedule.needOrder,
+                                    })(
+                                        <Checkbox disabled={!this.state.enableSort} onChange={e => {
+                                            this.setState({ ...this.state, needOrder: (e.target as any).checked });
+                                        }}>Sort requests</Checkbox>
+                                        )}
+                                </FormItem>
+                            </Col>
+                        </Row>
                     </FormItem>
+                    {
+                        this.state.needOrder ? (
+                            <Row>
+                                <Col span={5} />
+                                <Col span={17} className="schedule-dlg-list">
+                                    {this.generateSortRecordsList()}
+                                </Col>
+                            </Row>
+                        ) : ''
+                    }
                     <FormItem {...formItemLayout} label="Period" >
                         <Row gutter={8}>
                             <Col span={12}>

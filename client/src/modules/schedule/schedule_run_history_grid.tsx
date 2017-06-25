@@ -23,7 +23,7 @@ interface ScheduleRunHistoryGridProps {
 
     envNames: _.Dictionary<string>;
 
-    recordNames: _.Dictionary<DtoRecord>;
+    records: _.Dictionary<DtoRecord>;
 
     isRunning: boolean;
 
@@ -67,7 +67,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                 <RunResultColumn
                     title="Name"
                     dataIndex="id"
-                    render={(text, runResult) => ({ children: this.props.recordNames[runResult.id] ? this.props.recordNames[runResult.id].name : unknownName, props: { rowSpan: runResult.rowSpan } })}
+                    render={(text, runResult) => ({ children: this.props.records[runResult.id] ? this.props.records[runResult.id].name : unknownName, props: { rowSpan: runResult.rowSpan } })}
                 />
                 <RunResultColumn
                     title="Pass"
@@ -204,14 +204,14 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
     }
 
     public render() {
-        const { isRunning, consoleRunResults, recordNames, envNames, scheduleRecords } = this.props;
+        const { isRunning, consoleRunResults, records, envNames, scheduleRecords } = this.props;
 
         return (
             <div>
                 <ScheduleRunConsole
                     isRunning={isRunning}
                     runResults={consoleRunResults}
-                    records={recordNames}
+                    records={records}
                     envNames={envNames}
                 />
                 <ScheduleRecordTable

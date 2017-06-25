@@ -13,6 +13,7 @@ import { noEnvironment } from '../../common/constants';
 import { DateUtil } from '../../utils/date_util';
 import * as _ from 'lodash';
 import { ScheduleRunState } from '../../state/schedule';
+import { DtoRecord } from '../../../../api/interfaces/dto_record';
 
 interface ScheduleListProps {
 
@@ -25,6 +26,8 @@ interface ScheduleListProps {
     collections: _.Dictionary<string>;
 
     environments: _.Dictionary<string>;
+
+    records: _.Dictionary<DtoRecord>;
 
     runState: _.Dictionary<ScheduleRunState>;
 
@@ -159,6 +162,7 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                     collections={collections}
                     environments={environments}
                     isEditDlgOpen={this.state.isEditDlgOpen}
+                    records={_.values(this.props.records)}
                     onCancel={() => this.setState({ ...this.state, isEditDlgOpen: false })}
                     onOk={schedule => this.saveSchedule(schedule)}
                 />

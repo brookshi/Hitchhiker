@@ -94,6 +94,7 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
                         deleteSchedule={deleteSchedule}
                         runSchedule={runSchedule}
                         runState={runState}
+                        records={records}
                     />
                 </Sider>
                 <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
@@ -111,7 +112,7 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
                         envName={envName}
                         compareEnvName={compareEnvName}
                         envNames={environments}
-                        recordNames={records}
+                        records={records}
                         isRunning={runState[activeSchedule] ? runState[activeSchedule].isRunning : false}
                         consoleRunResults={runState[activeSchedule] ? runState[activeSchedule].consoleRunResults : []}
                     />
