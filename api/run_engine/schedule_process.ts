@@ -1,13 +1,21 @@
-import * as childProcess from 'child_process';
+import "reflect-metadata";
+import { Setting } from "../utils/setting";
+import { Log } from "../utils/log";
+import { ScheduleRunner } from "./schedule_runner";
 
-export class ScheduleProcess {
+Log.init();
 
-    static scheduleProcess;
+const scheduleRunner = new ScheduleRunner();
 
-    static init() {
-        ScheduleProcess.scheduleProcess = childProcess.fork(`${__dirname}/schedule.js`, [], { silent: false, execArgv: [] });
-        ScheduleProcess.scheduleProcess.on('message', msg => {
-
-        });
+process.on('message', (msg) => {
+    if (msg === 'start') {
+        startSchedules();
     }
+});
+
+function startSchedules() {
+    scheduleRunner.run();
+    setInterval(() => {
+        scheduleRunner.run();
+    }, Setting.instance.schedule.checkDuration * 1000);
 }

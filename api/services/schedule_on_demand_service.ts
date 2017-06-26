@@ -1,6 +1,6 @@
 import * as WS from 'ws';
 import { ScheduleService } from "./schedule_service";
-import { runSchedule } from "../run_engine/schedule";
+import { ScheduleRunner } from "../run_engine/schedule_runner";
 import { WebSocketHandler } from "./base/web_socket_handler";
 
 export class ScheduleOnDemandService extends WebSocketHandler {
@@ -26,6 +26,6 @@ export class ScheduleOnDemandService extends WebSocketHandler {
             return;
         }
 
-        await runSchedule(schedule, null, false, data => this.send(data));
+        await new ScheduleRunner().runSchedule(schedule, null, false, data => this.send(data));
     }
 }

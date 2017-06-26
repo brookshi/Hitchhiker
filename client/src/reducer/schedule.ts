@@ -40,7 +40,8 @@ export function scheduleState(state: ScheduleState = scheduleDefaultValue, actio
                         scheduleRecords: [
                             action.value.data,
                             ...schedule.scheduleRecords
-                        ]
+                        ],
+                        lastRunDate: new Date()
                     }
                 },
                 runState: {
