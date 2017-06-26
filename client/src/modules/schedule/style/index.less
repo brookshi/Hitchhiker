@@ -79,16 +79,18 @@
 }
 
 .schedule-dlg-list{
-    height: 100px;
-    overflow-y: auto;
     border: 1px solid @border-color;
     margin-bottom: 24px;
+    background: #fafafa;
 }
 
 .schedule-dlg-sort-item{
-    height: 30px;
+    list-style: none;
+    line-height: 32px;
     border-bottom: 1px solid @border-color;
-    margin: 8px 4px 0px 4px;
+    z-index: 1000;
+    background: white;
+    cursor: move;
 
     .keyvalue-dragicon{
         margin-right: 16px;

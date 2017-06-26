@@ -44,8 +44,10 @@
     ✔ should not show info if there is no schedule @done (6/22/2017, 6:03:14 PM)
     ✔ schedule suspend @done (2017/6/22 下午10:43:58)
     ✔ schedule item loading @done (6/23/2017, 11:08:30 AM)
-    ☐ schedule send emails
-    ☐ schedule record order
+    ✔ schedule send emails @done (6/26/2017, 6:37:39 PM)
+    ✔ schedule record order @done (6/26/2017, 6:37:48 PM)
+    ☐ schedule run now , update item label
+    ☐ schedule cookie save
     ☐ keep schedule process
     ☐ improve performance
     ✔ schedule need check collection/env valid @done (6/19/2017, 9:47:51 AM)
@@ -56,6 +58,7 @@
     ☐ login ui / logout redirect
     ✔ cookie invalid indirect to login page @done (2017/6/17 上午11:33:04)
     ☐ user password should hide
+    ☐ change pwd
     ☐ build to live
     ☐ unit test
 0.2.0:

@@ -49,6 +49,8 @@ interface ScheduleListState {
     isCreateNew: boolean;
 
     isEditDlgOpen: boolean;
+
+    isEditDlgRendered: boolean;
 }
 
 const createDefaultSchedule: (user: DtoUser) => DtoSchedule = (user: DtoUser) => {
@@ -78,7 +80,8 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
         this.state = {
             schedule: createDefaultSchedule(props.user),
             isCreateNew: true,
-            isEditDlgOpen: false
+            isEditDlgOpen: false,
+            isEditDlgRendered: false
         };
     }
 
@@ -95,7 +98,8 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
             ...this.state,
             isEditDlgOpen: true,
             isCreateNew: true,
-            schedule: createDefaultSchedule(this.props.user)
+            schedule: createDefaultSchedule(this.props.user),
+            isEditDlgRendered: false
         });
     }
 
@@ -109,6 +113,7 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
             ...this.state,
             isEditDlgOpen: true,
             isCreateNew: false,
+            isEditDlgRendered: false,
             schedule: { ...schedule, environmentId: schedule.environmentId || noEnvironment }
         });
     }
@@ -163,6 +168,8 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                     environments={environments}
                     isEditDlgOpen={this.state.isEditDlgOpen}
                     records={_.values(this.props.records)}
+                    isRendered={this.state.isEditDlgRendered}
+                    render={() => this.setState({ ...this.state, isEditDlgRendered: true })}
                     onCancel={() => this.setState({ ...this.state, isEditDlgOpen: false })}
                     onOk={schedule => this.saveSchedule(schedule)}
                 />

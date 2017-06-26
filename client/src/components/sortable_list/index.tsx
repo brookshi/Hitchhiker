@@ -4,41 +4,36 @@ import './style/index.less';
 
 interface SortableListComponentProps<T> {
 
-    datas: Array<T>;
+    items: Array<T>;
 
-    buildListItem(data: T, dragHandler: any);
+    buildListItem(item: T, dragHandler: any);
 
-    onChanged(datas: T[]);
+    onChanged(items: T[]);
+
+    useDragHandler?: boolean;
+
+    height?: number;
 }
 
 interface SortableListComponentState { }
-
-interface SortableElementParam<T> {
-
-    header: T;
-
-    hIndex: number;
-}
 
 class SortableListComponent<T> extends React.Component<SortableListComponentProps<T>, SortableListComponentState> {
 
     private DragHandle = SortableHandle(() => <span className="keyvalue-dragicon">☰</span>);
 
-    private SortableItem = SortableElement(({ hIndex, header }: SortableElementParam<T>) => {
-        return this.props.buildListItem(header, <this.DragHandle />);
+    private SortableItem = SortableElement(({ item }) => {
+        return this.props.buildListItem(item, <this.DragHandle />);
     });
 
-    private SortableList = SortableContainer(({ datas }) => {
+    private SortableList = SortableContainer(({ items }) => {
         return (
-            <ul>
+            <ul style={{ height: this.props.height || 200, overflowY: 'auto' }}>
                 {
-                    datas.map((header, index) => (
+                    items.map((item, index) => (
                         <this.SortableItem
                             key={`item_${index}`}
                             index={index}
-                            hIndex={index}
-                            header={header}
-                            disabled={index === this.props.datas.length - 1}
+                            item={item}
                         />)
                     )
                 }
@@ -51,15 +46,14 @@ class SortableListComponent<T> extends React.Component<SortableListComponentProp
     }
 
     private onSortEnd = ({ oldIndex, newIndex }) => {
-        let { datas, onChanged } = this.props;
-        datas = arrayMove(datas, oldIndex, newIndex);
-        onChanged(datas);
+        let { items, onChanged } = this.props;
+        items = arrayMove(items, oldIndex, newIndex);
+        onChanged(items);
     }
 
     public render() {
-        const datas = this.props.datas;
         return (
-            <this.SortableList className="sortable-list" datas={datas} onSortEnd={this.onSortEnd} useDragHandle={true} />
+            <this.SortableList className="sortable-list" items={this.props.items} onSortEnd={this.onSortEnd} useDragHandle={this.props.useDragHandler} />
         );
     }
 }
