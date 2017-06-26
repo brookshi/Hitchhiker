@@ -5,8 +5,6 @@ import { ScheduleRunner } from "./schedule_runner";
 
 Log.init();
 
-const scheduleRunner = new ScheduleRunner();
-
 process.on('message', (msg) => {
     if (msg === 'start') {
         startSchedules();
@@ -14,8 +12,8 @@ process.on('message', (msg) => {
 });
 
 function startSchedules() {
-    scheduleRunner.run();
+    new ScheduleRunner().run();
     setInterval(() => {
-        scheduleRunner.run();
+        new ScheduleRunner().run();
     }, Setting.instance.schedule.checkDuration * 1000);
 }

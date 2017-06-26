@@ -19,6 +19,9 @@ import { MailService } from "../services/mail_service";
 import { Log } from "../utils/log";
 
 export class ScheduleRunner {
+
+    private collectionCookies: _.Dictionary<_.Dictionary<string>>;
+
     async run() {
         Log.info('schedule start.');
         Log.info('get all schedule.');
