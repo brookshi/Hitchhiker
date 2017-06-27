@@ -15,7 +15,6 @@ export abstract class WebSocketHandler {
     abstract onClose();
 
     send = (data: string) => {
-        console.log(`send data: ${data}`);
         this.socket.send(data);
     }
 

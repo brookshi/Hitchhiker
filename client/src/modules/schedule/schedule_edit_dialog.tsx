@@ -9,6 +9,7 @@ import { NotificationMode, NotificationStr } from '../../common/notification_mod
 import { DateUtil } from '../../utils/date_util';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import SortableListComponent from '../../components/sortable_list';
+import { RecordCategory } from '../../common/record_category';
 
 const FormItem = Form.Item;
 
@@ -57,10 +58,6 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
         this.initStateFromProps(props);
     }
 
-    public componentWillMount() {
-        console.log('mount');
-    }
-
     public componentWillReceiveProps(nextProps: ScheduleEditDialogProps & { form: any }) {
         if (nextProps.isRendered) {
             return;
@@ -72,7 +69,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
     private initStateFromProps(props: ScheduleEditDialogProps & { form: any }) {
         let sortedRecords = new Array<DtoRecord>();
         if (props.schedule.collectionId) {
-            const recordDict = _.keyBy(props.records.filter(r => r.collectionId === props.schedule.collectionId), 'id');
+            const recordDict = _.keyBy(props.records.filter(r => r.collectionId === props.schedule.collectionId && r.category === RecordCategory.record), 'id');
             props.schedule.recordsOrder.split(';').forEach(id => {
                 if (recordDict[id]) {
                     sortedRecords.push(recordDict[id]);
@@ -178,7 +175,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
 
     private onCollectionChanged = (collectionId: string) => {
         if (collectionId) {
-            const sortedRecords = _.sortBy(this.props.records.filter(r => r.collectionId === collectionId), 'name');
+            const sortedRecords = _.sortBy(this.props.records.filter(r => r.collectionId === collectionId && r.category === RecordCategory.record), 'name');
             this.setState({ ...this.state, enableSort: true, sortedRecords });
         } else {
             this.setState({ ...this.state, enableSort: false, needOrder: false, sortedRecords: [] });

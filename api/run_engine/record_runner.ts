@@ -18,7 +18,7 @@ export class RecordRunner {
             records = _.unionBy(orderRecords, records, 'id');
             const runResults = new Array<RunResult>();
             for (let record of records) {
-                RecordRunner.applyCookies(record, cookies);
+                record = RecordRunner.applyCookies(record, cookies);
 
                 const result = await RecordRunner.runRecord(environmentId, record);
                 runResults.push(result);
@@ -54,9 +54,15 @@ export class RecordRunner {
     }
 
     static applyCookies(record: Record, cookies: _.Dictionary<_.Dictionary<string>>): Record {
+        if (_.keys(cookies).length === 0) {
+            return record;
+        }
         const headers = [...record.headers || []];
         const hostName = StringUtil.getHostFromUrl(record.url);
-        const currentCookies = hostName ? cookies[hostName] || [] : [];
+        const currentCookies = hostName ? cookies[hostName] || {} : {};
+        if (_.keys(currentCookies).length === 0) {
+            return record;
+        }
         const cookieHeader = headers.find(h => h.isActive && (h.key || '').toLowerCase() === 'cookie');
 
         let recordCookies: _.Dictionary<string> = {};
