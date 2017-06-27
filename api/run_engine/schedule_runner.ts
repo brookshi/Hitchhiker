@@ -20,8 +20,6 @@ import { Log } from "../utils/log";
 
 export class ScheduleRunner {
 
-    private collectionCookies: _.Dictionary<_.Dictionary<string>>;
-
     async run() {
         Log.info('schedule start.');
         Log.info('get all schedule.');
@@ -47,8 +45,8 @@ export class ScheduleRunner {
         }
         Log.info(`run schedule ${schedule.name}`);
         const needCompare = schedule.needCompare && schedule.compareEnvironmentId;
-        const originRunResults = await RecordRunner.runRecords(records, schedule.environmentId, schedule.needOrder, schedule.recordsOrder, trace);
-        const compareRunResults = needCompare ? await RecordRunner.runRecords(records, schedule.compareEnvironmentId, schedule.needOrder, schedule.recordsOrder, trace) : [];
+        const originRunResults = await RecordRunner.runRecords(records, schedule.environmentId, schedule.needOrder, schedule.recordsOrder, true, trace);
+        const compareRunResults = needCompare ? await RecordRunner.runRecords(records, schedule.compareEnvironmentId, schedule.needOrder, schedule.recordsOrder, true, trace) : [];
         const record = await this.storeRunResult(originRunResults, compareRunResults, schedule, isScheduleRun);
 
         Log.info(`run schedule finish`);

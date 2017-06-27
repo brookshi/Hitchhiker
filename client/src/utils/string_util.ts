@@ -16,10 +16,14 @@ export class StringUtil {
         return word[0].toUpperCase() + word.substr(1);
     }
 
-    static readCookie(cookie: string): _.Dictionary<string> {
+    static readCookies(cookies: string): _.Dictionary<string> {
         const cookieDict: _.Dictionary<string> = {};
-        cookie.split(';').map(c => c.trim()).forEach(c => cookieDict[c.substr(0, c.indexOf('=') || c.length)] = c);
+        cookies.split(';').map(c => c.trim()).forEach(c => cookieDict[c.substr(0, c.indexOf('=') || c.length)] = c);
         return cookieDict;
+    }
+
+    static readCookie(cookie: string): { key: string, value: string } {
+        return { key: cookie.substr(0, cookie.indexOf('=') || cookie.length), value: cookie.substr(0, cookie.indexOf(';') || cookie.length) };
     }
 
     static stringToKeyValues(str: string): Array<KeyValuePair> {

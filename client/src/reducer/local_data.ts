@@ -3,6 +3,7 @@ import { FetchLocalDataSuccessType, FetchLocalDataFailedType, FetchLocalDataPend
 import { SendRequestFulfilledType } from '../action/record';
 import { RunResult } from '../../../api/interfaces/dto_run_result';
 import { RequestStatus } from '../common/request_status';
+import { StringUtil } from '../utils/string_util';
 
 export function localDataState(state: LocalDataState = localDataDefaultValue, action: any): LocalDataState {
     switch (action.type) {
@@ -22,7 +23,10 @@ export function localDataState(state: LocalDataState = localDataDefaultValue, ac
             }
 
             const hostCookies = state.cookies[res.host] || {};
-            res.cookies.forEach(c => hostCookies[c.substr(0, c.indexOf('=') || c.length)] = c.substr(0, c.indexOf(';') || c.length));
+            res.cookies.forEach(c => {
+                const keyPair = StringUtil.readCookie(c);
+                hostCookies[keyPair.key] = keyPair.value;
+            });
             return { ...state, cookies: { ...state.cookies, [res.host]: { ...hostCookies } } };
         }
         default:

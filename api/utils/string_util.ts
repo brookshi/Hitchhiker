@@ -2,7 +2,7 @@ import * as crypto from 'crypto';
 import { Setting } from "./setting";
 import * as uuid from 'uuid';
 import * as shortId from 'shortid';
-import { URL } from 'url';
+import * as URL from 'url';
 
 export class StringUtil {
     static md5(str: string): string {
@@ -55,9 +55,19 @@ export class StringUtil {
 
     static getHostFromUrl(url: string): string {
         try {
-            return url ? new URL(url).hostname : '';
+            return url ? URL.parse(url).hostname : '';
         } catch (e) {
             return url;
         }
+    }
+
+    static readCookies(cookies: string): _.Dictionary<string> {
+        const cookieDict: _.Dictionary<string> = {};
+        cookies.split(';').map(c => c.trim()).forEach(c => cookieDict[c.substr(0, c.indexOf('=') || c.length)] = c);
+        return cookieDict;
+    }
+
+    static readCookie(cookie: string): { key: string, value: string } {
+        return { key: cookie.substr(0, cookie.indexOf('=') || cookie.length), value: cookie.substr(0, cookie.indexOf(';') || cookie.length) };
     }
 }

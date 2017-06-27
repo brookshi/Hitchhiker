@@ -9,16 +9,22 @@ import { StringUtil } from "../utils/string_util";
 
 export class RecordRunner {
 
-    static async runRecords(records: Record[], environmentId: string, needOrder: boolean = false, orderRecordIds: string = '', trace?: (msg: string) => void): Promise<RunResult[]> {
+    static async runRecords(records: Record[], environmentId: string, needOrder: boolean = false, orderRecordIds: string = '', applyCookies?: boolean, trace?: (msg: string) => void): Promise<RunResult[]> {
         if (needOrder && orderRecordIds) {
+            const cookies: _.Dictionary<_.Dictionary<string>> = {};
             records = _.sortBy(records, 'name');
             const recordDict = _.keyBy(records, 'id');
             const orderRecords = orderRecordIds.split(';').filter(r => recordDict[r]).map(r => recordDict[r]);
             records = _.unionBy(orderRecords, records, 'id');
             const runResults = new Array<RunResult>();
             for (let record of records) {
+                RecordRunner.applyCookies(record, cookies);
+
                 const result = await RecordRunner.runRecord(environmentId, record);
                 runResults.push(result);
+
+                RecordRunner.storeCookies(result, cookies);
+
                 if (trace) {
                     trace(JSON.stringify(result));
                 }
@@ -33,6 +39,33 @@ export class RecordRunner {
                 return result;
             }));
         }
+    }
+
+    static storeCookies(result: RunResult, cookies: _.Dictionary<_.Dictionary<string>>) {
+        if (result.host && result.cookies) {
+            if (!cookies[result.host]) {
+                cookies[result.host] = {};
+            }
+            result.cookies.forEach(c => {
+                const keyPair = StringUtil.readCookie(c);
+                cookies[result.host][keyPair.key] = keyPair.value;
+            });
+        }
+    }
+
+    static applyCookies(record: Record, cookies: _.Dictionary<_.Dictionary<string>>): Record {
+        const headers = [...record.headers || []];
+        const hostName = StringUtil.getHostFromUrl(record.url);
+        const currentCookies = hostName ? cookies[hostName] || [] : [];
+        const cookieHeader = headers.find(h => h.isActive && (h.key || '').toLowerCase() === 'cookie');
+
+        let recordCookies: _.Dictionary<string> = {};
+        if (cookieHeader) {
+            recordCookies = StringUtil.readCookies(cookieHeader.value || '');
+        }
+        const allCookies = { ...currentCookies, ...recordCookies };
+        _.remove(headers, h => h.key === 'Cookie');
+        return { ...record, headers: [...headers, { id: '', sort: 0, record, key: 'Cookie', value: _.values(allCookies).join('; '), isActive: true }] };
     }
 
     static async runRecord(envId: string, record: Record, serverRes?: ServerResponse, needPipe?: boolean): Promise<RunResult> {

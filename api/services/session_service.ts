@@ -31,13 +31,14 @@ export class SessionService {
     }
 
     static async isSessionValid(ctx: Koa.Context): Promise<boolean> {
-        const userId = 'Hk3wQ60ix';//(<any>ctx).session.userId;
+        const userId = (<any>ctx).session.userId; //'Hk3wQ60ix';//
         let validUser = !!userId;
         if (validUser) {
             const checkRst = await UserService.checkUserById(userId);
             validUser = checkRst.success;
             if (validUser) {
                 (<any>ctx).session.user = checkRst.result;
+                (<any>ctx).session.userId = userId;
             }
         }
         return validUser || !!SessionService.bypass.find(o => ctx.request.url.replace(`?${ctx.request.querystring}`, '').endsWith(o));

@@ -234,11 +234,11 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         const headers = [...record.headers || []];
         const hostName = new URL(record.url || '').hostname;
         const localCookies = hostName ? cookies[hostName] || [] : [];
-        const cookieHeader = headers.find(h => h.key === 'Cookie');
+        const cookieHeader = headers.find(h => h.isActive && (h.key || '').toLowerCase() === 'cookie');
 
         let recordCookies: _.Dictionary<string> = {};
         if (cookieHeader) {
-            recordCookies = StringUtil.readCookie(cookieHeader.value || '');
+            recordCookies = StringUtil.readCookies(cookieHeader.value || '');
         }
         const allCookies = { ...localCookies, ...recordCookies };
         _.remove(headers, h => h.key === 'Cookie');
