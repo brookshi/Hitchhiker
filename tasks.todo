@@ -9,11 +9,9 @@
     ✔ share to team @done (4/11/2017, 10:22:36 AM)
     ✔ invite user @done (2017/4/9 下午4:55:51)
     ✔ invite to team @done (2017/4/9 下午4:55:52)
-    ☐ import postman
     ✔ session maxage(2d, rolling) @done (2017/4/2 上午12:11:25)
     ✔ error handle @done (2017/4/2 下午3:04:54)
     ✔ miss session @done (2017/4/2 下午6:48:35)
-    ☐ log
     ✔ message @done (2017/4/2 下午10:11:44)
     ✔ auto generate accout for invite user @done (2017/4/9 下午10:59:31) // TODO: need mail password??
     ✔ team @done (2017/5/30 下午12:46:19)
@@ -49,17 +47,20 @@
     ✔ schedule run now , update item label @done (2017/6/26 下午10:33:55)
     ✔ schedule cookie save @done (6/28/2017, 1:13:16 PM)
     ✔ keep schedule process alive @done (2017/6/26 下午10:33:56)
-    ☐ improve performance
     ✔ schedule need check collection/env valid @done (6/19/2017, 9:47:51 AM)
-    ☐ invite user / test
     ✔ record change time line (db) @done (2017/6/28 下午9:51:15)
     ✔ document db @done (2017/6/28 下午8:47:11)
     ✔ default open collection @done (2017/6/3 下午9:57:22)
-    ☐ login ui / logout redirect
     ✔ cookie invalid indirect to login page @done (2017/6/17 上午11:33:04)
+    ☐ improve performance
+    ☐ login ui / logout redirect
+    ☐ import postman
     ☐ user password should hide
     ☐ change pwd
     ☐ build to live
+    ☐ log
+    ☐ invite user / test
+    ☐ test
     ☐ unit test
 0.2.0:
     ☐ save all tabs, close all tabs, close all but active.

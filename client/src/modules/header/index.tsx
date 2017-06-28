@@ -58,7 +58,7 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
         return (
             <div className="header">
                 <img className="header-logo" src="./hitchhiker.svg" />
-                <span className="header-title">Hitchhiker API</span>
+                <img className="header-title" src="./hitchhiker-title.svg" />
                 <div className="header-right">
                     <Badge style={{ fontFamily: 'SourceCodePro', boxShadow: '0 0 0 0 #fff' }} count={syncCount}>
                         <Icon className={`${syncCount > 0 ? 'header-sync-anim' : ''} header-sync`} type="sync" />
