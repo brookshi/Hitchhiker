@@ -35,9 +35,9 @@ class LoadingScreen extends React.Component<LoadingScreenProps, LoadingScreenSta
     }
 
     public componentDidMount() {
-        if (this.props.loginStatus.status !== RequestStatus.success) {
+        if (this.props.loginStatus.status === RequestStatus.failed || this.props.loginStatus.status === RequestStatus.none) {
             this.props.getUserInfo();
-        } else {
+        } else if (this.props.loginStatus.status === RequestStatus.success) {
             this.props.fetchCollectionData();
         }
     }

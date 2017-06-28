@@ -26,10 +26,6 @@ class LoginPanel extends React.Component<LoginProps, LoginPanelState> {
 
     public componentDidMount() {
         this.props.form.getFieldInstance(`email`).focus();
-        const { loginStatus } = this.props;
-        if (loginStatus.message && loginStatus.status === RequestStatus.failed) {
-            message.warning(loginStatus.message);
-        }
     }
 
     public componentWillReceiveProps(nextProps: LoginProps) {

@@ -67,7 +67,7 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
         this.setState({ ...this.state, panelMode });
     }
 
-    private get loginRelativedPanel() {
+    private get loginMainPanel() {
         return (
             <div style={{ height: '100%' }}>
                 <Row style={{ height: '80%', marginLeft: 18, marginRight: 18 }} type="flex" justify="center" align="middle" gutter={36}>
@@ -116,7 +116,7 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
         return (
             <div className="login-page">
                 {
-                    loginStatus.status === RequestStatus.failed ? this.loginRelativedPanel : (
+                    loginStatus.status === RequestStatus.failed ? this.loginMainPanel : (
                         <LoadingScreen
                             fetchCollectionData={fetchCollectionData}
                             fetchCollectionDataStatus={fetchCollectionStatus}
