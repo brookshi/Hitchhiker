@@ -10,6 +10,7 @@ import { DtoRecord } from "../interfaces/dto_record";
 import { Collection } from "../models/collection";
 import { HeaderService } from "./header_service";
 import { StringUtil } from "../utils/string_util";
+import { RecordHistory } from "../models/record_history";
 
 export class RecordService {
     private static _sort: number = 0;
@@ -192,7 +193,10 @@ export class RecordService {
             record.id = StringUtil.generateUID();
         }
         const connection = await ConnectionManager.getInstance();
-        await connection.getRepository(Record).persist(record);
+        await connection.manager.transaction(async manager => {
+            await manager.save(record);
+            await manager.save(RecordService.createRecordHistory(record));
+        });
         return { success: true, message: Message.recordSaveSuccess };
     }
 
@@ -229,5 +233,21 @@ export class RecordService {
         result.push(...nonParentRecord);
 
         return result;
+    }
+
+    private static createRecordHistory(record: Record): RecordHistory {
+        const history = new RecordHistory();
+        history.target = record;
+        history.record = { ...record };
+        Reflect.deleteProperty(history.record, 'collection');
+        Reflect.deleteProperty(history.record, 'doc');
+        Reflect.deleteProperty(history.record, 'history');
+        Reflect.deleteProperty(history.record, 'children');
+        history.record.headers = record.headers.map(h => {
+            const header = { ...h };
+            Reflect.deleteProperty(header, 'record');
+            return header;
+        });
+        return history;
     }
 }

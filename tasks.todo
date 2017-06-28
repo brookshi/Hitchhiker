@@ -52,8 +52,8 @@
     ☐ improve performance
     ✔ schedule need check collection/env valid @done (6/19/2017, 9:47:51 AM)
     ☐ invite user / test
-    ☐ record change time line (db)
-    ☐ document db
+    ✔ record change time line (db) @done (2017/6/28 下午9:51:15)
+    ✔ document db @done (2017/6/28 下午8:47:11)
     ✔ default open collection @done (2017/6/3 下午9:57:22)
     ☐ login ui / logout redirect
     ✔ cookie invalid indirect to login page @done (2017/6/17 上午11:33:04)
