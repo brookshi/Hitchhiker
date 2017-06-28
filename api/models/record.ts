@@ -1,9 +1,11 @@
-import { OneToMany, Entity, PrimaryColumn, Column, ManyToOne, UpdateDateColumn, CreateDateColumn } from 'typeorm';
+import { OneToMany, Entity, PrimaryColumn, JoinColumn, Column, ManyToOne, UpdateDateColumn, CreateDateColumn, OneToOne } from 'typeorm';
 import { Collection } from './collection';
 import { Header } from "./header";
 import { RecordCategory } from "../common/record_category";
 import { DataMode } from "../common/data_mode";
 import { BodyType } from '../common/body_type';
+import { RecordDoc } from "./record_doc";
+import { RecordHistory } from "./record_history";
 
 @Entity()
 export class Record {
@@ -13,6 +15,16 @@ export class Record {
 
     @ManyToOne(type => Collection, collection => collection.records)
     collection: Collection;
+
+    @JoinColumn()
+    @OneToOne(type => RecordDoc, doc => doc.record, {
+        cascadeInsert: true,
+        cascadeRemove: true
+    })
+    doc: RecordDoc;
+
+    @OneToMany(type => RecordHistory, history => history.target)
+    history: RecordHistory[];
 
     @Column({ nullable: true, default: '' })
     pid: string;

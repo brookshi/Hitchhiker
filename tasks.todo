@@ -47,7 +47,7 @@
     ✔ schedule send emails @done (6/26/2017, 6:37:39 PM)
     ✔ schedule record order @done (6/26/2017, 6:37:48 PM)
     ✔ schedule run now , update item label @done (2017/6/26 下午10:33:55)
-    ☐ schedule cookie save
+    ✔ schedule cookie save @done (6/28/2017, 1:13:16 PM)
     ✔ keep schedule process alive @done (2017/6/26 下午10:33:56)
     ☐ improve performance
     ✔ schedule need check collection/env valid @done (6/19/2017, 9:47:51 AM)
