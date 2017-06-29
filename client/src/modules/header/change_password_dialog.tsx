@@ -55,7 +55,6 @@ class ChangePasswordDialog extends React.Component<ChangePasswordDlgFormProps, C
             }
             this.needShowMsg = true;
             this.props.onOk({ oldPassword: values.oldPassword, newPassword: values.newPassword });
-            this.reset();
         });
     }
 
@@ -97,14 +96,14 @@ class ChangePasswordDialog extends React.Component<ChangePasswordDlgFormProps, C
         const isLoading = changePasswordState.status === RequestStatus.pending;
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
-            labelCol: { span: 5 },
-            wrapperCol: { span: 17 },
+            labelCol: { span: 10 },
+            wrapperCol: { span: 14 },
         };
         return (
             <Modal
                 visible={isDlgOpen}
                 title="Change password"
-                width={400}
+                width={500}
                 maskClosable={false}
                 closable={false}
                 confirmLoading={this.props.changePasswordState.status === RequestStatus.pending}
@@ -112,14 +111,11 @@ class ChangePasswordDialog extends React.Component<ChangePasswordDlgFormProps, C
                 onOk={this.onOk}
                 footer={[
                     <Button key="cancel" disabled={isLoading} onClick={this.onCancel}>Cancel</Button>,
-                    <Button key="submit" type="primary" loading={isLoading} onClick={this.onOk}>
-                        Change password
-                    </Button>
+                    <Button key="submit" type="primary" loading={isLoading} onClick={this.onOk}>Submit</Button>
                 ]}
             >
-                <Form onSubmit={this.onOk}>
-                    <FormItem {...formItemLayout} hasFeedback={true}>
-                        <div> Old password </div>
+                <Form onSubmit={this.onOk} >
+                    <FormItem {...formItemLayout} hasFeedback={true} label="Old password">
                         {
                             getFieldDecorator('oldPassword', {
                                 rules: [{ required: true, message: 'Please enter your old password!' }],
@@ -127,15 +123,13 @@ class ChangePasswordDialog extends React.Component<ChangePasswordDlgFormProps, C
                                 (
                                 <Input
                                     spellCheck={false}
-                                    className="header-password-input"
                                     type="password"
                                     placeholder="Your old password"
                                 />
                                 )
                         }
                     </FormItem>
-                    <FormItem {...formItemLayout} hasFeedback={true}>
-                        <div> New Password </div>
+                    <FormItem {...formItemLayout} hasFeedback={true} label="New Password">
                         {getFieldDecorator('newPassword', {
                             rules: [{
                                 required: true, message: 'Please enter your new password!',
@@ -145,14 +139,12 @@ class ChangePasswordDialog extends React.Component<ChangePasswordDlgFormProps, C
                         })(
                             <Input
                                 spellCheck={false}
-                                className="header-password-input"
                                 type="password"
                                 placeholder="Create a password"
                             />
                             )}
                     </FormItem>
-                    <FormItem {...formItemLayout} hasFeedback={true}>
-                        <div> Confirm New Password </div>
+                    <FormItem {...formItemLayout} hasFeedback={true} label="Confirm New Password">
                         {getFieldDecorator('confirm', {
                             rules: [{
                                 required: true, message: 'Please confirm your new password!',
@@ -162,7 +154,6 @@ class ChangePasswordDialog extends React.Component<ChangePasswordDlgFormProps, C
                         })(
                             <Input
                                 spellCheck={false}
-                                className="header-password-input"
                                 type="password"
                                 placeholder="Confirm your password"
                                 onBlur={this.handleConfirmBlur}

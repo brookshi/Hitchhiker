@@ -51,17 +51,17 @@ export default class UserController extends BaseController {
 
     @PUT('/user/password')
     async changePwd(ctx: Koa.Context, @BodyParam info: Password): Promise<ResObject> {
-        const checkRst = ValidateUtil.checkPassword(info.newPwd);
+        const checkRst = ValidateUtil.checkPassword(info.newPassword);
         if (!checkRst.success) {
             return checkRst;
         }
 
         const user = <User>(<any>ctx).session.user;
-        if (user.password !== info.oldPwd) {//TODO: md5
+        if (user.password !== info.oldPassword) {//TODO: md5
             return { success: false, message: Message.userOldPwdIncorrect };
         }
 
-        return await UserService.changePwd(user.id, info.newPwd);
+        return await UserService.changePwd(user.id, info.newPassword);
     }
 
     @GET('/user/findpwd')

@@ -145,7 +145,7 @@ export function* changePassword() {
     yield takeLatest(ChangePasswordType, function* (action: any) {
         try {
             yield put(actionCreator(ChangePasswordPendingType));
-            const res = yield call(RequestManager.put, `http://localhost:3000/api/user/user/password`, action.value);
+            const res = yield call(RequestManager.put, `http://localhost:3000/api/user/password`, action.value);
             const body = yield res.json();
             if (body.success) {
                 yield put(actionCreator(ChangePasswordSuccessType, body.message));

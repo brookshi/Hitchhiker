@@ -39,13 +39,13 @@ export function userState(state: UserInfoState = userInfoDefaultValue, action: a
             return { ...state, findPasswordStatus: { status: RequestStatus.pending } };
         }
         case ChangePasswordSuccessType: {
-            return { ...state, changePasswordStatus: { status: RequestStatus.success, message: 'change password success!' } };
+            return { ...state, changePasswordState: { status: RequestStatus.success, message: 'change password success!' } };
         }
         case ChangePasswordFailedType: {
-            return { ...state, changePasswordStatus: { status: RequestStatus.failed, message: action.value } };
+            return { ...state, changePasswordState: { status: RequestStatus.failed, message: action.value } };
         }
         case ChangePasswordPendingType: {
-            return { ...state, changePasswordStatus: { status: RequestStatus.pending, message: '' } };
+            return { ...state, changePasswordState: { status: RequestStatus.pending, message: '' } };
         }
         case SessionInvalidType: {
             return { ...state, loginStatus: { status: RequestStatus.failed, message: 'session is invalid, please login' } };

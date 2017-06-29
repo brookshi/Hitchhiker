@@ -1,5 +1,5 @@
 export interface Password {
-    oldPwd: string;
+    oldPassword: string;
 
-    newPwd: string;
+    newPassword: string;
 }
