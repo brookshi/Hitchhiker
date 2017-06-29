@@ -112,8 +112,13 @@ export function* register() {
 export function* logout() { // TODO: should logout after all sync task completed.
     yield takeLatest(LogoutType, function* () {
         try {
-            yield call(RequestManager.get, 'http://localhost:3000/api/user/logout');
-            yield put(actionCreator(LogoutSuccessType));
+            const res = yield call(RequestManager.get, 'http://localhost:3000/api/user/logout');
+            const body = yield res.json();
+            if (body.success) {
+                location.reload(true);
+            } else {
+                yield put(actionCreator(LogoutFailedType, body.message));
+            }
         } catch (err) {
             yield put(actionCreator(LogoutFailedType, err.toString()));
         }
