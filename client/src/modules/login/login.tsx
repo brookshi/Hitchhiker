@@ -9,11 +9,17 @@ const FormItem = Form.Item;
 
 interface LoginPanelProps {
 
+    isCheckingSessionValid: boolean;
+
     loginStatus: RequestState;
 
     signIn(value: { email: string, password: string });
 
     switchPanel(panelMode: LoginPageMode);
+
+    resetLogin();
+
+    checkSessionFinish();
 }
 
 interface LoginPanelState { }
@@ -22,20 +28,14 @@ type LoginProps = LoginPanelProps & { form: any };
 
 class LoginPanel extends React.Component<LoginProps, LoginPanelState> {
 
-    private needCheckRequestState: boolean;
-
     public componentDidMount() {
-        this.props.form.getFieldInstance(`email`).focus();
-    }
-
-    public componentWillReceiveProps(nextProps: LoginProps) {
-        const status = nextProps.loginStatus.status;
-        if (status === RequestStatus.pending || status === RequestStatus.none) {
-            return;
-        }
-        if (this.needCheckRequestState && nextProps.loginStatus.message) {
-            (nextProps.loginStatus.status === RequestStatus.success ? message.success : message.warning)(nextProps.loginStatus.message);
-            this.needCheckRequestState = false;
+        this.props.form.getFieldInstance(`email`).focus(); const { loginStatus } = this.props;
+        if (loginStatus.message && loginStatus.status === RequestStatus.failed) {
+            this.props.checkSessionFinish();
+            this.props.resetLogin();
+            if (!this.props.isCheckingSessionValid) {
+                message.warning(loginStatus.message);
+            }
         }
     }
 
@@ -43,7 +43,6 @@ class LoginPanel extends React.Component<LoginProps, LoginPanelState> {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                this.needCheckRequestState = true;
                 this.props.signIn(values);
             }
         });

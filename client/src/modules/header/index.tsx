@@ -2,9 +2,11 @@ import React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import './style/index.less';
 import { Icon, Badge, notification, Dropdown, Menu } from 'antd';
-import { State } from '../../state/index';
+import { State, RequestState } from '../../state/index';
 import { actionCreator } from '../../action/index';
-import { LogoutType } from '../../action/user';
+import { LogoutType, ChangePasswordType } from '../../action/user';
+import ChangePasswordDialog from './change_password_dialog';
+import { Password } from '../../../../api/interfaces/password';
 
 interface HeaderPanelStateProps {
 
@@ -13,18 +15,32 @@ interface HeaderPanelStateProps {
     message?: string;
 
     userName: string;
+
+    changePasswordState: RequestState;
 }
 
 interface HeaderPanelDispatchProps {
+
+    onChangePassword(password: Password);
 
     logout();
 }
 
 type HeaderPanelProps = HeaderPanelStateProps & HeaderPanelDispatchProps;
 
-interface HeaderPanelState { }
+interface HeaderPanelState {
+
+    isChangePwdDlgOpen: boolean;
+}
 
 class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
+
+    constructor(props: HeaderPanelProps) {
+        super(props);
+        this.state = {
+            isChangePwdDlgOpen: false
+        };
+    }
 
     private onUserMenuClick = (e) => {
         switch (e.key) {
@@ -32,13 +48,28 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
                 this.props.logout();
                 break;
             }
+            case 'key': {
+                this.setState({ ...this.state, isChangePwdDlgOpen: true });
+                break;
+            }
             default:
                 break;
         }
     }
 
+    private onCancelChangePwd = () => {
+        this.setState({ ...this.state, isChangePwdDlgOpen: false });
+    }
+
+    private onChangePwd = (data: Password) => {
+        this.props.onChangePassword(data);
+    }
+
     private userMenu = (
         <Menu onClick={this.onUserMenuClick} style={{ width: 150 }}>
+            <Menu.Item key="key">
+                <Icon type="key" /> Change password
+            </Menu.Item>
             <Menu.Item key="logout">
                 <Icon type="logout" /> Logout
             </Menu.Item>
@@ -46,7 +77,7 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
     );
 
     public render() {
-        const { syncCount, message, userName } = this.props;
+        const { syncCount, message, userName, changePasswordState } = this.props;
 
         if (message && notification.warning) {
             notification.warning({
@@ -74,7 +105,13 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
                         </Dropdown>
                     </span>
                 </div>
-            </div>
+                <ChangePasswordDialog
+                    isDlgOpen={this.state.isChangePwdDlgOpen}
+                    changePasswordState={changePasswordState}
+                    onCancel={this.onCancelChangePwd}
+                    onOk={this.onChangePwd}
+                />
+            </div >
         );
     }
 }
@@ -85,13 +122,15 @@ const mapStateToProps = (state: State): HeaderPanelStateProps => {
     return {
         syncCount,
         message,
-        userName: name
+        userName: name,
+        changePasswordState: state.userState.changePasswordState
     };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<HeaderPanelProps>): HeaderPanelDispatchProps => {
     return {
-        logout: () => dispatch(actionCreator(LogoutType))
+        logout: () => dispatch(actionCreator(LogoutType)),
+        onChangePassword: (password) => dispatch(actionCreator(ChangePasswordType, password))
     };
 };
 

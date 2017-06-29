@@ -10,6 +10,8 @@ export interface UserInfoState {
     registerStatus: RequestState;
 
     findPasswordStatus: RequestState;
+
+    changePasswordState: RequestState;
 }
 
 export const userInfoDefaultValue: UserInfoState = {
@@ -25,5 +27,6 @@ export const userInfoDefaultValue: UserInfoState = {
     },
     loginStatus: requestStateDefaultValue,
     registerStatus: requestStateDefaultValue,
-    findPasswordStatus: requestStateDefaultValue
+    findPasswordStatus: requestStateDefaultValue,
+    changePasswordState: requestStateDefaultValue
 };

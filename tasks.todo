@@ -56,7 +56,7 @@
     ☐ login ui / logout redirect
     ☐ import postman
     ☐ user password should hide
-    ☐ change pwd
+    ✔ change pwd @done (6/29/2017, 2:06:04 PM)
     ☐ build to live
     ☐ log
     ☐ invite user / test

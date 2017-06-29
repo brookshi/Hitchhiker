@@ -1,4 +1,4 @@
-import { LoginSuccessType, LoginFailedType, RegisterSuccessType, RegisterFailedType, LoginPendingType, RegisterPendingType, RegisterResetType, FindPasswordSuccessType, FindPasswordPendingType, FindPasswordFailedType } from '../action/user';
+import { LoginSuccessType, LoginFailedType, RegisterSuccessType, RegisterFailedType, LoginPendingType, RegisterPendingType, RegisterResetType, FindPasswordSuccessType, FindPasswordPendingType, FindPasswordFailedType, ChangePasswordSuccessType, ChangePasswordFailedType, ChangePasswordPendingType, LoginResetType } from '../action/user';
 import { UserInfoState, userInfoDefaultValue } from '../state/user';
 import { RequestStatus } from '../common/request_status';
 import { SessionInvalidType } from '../action/index';
@@ -13,6 +13,9 @@ export function userState(state: UserInfoState = userInfoDefaultValue, action: a
         }
         case LoginPendingType: {
             return { ...state, loginStatus: { status: RequestStatus.pending } };
+        }
+        case LoginResetType: {
+            return { ...state, loginStatus: { status: RequestStatus.failed, message: '' } };
         }
         case RegisterSuccessType: {
             return { ...state, registerStatus: { status: RequestStatus.success, message: 'register success, please login' } };
@@ -34,6 +37,15 @@ export function userState(state: UserInfoState = userInfoDefaultValue, action: a
         }
         case FindPasswordPendingType: {
             return { ...state, findPasswordStatus: { status: RequestStatus.pending } };
+        }
+        case ChangePasswordSuccessType: {
+            return { ...state, changePasswordStatus: { status: RequestStatus.success, message: 'change password success!' } };
+        }
+        case ChangePasswordFailedType: {
+            return { ...state, changePasswordStatus: { status: RequestStatus.failed, message: action.value } };
+        }
+        case ChangePasswordPendingType: {
+            return { ...state, changePasswordStatus: { status: RequestStatus.pending, message: '' } };
         }
         case SessionInvalidType: {
             return { ...state, loginStatus: { status: RequestStatus.failed, message: 'session is invalid, please login' } };

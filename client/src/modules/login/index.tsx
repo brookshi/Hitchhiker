@@ -3,7 +3,7 @@ import { connect, Dispatch } from 'react-redux';
 import { Row, Col } from 'antd';
 import './style/index.less';
 import { State, RequestState } from '../../state/index';
-import { LoginType, RegisterType, RegisterResetType, FindPasswordType, GetUserInfoType } from '../../action/user';
+import { LoginType, RegisterType, RegisterResetType, FindPasswordType, GetUserInfoType, LoginResetType } from '../../action/user';
 import { actionCreator } from '../../action/index';
 import RegisterPanel from './register';
 import LoginPanel from './login';
@@ -37,6 +37,8 @@ interface LoginPageDispatchProps {
 
     resetRegister();
 
+    resetLogin();
+
     findPassword(email: string);
 
     fetchCollectionData();
@@ -51,6 +53,8 @@ interface LoginPageState {
     panelMode: LoginPageMode;
 
     isConfirmPwdModified: boolean;
+
+    isCheckingSessionValid: boolean;
 }
 
 class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
@@ -59,7 +63,8 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
         super(props);
         this.state = {
             panelMode: 'login',
-            isConfirmPwdModified: false
+            isConfirmPwdModified: false,
+            isCheckingSessionValid: true
         };
     }
 
@@ -87,6 +92,9 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
                                     loginStatus={this.props.loginStatus}
                                     signIn={value => this.props.login(value)}
                                     switchPanel={this.switchPanel}
+                                    resetLogin={this.props.resetLogin}
+                                    isCheckingSessionValid={this.state.isCheckingSessionValid}
+                                    checkSessionFinish={() => this.setState({ ...this.state, isCheckingSessionValid: false })}
                                 />
                             ) : (this.state.panelMode === 'register' ?
                                 (
@@ -149,6 +157,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): LoginPageDispatchProps => 
         getUserInfo: () => dispatch(actionCreator(GetUserInfoType)),
         register: (value) => dispatch(actionCreator(RegisterType, value)),
         resetRegister: () => dispatch(actionCreator(RegisterResetType)),
+        resetLogin: () => dispatch(actionCreator(LoginResetType)),
         findPassword: (email) => dispatch(actionCreator(FindPasswordType, email)),
         fetchCollectionData: () => dispatch(actionCreator(RefreshCollectionType)),
         fetchLocalData: () => dispatch(actionCreator(FetchLocalDataType))

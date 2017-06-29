@@ -10,6 +10,8 @@ export const LoginSuccessType = 'login success';
 
 export const LoginFailedType = 'login failed';
 
+export const LoginResetType = 'login reset';
+
 export const RegisterType = 'register';
 
 export const RegisterPendingType = 'register pending';
@@ -34,6 +36,14 @@ export const FindPasswordSuccessType = 'find password success';
 
 export const FindPasswordFailedType = 'find password failed';
 
+export const ChangePasswordType = 'change password';
+
+export const ChangePasswordPendingType = 'change password pending';
+
+export const ChangePasswordSuccessType = 'change password success';
+
+export const ChangePasswordFailedType = 'change password failed';
+
 export const GetUserInfoType = 'get user info';
 
 export function* login() {
@@ -41,6 +51,10 @@ export function* login() {
         try {
             yield put(actionCreator(LoginPendingType));
             const res = yield call(RequestManager.post, 'http://localhost:3000/api/user/login', action.value);
+            if (res.ok === false) {
+                yield put(actionCreator(LoginFailedType, `${res.status} ${res.statusText}`));
+                return;
+            }
             const body = yield res.json();
             if (body.success) {
                 yield put(actionCreator(LoginSuccessType, body));
@@ -58,6 +72,10 @@ export function* getUserInfo() {
         try {
             yield put(actionCreator(LoginPendingType));
             const res = yield call(RequestManager.get, 'http://localhost:3000/api/user/me');
+            if (res.ok === false) {
+                yield put(actionCreator(LoginFailedType, `${res.status} ${res.statusText}`));
+                return;
+            }
             const body = yield res.json();
             if (body.success) {
                 yield put(actionCreator(LoginSuccessType, body));
@@ -75,6 +93,10 @@ export function* register() {
         try {
             yield put(actionCreator(RegisterPendingType));
             const res = yield call(RequestManager.post, 'http://localhost:3000/api/user', action.value);
+            if (res.ok === false) {
+                yield put(actionCreator(LoginFailedType, `${res.status} ${res.statusText}`));
+                return;
+            }
             const body = yield res.json();
             if (body.success) {
                 yield put(actionCreator(RegisterSuccessType, body));
@@ -103,6 +125,10 @@ export function* findPassword() {
         try {
             yield put(actionCreator(FindPasswordPendingType));
             const res = yield call(RequestManager.get, `http://localhost:3000/api/user/findpwd?email=${action.value}`);
+            if (res.ok === false) {
+                yield put(actionCreator(LoginFailedType, `${res.status} ${res.statusText}`));
+                return;
+            }
             const body = yield res.json();
             if (body.success) {
                 yield put(actionCreator(FindPasswordSuccessType, body.message));
@@ -111,6 +137,23 @@ export function* findPassword() {
             }
         } catch (err) {
             yield put(actionCreator(FindPasswordFailedType, err.toString()));
+        }
+    });
+}
+
+export function* changePassword() {
+    yield takeLatest(ChangePasswordType, function* (action: any) {
+        try {
+            yield put(actionCreator(ChangePasswordPendingType));
+            const res = yield call(RequestManager.put, `http://localhost:3000/api/user/user/password`, action.value);
+            const body = yield res.json();
+            if (body.success) {
+                yield put(actionCreator(ChangePasswordSuccessType, body.message));
+            } else {
+                yield put(actionCreator(ChangePasswordFailedType, body.message));
+            }
+        } catch (err) {
+            yield put(actionCreator(ChangePasswordFailedType, err.toString()));
         }
     });
 }
