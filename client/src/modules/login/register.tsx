@@ -10,7 +10,7 @@ const FormItem = Form.Item;
 
 interface RegisterPanelProps {
 
-    registerStatus: RequestState;
+    registerState: RequestState;
 
     signUp(value: { name: string, email: string, password: string });
 
@@ -42,13 +42,13 @@ class RegisterPanel extends React.Component<RegisterProps, RegisterPanelState> {
     }
 
     public componentWillReceiveProps(nextProps: RegisterProps) {
-        if (nextProps.registerStatus.status === RequestStatus.pending) {
+        if (nextProps.registerState.status === RequestStatus.pending) {
             return;
         }
-        if (this.needCheckRequestState && nextProps.registerStatus.message) {
-            const isRegisterSuccess = nextProps.registerStatus.status === RequestStatus.success;
+        if (this.needCheckRequestState && nextProps.registerState.message) {
+            const isRegisterSuccess = nextProps.registerState.status === RequestStatus.success;
             (isRegisterSuccess ? message.success : message.warning)
-                (nextProps.registerStatus.message.toString());
+                (nextProps.registerState.message.toString());
             if (isRegisterSuccess) {
                 this.props.switchPanel('login');
                 this.props.resetRegister();
@@ -151,7 +151,7 @@ class RegisterPanel extends React.Component<RegisterProps, RegisterPanelState> {
                         )}
                 </FormItem>
                 <FormItem>
-                    <Button loading={this.props.registerStatus.status === RequestStatus.pending} style={{ background: '#269f42' }} type="primary" htmlType="submit" className="login-page-form-button">
+                    <Button loading={this.props.registerState.status === RequestStatus.pending} style={{ background: '#269f42' }} type="primary" htmlType="submit" className="login-page-form-button">
                         Sign up
                     </Button>
                     Have an account already? <a onClick={() => this.props.switchPanel('login')}>Sign in.</a>

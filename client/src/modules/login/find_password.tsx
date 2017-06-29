@@ -8,7 +8,7 @@ const FormItem = Form.Item;
 
 interface FindPasswordPanelProps {
 
-    findPasswordStatus: RequestState;
+    findPasswordState: RequestState;
 
     findPassword(email: string);
 
@@ -28,11 +28,11 @@ class FindPasswordPanel extends React.Component<FindPasswordProps, FindPasswordP
     }
 
     public componentWillReceiveProps(nextProps: FindPasswordProps) {
-        if (nextProps.findPasswordStatus.status === RequestStatus.pending) {
+        if (nextProps.findPasswordState.status === RequestStatus.pending) {
             return;
         }
-        if (this.needCheckRequestState && nextProps.findPasswordStatus.message) {
-            (nextProps.findPasswordStatus.status === RequestStatus.success ? message.success : message.warning)(nextProps.findPasswordStatus.message);
+        if (this.needCheckRequestState && nextProps.findPasswordState.message) {
+            (nextProps.findPasswordState.status === RequestStatus.success ? message.success : message.warning)(nextProps.findPasswordState.message);
             this.needCheckRequestState = false;
         }
     }
@@ -69,7 +69,7 @@ class FindPasswordPanel extends React.Component<FindPasswordProps, FindPasswordP
                     }
                 </FormItem>
                 <FormItem>
-                    <Button loading={this.props.findPasswordStatus.status === RequestStatus.pending} type="primary" htmlType="submit" className="login-page-form-button">
+                    <Button loading={this.props.findPasswordState.status === RequestStatus.pending} type="primary" htmlType="submit" className="login-page-form-button">
                         Send password email
                     </Button>
                     <a onClick={() => this.props.switchPanel('login')}>{'<- Back to login'}</a>

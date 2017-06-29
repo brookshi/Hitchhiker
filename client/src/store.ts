@@ -24,7 +24,7 @@ export function configureStore() {
     sagaMiddleware.run(rootSaga);
     store.subscribe(() => {
         const state: State = store.getState() as State;
-        if (!isStoring && state.localDataState && state.localDataState.fetchLocalDataStatus.status === RequestStatus.success) {
+        if (!isStoring && state.localDataState && state.localDataState.fetchLocalDataState.status === RequestStatus.success) {
             isStoring = true;
             store.dispatch(actionCreator(StoreLocalDataType, { userId: state.userState.userInfo.id, state }));
             isStoring = false;

@@ -23,13 +23,13 @@ export function collectionState(state: CollectionState = collectionDefaultValue,
             console.log(action.value);
             const collectionInfo = action.value as DtoCollectionWithRecord;
             const keys = _.keys(collectionInfo.collections);
-            return { ...state, collectionsInfo: _.cloneDeep(collectionInfo), fetchCollectionStatus: { status: RequestStatus.success }, openKeys: keys.length > 0 ? [keys[0]] : [] };
+            return { ...state, collectionsInfo: _.cloneDeep(collectionInfo), fetchCollectionState: { status: RequestStatus.success }, openKeys: keys.length > 0 ? [keys[0]] : [] };
         }
         case FetchCollectionPendingType: {
-            return { ...state, fetchCollectionStatus: { status: RequestStatus.pending } };
+            return { ...state, fetchCollectionState: { status: RequestStatus.pending } };
         }
         case FetchCollectionFailedType: {
-            return { ...state, fetchCollectionStatus: { status: RequestStatus.failed, message: action.value } };
+            return { ...state, fetchCollectionState: { status: RequestStatus.failed, message: action.value } };
         }
         case SelectedTeamChangedType: {
             return { ...state, selectedTeam: action.value };

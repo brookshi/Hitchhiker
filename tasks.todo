@@ -53,7 +53,7 @@
     ✔ default open collection @done (2017/6/3 下午9:57:22)
     ✔ cookie invalid indirect to login page @done (2017/6/17 上午11:33:04)
     ☐ improve performance
-    ☐ login ui / logout redirect
+    ✔ login ui / logout redirect @done (2017/6/29 下午11:01:28)
     ☐ import postman
     ☐ user password should hide
     ✔ change pwd @done (6/29/2017, 2:06:04 PM)

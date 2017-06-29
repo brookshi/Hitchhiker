@@ -49,16 +49,18 @@ interface ScheduleEditDialogState {
     sortedRecords: DtoRecord[];
 }
 
+type ScheduleEditFormProps = ScheduleEditDialogProps & { form: any };
+
 class RecordSortList extends SortableListComponent<DtoRecord> { }
 
-class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { form: any }, ScheduleEditDialogState> {
+class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, ScheduleEditDialogState> {
 
     constructor(props: ScheduleEditDialogProps & { form: any }) {
         super(props);
         this.initStateFromProps(props);
     }
 
-    public componentWillReceiveProps(nextProps: ScheduleEditDialogProps & { form: any }) {
+    public componentWillReceiveProps(nextProps: ScheduleEditFormProps) {
         if (nextProps.isRendered) {
             return;
         }
@@ -66,7 +68,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditDialogProps & { for
         this.initStateFromProps(nextProps);
     }
 
-    private initStateFromProps(props: ScheduleEditDialogProps & { form: any }) {
+    private initStateFromProps(props: ScheduleEditFormProps) {
         let sortedRecords = new Array<DtoRecord>();
         if (props.schedule.collectionId) {
             const recordDict = _.keyBy(props.records.filter(r => r.collectionId === props.schedule.collectionId && r.category === RecordCategory.record), 'id');

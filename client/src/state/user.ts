@@ -5,11 +5,11 @@ export interface UserInfoState {
 
     userInfo: DtoResUser;
 
-    loginStatus: RequestState;
+    loginState: RequestState;
 
-    registerStatus: RequestState;
+    registerState: RequestState;
 
-    findPasswordStatus: RequestState;
+    findPasswordState: RequestState;
 
     changePasswordState: RequestState;
 }
@@ -25,8 +25,8 @@ export const userInfoDefaultValue: UserInfoState = {
         createDate: new Date(),
         updateDate: new Date(),
     },
-    loginStatus: requestStateDefaultValue,
-    registerStatus: requestStateDefaultValue,
-    findPasswordStatus: requestStateDefaultValue,
+    loginState: requestStateDefaultValue,
+    registerState: requestStateDefaultValue,
+    findPasswordState: requestStateDefaultValue,
     changePasswordState: requestStateDefaultValue
 };

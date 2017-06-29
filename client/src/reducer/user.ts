@@ -6,37 +6,37 @@ import { SessionInvalidType } from '../action/index';
 export function userState(state: UserInfoState = userInfoDefaultValue, action: any): UserInfoState {
     switch (action.type) {
         case LoginSuccessType: {
-            return { ...state, userInfo: action.value.result.user, loginStatus: { status: RequestStatus.success, message: action.value.message } };
+            return { ...state, userInfo: action.value.result.user, loginState: { status: RequestStatus.success, message: action.value.message } };
         }
         case LoginFailedType: {
-            return { ...state, loginStatus: { status: RequestStatus.failed, message: action.value } };
+            return { ...state, loginState: { status: RequestStatus.failed, message: action.value } };
         }
         case LoginPendingType: {
-            return { ...state, loginStatus: { status: RequestStatus.pending } };
+            return { ...state, loginState: { status: RequestStatus.pending } };
         }
         case LoginResetType: {
-            return { ...state, loginStatus: { status: RequestStatus.failed, message: '' } };
+            return { ...state, loginState: { status: RequestStatus.failed, message: '' } };
         }
         case RegisterSuccessType: {
-            return { ...state, registerStatus: { status: RequestStatus.success, message: 'register success, please login' } };
+            return { ...state, registerState: { status: RequestStatus.success, message: 'register success, please login' } };
         }
         case RegisterFailedType: {
-            return { ...state, registerStatus: { status: RequestStatus.failed, message: action.value } };
+            return { ...state, registerState: { status: RequestStatus.failed, message: action.value } };
         }
         case RegisterPendingType: {
-            return { ...state, registerStatus: { status: RequestStatus.pending } };
+            return { ...state, registerState: { status: RequestStatus.pending } };
         }
         case RegisterResetType: {
-            return { ...state, registerStatus: { status: RequestStatus.none, message: '' } };
+            return { ...state, registerState: { status: RequestStatus.none, message: '' } };
         }
         case FindPasswordSuccessType: {
-            return { ...state, findPasswordStatus: { status: RequestStatus.success, message: 'send a mail include a new password to you, please check' } };
+            return { ...state, findPasswordState: { status: RequestStatus.success, message: 'send a mail include a new password to you, please check' } };
         }
         case FindPasswordFailedType: {
-            return { ...state, findPasswordStatus: { status: RequestStatus.failed, message: action.value } };
+            return { ...state, findPasswordState: { status: RequestStatus.failed, message: action.value } };
         }
         case FindPasswordPendingType: {
-            return { ...state, findPasswordStatus: { status: RequestStatus.pending } };
+            return { ...state, findPasswordState: { status: RequestStatus.pending } };
         }
         case ChangePasswordSuccessType: {
             return { ...state, changePasswordState: { status: RequestStatus.success, message: 'change password success!' } };
@@ -48,7 +48,7 @@ export function userState(state: UserInfoState = userInfoDefaultValue, action: a
             return { ...state, changePasswordState: { status: RequestStatus.pending, message: '' } };
         }
         case SessionInvalidType: {
-            return { ...state, loginStatus: { status: RequestStatus.failed, message: 'session is invalid, please login' } };
+            return { ...state, loginState: { status: RequestStatus.failed, message: 'session is invalid, please login' } };
         }
         default:
             return state;

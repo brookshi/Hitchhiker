@@ -25,7 +25,7 @@ export interface CollectionState {
 
     selectedTeam: string;
 
-    fetchCollectionStatus: RequestState;
+    fetchCollectionState: RequestState;
 }
 
 export interface DisplayRecordsState {
@@ -54,7 +54,7 @@ export interface ResponseState {
 }
 
 export const collectionDefaultValue: CollectionState = {
-    fetchCollectionStatus: requestStateDefaultValue,
+    fetchCollectionState: requestStateDefaultValue,
     openKeys: [],
     selectedTeam: AllTeam,
     collectionsInfo: {

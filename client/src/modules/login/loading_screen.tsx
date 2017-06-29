@@ -5,11 +5,11 @@ import { RequestStatus } from '../../common/request_status';
 
 interface LoadingScreenProps {
 
-    loginStatus: RequestState;
+    loginState: RequestState;
 
-    fetchCollectionDataStatus: RequestState;
+    fetchCollectionDataState: RequestState;
 
-    fetchLocalDataStatus: RequestState;
+    fetchLocalDataState: RequestState;
 
     fetchCollectionData();
 
@@ -23,21 +23,21 @@ interface LoadingScreenState { }
 class LoadingScreen extends React.Component<LoadingScreenProps, LoadingScreenState> {
 
     public componentWillReceiveProps(nextProps: LoadingScreenProps) {
-        if (nextProps.loginStatus.status === RequestStatus.success &&
-            nextProps.fetchCollectionDataStatus.status === RequestStatus.none) {
+        if (nextProps.loginState.status === RequestStatus.success &&
+            nextProps.fetchCollectionDataState.status === RequestStatus.none) {
             this.props.fetchCollectionData();
         }
 
-        if (nextProps.fetchCollectionDataStatus.status === RequestStatus.success &&
-            nextProps.fetchLocalDataStatus.status === RequestStatus.none) {
+        if (nextProps.fetchCollectionDataState.status === RequestStatus.success &&
+            nextProps.fetchLocalDataState.status === RequestStatus.none) {
             this.props.fetchLocalData();
         }
     }
 
     public componentDidMount() {
-        if (this.props.loginStatus.status === RequestStatus.failed || this.props.loginStatus.status === RequestStatus.none) {
+        if (this.props.loginState.status === RequestStatus.failed || this.props.loginState.status === RequestStatus.none) {
             this.props.getUserInfo();
-        } else if (this.props.loginStatus.status === RequestStatus.success) {
+        } else if (this.props.loginState.status === RequestStatus.success) {
             this.props.fetchCollectionData();
         }
     }

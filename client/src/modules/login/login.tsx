@@ -11,7 +11,7 @@ interface LoginPanelProps {
 
     isCheckingSessionValid: boolean;
 
-    loginStatus: RequestState;
+    loginState: RequestState;
 
     signIn(value: { email: string, password: string });
 
@@ -29,12 +29,12 @@ type LoginProps = LoginPanelProps & { form: any };
 class LoginPanel extends React.Component<LoginProps, LoginPanelState> {
 
     public componentDidMount() {
-        this.props.form.getFieldInstance(`email`).focus(); const { loginStatus } = this.props;
-        if (loginStatus.message && loginStatus.status === RequestStatus.failed) {
+        this.props.form.getFieldInstance(`email`).focus(); const { loginState } = this.props;
+        if (loginState.message && loginState.status === RequestStatus.failed) {
             this.props.checkSessionFinish();
             this.props.resetLogin();
             if (!this.props.isCheckingSessionValid) {
-                message.warning(loginStatus.message);
+                message.warning(loginState.message);
             }
         }
     }
@@ -92,7 +92,7 @@ class LoginPanel extends React.Component<LoginProps, LoginPanelState> {
                     }
                 </FormItem>
                 <FormItem>
-                    <Button loading={this.props.loginStatus.status === RequestStatus.pending} type="primary" htmlType="submit" className="login-page-form-button">
+                    <Button loading={this.props.loginState.status === RequestStatus.pending} type="primary" htmlType="submit" className="login-page-form-button">
                         Sign in
                     </Button>
                     New to Hitchhiker? <a onClick={() => this.props.switchPanel('register')}>Create an account.</a>

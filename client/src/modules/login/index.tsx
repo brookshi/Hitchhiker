@@ -16,15 +16,15 @@ import { FetchLocalDataType } from '../../action/local_data';
 
 interface LoginPageStateProps {
 
-    loginStatus: RequestState;
+    loginState: RequestState;
 
-    registerStatus: RequestState;
+    registerState: RequestState;
 
-    findPasswordStatus: RequestState;
+    findPasswordState: RequestState;
 
-    fetchCollectionStatus: RequestState;
+    fetchCollectionState: RequestState;
 
-    fetchLocalDataStatus: RequestState;
+    fetchLocalDataState: RequestState;
 }
 
 interface LoginPageDispatchProps {
@@ -89,7 +89,7 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
                         {
                             this.state.panelMode === 'login' ? (
                                 <LoginPanel
-                                    loginStatus={this.props.loginStatus}
+                                    loginStatus={this.props.loginState}
                                     signIn={value => this.props.login(value)}
                                     switchPanel={this.switchPanel}
                                     resetLogin={this.props.resetLogin}
@@ -99,14 +99,14 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
                             ) : (this.state.panelMode === 'register' ?
                                 (
                                     <RegisterPanel
-                                        registerStatus={this.props.registerStatus}
+                                        registerStatus={this.props.registerState}
                                         signUp={value => this.props.register(value)}
                                         switchPanel={this.switchPanel}
                                         resetRegister={this.props.resetRegister}
                                     />
                                 ) : (
                                     <FindPasswordPanel
-                                        findPasswordStatus={this.props.findPasswordStatus}
+                                        findPasswordState={this.props.findPasswordState}
                                         findPassword={this.props.findPassword}
                                         switchPanel={this.switchPanel}
                                     />
@@ -120,18 +120,18 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
     }
 
     public render() {
-        const { getUserInfo, fetchCollectionData, fetchCollectionStatus, fetchLocalData, fetchLocalDataStatus, loginStatus } = this.props;
+        const { getUserInfo, fetchCollectionData, fetchCollectionState, fetchLocalData, fetchLocalDataState, loginState } = this.props;
         return (
             <div className="login-page">
                 {
-                    loginStatus.status === RequestStatus.failed ? this.loginMainPanel : (
+                    loginState.status === RequestStatus.failed ? this.loginMainPanel : (
                         <LoadingScreen
                             fetchCollectionData={fetchCollectionData}
-                            fetchCollectionDataStatus={fetchCollectionStatus}
+                            fetchCollectionDataState={fetchCollectionState}
                             fetchLocalData={fetchLocalData}
-                            fetchLocalDataStatus={fetchLocalDataStatus}
+                            fetchLocalDataState={fetchLocalDataState}
                             getUserInfo={getUserInfo}
-                            loginStatus={loginStatus}
+                            loginState={loginState}
                         />
                     )
                 }
@@ -141,13 +141,13 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
 }
 
 const mapStateToProps = (state: State): LoginPageStateProps => {
-    const { loginStatus, registerStatus, findPasswordStatus } = state.userState;
+    const { loginState, registerState, findPasswordState } = state.userState;
     return {
-        loginStatus,
-        registerStatus,
-        findPasswordStatus,
-        fetchCollectionStatus: state.collectionState.fetchCollectionStatus,
-        fetchLocalDataStatus: state.localDataState.fetchLocalDataStatus,
+        loginState,
+        registerState,
+        findPasswordState,
+        fetchCollectionState: state.collectionState.fetchCollectionState,
+        fetchLocalDataState: state.localDataState.fetchLocalDataState,
     };
 };
 

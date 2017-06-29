@@ -8,13 +8,13 @@ import { StringUtil } from '../utils/string_util';
 export function localDataState(state: LocalDataState = localDataDefaultValue, action: any): LocalDataState {
     switch (action.type) {
         case FetchLocalDataSuccessType: {
-            return { ...state, fetchLocalDataStatus: { status: RequestStatus.success } };
+            return { ...state, fetchLocalDataState: { status: RequestStatus.success } };
         }
         case FetchLocalDataPendingType: {
-            return { ...state, fetchLocalDataStatus: { status: RequestStatus.pending } };
+            return { ...state, fetchLocalDataState: { status: RequestStatus.pending } };
         }
         case FetchLocalDataFailedType: {
-            return { ...state, fetchLocalDataStatus: { status: RequestStatus.failed, message: action.value } };
+            return { ...state, fetchLocalDataState: { status: RequestStatus.failed, message: action.value } };
         }
         case SendRequestFulfilledType: {
             const res = action.value.runResult as RunResult;
