@@ -1,11 +1,11 @@
 import React from 'react';
 import { Tabs, Icon, Button, Tag } from 'antd';
-import Editor from '../../components/editor';
+import Editor from '../../../components/editor';
 import './style/index.less';
-import { RunResult } from '../../../../api/interfaces/dto_run_result';
-import { StringUtil } from '../../utils/string_util';
-import { nameWithTag } from '../../components/name_with_tag';
-import { successColor, failColor, pass, fail } from '../../common/constants';
+import { RunResult } from '../../../../../api/interfaces/dto_run_result';
+import { StringUtil } from '../../../utils/string_util';
+import { nameWithTag } from '../../../components/name_with_tag';
+import { successColor, failColor, pass, fail } from '../../../common/constants';
 
 const TabPane = Tabs.TabPane;
 

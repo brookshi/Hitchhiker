@@ -1,25 +1,22 @@
 import * as React from 'react';
-import CollectionList from './modules/collection_tree';
 import { Layout, Menu, Icon, Tooltip, Button } from 'antd';
 import { ClickParam } from 'antd/lib/menu';
-import ReqResPanel from './modules/req_res_panel';
+import Collection from './modules/collection';
 import Team from './modules/team';
 import Schedule from './modules/schedule';
 import HeaderPanel from './modules/header';
-import PerfectScrollbar from 'react-perfect-scrollbar';
 import './style/perfect-scrollbar.min.css';
 import { State } from './state';
 import { connect, Dispatch } from 'react-redux';
-import Splitter from './components/splitter';
 import Config from './common/config';
 import { actionCreator } from './action';
-import { ResizeLeftPanelType, UpdateLeftPanelType } from './action/ui';
+import { UpdateLeftPanelType } from './action/ui';
 import LoginPage from './modules/login';
 import { RequestStatus } from './common/request_status';
 import Perf from 'react-addons-perf';
 import './style/App.less';
 
-const { Header, Content, Sider } = Layout;
+const { Header, Sider } = Layout;
 
 interface AppStateProps {
 
@@ -27,18 +24,12 @@ interface AppStateProps {
 
   collapsed: boolean;
 
-  userId: string;
-
   isFetchDataSuccess: boolean;
-
-  leftPanelWidth: number;
 }
 
 interface AppDispatchProps {
 
   updateLeftPanelStatus(collapsed: boolean, activeModule: string);
-
-  resizeLeftPanel(width: number);
 }
 
 type AppProps = AppStateProps & AppDispatchProps;
@@ -52,10 +43,6 @@ class App extends React.Component<AppProps, AppState> {
     (window as any).Perf = Perf;
   }
 
-  private onCollapse = (collapsed) => {
-    this.props.updateLeftPanelStatus(collapsed, collapsed ? '' : this.props.activeModule);
-  }
-
   private onClick = (param: ClickParam) => {
     const { collapsed, activeModule, updateLeftPanelStatus } = this.props;
     if (activeModule === param.key) {
@@ -65,39 +52,16 @@ class App extends React.Component<AppProps, AppState> {
     }
   }
 
-  private collectionModule = () => {
-    const { collapsed, leftPanelWidth } = this.props;
-    return (
-      <Layout className="main-panel">
-        <Sider
-          className="main-sider"
-          style={{ minWidth: collapsed ? 0 : leftPanelWidth }}
-          collapsible={true}
-          collapsedWidth="0.1"
-          collapsed={collapsed}
-          onCollapse={this.onCollapse}>
-          <CollectionList />
-        </Sider>
-        <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
-        <Content style={{ marginTop: 4 }}>
-          <PerfectScrollbar>
-            <ReqResPanel />
-          </PerfectScrollbar>
-        </Content>
-      </Layout>
-    );
-  }
-
   private activeModule = () => {
     switch (this.props.activeModule) {
       case 'collection':
-        return this.collectionModule();
+        return <Collection />;
       case 'team':
         return <Team />;
       case 'schedule':
         return <Schedule />;
       default:
-        return this.collectionModule();
+        return <Collection />;
     }
   }
 
@@ -167,22 +131,19 @@ class App extends React.Component<AppProps, AppState> {
 }
 
 const mapStateToProps = (state: State): AppStateProps => {
-  const { leftPanelWidth, collapsed, activeModule } = state.uiState.appUIState;
+  const { collapsed, activeModule } = state.uiState.appUIState;
   const isFetchDataSuccess = state.userState.loginState.status !== RequestStatus.failed &&
     state.collectionState.fetchCollectionState.status === RequestStatus.success &&
     state.localDataState.fetchLocalDataState.status === RequestStatus.success;
   return {
-    leftPanelWidth,
     collapsed,
     activeModule,
-    isFetchDataSuccess,
-    userId: state.userState.userInfo.id
+    isFetchDataSuccess
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): AppDispatchProps => {
   return {
-    resizeLeftPanel: (width) => dispatch(actionCreator(ResizeLeftPanelType, width)),
     updateLeftPanelStatus: (collapsed, activeModule) => dispatch(actionCreator(UpdateLeftPanelType, { collapsed, activeModule }))
   };
 };

@@ -1,12 +1,12 @@
 import React from 'react';
 import { Icon, Menu } from 'antd';
-import ItemWithMenu from '../../components/item_with_menu';
+import ItemWithMenu from '../../../components/item_with_menu';
 import './style/index.less';
-import { confirmDlg } from '../../components/confirm_dialog/index';
-import { DtoRecord } from '../../../../api/interfaces/dto_record';
-import { StringUtil } from '../../utils/string_util';
-import { RecordCategory } from '../../common/record_category';
-import { DtoCollection } from '../../../../api/interfaces/dto_collection';
+import { confirmDlg } from '../../../components/confirm_dialog/index';
+import { DtoRecord } from '../../../../../api/interfaces/dto_record';
+import { StringUtil } from '../../../utils/string_util';
+import { RecordCategory } from '../../../common/record_category';
+import { DtoCollection } from '../../../../../api/interfaces/dto_collection';
 
 interface CollectionItemProps {
 

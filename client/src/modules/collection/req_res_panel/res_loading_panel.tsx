@@ -1,6 +1,6 @@
 import React from 'react';
 import { Spin, Button } from 'antd';
-import RequestManager from '../../utils/request_manager';
+import RequestManager from '../../../utils/request_manager';
 
 interface ResponseLoadingPanelProps {
 
