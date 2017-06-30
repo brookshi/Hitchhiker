@@ -1,5 +1,5 @@
 import * as Log4js from 'log4js';
-import { Logger, getLogger } from "log4js";
+import { Logger, getLogger } from 'log4js';
 
 export class Log {
 

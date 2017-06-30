@@ -1,7 +1,7 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
-import { Period } from "../interfaces/period";
-import { NotificationMode } from "../interfaces/notification_mode";
-import { ScheduleRecord } from "./schedule_record";
+import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Period } from '../interfaces/period';
+import { NotificationMode } from '../interfaces/notification_mode';
+import { ScheduleRecord } from './schedule_record';
 
 @Entity()
 export class Schedule {

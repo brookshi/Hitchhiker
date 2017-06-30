@@ -1,8 +1,9 @@
-import { Setting } from "../utils/setting";
-import { User } from "../models/user";
+import { Setting } from '../utils/setting';
+import { User } from '../models/user';
 import * as request from 'request';
-import { Team } from "../models/team";
-import { TokenService } from "./token_service";
+import { Team } from '../models/team';
+import { TokenService } from './token_service';
+import { Log } from '../utils/log';
 
 export class MailService {
     static registerMail(user: User) {
@@ -50,16 +51,7 @@ export class MailService {
     }
 
     private static sendMail(url: string): Promise<{ err: any, body: any }> {
-        return new Promise<{ err: any, body: any }>((resolve, reject) => {
-            request.get(url, (err, res, body) => {
-                resolve({ err, body });
-                if (err) {
-                    console.error(err);
-                } else {
-                    console.log(body);
-                }
-            });
-        });
+        return MailService.request({ url, headers: { 'content-type': 'application/json' }, method: 'get' });
     }
 
     private static postMail(url: string, body: any): Promise<any> {
@@ -71,9 +63,9 @@ export class MailService {
             request(option, (err, response, body) => {
                 resolve({ err, response, body });
                 if (err) {
-                    console.error(err);
+                    Log.error(err);
                 } else {
-                    console.log(body);
+                    Log.info(body);
                 }
             });
         });

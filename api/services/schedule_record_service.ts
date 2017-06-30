@@ -1,8 +1,8 @@
-import { ScheduleRecord } from "../models/schedule_record";
-import { DtoScheduleRecord } from "../interfaces/dto_schedule_record";
-import { ConnectionManager } from "./connection_manager";
-import { Setting } from "../utils/setting";
-import { DateUtil } from "../utils/date_util";
+import { ScheduleRecord } from '../models/schedule_record';
+import { DtoScheduleRecord } from '../interfaces/dto_schedule_record';
+import { ConnectionManager } from './connection_manager';
+import { Setting } from '../utils/setting';
+import { DateUtil } from '../utils/date_util';
 
 export class ScheduleRecordService {
 

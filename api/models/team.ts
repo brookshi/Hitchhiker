@@ -1,7 +1,7 @@
 import { OneToOne, JoinColumn, OneToMany, Entity, PrimaryColumn, Column, ManyToMany, CreateDateColumn, JoinTable } from 'typeorm';
 import { Collection } from './collection';
 import { User } from './user';
-import { Environment } from "./environment";
+import { Environment } from './environment';
 
 @Entity()
 export class Team {

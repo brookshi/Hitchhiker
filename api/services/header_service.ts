@@ -1,7 +1,7 @@
-import { Header } from "../models/header";
-import { DtoHeader } from "../interfaces/dto_header";
-import { ConnectionManager } from "./connection_manager";
-import { StringUtil } from "../utils/string_util";
+import { Header } from '../models/header';
+import { DtoHeader } from '../interfaces/dto_header';
+import { ConnectionManager } from './connection_manager';
+import { StringUtil } from '../utils/string_util';
 
 export class HeaderService {
     static fromDto(dtoHeader: DtoHeader): Header {

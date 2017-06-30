@@ -1,13 +1,13 @@
-import { DtoSchedule } from "../interfaces/dto_schedule";
-import { Schedule } from "../models/schedule";
-import { StringUtil } from "../utils/string_util";
-import { User } from "../models/user";
-import { ConnectionManager } from "./connection_manager";
-import { Message } from "../common/message";
-import { ResObject } from "../common/res_object";
-import { UserCollectionService } from "./user_collection_service";
-import { ObjectLiteral } from "typeorm/common/ObjectLiteral";
-import { ScheduleRecordService } from "./schedule_record_service";
+import { DtoSchedule } from '../interfaces/dto_schedule';
+import { Schedule } from '../models/schedule';
+import { StringUtil } from '../utils/string_util';
+import { User } from '../models/user';
+import { ConnectionManager } from './connection_manager';
+import { Message } from '../common/message';
+import { ResObject } from '../common/res_object';
+import { UserCollectionService } from './user_collection_service';
+import { ObjectLiteral } from 'typeorm/common/ObjectLiteral';
+import { ScheduleRecordService } from './schedule_record_service';
 
 export class ScheduleService {
 
@@ -28,7 +28,6 @@ export class ScheduleService {
         schedule.period = dtoSchedule.period;
         schedule.recordsOrder = dtoSchedule.recordsOrder;
         schedule.suspend = dtoSchedule.suspend;
-        //schedule.ScheduleRecords = dtoSchedule.ScheduleRecords;
         return schedule;
     }
 
@@ -49,7 +48,7 @@ export class ScheduleService {
         const connection = await ConnectionManager.getInstance();
 
         return await connection.getRepository(Schedule)
-            .createQueryBuilder("schedule")
+            .createQueryBuilder('schedule')
             .where('schedule.id=:id', { id: id })
             .getOne();
     }
@@ -67,10 +66,10 @@ export class ScheduleService {
             parameters[`id_${index}`] = id;
             return `collectionId=:id_${index}`;
         });
-        const whereStr = whereStrings.length > 1 ? "(" + whereStrings.join(" OR ") + ")" : whereStrings[0];
+        const whereStr = whereStrings.length > 1 ? '(' + whereStrings.join(' OR ') + ')' : whereStrings[0];
 
         return await connection.getRepository(Schedule)
-            .createQueryBuilder("schedule")
+            .createQueryBuilder('schedule')
             .leftJoinAndSelect('schedule.scheduleRecords', 'record')
             .where(whereStr, parameters)
             .getMany();
@@ -105,7 +104,7 @@ export class ScheduleService {
     }
 
     static checkScheduleNeedRun(schedule: Schedule): boolean {
-        const isRunFinish = new Date(schedule.lastRunDate + ' UTC').toDateString() === new Date().toDateString(); //TODO: may just toDateString is enough.
+        const isRunFinish = new Date(schedule.lastRunDate + ' UTC').toDateString() === new Date().toDateString(); // TODO: may just toDateString is enough.
         if (isRunFinish) {
             return false;
         }

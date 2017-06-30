@@ -1,4 +1,4 @@
-import { DtoRecord } from "./dto_record";
+import { DtoRecord } from './dto_record';
 
 export interface DtoRecordRun {
 

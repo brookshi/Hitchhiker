@@ -1,5 +1,5 @@
 import { Entity, PrimaryColumn, Column, ManyToOne } from 'typeorm';
-import { Environment } from "./environment";
+import { Environment } from './environment';
 
 @Entity()
 export class Variable {

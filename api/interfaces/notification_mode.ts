@@ -1,4 +1,3 @@
-
 export enum NotificationMode {
 
     none = 0,

@@ -1,11 +1,11 @@
 import { POST, PUT, DELETE, BodyParam, PathParam, BaseController } from 'webapi-router';
-import { ResObject } from "../common/res_object";
+import { ResObject } from '../common/res_object';
 import * as Koa from 'koa';
-import { RecordService } from "../services/record_service";
-import { RecordRunner } from "../run_engine/record_runner";
-import { DtoRecord } from "../interfaces/dto_record";
-import { DtoRecordRun } from "../interfaces/dto_record_run";
-import { DtoRecordSort } from "../interfaces/dto_record_sort";
+import { RecordService } from '../services/record_service';
+import { RecordRunner } from '../run_engine/record_runner';
+import { DtoRecord } from '../interfaces/dto_record';
+import { DtoRecordRun } from '../interfaces/dto_record_run';
+import { DtoRecordSort } from '../interfaces/dto_record_sort';
 
 export default class RecordController extends BaseController {
 

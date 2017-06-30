@@ -1,14 +1,14 @@
-import { User } from "../models/user";
-import { ConnectionManager } from "./connection_manager";
-import { Message } from "../common/message";
-import { ResObject } from "../common/res_object";
-import { ValidateUtil } from "../utils/validate_util";
-import { Setting } from "../utils/setting";
-import { MailService } from "./mail_service";
-import { StringUtil } from "../utils/string_util";
-import { TeamService } from "./team_service";
-import * as _ from "lodash";
-import { UserTeamService } from "./user_team_service";
+import { User } from '../models/user';
+import { ConnectionManager } from './connection_manager';
+import { Message } from '../common/message';
+import { ResObject } from '../common/res_object';
+import { ValidateUtil } from '../utils/validate_util';
+import { Setting } from '../utils/setting';
+import { MailService } from './mail_service';
+import { StringUtil } from '../utils/string_util';
+import { TeamService } from './team_service';
+import * as _ from 'lodash';
+import { UserTeamService } from './user_team_service';
 
 export class UserService {
 
@@ -16,7 +16,7 @@ export class UserService {
         const user = new User();
         user.name = name;
         user.email = email;
-        user.password = password;//TODO: md5, StringUtil.md5(password);
+        user.password = password;// TODO: md5, StringUtil.md5(password);
         user.id = StringUtil.generateUID();
         return user;
     }
@@ -28,7 +28,7 @@ export class UserService {
 
     static async checkUser(email: string, pwd: string): Promise<ResObject> {
         const user = await UserService.getUserByEmail(email, true);
-        if (user && user.password === pwd) {//TODO: md5
+        if (user && user.password === pwd) {// TODO: md5
             if (user.isActive) {
                 const userInfo = await UserTeamService.getUserInfo(user);
                 return { success: true, message: '', result: userInfo };
@@ -91,7 +91,7 @@ export class UserService {
         const connection = await ConnectionManager.getInstance();
 
         let rep = connection.getRepository(User)
-            .createQueryBuilder("user")
+            .createQueryBuilder('user')
             .where(`user.email = :email`)
             .setParameter('email', email);
 
@@ -110,7 +110,7 @@ export class UserService {
         const connection = await ConnectionManager.getInstance();
 
         const user = await connection.getRepository(User)
-            .createQueryBuilder("user")
+            .createQueryBuilder('user')
             .leftJoinAndSelect('user.teams', 'team')
             .where(`user.id = :id`)
             .setParameter('id', id)
@@ -126,7 +126,7 @@ export class UserService {
     static async active(id: string) {
         const connection = await ConnectionManager.getInstance();
         await connection.getRepository(User)
-            .createQueryBuilder("user")
+            .createQueryBuilder('user')
             .update({ isActive: true })
             .where('id=:id')
             .setParameter('id', id)
@@ -136,7 +136,7 @@ export class UserService {
     static async changePwd(id: string, newPwd: string): Promise<ResObject> {
         const connection = await ConnectionManager.getInstance();
         await connection.getRepository(User)
-            .createQueryBuilder("user")
+            .createQueryBuilder('user')
             .update({ password: newPwd })
             .where('id=:id')
             .setParameter('id', id)

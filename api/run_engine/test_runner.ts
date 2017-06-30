@@ -1,6 +1,6 @@
 import * as VM from 'vm';
-import * as request from "request";
-import * as _ from "lodash";
+import * as request from 'request';
+import * as _ from 'lodash';
 
 export class TestRunner {
 
@@ -25,8 +25,7 @@ export class TestRunner {
         global['responseCode'] = { code: res.statusCode, name: res.statusMessage };
         try {
             global['responseObj'] = JSON.parse(res.body); // TODO: more response type, xml, protobuf, zip, chunk...
-        }
-        catch (e) {
+        } catch (e) {
             global['responseObj'] = e;
         }
         global['responseHeaders'] = res.headers;

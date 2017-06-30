@@ -1,16 +1,16 @@
 import { CollectionService } from '../services/collection_service';
 import { UserCollectionService } from '../services/user_collection_service';
 import { GET, POST, PUT, DELETE, BodyParam, PathParam, BaseController } from 'webapi-router';
-import { ResObject } from "../common/res_object";
+import { ResObject } from '../common/res_object';
 import * as Koa from 'koa';
-import { DtoCollection, DtoCollectionWithRecord } from "../interfaces/dto_collection";
-import { SessionService } from "../services/session_service";
-import { MetadataService } from "../services/metadata_service";
-import { Message } from "../common/message";
-import { EnvironmentService } from "../services/environment_service";
+import { DtoCollection, DtoCollectionWithRecord } from '../interfaces/dto_collection';
+import { SessionService } from '../services/session_service';
+import { MetadataService } from '../services/metadata_service';
+import { Message } from '../common/message';
+import { EnvironmentService } from '../services/environment_service';
 import * as _ from 'lodash';
-import { RecordService } from "../services/record_service";
-import { DtoRecord } from "../interfaces/dto_record";
+import { RecordService } from '../services/record_service';
+import { DtoRecord } from '../interfaces/dto_record';
 
 export default class CollectionController extends BaseController {
 
@@ -51,7 +51,7 @@ export default class CollectionController extends BaseController {
         return await CollectionService.shareCollection(collectionId, teamId);
     }
 
-    @POST('/collection/import/postman/to/:teamid')
+    @POST('/collection/postman/:teamid')
     async importFromPostman(ctx: Koa.Context, @PathParam('teamid') teamId: string, @BodyParam info: any): Promise<ResObject> {
         const user = SessionService.getUser(ctx);
         const collections = await MetadataService.convertPostmanCollection(user, teamId, info);

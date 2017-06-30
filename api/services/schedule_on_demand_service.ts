@@ -1,12 +1,13 @@
 import * as WS from 'ws';
-import { ScheduleService } from "./schedule_service";
-import { ScheduleRunner } from "../run_engine/schedule_runner";
-import { WebSocketHandler } from "./base/web_socket_handler";
+import { ScheduleService } from './schedule_service';
+import { ScheduleRunner } from '../run_engine/schedule_runner';
+import { WebSocketHandler } from './base/web_socket_handler';
+import { Log } from '../utils/log';
 
 export class ScheduleOnDemandService extends WebSocketHandler {
 
     onReceive(data: string) {
-        console.log(`receive data: ${data}`);
+        Log.info(`receive data: ${data}`);
         if (!data) {
             this.close('invalid schedule id');
         }
@@ -15,7 +16,7 @@ export class ScheduleOnDemandService extends WebSocketHandler {
     }
 
     onClose() {
-        console.log('client close');
+        Log.info('client close');
         this.close();
     }
 

@@ -1,11 +1,11 @@
-import { Team } from "../models/team";
-import { ConnectionManager } from "./connection_manager";
-import { DtoTeam } from "../interfaces/dto_team";
-import { ResObject } from "../common/res_object";
-import { Message } from "../common/message";
-import { StringUtil } from "../utils/string_util";
-import { User } from "../models/user";
-import { UserService } from "./user_service";
+import { Team } from '../models/team';
+import { ConnectionManager } from './connection_manager';
+import { DtoTeam } from '../interfaces/dto_team';
+import { ResObject } from '../common/res_object';
+import { Message } from '../common/message';
+import { StringUtil } from '../utils/string_util';
+import { User } from '../models/user';
+import { UserService } from './user_service';
 
 export class TeamService {
 
@@ -103,7 +103,7 @@ export class TeamService {
 
         await connection.getRepository(Team)
             .createQueryBuilder('team')
-            .where("id=:id", { id: dtoTeam.id })
+            .where('id=:id', { id: dtoTeam.id })
             .update({ name: dtoTeam.name, note: dtoTeam.note })
             .execute();
 

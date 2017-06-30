@@ -1,9 +1,9 @@
 import { RecordService } from './record_service';
-import { CollectionService } from "./collection_service";
-import { UserService } from "./user_service";
-import { Collection } from "../models/collection";
+import { CollectionService } from './collection_service';
+import { UserService } from './user_service';
+import { Collection } from '../models/collection';
 import { Record } from '../models/record';
-import * as _ from "lodash";
+import * as _ from 'lodash';
 
 export class UserCollectionService {
 
@@ -11,8 +11,6 @@ export class UserCollectionService {
         let collections = await UserCollectionService.getUserTeamCollections(userId);
 
         const recordsList = await RecordService.getByCollectionIds(collections.map(o => o.id));
-
-        // collections.forEach(o => o.records = recordsList[o.id]);
 
         return { collections, recordsList };
     }

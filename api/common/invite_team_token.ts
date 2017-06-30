@@ -1,4 +1,5 @@
 export interface InviteToTeamToken {
+
     userEmail: string;
 
     inviterId: string;
@@ -9,5 +10,5 @@ export interface InviteToTeamToken {
 
     uid: string;
 
-    teamId: string
+    teamId: string;
 }

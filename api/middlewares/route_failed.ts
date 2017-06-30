@@ -1,4 +1,4 @@
-import { Message } from "../common/message";
+import { Message } from '../common/message';
 
 export default function routeFailed(): (ctx: any, next: Function) => Promise<void> {
     return async (ctx, next) => {

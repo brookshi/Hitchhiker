@@ -1,16 +1,16 @@
 import { Record } from '../models/record';
 import { ConnectionManager } from './connection_manager';
-import { ObjectLiteral } from "typeorm/common/ObjectLiteral";
-import * as _ from "lodash";
-import { ResObject } from "../common/res_object";
-import { Message } from "../common/message";
-import { Header } from "../models/header";
-import { RecordCategory } from "../common/record_category";
-import { DtoRecord } from "../interfaces/dto_record";
-import { Collection } from "../models/collection";
-import { HeaderService } from "./header_service";
-import { StringUtil } from "../utils/string_util";
-import { RecordHistory } from "../models/record_history";
+import { ObjectLiteral } from 'typeorm/common/ObjectLiteral';
+import * as _ from 'lodash';
+import { ResObject } from '../common/res_object';
+import { Message } from '../common/message';
+import { Header } from '../models/header';
+import { RecordCategory } from '../common/record_category';
+import { DtoRecord } from '../interfaces/dto_record';
+import { Collection } from '../models/collection';
+import { HeaderService } from './header_service';
+import { StringUtil } from '../utils/string_util';
+import { RecordHistory } from '../models/record_history';
 
 export class RecordService {
     private static _sort: number = 0;
@@ -74,10 +74,10 @@ export class RecordService {
             parameters[`id_${index}`] = id;
             return `collection.id=:id_${index}`;
         });
-        const whereStr = whereStrings.length > 1 ? "(" + whereStrings.join(" OR ") + ")" : whereStrings[0];
+        const whereStr = whereStrings.length > 1 ? '(' + whereStrings.join(' OR ') + ')' : whereStrings[0];
 
-        let rep = connection.getRepository(Record).createQueryBuilder("record")
-            .innerJoinAndSelect("record.collection", "collection")
+        let rep = connection.getRepository(Record).createQueryBuilder('record')
+            .innerJoinAndSelect('record.collection', 'collection')
             .leftJoinAndSelect('record.headers', 'header')
             .where(whereStr, parameters);
 
@@ -94,7 +94,7 @@ export class RecordService {
 
     static async getById(id: string, includeHeaders: boolean = false): Promise<Record> {
         const connection = await ConnectionManager.getInstance();
-        let rep = connection.getRepository(Record).createQueryBuilder("record");
+        let rep = connection.getRepository(Record).createQueryBuilder('record');
         if (includeHeaders) {
             rep = rep.leftJoinAndSelect('record.headers', 'header');
         }
@@ -103,7 +103,7 @@ export class RecordService {
 
     static async getChildren(id: string, includeHeaders: boolean = false): Promise<Record[]> {
         const connection = await ConnectionManager.getInstance();
-        let rep = connection.getRepository(Record).createQueryBuilder("record");
+        let rep = connection.getRepository(Record).createQueryBuilder('record');
         if (includeHeaders) {
             rep = rep.leftJoinAndSelect('record.headers', 'header');
         }
@@ -215,17 +215,14 @@ export class RecordService {
                     result.push(r);
                     pushedRecord.push(r.id);
                     RecordService.toTree(records, r, pushedRecord);
-                }
-                else if (parent && r.pid === parent.id) {
+                } else if (parent && r.pid === parent.id) {
                     pushChild(r, parent);
                     pushedRecord.push(r.id);
                     RecordService.toTree(records, r, pushedRecord);
                 }
-            }
-            else if (parent && r.pid === parent.id) {
+            } else if (parent && r.pid === parent.id) {
                 pushChild(r, parent);
-            }
-            else if (!parent && !r.pid) {
+            } else if (!parent && !r.pid) {
                 nonParentRecord.push(r);
             }
         });

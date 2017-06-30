@@ -1,6 +1,6 @@
-import { DtoHeader } from "./dto_header";
-import { RecordCategory } from "../common/record_category";
-import { BodyType } from "../common/body_type";
+import { DtoHeader } from './dto_header';
+import { RecordCategory } from '../common/record_category';
+import { BodyType } from '../common/body_type';
 
 export interface DtoRecord {
 

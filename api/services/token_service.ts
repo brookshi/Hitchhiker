@@ -1,7 +1,7 @@
-import { RegToken } from "../common/reg_token";
-import { Setting } from "../utils/setting";
-import { InviteToTeamToken } from "../common/invite_team_token";
-import { StringUtil } from "../utils/string_util";
+import { RegToken } from '../common/reg_token';
+import { Setting } from '../utils/setting';
+import { InviteToTeamToken } from '../common/invite_team_token';
+import { StringUtil } from '../utils/string_util';
 import * as uuid from 'uuid';
 
 export class TokenService {

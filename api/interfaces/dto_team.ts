@@ -1,5 +1,5 @@
-import { DtoUser } from "./dto_user";
-import { DtoEnvironment } from "./dto_environment";
+import { DtoUser } from './dto_user';
+import { DtoEnvironment } from './dto_environment';
 
 export interface DtoTeam {
 

@@ -1,4 +1,4 @@
-import { ConnectionManager } from "../services/connection_manager";
+import { ConnectionManager } from '../services/connection_manager';
 
 export default function asyncInit(): (ctx: any, next: Function) => Promise<void> {
     let isAsyncInit = false;

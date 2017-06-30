@@ -1,5 +1,5 @@
-
 export class Setting {
+
     private _setting: any;
 
     static readonly instance = new Setting();

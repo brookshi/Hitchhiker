@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
-import { RecordDoc } from "./record_doc";
+import { RecordDoc } from './record_doc';
 
 @Entity()
 export class RecordDocHistory {

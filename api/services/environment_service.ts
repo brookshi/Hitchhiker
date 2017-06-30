@@ -1,12 +1,12 @@
 import { ResObject } from '../common/res_object';
 import { Environment } from '../models/environment';
-import { ConnectionManager } from "./connection_manager";
-import { Variable } from "../models/variable";
-import { Message } from "../common/message";
-import { StringUtil } from "../utils/string_util";
-import { DtoEnvironment } from "../interfaces/dto_environment";
-import { VariableService } from "./variable_service";
-import { Team } from "../models/team";
+import { ConnectionManager } from './connection_manager';
+import { Variable } from '../models/variable';
+import { Message } from '../common/message';
+import { StringUtil } from '../utils/string_util';
+import { DtoEnvironment } from '../interfaces/dto_environment';
+import { VariableService } from './variable_service';
+import { Team } from '../models/team';
 
 export class EnvironmentService {
 
@@ -82,13 +82,14 @@ export class EnvironmentService {
     static async update(dtoEnv: DtoEnvironment): Promise<ResObject> {
         const connection = await ConnectionManager.getInstance();
         const env = await EnvironmentService.get(dtoEnv.id, true);
-        if (env && env.variables && env.variables.length > 0) {
-            await connection.getRepository(Variable).remove(env.variables);
-        }
         const newEnv = EnvironmentService.fromDto(dtoEnv);
         EnvironmentService.adjustVariables(newEnv);
-
-        await EnvironmentService.save(newEnv);
+        await connection.manager.transaction(async manager => {
+            if (env && env.variables && env.variables.length > 0) {
+                await manager.remove(env.variables);
+            }
+            await manager.save(newEnv);
+        });
 
         return { success: true, message: Message.envUpdateSuccess };
     }
@@ -97,8 +98,10 @@ export class EnvironmentService {
         const connection = await ConnectionManager.getInstance();
         const env = await EnvironmentService.get(id, true);
         if (env) {
-            await connection.getRepository(Variable).remove(env.variables);
-            await connection.getRepository(Environment).remove(env);
+            await connection.manager.transaction(async manager => {
+                await manager.remove(env.variables);
+                await manager.remove(env);
+            });
         }
 
         return { success: true, message: Message.envDeleteSuccess };

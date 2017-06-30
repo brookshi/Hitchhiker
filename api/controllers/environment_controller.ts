@@ -1,8 +1,8 @@
 import { POST, DELETE, PUT, PathParam, BodyParam, BaseController } from 'webapi-router';
-import { ResObject } from "../common/res_object";
+import { ResObject } from '../common/res_object';
 import * as Koa from 'koa';
-import { EnvironmentService } from "../services/environment_service";
-import { DtoEnvironment } from "../interfaces/dto_environment";
+import { EnvironmentService } from '../services/environment_service';
+import { DtoEnvironment } from '../interfaces/dto_environment';
 
 export default class EnvironmentController extends BaseController {
 
@@ -16,7 +16,7 @@ export default class EnvironmentController extends BaseController {
         return await EnvironmentService.update(env);
     }
 
-    @DELETE("/environment/:id")
+    @DELETE('/environment/:id')
     async delete( @PathParam('id') id: string) {
         return await EnvironmentService.delete(id);
     }

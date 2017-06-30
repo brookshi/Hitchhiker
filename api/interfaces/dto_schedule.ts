@@ -1,6 +1,6 @@
-import { DtoScheduleRecord } from "./dto_schedule_record";
-import { Period } from "./period";
-import { NotificationMode } from "./notification_mode";
+import { DtoScheduleRecord } from './dto_schedule_record';
+import { Period } from './period';
+import { NotificationMode } from './notification_mode';
 
 export interface DtoSchedule {
 

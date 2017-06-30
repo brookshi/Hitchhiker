@@ -4,12 +4,12 @@ import * as Bodyparser from 'koa-bodyparser';
 import * as Session from 'koa-session-minimal';
 import { WebApiRouter } from 'webapi-router';
 import sessionHandle from './session_handle';
-import { SessionService } from "../services/session_service";
-import routeFailed from "./route_failed";
-import errorHandle from "./error_handle";
+import { SessionService } from '../services/session_service';
+import routeFailed from './route_failed';
+import errorHandle from './error_handle';
 import * as KoaStatic from 'koa-static';
 import * as Path from 'path';
-import asyncInit from "./async_init";
+import asyncInit from './async_init';
 
 export default function middleware(context: Koa) {
     const ctrlRouter = new WebApiRouter();

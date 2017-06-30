@@ -1,5 +1,5 @@
 import * as childProcess from 'child_process';
-import { Log } from "../utils/log";
+import { Log } from '../utils/log';
 
 export class ScheduleProcessManager {
 

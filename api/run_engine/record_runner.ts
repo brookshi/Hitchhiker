@@ -1,11 +1,11 @@
 import { Record } from '../models/record';
-import { RequestOptionAdapter } from "./request_option_adapter";
-import * as request from "request";
-import { ServerResponse } from "http";
-import { TestRunner } from "./test_runner";
-import * as _ from "lodash";
-import { RunResult } from "../interfaces/dto_run_result";
-import { StringUtil } from "../utils/string_util";
+import { RequestOptionAdapter } from './request_option_adapter';
+import * as request from 'request';
+import { ServerResponse } from 'http';
+import { TestRunner } from './test_runner';
+import * as _ from 'lodash';
+import { RunResult } from '../interfaces/dto_run_result';
+import { StringUtil } from '../utils/string_util';
 
 export class RecordRunner {
 
@@ -57,7 +57,7 @@ export class RecordRunner {
         if (_.keys(cookies).length === 0) {
             return record;
         }
-        const headers = [...record.headers || []];
+        const headers = [...record.headers];
         const hostName = StringUtil.getHostFromUrl(record.url);
         const currentCookies = hostName ? cookies[hostName] || {} : {};
         if (_.keys(currentCookies).length === 0) {
@@ -71,7 +71,19 @@ export class RecordRunner {
         }
         const allCookies = { ...currentCookies, ...recordCookies };
         _.remove(headers, h => h.key === 'Cookie');
-        return { ...record, headers: [...headers, { id: '', sort: 0, record, key: 'Cookie', value: _.values(allCookies).join('; '), isActive: true }] };
+        return {
+            ...record,
+            headers: [
+                ...headers, {
+                    id: '',
+                    sort: 0,
+                    record,
+                    key: 'Cookie',
+                    value: _.values(allCookies).join('; '),
+                    isActive: true
+                }
+            ]
+        };
     }
 
     static async runRecord(envId: string, record: Record, serverRes?: ServerResponse, needPipe?: boolean): Promise<RunResult> {

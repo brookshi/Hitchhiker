@@ -1,5 +1,5 @@
-import { DtoVariable } from "./dto_variable";
-import { DtoTeam } from "./dto_team";
+import { DtoVariable } from './dto_variable';
+import { DtoTeam } from './dto_team';
 
 export interface DtoEnvironment {
 

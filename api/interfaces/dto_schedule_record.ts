@@ -1,4 +1,4 @@
-import { RunResult } from "./dto_run_result";
+import { RunResult } from './dto_run_result';
 
 export interface DtoScheduleRecord {
 

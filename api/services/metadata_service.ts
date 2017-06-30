@@ -1,16 +1,16 @@
-import { PostmanCollectionV1, PostmanRecord, PostmanAllV1 } from "../interfaces/postman_v1";
-import { MetadataType } from "../common/metadata_type";
-import { Collection } from "../models/collection";
-import { User } from "../models/user";
-import { DtoRecord } from "../interfaces/dto_record";
-import { RecordService } from "./record_service";
-import { DtoHeader } from "../interfaces/dto_header";
-import { RecordCategory } from "../common/record_category";
-import { Environment } from "../models/environment";
-import { DtoVariable } from "../interfaces/dto_variable";
-import { TeamService } from "./team_service";
-import { VariableService } from "./variable_service";
-import { CollectionService } from "./collection_service";
+import { PostmanCollectionV1, PostmanRecord, PostmanAllV1 } from '../interfaces/postman_v1';
+import { MetadataType } from '../common/metadata_type';
+import { Collection } from '../models/collection';
+import { User } from '../models/user';
+import { DtoRecord } from '../interfaces/dto_record';
+import { RecordService } from './record_service';
+import { DtoHeader } from '../interfaces/dto_header';
+import { RecordCategory } from '../common/record_category';
+import { Environment } from '../models/environment';
+import { DtoVariable } from '../interfaces/dto_variable';
+import { TeamService } from './team_service';
+import { VariableService } from './variable_service';
+import { CollectionService } from './collection_service';
 
 export class MetadataService {
 
@@ -90,11 +90,9 @@ export class MetadataService {
     static getMetadataCategory(data: any): MetadataType {
         if (data.version && data.version === 1) {
             return MetadataType.PostmanAllV1;
-        }
-        else if (data.item) {
+        } else if (data.item) {
             return MetadataType.PostmanCollectionV2;
-        }
-        else {
+        } else {
             return MetadataType.PostmanCollectionV1;
         }
     }

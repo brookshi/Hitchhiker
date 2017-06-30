@@ -1,20 +1,20 @@
 import { GET, POST, PUT, DELETE, BodyParam, PathParam, QueryParam, BaseController } from 'webapi-router';
-import { ResObject } from "../common/res_object";
-import { DtoTeam } from "../interfaces/dto_team";
-import { TeamService } from "../services/team_service";
+import { ResObject } from '../common/res_object';
+import { DtoTeam } from '../interfaces/dto_team';
+import { TeamService } from '../services/team_service';
 import * as Koa from 'koa';
-import { SessionService } from "../services/session_service";
-import { UserService } from "../services/user_service";
-import { Message } from "../common/message";
-import { TokenService } from "../services/token_service";
-import { MailService } from "../services/mail_service";
-import { InviteToTeamToken } from "../common/invite_team_token";
-import { User } from "../models/user";
-import { Team } from "../models/team";
-import { UserTeamService } from "../services/user_team_service";
-import { ValidateUtil } from "../utils/validate_util";
-import * as _ from "lodash";
-import { Setting } from "../utils/setting";
+import { SessionService } from '../services/session_service';
+import { UserService } from '../services/user_service';
+import { Message } from '../common/message';
+import { TokenService } from '../services/token_service';
+import { MailService } from '../services/mail_service';
+import { InviteToTeamToken } from '../common/invite_team_token';
+import { User } from '../models/user';
+import { Team } from '../models/team';
+import { UserTeamService } from '../services/user_team_service';
+import { ValidateUtil } from '../utils/validate_util';
+import * as _ from 'lodash';
+import { Setting } from '../utils/setting';
 
 export default class TeamController extends BaseController {
 
@@ -44,7 +44,7 @@ export default class TeamController extends BaseController {
         return UserTeamService.disbandTeam({ userId, teamId });
     }
 
-    //TODO: add relative page to display and redirect to login page is missing session
+    // TODO: add relative page to display and redirect to login page is missing session
     @GET('/team/join')
     async join(ctx: Koa.Context, @QueryParam('teamid') teamId: string, @QueryParam('token') token: string): Promise<ResObject> {
         const validateRst = await this.validateInfo(teamId, token);

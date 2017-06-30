@@ -1,7 +1,7 @@
-import "reflect-metadata";
-import { Setting } from "../utils/setting";
-import { Log } from "../utils/log";
-import { ScheduleRunner } from "./schedule_runner";
+import 'reflect-metadata';
+import { Setting } from '../utils/setting';
+import { Log } from '../utils/log';
+import { ScheduleRunner } from './schedule_runner';
 
 Log.init();
 

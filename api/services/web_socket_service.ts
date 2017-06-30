@@ -1,7 +1,7 @@
 import * as WS from 'ws';
 import * as http from 'http';
-import { ScheduleOnDemandService } from "./schedule_on_demand_service";
-import { WebSocketHandler } from "./base/web_socket_handler";
+import { ScheduleOnDemandService } from './schedule_on_demand_service';
+import { WebSocketHandler } from './base/web_socket_handler';
 
 export class WebSocketService {
 

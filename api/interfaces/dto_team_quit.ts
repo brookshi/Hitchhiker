@@ -1,4 +1,3 @@
-
 export class DtoTeamQuit {
 
     teamId: string;

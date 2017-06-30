@@ -1,5 +1,5 @@
 import * as crypto from 'crypto';
-import { Setting } from "./setting";
+import { Setting } from './setting';
 import * as uuid from 'uuid';
 import * as shortId from 'shortid';
 import * as URL from 'url';

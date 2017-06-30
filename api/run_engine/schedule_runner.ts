@@ -1,22 +1,22 @@
-import "reflect-metadata";
-import { Schedule } from "../models/schedule";
-import { Record } from "../models/record";
-import { ScheduleService } from "../services/schedule_service";
-import { RecordService } from "../services/record_service";
-import { RecordRunner } from "./record_runner";
-import * as _ from "lodash";
-import { RunResult } from "../interfaces/dto_run_result";
-import { ScheduleRecord } from "../models/schedule_record";
-import { ScheduleRecordService } from "../services/schedule_record_service";
-import { ConnectionManager } from "../services/connection_manager";
-import { EnvironmentService } from "../services/environment_service";
-import { Environment } from "../models/environment";
-import { NotificationMode } from "../interfaces/notification_mode";
-import { UserService } from "../services/user_service";
-import { CollectionService } from "../services/collection_service";
-import { TeamService } from "../services/team_service";
-import { MailService } from "../services/mail_service";
-import { Log } from "../utils/log";
+import 'reflect-metadata';
+import { Schedule } from '../models/schedule';
+import { Record } from '../models/record';
+import { ScheduleService } from '../services/schedule_service';
+import { RecordService } from '../services/record_service';
+import { RecordRunner } from './record_runner';
+import * as _ from 'lodash';
+import { RunResult } from '../interfaces/dto_run_result';
+import { ScheduleRecord } from '../models/schedule_record';
+import { ScheduleRecordService } from '../services/schedule_record_service';
+import { ConnectionManager } from '../services/connection_manager';
+import { EnvironmentService } from '../services/environment_service';
+import { Environment } from '../models/environment';
+import { NotificationMode } from '../interfaces/notification_mode';
+import { UserService } from '../services/user_service';
+import { CollectionService } from '../services/collection_service';
+import { TeamService } from '../services/team_service';
+import { MailService } from '../services/mail_service';
+import { Log } from '../utils/log';
 
 export class ScheduleRunner {
 
@@ -49,7 +49,6 @@ export class ScheduleRunner {
         const compareRunResults = needCompare ? await RecordRunner.runRecords(records, schedule.compareEnvironmentId, schedule.needOrder, schedule.recordsOrder, true, trace) : [];
         const record = await this.storeRunResult(originRunResults, compareRunResults, schedule, isScheduleRun);
 
-        Log.info(`run schedule finish`);
         schedule.lastRunDate = new Date();
         await ScheduleService.save(schedule);
 
@@ -64,6 +63,8 @@ export class ScheduleRunner {
             return;
         }
         await MailService.scheduleMail(mails, await this.getRecordInfoForMail(record, records, schedule.environmentId, schedule.compareEnvironmentId));
+
+        Log.info(`run schedule finish`);
     }
 
     private async getMailsByMode(schedule: Schedule): Promise<string[]> {
@@ -106,6 +107,7 @@ export class ScheduleRunner {
     private async storeRunResult(originRunResults: RunResult[], compareRunResults: RunResult[], schedule: Schedule, isScheduleRun?: boolean): Promise<ScheduleRecord> {
         const scheduleRecord = new ScheduleRecord();
         const totalRunResults = [...originRunResults, ...compareRunResults];
+
         scheduleRecord.success = totalRunResults.filter(r => this.isSuccess(r)).length === originRunResults.length && this.compare(originRunResults, compareRunResults);
         scheduleRecord.schedule = schedule;
         scheduleRecord.result = { origin: originRunResults, compare: compareRunResults };

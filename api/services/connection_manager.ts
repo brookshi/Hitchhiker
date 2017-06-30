@@ -1,18 +1,17 @@
 import { createConnection, Connection, ConnectionOptions } from 'typeorm';
-import { Log } from "../utils/log";
-
+import { Log } from '../utils/log';
 
 export class ConnectionManager {
     private static instance: Connection = null;
     private static isInitialize = false;
 
     private static connectionOptions: ConnectionOptions = {
-        type: "mysql",
-        host: "localhost",
+        type: 'mysql',
+        host: 'localhost',
         port: 3306,
-        username: "root",
-        password: "hitchhiker888",
-        database: "hitchhiker",
+        username: 'root',
+        password: 'hitchhiker888',
+        database: 'hitchhiker',
         logging: {
             logger: (level: string, message: any) => Log[level === 'log' ? 'debug' : level](message),
             logQueries: true,
@@ -20,7 +19,7 @@ export class ConnectionManager {
             logFailedQueryError: true,
         },
         autoSchemaSync: true,
-        entities: [__dirname + "/../models/{*.ts,*.js}"],
+        entities: [__dirname + '/../models/{*.ts,*.js}'],
     };
 
     static async getInstance(): Promise<Connection> {

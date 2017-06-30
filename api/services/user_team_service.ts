@@ -1,15 +1,15 @@
-import { DtoTeamQuit } from "../interfaces/dto_team_quit";
-import { UserService } from "./user_service";
-import { ResObject } from "../common/res_object";
-import { Message } from "../common/message";
-import { TeamService } from "./team_service";
-import { User } from "../models/user";
-import { Team } from "../models/team";
-import { Environment } from "../models/environment";
-import { EnvironmentService } from "./environment_service";
-import * as _ from "lodash";
-import { ScheduleService } from "./schedule_service";
-import { DtoSchedule } from "../interfaces/dto_schedule";
+import { DtoTeamQuit } from '../interfaces/dto_team_quit';
+import { UserService } from './user_service';
+import { ResObject } from '../common/res_object';
+import { Message } from '../common/message';
+import { TeamService } from './team_service';
+import { User } from '../models/user';
+import { Team } from '../models/team';
+import { Environment } from '../models/environment';
+import { EnvironmentService } from './environment_service';
+import * as _ from 'lodash';
+import { ScheduleService } from './schedule_service';
+import { DtoSchedule } from '../interfaces/dto_schedule';
 
 export class UserTeamService {
 

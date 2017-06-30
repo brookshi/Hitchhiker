@@ -1,4 +1,5 @@
 export enum DataMode {
+
     raw = 0,
 
     urlencoded = 1,

@@ -1,14 +1,14 @@
 import { ResObject } from '../common/res_object';
 import { Collection } from '../models/collection';
-import { ConnectionManager } from "./connection_manager";
-import { ObjectLiteral } from "typeorm/common/ObjectLiteral";
-import { User } from "../models/user";
-import { Message } from "../common/message";
-import { StringUtil } from "../utils/string_util";
-import { DtoCollection } from "../interfaces/dto_collection";
-import { RecordService } from "./record_service";
-import { TeamService } from "./team_service";
-import { Team } from "../models/team";
+import { ConnectionManager } from './connection_manager';
+import { ObjectLiteral } from 'typeorm/common/ObjectLiteral';
+import { User } from '../models/user';
+import { Message } from '../common/message';
+import { StringUtil } from '../utils/string_util';
+import { DtoCollection } from '../interfaces/dto_collection';
+import { RecordService } from './record_service';
+import { TeamService } from './team_service';
+import { Team } from '../models/team';
 
 export class CollectionService {
 
@@ -77,7 +77,7 @@ export class CollectionService {
         const connection = await ConnectionManager.getInstance();
 
         return await connection.getRepository(Collection)
-            .createQueryBuilder("collection")
+            .createQueryBuilder('collection')
             .leftJoinAndSelect('collection.team', 'team')
             .leftJoinAndSelect('collection.owner', 'owner')
             .where('recycle = 0')
@@ -91,7 +91,7 @@ export class CollectionService {
         const connection = await ConnectionManager.getInstance();
 
         let rep = connection.getRepository(Collection)
-            .createQueryBuilder("collection")
+            .createQueryBuilder('collection')
             .leftJoinAndSelect('collection.team', 'team')
             .leftJoinAndSelect('collection.owner', 'owner');
 
@@ -109,7 +109,7 @@ export class CollectionService {
         const connection = await ConnectionManager.getInstance();
 
         return await connection.getRepository(Collection)
-            .createQueryBuilder("collection")
+            .createQueryBuilder('collection')
             .leftJoinAndSelect('collection.team', 'team')
             .leftJoinAndSelect('collection.owner', 'owner')
             .where('recycle = 0')
@@ -121,7 +121,7 @@ export class CollectionService {
         const connection = await ConnectionManager.getInstance();
 
         return await connection.getRepository(Collection)
-            .createQueryBuilder("collection")
+            .createQueryBuilder('collection')
             .innerJoinAndSelect('collection.team', 'team', 'team.id=:id')
             .leftJoinAndSelect('collection.owner', 'owner')
             .where('recycle = 0')
@@ -140,10 +140,10 @@ export class CollectionService {
             parameters[`id_${index}`] = id;
             return `team.id=:id_${index}`;
         });
-        const whereStr = whereStrings.length > 1 ? "(" + whereStrings.join(" OR ") + ")" : whereStrings[0];
+        const whereStr = whereStrings.length > 1 ? '(' + whereStrings.join(' OR ') + ')' : whereStrings[0];
 
         return await connection.getRepository(Collection)
-            .createQueryBuilder("collection")
+            .createQueryBuilder('collection')
             .innerJoinAndSelect('collection.team', 'team')
             .leftJoinAndSelect('collection.owner', 'owner')
             .where('recycle = 0')

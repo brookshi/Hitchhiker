@@ -1,6 +1,6 @@
 import { Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, OneToOne, OneToMany } from 'typeorm';
 import { Record } from './record';
-import { RecordDocHistory } from "./record_doc_history";
+import { RecordDocHistory } from './record_doc_history';
 
 @Entity()
 export class RecordDoc {
