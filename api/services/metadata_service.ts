@@ -8,35 +8,35 @@ import { DtoHeader } from '../interfaces/dto_header';
 import { RecordCategory } from '../common/record_category';
 import { Environment } from '../models/environment';
 import { DtoVariable } from '../interfaces/dto_variable';
-import { TeamService } from './team_service';
+import { ProjectService } from './project_service';
 import { VariableService } from './variable_service';
 import { CollectionService } from './collection_service';
 
 export class MetadataService {
 
-    static async convertPostmanCollection(owner: User, teamId: string, data: any): Promise<Collection[]> {
+    static async convertPostmanCollection(owner: User, projectId: string, data: any): Promise<Collection[]> {
         if (!data) {
             return [];
         }
         const type = MetadataService.getMetadataCategory(data);
         switch (type) {
             case MetadataType.PostmanCollectionV1:
-                return [await MetadataService.convertPostmanCollectionV1(owner, teamId, data)];
+                return [await MetadataService.convertPostmanCollectionV1(owner, projectId, data)];
             case MetadataType.PostmanAllV1:
-                return await MetadataService.convertPostmanAllCollectionV1(owner, teamId, data);
+                return await MetadataService.convertPostmanAllCollectionV1(owner, projectId, data);
             default:
                 throw new Error(`not support this type: ${type}`);
         }
     }
 
-    static async convertPostmanAllCollectionV1(owner: User, teamId: string, data: PostmanAllV1): Promise<Collection[]> {
+    static async convertPostmanAllCollectionV1(owner: User, projectId: string, data: PostmanAllV1): Promise<Collection[]> {
         if (!data.collections) {
             return [];
         }
-        return await Promise.all(data.collections.map(c => MetadataService.convertPostmanCollectionV1(owner, teamId, c)));
+        return await Promise.all(data.collections.map(c => MetadataService.convertPostmanCollectionV1(owner, projectId, c)));
     }
 
-    static async convertPostmanEnvV1(owner: User, teamId: string, data: any): Promise<Environment[]> {
+    static async convertPostmanEnvV1(owner: User, projectId: string, data: any): Promise<Environment[]> {
         const type = MetadataService.getMetadataCategory(data);
         if (type !== MetadataType.PostmanAllV1 || !data.environments) {
             return [];
@@ -46,7 +46,7 @@ export class MetadataService {
             const env = new Environment();
             env.name = e.name;
             env.variables = [];
-            env.team = TeamService.create(teamId);
+            env.project = ProjectService.create(projectId);
 
             let sort = 0;
             if (e.values) {
@@ -63,13 +63,13 @@ export class MetadataService {
         });
     }
 
-    static async convertPostmanCollectionV1(owner: User, teamId: string, data: PostmanCollectionV1): Promise<Collection> {
+    static async convertPostmanCollectionV1(owner: User, projectId: string, data: PostmanCollectionV1): Promise<Collection> {
         let sort = await RecordService.getMaxSort();
-        const dtoCollection = { ...data, teamId: teamId };
+        const dtoCollection = { ...data, projectId: projectId };
         const collection = CollectionService.fromDto(dtoCollection);
 
         collection.owner = owner;
-        collection.team = TeamService.create(teamId);
+        collection.project = ProjectService.create(projectId);
         if (data.folders) {
             data.folders.forEach(f => {
                 const dtoRecord = MetadataService.convertFolder(f, collection.id, ++sort);

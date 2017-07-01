@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Layout, Menu, Icon, Tooltip, Button } from 'antd';
 import { ClickParam } from 'antd/lib/menu';
 import Collection from './modules/collection';
-import Team from './modules/team';
+import Project from './modules/project';
 import Schedule from './modules/schedule';
 import HeaderPanel from './modules/header';
 import './style/perfect-scrollbar.min.css';
@@ -56,8 +56,8 @@ class App extends React.Component<AppProps, AppState> {
     switch (this.props.activeModule) {
       case 'collection':
         return <Collection />;
-      case 'team':
-        return <Team />;
+      case 'project':
+        return <Project />;
       case 'schedule':
         return <Schedule />;
       default:
@@ -79,7 +79,7 @@ class App extends React.Component<AppProps, AppState> {
           <HeaderPanel />
         </Header>
         <Layout>
-          <Sider style={{ maxWidth: Config.ToolBarWidth }}>
+          <Sider className="app-slider" style={{ maxWidth: Config.ToolBarWidth }}>
             <Menu
               className="sider-menu"
               mode="vertical"
@@ -92,9 +92,9 @@ class App extends React.Component<AppProps, AppState> {
                   <Icon type="wallet" />
                 </Tooltip>
               </Menu.Item>
-              <Menu.Item key="team">
-                <Tooltip mouseEnterDelay={1} placement="right" title="Team">
-                  <Icon type="team" />
+              <Menu.Item key="project">
+                <Tooltip mouseEnterDelay={1} placement="right" title="Project">
+                  <Icon type="solution" />
                 </Tooltip>
               </Menu.Item>
               <Menu.Item key="schedule">

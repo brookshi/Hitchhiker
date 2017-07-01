@@ -54,7 +54,7 @@ export class ScheduleService {
     }
 
     static async getByUserId(userId: string): Promise<Schedule[]> {
-        const collections = await UserCollectionService.getUserTeamCollections(userId);
+        const collections = await UserCollectionService.getUserProjectCollections(userId);
         if (!collections || collections.length === 0) {
             return [];
         }

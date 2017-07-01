@@ -1,4 +1,4 @@
-export interface InviteToTeamToken {
+export interface InviteToProjectToken {
 
     userEmail: string;
 
@@ -10,5 +10,5 @@ export interface InviteToTeamToken {
 
     uid: string;
 
-    teamId: string;
+    projectId: string;
 }

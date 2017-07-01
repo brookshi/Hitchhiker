@@ -14,13 +14,13 @@ export class Message {
     static userOldPwdIncorrect: string = 'old password is incorrect';
     static userChangePwdSuccess: string = 'change password success';
     static findPwdSuccess: string = 'a new password have send to your mail';
-    static regConfirmFailed_userNotExist: string = 'check failed, user does not exist';
-    static regConfirmFailed_userConfirmed: string = 'user was confirmed';
-    static regConfirmFailed_expired: string = 'verification url was expired';
-    static regConfirmFailed_invalid: string = 'verification url was invalid';
+    static regConfirmFailedUserNotExist: string = 'check failed, user does not exist';
+    static regConfirmFailedUserConfirmed: string = 'user was confirmed';
+    static regConfirmFailedExpired: string = 'verification url was expired';
+    static regConfirmFailedInvalid: string = 'verification url was invalid';
     static regConfirmSuccess: string = 'account is activated, you can use it to login now';
 
-    static invite_InviterNotExist: string = 'inviter does not exist';
+    static inviterNotExist: string = 'inviter does not exist';
     static emailsAtLeastOne: string = 'at least one email';
 
     static envCreateFailed: string = 'create environment failed';
@@ -29,17 +29,17 @@ export class Message {
     static envDeleteSuccess: string = 'delete environment success';
     static envNotExist: string = 'environment does not exist';
 
-    static teamSaveSuccess: string = 'team save success';
-    static teamUpdateSuccess: string = 'team update success';
-    static teamQuitSuccess: string = 'quit team success';
-    static teamNotExist: string = 'team does not exist';
-    static teamDisbandNeedOwner: string = 'only team owner can disband this team';
-    static teamDisbandSuccess: string = 'disband team success';
-    static teamDeleteSuccess: string = 'delete team success';
-    static emailsAllInTeam: string = 'emails are all in this team already';
-    static alreadyInTeam: string = 'already in this team';
-    static joinTeamSuccess: string = 'join team success';
-    static rejectTeamSuccess: string = 'reject invite success';
+    static projectSaveSuccess: string = 'project save success';
+    static projectUpdateSuccess: string = 'project update success';
+    static projectQuitSuccess: string = 'quit project success';
+    static projectNotExist: string = 'project does not exist';
+    static projectDisbandNeedOwner: string = 'only project owner can disband this project';
+    static projectDisbandSuccess: string = 'disband project success';
+    static projectDeleteSuccess: string = 'delete project success';
+    static emailsAllInProject: string = 'emails are all in this project already';
+    static alreadyInProject: string = 'already in this project';
+    static joinProjectSuccess: string = 'join project success';
+    static rejectProjectSuccess: string = 'reject invite success';
 
     static collectionCreateFailed: string = 'create collection failed';
     static collectionCreateSuccess: string = 'create collection success';

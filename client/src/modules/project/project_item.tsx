@@ -3,28 +3,28 @@ import ItemWithMenu from '../../components/item_with_menu';
 import './style/index.less';
 import { Menu, Icon } from 'antd';
 import { confirmDlg } from '../../components/confirm_dialog/index';
-import { DtoTeam } from '../../../../api/interfaces/dto_team';
+import { DtoProject } from '../../../../api/interfaces/dto_project';
 
-interface TeamItemProps {
+interface ProjectItemProps {
 
-    team: DtoTeam;
+    project: DtoProject;
 
     isOwner: boolean;
 
-    disbandTeam();
+    disbandProject();
 
-    quitTeam();
+    quitProject();
 
     onNameChanged(name: string);
 }
 
-interface TeamItemState { }
+interface ProjectItemState { }
 
-class TeamItem extends React.Component<TeamItemProps, TeamItemState> {
+class ProjectItem extends React.Component<ProjectItemProps, ProjectItemState> {
 
     private itemWithMenu: ItemWithMenu;
 
-    constructor(props: TeamItemProps) {
+    constructor(props: ProjectItemProps) {
         super(props);
     }
 
@@ -51,10 +51,10 @@ class TeamItem extends React.Component<TeamItemProps, TeamItemState> {
 
     delete = () => {
         confirmDlg(
-            'team',
-            () => this.props.isOwner ? this.props.disbandTeam() : this.props.quitTeam(),
+            'project',
+            () => this.props.isOwner ? this.props.disbandProject() : this.props.quitProject(),
             this.props.isOwner ? 'disband' : 'quit',
-            this.props.team.name
+            this.props.project.name
         );
     }
 
@@ -65,8 +65,8 @@ class TeamItem extends React.Component<TeamItemProps, TeamItemState> {
     }
 
     public render() {
-        const { team, isOwner } = this.props;
-        const { name, members } = team;
+        const { project, isOwner } = this.props;
+        const { name, members } = project;
         const count = members ? members.length : 0;
 
         return (
@@ -75,9 +75,9 @@ class TeamItem extends React.Component<TeamItemProps, TeamItemState> {
                 <ItemWithMenu
                     ref={ele => this.itemWithMenu = ele}
                     onNameChanged={this.props.onNameChanged}
-                    icon={<Icon className="c-icon" type="team" />}
+                    icon={<Icon className="c-icon" type="solution" />}
                     name={name}
-                    disableMenu={team.isMe}
+                    disableMenu={project.isMe}
                     subName={<div>{`${count} member${count > 1 ? 's' : ''}`}</div>}
                     menu={this.getMenu()}
                 />
@@ -86,4 +86,4 @@ class TeamItem extends React.Component<TeamItemProps, TeamItemState> {
     }
 }
 
-export default TeamItem;
+export default ProjectItem;

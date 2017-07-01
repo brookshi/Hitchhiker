@@ -6,7 +6,7 @@ import { Message } from '../common/message';
 import { StringUtil } from '../utils/string_util';
 import { DtoEnvironment } from '../interfaces/dto_environment';
 import { VariableService } from './variable_service';
-import { Team } from '../models/team';
+import { Project } from '../models/project';
 
 export class EnvironmentService {
 
@@ -15,8 +15,8 @@ export class EnvironmentService {
         env.name = dtoEnv.name;
         env.id = dtoEnv.id || StringUtil.generateUID();
         env.variables = dtoEnv.variables.map(v => VariableService.fromDto(v));
-        env.team = new Team();
-        env.team.id = dtoEnv.team.id;
+        env.project = new Project();
+        env.project.id = dtoEnv.project.id;
         return env;
     }
 
@@ -60,7 +60,7 @@ export class EnvironmentService {
         });
     }
 
-    static async getEnvironments(ids: string[], needVariables: boolean = true, needTeam: boolean = true): Promise<Environment[]> {
+    static async getEnvironments(ids: string[], needVariables: boolean = true, needProject: boolean = true): Promise<Environment[]> {
         if (!ids || ids.length === 0) {
             return [];
         }
@@ -70,8 +70,8 @@ export class EnvironmentService {
         if (needVariables) {
             rep = rep.leftJoinAndSelect('environment.variables', 'variable');
         }
-        if (needTeam) {
-            rep = rep.leftJoinAndSelect('environment.team', 'team');
+        if (needProject) {
+            rep = rep.leftJoinAndSelect('environment.project', 'project');
         }
 
         return await rep.where('1=1')

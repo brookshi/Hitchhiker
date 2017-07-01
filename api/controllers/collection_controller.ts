@@ -46,16 +46,16 @@ export default class CollectionController extends BaseController {
         return await CollectionService.delete(id);
     }
 
-    @GET('/collection/share/:collectionid/to/:teamid')
-    async share(ctx: Koa.Context, @PathParam('collectionid') collectionId: string, @PathParam('teamid') teamId: string): Promise<ResObject> {
-        return await CollectionService.shareCollection(collectionId, teamId);
+    @GET('/collection/share/:collectionid/to/:projectid')
+    async share(ctx: Koa.Context, @PathParam('collectionid') collectionId: string, @PathParam('projectid') projectId: string): Promise<ResObject> {
+        return await CollectionService.shareCollection(collectionId, projectId);
     }
 
-    @POST('/collection/postman/:teamid')
-    async importFromPostman(ctx: Koa.Context, @PathParam('teamid') teamId: string, @BodyParam info: any): Promise<ResObject> {
+    @POST('/collection/postman/:projectid')
+    async importFromPostman(ctx: Koa.Context, @PathParam('projectid') projectId: string, @BodyParam info: any): Promise<ResObject> {
         const user = SessionService.getUser(ctx);
-        const collections = await MetadataService.convertPostmanCollection(user, teamId, info);
-        const environments = await MetadataService.convertPostmanEnvV1(user, teamId, info);
+        const collections = await MetadataService.convertPostmanCollection(user, projectId, info);
+        const environments = await MetadataService.convertPostmanEnvV1(user, projectId, info);
         collections.forEach(c => CollectionService.save(c));
         environments.forEach(e => EnvironmentService.save(e));
         return { success: true, message: Message.importPostmanSuccess };

@@ -1,5 +1,5 @@
 import { DtoVariable } from './dto_variable';
-import { DtoTeam } from './dto_team';
+import { DtoProject } from './dto_project';
 
 export interface DtoEnvironment {
 
@@ -7,7 +7,7 @@ export interface DtoEnvironment {
 
     name: string;
 
-    team: Partial<DtoTeam>;
+    project: Partial<DtoProject>;
 
     variables: DtoVariable[];
 }

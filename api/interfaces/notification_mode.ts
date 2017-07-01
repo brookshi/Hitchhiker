@@ -4,7 +4,7 @@ export enum NotificationMode {
 
     me = 1,
 
-    team = 2,
+    project = 2,
 
     custom = 3,
 }
@@ -15,7 +15,7 @@ export class NotificationStr {
 
     static me = 'Me';
 
-    static team = 'Team';
+    static project = 'Project Members';
 
     static custom = 'Custom';
 
@@ -25,8 +25,8 @@ export class NotificationStr {
                 return NotificationStr.none;
             case NotificationMode.me:
                 return NotificationStr.me;
-            case NotificationMode.team:
-                return NotificationStr.team;
+            case NotificationMode.project:
+                return NotificationStr.project;
             case NotificationMode.custom:
                 return NotificationStr.custom;
             default:

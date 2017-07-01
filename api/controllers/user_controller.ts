@@ -92,22 +92,22 @@ export default class UserController extends BaseController {
     async regConfirm( @QueryParam('id') id: string, @QueryParam('token') token: string): Promise<ResObject> {
         const user = await UserService.getUserById(id);
         if (!user) {
-            return { success: false, message: Message.regConfirmFailed_userNotExist };
+            return { success: false, message: Message.regConfirmFailedUserNotExist };
         }
 
         if (user.isActive) {
-            return { success: false, message: Message.regConfirmFailed_userConfirmed };
+            return { success: false, message: Message.regConfirmFailedUserConfirmed };
         }
 
         const json = StringUtil.decrypt(token);
         const info = <RegToken>JSON.parse(json);
 
         if (!info || info.host !== Setting.instance.app.host) {
-            return { success: false, message: Message.regConfirmFailed_invalid };
+            return { success: false, message: Message.regConfirmFailedInvalid };
         }
 
         if (DateUtil.diff(new Date(info.date), new Date()) > 24) {
-            return { success: false, message: Message.regConfirmFailed_expired };
+            return { success: false, message: Message.regConfirmFailedExpired };
         }
 
         UserService.active(user.id);

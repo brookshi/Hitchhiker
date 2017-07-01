@@ -1,6 +1,6 @@
 import { ManyToOne, OneToMany, Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { Variable } from "./variable";
-import { Team } from "./team";
+import { Variable } from './variable';
+import { Project } from './project';
 
 @Entity()
 export class Environment {
@@ -16,8 +16,8 @@ export class Environment {
     })
     variables: Variable[] = [];
 
-    @ManyToOne(type => Team, team => team.environments)
-    team: Team;
+    @ManyToOne(type => Project, project => project.environments)
+    project: Project;
 
     @CreateDateColumn()
     createDate: Date;

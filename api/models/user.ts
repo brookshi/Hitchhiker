@@ -1,5 +1,5 @@
 import { Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, ManyToMany } from 'typeorm';
-import { Team } from './team';
+import { Project } from './project';
 
 @Entity()
 export class User {
@@ -16,8 +16,8 @@ export class User {
     @Column()
     email: string;
 
-    @ManyToMany(type => Team, team => team.members)
-    teams: Team[] = [];
+    @ManyToMany(type => Project, project => project.members)
+    projects: Project[] = [];
 
     @Column()
     isActive: boolean;

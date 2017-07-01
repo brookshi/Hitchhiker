@@ -7,8 +7,8 @@ import { Message } from '../common/message';
 import { StringUtil } from '../utils/string_util';
 import { DtoCollection } from '../interfaces/dto_collection';
 import { RecordService } from './record_service';
-import { TeamService } from './team_service';
-import { Team } from '../models/team';
+import { ProjectService } from './project_service';
+import { Project } from '../models/project';
 
 export class CollectionService {
 
@@ -30,14 +30,14 @@ export class CollectionService {
         collection.id = dtoCollection.id || StringUtil.generateUID();
         collection.name = dtoCollection.name;
         collection.description = dtoCollection.description;
-        collection.team = new Team();
-        collection.team.id = dtoCollection.teamId;
+        collection.project = new Project();
+        collection.project.id = dtoCollection.projectId;
         collection.records = [];
         return collection;
     }
 
     static toDto(collection: Collection): DtoCollection {
-        return { ...collection, teamId: collection.team.id };
+        return { ...collection, projectId: collection.project.id };
     }
 
     static async create(dtoCollection: DtoCollection, userId: string): Promise<ResObject> {
@@ -78,7 +78,7 @@ export class CollectionService {
 
         return await connection.getRepository(Collection)
             .createQueryBuilder('collection')
-            .leftJoinAndSelect('collection.team', 'team')
+            .leftJoinAndSelect('collection.project', 'project')
             .leftJoinAndSelect('collection.owner', 'owner')
             .where('recycle = 0')
             .andWhere('owner.id = :userId')
@@ -92,7 +92,7 @@ export class CollectionService {
 
         let rep = connection.getRepository(Collection)
             .createQueryBuilder('collection')
-            .leftJoinAndSelect('collection.team', 'team')
+            .leftJoinAndSelect('collection.project', 'project')
             .leftJoinAndSelect('collection.owner', 'owner');
 
         if (needRecords) {
@@ -110,41 +110,41 @@ export class CollectionService {
 
         return await connection.getRepository(Collection)
             .createQueryBuilder('collection')
-            .leftJoinAndSelect('collection.team', 'team')
+            .leftJoinAndSelect('collection.project', 'project')
             .leftJoinAndSelect('collection.owner', 'owner')
             .where('recycle = 0')
             .andWhereInIds(ids.map(id => ({ id })))
             .getMany();
     }
 
-    static async getByTeamId(teamid: string): Promise<Collection[]> {
+    static async getByProjectId(projectid: string): Promise<Collection[]> {
         const connection = await ConnectionManager.getInstance();
 
         return await connection.getRepository(Collection)
             .createQueryBuilder('collection')
-            .innerJoinAndSelect('collection.team', 'team', 'team.id=:id')
+            .innerJoinAndSelect('collection.project', 'project', 'project.id=:id')
             .leftJoinAndSelect('collection.owner', 'owner')
             .where('recycle = 0')
-            .setParameter('id', teamid)
+            .setParameter('id', projectid)
             .getMany();
     }
 
-    static async getByTeamIds(teamIds: string[]): Promise<Collection[]> {
-        if (!teamIds || teamIds.length === 0) {
+    static async getByProjectIds(projectIds: string[]): Promise<Collection[]> {
+        if (!projectIds || projectIds.length === 0) {
             return [];
         }
 
         const connection = await ConnectionManager.getInstance();
         const parameters: ObjectLiteral = {};
-        const whereStrings = teamIds.map((id, index) => {
+        const whereStrings = projectIds.map((id, index) => {
             parameters[`id_${index}`] = id;
-            return `team.id=:id_${index}`;
+            return `project.id=:id_${index}`;
         });
         const whereStr = whereStrings.length > 1 ? '(' + whereStrings.join(' OR ') + ')' : whereStrings[0];
 
         return await connection.getRepository(Collection)
             .createQueryBuilder('collection')
-            .innerJoinAndSelect('collection.team', 'team')
+            .innerJoinAndSelect('collection.project', 'project')
             .leftJoinAndSelect('collection.owner', 'owner')
             .where('recycle = 0')
             .andWhere(whereStr, parameters)
@@ -152,14 +152,14 @@ export class CollectionService {
             .getMany();
     }
 
-    static async shareCollection(collectionId: string, teamId: string): Promise<ResObject> {
+    static async shareCollection(collectionId: string, projectId: string): Promise<ResObject> {
         const origin = await CollectionService.getById(collectionId, true);
         if (!origin) {
             return { success: false, message: Message.collectionNotExist };
         }
 
         const target = CollectionService.clone(origin);
-        target.team = TeamService.create(teamId);
+        target.project = ProjectService.create(projectId);
         await CollectionService.save(origin);
     }
 }

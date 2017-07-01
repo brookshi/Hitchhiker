@@ -1,7 +1,7 @@
 import { DtoUser } from './dto_user';
 import { DtoEnvironment } from './dto_environment';
 
-export interface DtoTeam {
+export interface DtoProject {
 
     id: string;
 

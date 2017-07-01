@@ -17,7 +17,7 @@ export const SaveCollectionType = 'save collection';
 
 export const ShareCollectionType = 'share collection';
 
-export const SelectedTeamChangedType = 'select team';
+export const SelectedProjectChangedType = 'select project';
 
 export const CollectionOpenKeysType = 'open/close collection';
 
@@ -51,8 +51,8 @@ export function* deleteCollection() {
 
 export function* shareCollection() { // TODO: improve: share collection with environments.
     yield takeEvery(ShareCollectionType, function* (action: any) {
-        const { collectionId, teamId } = action.value;
-        const channelAction = syncAction({ type: ShareCollectionType, method: HttpMethod.GET, url: `http://localhost:3000/api/collection/share/${collectionId}/to/${teamId}` });
+        const { collectionId, projectId } = action.value;
+        const channelAction = syncAction({ type: ShareCollectionType, method: HttpMethod.GET, url: `http://localhost:3000/api/collection/share/${collectionId}/to/${projectId}` });
         yield put(channelAction);
     });
 }

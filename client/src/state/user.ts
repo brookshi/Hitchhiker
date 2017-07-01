@@ -16,7 +16,7 @@ export interface UserInfoState {
 
 export const userInfoDefaultValue: UserInfoState = {
     userInfo: {
-        teams: [],
+        projects: [],
         id: '',
         name: '',
         password: '',

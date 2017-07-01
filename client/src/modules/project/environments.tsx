@@ -8,11 +8,11 @@ import { StringUtil } from '../../utils/string_util';
 import { DtoVariable } from '../../../../api/interfaces/dto_variable';
 import { confirmDlg } from '../../components/confirm_dialog/index';
 
-const getDefaultEnv = (teamId: string) => { return { id: StringUtil.generateUID(), name: '', variables: [], team: { id: teamId } }; };
+const getDefaultEnv = (projectId: string) => { return { id: StringUtil.generateUID(), name: '', variables: [], project: { id: projectId } }; };
 
 interface EnvironmentsProps {
 
-    activeTeam: string;
+    activeProject: string;
 
     environments: DtoEnvironment[];
 
@@ -28,7 +28,7 @@ interface EnvironmentsProps {
 
     editEnvCompleted();
 
-    editEnv(teamId: string, envId: string);
+    editEnv(projectId: string, envId: string);
 }
 
 interface EnvironmentsState {
@@ -53,7 +53,7 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
         this.state = {
             isNew: false,
             variablesEditMode: KeyValueEditType.keyValueEdit,
-            environment: getDefaultEnv(props.activeTeam)
+            environment: getDefaultEnv(props.activeProject)
         };
     }
 
@@ -66,10 +66,10 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
     }
 
     private showEditDlg = (props: EnvironmentsProps) => {
-        const { editedEnvironment, environments, activeTeam, isEditEnvDlgOpen } = props;
+        const { editedEnvironment, environments, activeProject, isEditEnvDlgOpen } = props;
         if (isEditEnvDlgOpen) {
             this.setState({
-                ...this.state, environment: environments.find(e => e.id === editedEnvironment) || getDefaultEnv(activeTeam)
+                ...this.state, environment: environments.find(e => e.id === editedEnvironment) || getDefaultEnv(activeProject)
             }, () => this.envNameInput && this.envNameInput.focus());
         }
     }
@@ -106,7 +106,7 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
     private editEnv = (env: DtoEnvironment, isNew: boolean) => {
         this.setState({
             ...this.state, isNew: isNew
-        }, () => this.props.editEnv(this.props.activeTeam, env.id));
+        }, () => this.props.editEnv(this.props.activeProject, env.id));
     }
 
     private onHeaderModeChanged = () => {
@@ -119,21 +119,21 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
     public render() {
         return (
             <div>
-                <div className="team-title">
+                <div className="project-title">
                     Environments
                     <Button
-                        className="team-create-btn"
+                        className="project-create-btn"
                         type="primary"
                         size="small"
                         icon="plus"
                         ghost={true}
-                        onClick={() => this.editEnv(getDefaultEnv(this.props.activeTeam), true)}
+                        onClick={() => this.editEnv(getDefaultEnv(this.props.activeProject), true)}
                     >
                         New Environment
                     </Button>
                 </div>
                 <EnvironmentTable
-                    className="team-table team-environments"
+                    className="project-table project-environments"
                     bordered={true}
                     size="middle"
                     rowKey="id"

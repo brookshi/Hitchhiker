@@ -17,15 +17,15 @@ interface Member {
 
 interface MembersProps {
 
-    activeTeam: string;
+    activeProject: string;
 
     isOwner: boolean;
 
     members: Member[];
 
-    removeUser(teamId: string, userId: string);
+    removeUser(projectId: string, userId: string);
 
-    invite(teamId: string, emails: string[]);
+    invite(projectId: string, emails: string[]);
 }
 
 interface MembersState {
@@ -54,7 +54,7 @@ class Members extends React.Component<MembersProps, MembersState> {
     private removeUser = (record: Member) => {
         confirmDlg(
             'user',
-            () => this.props.removeUser(this.props.activeTeam, record.id),
+            () => this.props.removeUser(this.props.activeProject, record.id),
             'remove',
             record.name
         );
@@ -70,7 +70,7 @@ class Members extends React.Component<MembersProps, MembersState> {
             message.warning(result.message);
             return;
         }
-        this.props.invite(this.props.activeTeam, this.state.inviteEmails);
+        this.props.invite(this.props.activeProject, this.state.inviteEmails);
         this.setState({ ...this.state, isInviteDlgOpen: false });
     }
 
@@ -81,9 +81,9 @@ class Members extends React.Component<MembersProps, MembersState> {
     public render() {
         return (
             <div>
-                <div className="team-title">Members
+                <div className="project-title">Members
                     <Button
-                        className="team-create-btn"
+                        className="project-create-btn"
                         type="primary"
                         size="small"
                         icon="user-add"
@@ -94,7 +94,7 @@ class Members extends React.Component<MembersProps, MembersState> {
                     </Button>
                 </div>
                 <MemberTable
-                    className="team-table team-members"
+                    className="project-table project-members"
                     bordered={true}
                     size="middle"
                     rowKey="email"

@@ -1,7 +1,7 @@
 import { Setting } from '../utils/setting';
 import { User } from '../models/user';
 import * as request from 'request';
-import { Team } from '../models/team';
+import { Project } from '../models/project';
 import { TokenService } from './token_service';
 import { Log } from '../utils/log';
 
@@ -20,23 +20,23 @@ export class MailService {
         return await MailService.sendMail(mailReqUrl);
     }
 
-    static async teamInviterMail(targetEmail: string, inviter: User, team: Team): Promise<{ err: any, body: any }> {
-        const token = TokenService.buildInviteToTeamToken(targetEmail, team.id, inviter.id, inviter.email);
-        const acceptUrl = `${Setting.instance.app.api}team/join?token=${token}&teamid=${team.id}`;
-        const rejectUrl = `${Setting.instance.app.api}team/reject?token=${token}&teamid=${team.id}`;
+    static async projectInviterMail(targetEmail: string, inviter: User, project: Project): Promise<{ err: any, body: any }> {
+        const token = TokenService.buildInviteToProjectToken(targetEmail, project.id, inviter.id, inviter.email);
+        const acceptUrl = `${Setting.instance.app.api}project/join?token=${token}&projectid=${project.id}`;
+        const rejectUrl = `${Setting.instance.app.api}project/reject?token=${token}&projectid=${project.id}`;
 
-        const mailReqUrl = `${Setting.instance.mail.host}inviteToTeam?target=${targetEmail}&inviter=${inviter.name}&inviteremail=${inviter.email}&team=${team.name}&accept=${encodeURIComponent(acceptUrl)}&reject=${encodeURIComponent(rejectUrl)}&lang=${Setting.instance.app.language}`;
+        const mailReqUrl = `${Setting.instance.mail.host}inviteToProject?target=${targetEmail}&inviter=${inviter.name}&inviteremail=${inviter.email}&project=${project.name}&accept=${encodeURIComponent(acceptUrl)}&reject=${encodeURIComponent(rejectUrl)}&lang=${Setting.instance.app.language}`;
 
         return await MailService.sendMail(mailReqUrl);
     }
 
-    static rejectTeamMail(inviterEmail: string, userEmail: string, team: string) {
-        const mailReqUrl = `${Setting.instance.mail.host}rejectinvite?target=${inviterEmail}&useremail=${userEmail}&team=${team}&lang=${Setting.instance.app.language}`;
+    static rejectProjectMail(inviterEmail: string, userEmail: string, project: string) {
+        const mailReqUrl = `${Setting.instance.mail.host}rejectinvite?target=${inviterEmail}&useremail=${userEmail}&project=${project}&lang=${Setting.instance.app.language}`;
         MailService.sendMail(mailReqUrl);
     }
 
-    static joinTeamMail(inviterEmail: string, userEmail: string, team: string) {
-        const mailReqUrl = `${Setting.instance.mail.host}acceptinvite?target=${inviterEmail}&useremail=${userEmail}}&team=${team}&lang=${Setting.instance.app.language}`;
+    static joinProjectMail(inviterEmail: string, userEmail: string, project: string) {
+        const mailReqUrl = `${Setting.instance.mail.host}acceptinvite?target=${inviterEmail}&useremail=${userEmail}}&project=${project}&lang=${Setting.instance.app.language}`;
         MailService.sendMail(mailReqUrl);
     }
 

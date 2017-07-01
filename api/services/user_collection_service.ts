@@ -8,22 +8,22 @@ import * as _ from 'lodash';
 export class UserCollectionService {
 
     static async getUserCollections(userId: string): Promise<{ collections: Collection[], recordsList: { [key: string]: Record[] } }> {
-        let collections = await UserCollectionService.getUserTeamCollections(userId);
+        let collections = await UserCollectionService.getUserProjectCollections(userId);
 
         const recordsList = await RecordService.getByCollectionIds(collections.map(o => o.id));
 
         return { collections, recordsList };
     }
 
-    static async getUserTeamCollections(userId: string): Promise<Collection[]> {
+    static async getUserProjectCollections(userId: string): Promise<Collection[]> {
         const user = await UserService.getUserById(userId, true);
 
         if (!user) {
             return [];
         }
 
-        const teamIds = user.teams.map(t => t.id);
+        const projectIds = user.projects.map(t => t.id);
 
-        return await CollectionService.getByTeamIds(teamIds);
+        return await CollectionService.getByProjectIds(projectIds);
     }
 }

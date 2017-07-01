@@ -4,7 +4,7 @@ import { User } from './user';
 import { Environment } from './environment';
 
 @Entity()
-export class Team {
+export class Project {
 
     @PrimaryColumn()
     id: string;
@@ -13,13 +13,13 @@ export class Team {
     name: string;
 
     @JoinTable()
-    @ManyToMany(type => User, user => user.teams)
+    @ManyToMany(type => User, user => user.projects)
     members: User[] = [];
 
-    @OneToMany(type => Collection, collection => collection.team)
+    @OneToMany(type => Collection, collection => collection.project)
     collections: Collection[] = [];
 
-    @OneToMany(type => Environment, environment => environment.team)
+    @OneToMany(type => Environment, environment => environment.project)
     environments: Environment[] = [];
 
     @Column({ nullable: true })

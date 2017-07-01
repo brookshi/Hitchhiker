@@ -1,6 +1,6 @@
 import { User } from '../models/user';
-import { Team } from '../models/team';
+import { Project } from '../models/project';
 
 export interface DtoResUser extends User { }
 
-export interface DtoResTeam extends Partial<Team> { }
+export interface DtoResProject extends Partial<Project> { }

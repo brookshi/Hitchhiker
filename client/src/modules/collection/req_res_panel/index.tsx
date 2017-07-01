@@ -15,7 +15,7 @@ import { DtoCollectionWithRecord, DtoCollection } from '../../../../../api/inter
 import { RecordCategory } from '../../../common/record_category';
 import { actionCreator } from '../../../action';
 import { UpdateTabRecordId, AddTabType, RemoveTabType, UpdateTabChangedType, SendRequestType, CancelRequestType, ActiveTabType, SaveRecordType, SaveAsRecordType } from '../../../action/record';
-import { SwitchEnvType, EditEnvType } from '../../../action/team';
+import { SwitchEnvType, EditEnvType } from '../../../action/project';
 import { SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType } from '../../../action/ui';
 import { ReqResUIState, reqResUIDefaultValue } from '../../../state/ui';
 import { StringUtil } from '../../../utils/string_util';
@@ -64,9 +64,9 @@ interface ReqResPanelDispatchProps {
 
     updateTabRecordId(oldId: string, newId: string);
 
-    switchEnv(teamId: string, envId: string);
+    switchEnv(projectId: string, envId: string);
 
-    editEnv(teamId: string, envId: string);
+    editEnv(projectId: string, envId: string);
 
     selectReqTab(recordId: string, tab: string);
 
@@ -132,12 +132,12 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         return this.props.responseState[this.props.activeKey];
     }
 
-    private get activeRecordTeamId(): string {
-        return this.activeRecord.collectionId && this.props.collections[this.activeRecord.collectionId] ? this.props.collections[this.activeRecord.collectionId].teamId : '';
+    private get activeRecordProjectId(): string {
+        return this.activeRecord.collectionId && this.props.collections[this.activeRecord.collectionId] ? this.props.collections[this.activeRecord.collectionId].projectId : '';
     }
 
     private get activeEnvId(): string {
-        return this.props.envState.activeEnv[this.activeRecordTeamId] || noEnvironment;
+        return this.props.envState.activeEnv[this.activeRecordProjectId] || noEnvironment;
     }
 
     constructor(props: ReqResPanelProps) {
@@ -200,15 +200,15 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 
     private onEnvChanged = (value) => {
-        this.props.switchEnv(this.activeRecordTeamId, value);
+        this.props.switchEnv(this.activeRecordProjectId, value);
     }
 
     private editEnv = () => {
-        this.props.editEnv(this.activeRecordTeamId, this.activeEnvId);
+        this.props.editEnv(this.activeRecordProjectId, this.activeEnvId);
     }
 
     private getTabExtraContent = () => {
-        const envs = this.props.envState.environments[this.activeRecordTeamId] || [];
+        const envs = this.props.envState.environments[this.activeRecordProjectId] || [];
 
         return (
             <div>
@@ -363,8 +363,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): ReqResPanelDispatchProps =
         save: (record) => dispatch(actionCreator(SaveRecordType, { isNew: false, record })),
         saveAs: (record) => dispatch(actionCreator(SaveAsRecordType, { isNew: true, record })),
         updateTabRecordId: (oldId, newId) => dispatch(actionCreator(UpdateTabRecordId, { oldId, newId })),
-        switchEnv: (teamId, envId) => dispatch(actionCreator(SwitchEnvType, { teamId, envId })),
-        editEnv: (teamId, envId) => dispatch(actionCreator(EditEnvType, { teamId, envId })),
+        switchEnv: (projectId, envId) => dispatch(actionCreator(SwitchEnvType, { projectId, envId })),
+        editEnv: (projectId, envId) => dispatch(actionCreator(EditEnvType, { projectId, envId })),
         selectReqTab: (recordId, tab) => dispatch(actionCreator(SelectReqTabType, { recordId, tab })),
         selectResTab: (recordId, tab) => dispatch(actionCreator(SelectResTabType, { recordId, tab })),
         toggleReqPanelVisible: (recordId, visible) => dispatch(actionCreator(ToggleReqPanelVisibleType, { recordId, visible })),

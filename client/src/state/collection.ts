@@ -15,7 +15,7 @@ export function getDefaultRecord(isInit: boolean = false): DtoRecord {
     };
 }
 
-export const AllTeam = 'All';
+export const AllProject = 'All';
 
 export interface CollectionState {
 
@@ -23,7 +23,7 @@ export interface CollectionState {
 
     openKeys: string[];
 
-    selectedTeam: string;
+    selectedProject: string;
 
     fetchCollectionState: RequestState;
 }
@@ -56,7 +56,7 @@ export interface ResponseState {
 export const collectionDefaultValue: CollectionState = {
     fetchCollectionState: requestStateDefaultValue,
     openKeys: [],
-    selectedTeam: AllTeam,
+    selectedProject: AllProject,
     collectionsInfo: {
         collections: {},
         records: {}

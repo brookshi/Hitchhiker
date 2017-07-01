@@ -11,14 +11,14 @@ import * as _ from 'lodash';
 import { DtoCollection } from '../../../../../api/interfaces/dto_collection';
 import { RecordCategory } from '../../../common/record_category';
 import { actionCreator } from '../../../action';
-import { DeleteCollectionType, SaveCollectionType, SelectedTeamChangedType, CollectionOpenKeysType } from '../../../action/collection';
+import { DeleteCollectionType, SaveCollectionType, SelectedProjectChangedType, CollectionOpenKeysType } from '../../../action/collection';
 import { DeleteRecordType, SaveRecordType, RemoveTabType, ActiveRecordType, MoveRecordType } from '../../../action/record';
 import { StringUtil } from '../../../utils/string_util';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { AllTeam } from '../../../state/collection';
+import { AllProject } from '../../../state/collection';
 import './style/index.less';
-import { DtoTeam } from '../../../../../api/interfaces/dto_team';
-import { TeamSelectedDialogMode, TeamSelectedDialogType } from '../../../common/custom_type';
+import { DtoProject } from '../../../../../api/interfaces/dto_project';
+import { ProjectSelectedDialogMode, ProjectSelectedDialogType } from '../../../common/custom_type';
 
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
@@ -32,11 +32,11 @@ interface CollectionListStateProps {
 
     activeKey: string;
 
-    teams: { id: string, name: string }[];
+    projects: { id: string, name: string }[];
 
     openKeys: string[];
 
-    selectedTeam: string;
+    selectedProject: string;
 }
 
 interface CollectionListDispatchProps {
@@ -61,18 +61,18 @@ interface CollectionListDispatchProps {
 
     openKeysChanged(openKeys: string[]);
 
-    selectTeam(teamid: string);
+    selectProject(projectid: string);
 }
 
 type CollectionListProps = CollectionListStateProps & CollectionListDispatchProps;
 
 interface CollectionListState {
 
-    isTeamSelectedDlgOpen: boolean;
+    isProjectSelectedDlgOpen: boolean;
 
-    teamSelectedDlgMode: TeamSelectedDialogMode;
+    projectSelectedDlgMode: ProjectSelectedDialogMode;
 
-    selectedTeamInDlg?: string;
+    selectedProjectInDlg?: string;
 
     newCollectionName: string;
 
@@ -88,8 +88,8 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     constructor(props: CollectionListProps) {
         super(props);
         this.state = {
-            teamSelectedDlgMode: TeamSelectedDialogType.create,
-            isTeamSelectedDlgOpen: false,
+            projectSelectedDlgMode: ProjectSelectedDialogType.create,
+            isProjectSelectedDlgOpen: false,
             newCollectionName: NewCollectionName,
             shareCollectionId: ''
         };
@@ -147,57 +147,57 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         }
     }
 
-    private onTeamChanged = (e) => {
-        this.props.selectTeam(e.key);
+    private onProjectChanged = (e) => {
+        this.props.selectProject(e.key);
     }
 
-    private getTeamMenu = () => {
-        const teams = this.props.teams;
+    private getProjectMenu = () => {
+        const projects = this.props.projects;
         return (
-            <Menu style={{ minWidth: 150 }} onClick={this.onTeamChanged} selectedKeys={[this.props.selectedTeam]}>
-                <Menu.Item key={AllTeam}>{AllTeam}</Menu.Item>
-                {teams.map(t => <Menu.Item key={t.id}>{t.name}</Menu.Item>)}
+            <Menu style={{ minWidth: 150 }} onClick={this.onProjectChanged} selectedKeys={[this.props.selectedProject]}>
+                <Menu.Item key={AllProject}>{AllProject}</Menu.Item>
+                {projects.map(t => <Menu.Item key={t.id}>{t.name}</Menu.Item>)}
             </Menu>
         );
     }
 
-    private getCurrentTeam = () => {
-        return this.props.teams.find(t => t.id === this.props.selectedTeam) || { id: AllTeam, name: AllTeam };
+    private getCurrentProject = () => {
+        return this.props.projects.find(t => t.id === this.props.selectedProject) || { id: AllProject, name: AllProject };
     }
 
     private getOpenKeys = () => {
         const openKeys = this.props.openKeys;
-        if (this.props.selectedTeam === AllTeam) {
+        if (this.props.selectedProject === AllProject) {
             return openKeys;
         }
-        return _.filter(openKeys, k => this.props.collections[k] && this.props.collections[k].teamId === this.props.selectedTeam);
+        return _.filter(openKeys, k => this.props.collections[k] && this.props.collections[k].projectId === this.props.selectedProject);
     }
 
     private getDisplayCollections = () => {
         const collections = _.chain(this.props.collections).values<DtoCollection>().sortBy('name').value();
-        if (this.props.selectedTeam === AllTeam) {
+        if (this.props.selectedProject === AllProject) {
             return collections;
         }
-        return _.filter(collections, c => c.teamId === this.props.selectedTeam);
+        return _.filter(collections, c => c.projectId === this.props.selectedProject);
     }
 
     private addCollection = () => {
-        this.setState({ ...this.state, isTeamSelectedDlgOpen: true }, () => this.newCollectionNameRef && this.newCollectionNameRef.focus());
+        this.setState({ ...this.state, isProjectSelectedDlgOpen: true }, () => this.newCollectionNameRef && this.newCollectionNameRef.focus());
     }
 
     private createCollection = () => {
-        if (!this.state.selectedTeamInDlg) {
+        if (!this.state.selectedProjectInDlg) {
             return;
         }
 
         const collection: DtoCollection = {
             id: StringUtil.generateUID(),
             name: this.state.newCollectionName,
-            teamId: this.state.selectedTeamInDlg,
+            projectId: this.state.selectedProjectInDlg,
             description: ''
         };
         this.props.saveCollection(collection);
-        this.setState({ ...this.state, isTeamSelectedDlgOpen: false, newCollectionName: NewCollectionName, selectedTeamInDlg: undefined });
+        this.setState({ ...this.state, isProjectSelectedDlgOpen: false, newCollectionName: NewCollectionName, selectedProjectInDlg: undefined });
     }
 
     private shareCollection = () => {
@@ -243,20 +243,20 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         });
     }
 
-    private get teamSelectedDialog() {
-        const { teamSelectedDlgMode, isTeamSelectedDlgOpen } = this.state;
-        const description = TeamSelectedDialogType.getDescription(teamSelectedDlgMode);
+    private get projectSelectedDialog() {
+        const { projectSelectedDlgMode, isProjectSelectedDlgOpen } = this.state;
+        const description = ProjectSelectedDialogType.getDescription(projectSelectedDlgMode);
         return (
             <Modal
-                title={TeamSelectedDialogType.getTitle(teamSelectedDlgMode)}
-                visible={isTeamSelectedDlgOpen}
+                title={ProjectSelectedDialogType.getTitle(projectSelectedDlgMode)}
+                visible={isProjectSelectedDlgOpen}
                 okText="OK"
                 cancelText="Cancel"
-                onOk={TeamSelectedDialogType.isCreateMode(teamSelectedDlgMode) ? this.createCollection : this.shareCollection}
-                onCancel={() => this.setState({ ...this.state, isTeamSelectedDlgOpen: false })}
+                onOk={ProjectSelectedDialogType.isCreateMode(projectSelectedDlgMode) ? this.createCollection : this.shareCollection}
+                onCancel={() => this.setState({ ...this.state, isProjectSelectedDlgOpen: false })}
             >
                 {
-                    TeamSelectedDialogType.isCreateMode(teamSelectedDlgMode) ? (
+                    ProjectSelectedDialogType.isCreateMode(projectSelectedDlgMode) ? (
                         <div>
                             <div style={{ marginBottom: '8px' }}>Enter new collection name:</div>
                             <Input spellCheck={false} ref={ele => this.newCollectionNameRef = ele} style={{ width: '100%', marginBottom: '8px' }} value={this.state.newCollectionName} onChange={e => this.setState({ ...this.state, newCollectionName: e.currentTarget.value })} />
@@ -269,11 +269,11 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                     allowClear={true}
                     style={{ width: '100%' }}
                     dropdownStyle={{ maxHeight: 500, overflow: 'auto' }}
-                    placeholder="Please select team"
+                    placeholder="Please select project"
                     treeDefaultExpandAll={true}
-                    value={this.state.selectedTeamInDlg}
-                    onChange={(e) => this.setState({ ...this.state, selectedTeamInDlg: e })}
-                    treeData={this.props.teams.map(t => ({ key: t.id, value: t.id, label: t.name }))} />
+                    value={this.state.selectedProjectInDlg}
+                    onChange={(e) => this.setState({ ...this.state, selectedProjectInDlg: e })}
+                    treeData={this.props.projects.map(t => ({ key: t.id, value: t.id, label: t.name }))} />
             </Modal>
         );
     }
@@ -285,11 +285,11 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         return (
             <div className="collection-panel">
                 <div className="small-toolbar">
-                    <span>Team:</span>
+                    <span>Project:</span>
                     <span>
-                        <Dropdown overlay={this.getTeamMenu()} trigger={['click']} style={{ width: 200 }}>
+                        <Dropdown overlay={this.getProjectMenu()} trigger={['click']} style={{ width: 200 }}>
                             <a className="ant-dropdown-link" href="#">
-                                {this.getCurrentTeam().name} <Icon type="down" />
+                                {this.getCurrentProject().name} <Icon type="down" />
                             </a>
                         </Dropdown>
                     </span>
@@ -325,7 +325,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                                                     deleteCollection={() => this.props.deleteCollection(c.id)}
                                                     moveToCollection={this.moveToCollection}
                                                     createFolder={this.createFolder}
-                                                    shareCollection={id => this.setState({ ...this.state, isTeamSelectedDlgOpen: true, teamSelectedDlgMode: TeamSelectedDialogType.share, shareCollectionId: id })}
+                                                    shareCollection={id => this.setState({ ...this.state, isProjectSelectedDlgOpen: true, projectSelectedDlgMode: ProjectSelectedDialogType.share, shareCollectionId: id })}
                                                 />
                                             )}>
                                             {
@@ -341,16 +341,16 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                         {displayCollections.length === 0 ? '' : <div className="collection-tree-bottom" />}
                     </PerfectScrollbar>
                 </div>
-                {this.teamSelectedDialog}
+                {this.projectSelectedDialog}
             </div>
         );
     }
 }
 
 const mapStateToProps = (state: State): CollectionListStateProps => {
-    const { collectionsInfo, openKeys, selectedTeam } = state.collectionState;
-    let teams = _.chain(state.teamState.teams)
-        .values<DtoTeam>()
+    const { collectionsInfo, openKeys, selectedProject } = state.collectionState;
+    let projects = _.chain(state.projectState.projects)
+        .values<DtoProject>()
         .sortBy('name')
         .sortBy(t => t.owner.id !== state.userState.userInfo.id)
         .sortBy(t => t.isMe ? 0 : 1)
@@ -361,9 +361,9 @@ const mapStateToProps = (state: State): CollectionListStateProps => {
         collections: collectionsInfo.collections,
         records: collectionsInfo.records,
         activeKey: state.displayRecordsState.activeKey,
-        teams,
+        projects,
         openKeys,
-        selectedTeam
+        selectedProject
     };
 };
 
@@ -387,7 +387,7 @@ const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps
         createFolder: (record) => dispatch(actionCreator(SaveRecordType, { isNew: true, record })),
         moveRecord: record => dispatch(actionCreator(MoveRecordType, { record })),
         openKeysChanged: openKeys => dispatch(actionCreator(CollectionOpenKeysType, openKeys)),
-        selectTeam: teamId => dispatch(actionCreator(SelectedTeamChangedType, teamId))
+        selectProject: projectId => dispatch(actionCreator(SelectedProjectChangedType, projectId))
     };
 };
 

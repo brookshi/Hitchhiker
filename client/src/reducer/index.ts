@@ -5,7 +5,7 @@ import { UpdateTabChangedType } from '../action/record';
 import * as _ from 'lodash';
 import { uiState } from './ui';
 import { userState } from './user';
-import { teamState } from './team';
+import { projectState } from './project';
 import { environmentState } from './environment';
 import { FetchLocalDataSuccessType } from '../action/local_data';
 import { localDataState } from './local_data';
@@ -27,7 +27,7 @@ export function rootReducer(state: State, action: any): State {
         displayRecordsState,
         uiState,
         userState,
-        teamState,
+        projectState,
         environmentState,
         scheduleState
     })(state, action);
@@ -56,7 +56,7 @@ function root(state: State, action: any): State {
             if (!action.value) {
                 return state;
             }
-            const { displayRecordsState, uiState, collectionState, teamState, environmentState } = action.value as State;
+            const { displayRecordsState, uiState, collectionState, projectState, environmentState, scheduleState } = action.value as State;
             const onlineRecords = state.collectionState.collectionsInfo.records;
 
             displayRecordsState.recordStates.forEach(recordState => {
@@ -75,16 +75,20 @@ function root(state: State, action: any): State {
                 uiState: { ...uiState, syncState: syncDefaultValue },
                 collectionState: {
                     ...state.collectionState,
-                    selectedTeam: collectionState.selectedTeam,
+                    selectedProject: collectionState.selectedProject,
                     openKeys: collectionState.openKeys.length > 0 ? collectionState.openKeys : state.collectionState.openKeys
                 },
-                teamState: {
-                    ...state.teamState,
-                    activeTeam: teamState.activeTeam
+                projectState: {
+                    ...state.projectState,
+                    activeProject: projectState.activeProject
                 },
                 environmentState: {
                     ...state.environmentState,
                     activeEnv: environmentState.activeEnv
+                },
+                scheduleState: {
+                    ...state.scheduleState,
+                    activeSchedule: scheduleState.activeSchedule
                 }
             };
         }

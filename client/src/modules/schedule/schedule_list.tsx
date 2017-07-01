@@ -135,7 +135,7 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                 </div>
                 <PerfectScrollbar>
                     <Menu
-                        className="team-list"
+                        className="project-list"
                         mode="inline"
                         inlineIndent={0}
                         selectedKeys={[activeSchedule]}

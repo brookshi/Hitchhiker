@@ -94,7 +94,7 @@ export function* register() {
             yield put(actionCreator(RegisterPendingType));
             const res = yield call(RequestManager.post, 'http://localhost:3000/api/user', action.value);
             if (res.ok === false) {
-                yield put(actionCreator(LoginFailedType, `${res.status} ${res.statusText}`));
+                yield put(actionCreator(RegisterFailedType, `${res.status} ${res.statusText}`));
                 return;
             }
             const body = yield res.json();

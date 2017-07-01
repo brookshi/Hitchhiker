@@ -1,5 +1,5 @@
 import { LoginSuccessType } from '../action/user';
-import { SwitchEnvType, EditEnvType, QuitTeamType, DisbandTeamType, SaveEnvironmentType, DelEnvironmentType, EditEnvCompletedType } from '../action/team';
+import { SwitchEnvType, EditEnvType, QuitProjectType, DisbandProjectType, SaveEnvironmentType, DelEnvironmentType, EditEnvCompletedType } from '../action/project';
 import * as _ from 'lodash';
 import { EnvironmentState, environmentDefaultValue } from '../state/environment';
 
@@ -10,27 +10,27 @@ export function environmentState(state: EnvironmentState = environmentDefaultVal
         }
         case SaveEnvironmentType: {
             const newEnv = action.value.env;
-            const envs = state.environments[newEnv.team.id];
+            const envs = state.environments[newEnv.project.id];
             if (!action.value.isNew) {
                 _.remove(envs, e => e.id === newEnv.id);
             }
-            return { ...state, environments: { ...state.environments, [newEnv.team.id]: [...envs, newEnv] } };
+            return { ...state, environments: { ...state.environments, [newEnv.project.id]: [...envs, newEnv] } };
         }
-        case QuitTeamType:
-        case DisbandTeamType: {
+        case QuitProjectType:
+        case DisbandProjectType: {
             const envs = state.environments;
             Reflect.deleteProperty(envs, action.value.id);
             return { ...state, environments: { ...envs } };
         }
         case DelEnvironmentType: {
-            const { teamId, envId } = action.value;
-            const envs = state.environments[teamId];
+            const { projectId, envId } = action.value;
+            const envs = state.environments[projectId];
             _.remove(envs, e => e.id === envId);
-            return { ...state, environments: { ...state.environments, [teamId]: [...envs] } };
+            return { ...state, environments: { ...state.environments, [projectId]: [...envs] } };
         }
         case SwitchEnvType: {
-            const { teamId, envId } = action.value;
-            return { ...state, activeEnv: { [teamId]: envId } };
+            const { projectId, envId } = action.value;
+            return { ...state, activeEnv: { [projectId]: envId } };
         }
         case EditEnvType: {
             const isEditEnvDlgOpen = action.value.envId !== 'no environment';

@@ -29,24 +29,24 @@ export class KeyValueEditType {
     }
 }
 
-export type TeamSelectedDialogMode = 'share' | 'create';
+export type ProjectSelectedDialogMode = 'share' | 'create';
 
-export class TeamSelectedDialogType {
+export class ProjectSelectedDialogType {
 
-    static share: TeamSelectedDialogMode = 'share';
+    static share: ProjectSelectedDialogMode = 'share';
 
-    static create: TeamSelectedDialogMode = 'create';
+    static create: ProjectSelectedDialogMode = 'create';
 
-    static getTitle(mode: TeamSelectedDialogMode): string {
-        return TeamSelectedDialogType.isCreateMode(mode) ? 'Create new collection' : 'Share collection';
+    static getTitle(mode: ProjectSelectedDialogMode): string {
+        return ProjectSelectedDialogType.isCreateMode(mode) ? 'Create new collection' : 'Share collection';
     }
 
-    static getDescription(mode: TeamSelectedDialogMode): string {
-        return TeamSelectedDialogType.isCreateMode(mode) ? 'Select team for this collection:' : 'Share to team:';
+    static getDescription(mode: ProjectSelectedDialogMode): string {
+        return ProjectSelectedDialogType.isCreateMode(mode) ? 'Select project for this collection:' : 'Share to project:';
     }
 
-    static isCreateMode(mode: TeamSelectedDialogMode): boolean {
-        return mode === TeamSelectedDialogType.create;
+    static isCreateMode(mode: ProjectSelectedDialogMode): boolean {
+        return mode === ProjectSelectedDialogType.create;
     }
 }
 

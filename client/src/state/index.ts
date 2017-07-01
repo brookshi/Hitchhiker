@@ -1,5 +1,5 @@
 import { UIState } from './ui';
-import { TeamState } from './team';
+import { ProjectState } from './project';
 import { UserInfoState } from './user';
 import { EnvironmentState } from './environment';
 import { CollectionState, DisplayRecordsState } from './collection';
@@ -24,7 +24,7 @@ export interface State {
 
     userState: UserInfoState;
 
-    teamState: TeamState;
+    projectState: ProjectState;
 
     collectionState: CollectionState;
 

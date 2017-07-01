@@ -6,9 +6,9 @@ import { ValidateUtil } from '../utils/validate_util';
 import { Setting } from '../utils/setting';
 import { MailService } from './mail_service';
 import { StringUtil } from '../utils/string_util';
-import { TeamService } from './team_service';
+import { ProjectService } from './project_service';
 import * as _ from 'lodash';
-import { UserTeamService } from './user_team_service';
+import { UserProjectService } from './user_project_service';
 
 export class UserService {
 
@@ -30,7 +30,7 @@ export class UserService {
         const user = await UserService.getUserByEmail(email, true);
         if (user && user.password === pwd) {// TODO: md5
             if (user.isActive) {
-                const userInfo = await UserTeamService.getUserInfo(user);
+                const userInfo = await UserProjectService.getUserInfo(user);
                 return { success: true, message: '', result: userInfo };
             } else {
                 return { success: false, message: Message.accountNotActive };
@@ -65,7 +65,7 @@ export class UserService {
             MailService.registerMail(user);
         }
 
-        await TeamService.createOwnTeam(user);
+        await ProjectService.createOwnProject(user);
 
         return { success: true, message: Message.userCreateSuccess, result: user };
     }
@@ -87,7 +87,7 @@ export class UserService {
         return user !== undefined;
     }
 
-    static async getUserByEmail(email: string, needTeam?: boolean): Promise<User> {
+    static async getUserByEmail(email: string, needProject?: boolean): Promise<User> {
         const connection = await ConnectionManager.getInstance();
 
         let rep = connection.getRepository(User)
@@ -95,29 +95,29 @@ export class UserService {
             .where(`user.email = :email`)
             .setParameter('email', email);
 
-        if (needTeam) { rep = rep.leftJoinAndSelect('user.teams', 'team'); };
+        if (needProject) { rep = rep.leftJoinAndSelect('user.projects', 'project'); };
 
         const user = await rep.getOne();
 
-        if (user && needTeam) {
-            user.teams = await TeamService.getTeams(user.teams.map(t => t.id), true, false, true, true);
+        if (user && needProject) {
+            user.projects = await ProjectService.getProjects(user.projects.map(t => t.id), true, false, true, true);
         }
 
         return user;
     }
 
-    static async getUserById(id: string, needTeam?: boolean): Promise<User> {
+    static async getUserById(id: string, needProject?: boolean): Promise<User> {
         const connection = await ConnectionManager.getInstance();
 
         const user = await connection.getRepository(User)
             .createQueryBuilder('user')
-            .leftJoinAndSelect('user.teams', 'team')
+            .leftJoinAndSelect('user.projects', 'project')
             .where(`user.id = :id`)
             .setParameter('id', id)
             .getOne();
 
-        if (user && needTeam) {
-            user.teams = await TeamService.getTeams(user.teams.map(t => t.id), true, false, true, true);
+        if (user && needProject) {
+            user.projects = await ProjectService.getProjects(user.projects.map(t => t.id), true, false, true, true);
         }
 
         return user;

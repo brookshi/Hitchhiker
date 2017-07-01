@@ -14,7 +14,7 @@ import { Environment } from '../models/environment';
 import { NotificationMode } from '../interfaces/notification_mode';
 import { UserService } from '../services/user_service';
 import { CollectionService } from '../services/collection_service';
-import { TeamService } from '../services/team_service';
+import { ProjectService } from '../services/project_service';
 import { MailService } from '../services/mail_service';
 import { Log } from '../utils/log';
 
@@ -71,16 +71,16 @@ export class ScheduleRunner {
         if (schedule.notification === NotificationMode.me) {
             const user = await UserService.getUserById(schedule.ownerId);
             return user ? [user.email] : [];
-        } else if (schedule.notification === NotificationMode.team) {
+        } else if (schedule.notification === NotificationMode.project) {
             const collection = await CollectionService.getById(schedule.collectionId);
             if (!collection) {
                 return [];
             }
-            const team = await TeamService.getTeam(collection.team.id, false, false, true, false);
-            if (!team) {
+            const project = await ProjectService.getProject(collection.project.id, false, false, true, false);
+            if (!project) {
                 return [];
             }
-            return team.members.map(m => m.email);
+            return project.members.map(m => m.email);
         } else if (schedule.notification === NotificationMode.custom) {
             return schedule.emails.split(';');
         }

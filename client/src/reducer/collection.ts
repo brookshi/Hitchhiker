@@ -1,4 +1,4 @@
-import { FetchCollectionSuccessType, SaveCollectionType, DeleteCollectionType, SelectedTeamChangedType, CollectionOpenKeysType, FetchCollectionFailedType, FetchCollectionPendingType } from '../action/collection';
+import { FetchCollectionSuccessType, SaveCollectionType, DeleteCollectionType, SelectedProjectChangedType, CollectionOpenKeysType, FetchCollectionFailedType, FetchCollectionPendingType } from '../action/collection';
 import { ActiveTabType, ActiveRecordType, DeleteRecordType, MoveRecordType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, UpdateTabRecordId, SaveAsRecordType } from '../action/record';
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
@@ -31,8 +31,8 @@ export function collectionState(state: CollectionState = collectionDefaultValue,
         case FetchCollectionFailedType: {
             return { ...state, fetchCollectionState: { status: RequestStatus.failed, message: action.value } };
         }
-        case SelectedTeamChangedType: {
-            return { ...state, selectedTeam: action.value };
+        case SelectedProjectChangedType: {
+            return { ...state, selectedProject: action.value };
         }
         case CollectionOpenKeysType: {
             return { ...state, openKeys: action.value };

@@ -16,6 +16,8 @@ import { FetchLocalDataType } from '../../action/local_data';
 
 interface LoginPageStateProps {
 
+    userId: string;
+
     loginState: RequestState;
 
     registerState: RequestState;
@@ -43,7 +45,7 @@ interface LoginPageDispatchProps {
 
     fetchCollectionData();
 
-    fetchLocalData();
+    fetchLocalData(userId: string);
 }
 
 type LoginPageProps = LoginPageStateProps & LoginPageDispatchProps;
@@ -78,9 +80,9 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
                 <Row style={{ height: '80%', marginLeft: 18, marginRight: 18 }} type="flex" justify="center" align="middle" gutter={36}>
                     <Col span={13}>
                         <div style={{ float: 'right', maxWidth: 550 }}>
-                            <div className="login-page-desc-title">Api integrated testing tool for team</div>
+                            <div className="login-page-desc-title">Api integrated testing tool for project</div>
                             <div className="login-page-desc-content">
-                                Hitchhiker is an <b><a target="blank" href="https://github.com/brookshi/hitchhiker">open source</a></b> Restful Api integrated testing tool. You can deploy it in your local server. It make easier to manage Api with your team members.<br /><br />
+                                Hitchhiker is an <b><a target="blank" href="https://github.com/brookshi/hitchhiker">open source</a></b> Restful Api integrated testing tool. You can deploy it in your local server. It make easier to manage Api with your project members.<br /><br />
                                 More useful features (Schedule, Document, Api Mock etc.) will come in the near future.
                             </div>
                         </div>
@@ -89,7 +91,7 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
                         {
                             this.state.panelMode === 'login' ? (
                                 <LoginPanel
-                                    loginStatus={this.props.loginState}
+                                    loginState={this.props.loginState}
                                     signIn={value => this.props.login(value)}
                                     switchPanel={this.switchPanel}
                                     resetLogin={this.props.resetLogin}
@@ -99,7 +101,7 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
                             ) : (this.state.panelMode === 'register' ?
                                 (
                                     <RegisterPanel
-                                        registerStatus={this.props.registerState}
+                                        registerState={this.props.registerState}
                                         signUp={value => this.props.register(value)}
                                         switchPanel={this.switchPanel}
                                         resetRegister={this.props.resetRegister}
@@ -120,7 +122,7 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
     }
 
     public render() {
-        const { getUserInfo, fetchCollectionData, fetchCollectionState, fetchLocalData, fetchLocalDataState, loginState } = this.props;
+        const { getUserInfo, fetchCollectionData, fetchCollectionState, fetchLocalData, fetchLocalDataState, loginState, userId } = this.props;
         return (
             <div className="login-page">
                 {
@@ -128,7 +130,7 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
                         <LoadingScreen
                             fetchCollectionData={fetchCollectionData}
                             fetchCollectionDataState={fetchCollectionState}
-                            fetchLocalData={fetchLocalData}
+                            fetchLocalData={() => fetchLocalData(userId)}
                             fetchLocalDataState={fetchLocalDataState}
                             getUserInfo={getUserInfo}
                             loginState={loginState}
@@ -141,8 +143,9 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
 }
 
 const mapStateToProps = (state: State): LoginPageStateProps => {
-    const { loginState, registerState, findPasswordState } = state.userState;
+    const { loginState, registerState, findPasswordState, userInfo } = state.userState;
     return {
+        userId: userInfo.id,
         loginState,
         registerState,
         findPasswordState,
@@ -160,7 +163,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): LoginPageDispatchProps => 
         resetLogin: () => dispatch(actionCreator(LoginResetType)),
         findPassword: (email) => dispatch(actionCreator(FindPasswordType, email)),
         fetchCollectionData: () => dispatch(actionCreator(RefreshCollectionType)),
-        fetchLocalData: () => dispatch(actionCreator(FetchLocalDataType))
+        fetchLocalData: (userId) => dispatch(actionCreator(FetchLocalDataType, userId))
     };
 };
 

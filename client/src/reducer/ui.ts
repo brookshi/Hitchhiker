@@ -1,4 +1,4 @@
-import { EditEnvType } from '../action/team';
+import { EditEnvType } from '../action/project';
 import { UIState, AppUIState, appUIDefaultValue, ReqResUIState, uiDefaultValue, SyncState, syncDefaultValue } from '../state/ui';
 import { combineReducers } from 'redux';
 import { ResizeLeftPanelType, UpdateLeftPanelType, SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType } from '../action/ui';
@@ -22,7 +22,7 @@ function appUIState(state: AppUIState = appUIDefaultValue, action: any): AppUISt
             return { ...state, collapsed: action.value.collapsed, activeModule: action.value.activeModule };
         }
         case EditEnvType: {
-            return { ...state, activeModule: 'team' };
+            return { ...state, activeModule: 'project' };
         }
         default:
             return state;

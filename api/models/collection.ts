@@ -1,7 +1,7 @@
 import { Entity, PrimaryColumn, Column, CreateDateColumn, OneToOne, OneToMany, JoinColumn, ManyToOne, UpdateDateColumn } from 'typeorm';
 import { Record } from './record';
 import { User } from './user';
-import { Team } from './team';
+import { Project } from './project';
 
 @Entity()
 export class Collection {
@@ -23,8 +23,8 @@ export class Collection {
     @OneToOne(type => User)
     owner: User;
 
-    @ManyToOne(type => Team, team => team.collections)
-    team: Team;
+    @ManyToOne(type => Project, project => project.collections)
+    project: Project;
 
     @Column({ default: false })
     recycle: boolean;
