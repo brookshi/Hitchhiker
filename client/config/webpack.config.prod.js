@@ -8,7 +8,7 @@ var ManifestPlugin = require('webpack-manifest-plugin');
 var InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 var paths = require('./paths');
 var getClientEnvironment = require('./env');
-
+var shortId = require('shortid');
 
 
 // Webpack uses `publicPath` to determine where the app is being served from.
@@ -32,6 +32,12 @@ if (env.stringified['process.env'].NODE_ENV !== '"production"') {
 
 // Note: defined here because it will be used more than once.
 const cssFilename = 'static/css/[name].[contenthash:8].css';
+var hash = shortId.generate();
+
+var theme = require(paths.appPackageJson).theme;
+if (theme['@icon-url']) {
+  theme['@icon-url'] = theme['@icon-url'].replace('{hash}', hash)
+}
 
 // ExtractTextPlugin expects the build output to be flat.
 // (See https://github.com/webpack-contrib/extract-text-webpack-plugin/issues/27)
@@ -111,21 +117,26 @@ module.exports = {
           /\.html$/,
           /\.(js|jsx)$/,
           /\.(ts|tsx)$/,
+          /\.less$/,
           /\.css$/,
           /\.json$/,
-          /\.svg$/
+          /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+          /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+          /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+          /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+          /\.eot(\?v=\d+\.\d+\.\d+)?$/,
         ],
         loader: 'url',
         query: {
           limit: 10000,
-          name: 'static/media/[name].[hash:8].[ext]'
+          name: `static/media/[name].${hash}.[ext]`
         }
       },
       // Compile .tsx?
       {
         test: /\.(ts|tsx)$/,
         include: paths.appSrc,
-        loader: 'ts',
+        loader: 'babel!ts'
       },
       // The notation here is somewhat confusing.
       // "postcss" loader applies autoprefixer to our CSS.
@@ -148,6 +159,22 @@ module.exports = {
         )
         // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
       },
+      {
+        test: /\.less$/,
+        include: paths.appSrc,
+        loader: 'style!css!postcss!less?strictMath=true'
+      },
+      {
+        test: /\.less$/,
+        exclude: paths.appSrc,
+        loader: ExtractTextPlugin.extract(
+          `${require.resolve('css-loader')}?` +
+          `sourceMap&modules` +
+          `${require.resolve('postcss-loader')}!` +
+          `${require.resolve('less-loader')}?` +
+          `{"sourceMap":true,"modifyVars":${JSON.stringify(theme)}}`
+        )
+      },
       // JSON is not enabled by default in Webpack but both Node and Browserify
       // allow it implicitly so we also enable it.
       {
@@ -156,12 +183,29 @@ module.exports = {
       },
       // "file" loader for svg
       {
-        test: /\.svg$/,
-        loader: 'file',
-        query: {
-          name: 'static/media/[name].[hash:8].[ext]'
-        }
-      }
+        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+        loader: `${require.resolve('url-loader')}?` +
+          `limit=10000&minetype=image/svg+xml`,
+      },
+      {
+        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+        loader: `${require.resolve('url-loader')}?` +
+          `limit=10000&name=static/fonts/[name].[ext]&minetype=application/font-woff`,
+      },
+      {
+        test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+        loader: `${require.resolve('url-loader')}?` +
+          `limit=10000&minetype=application/font-woff`,
+      },
+      {
+        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+        loader: `${require.resolve('url-loader')}?` +
+          `limit=10000&minetype=application/octet-stream`,
+      },
+      {
+        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+        loader: `url-loader?limit=10000&minetype=application/vnd.ms-fontobject`,
+      },
       // ** STOP ** Are you adding a new loader?
       // Remember to add the new extension(s) to the "url" loader exclusion list.
     ]

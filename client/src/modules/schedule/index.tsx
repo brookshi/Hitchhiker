@@ -7,7 +7,7 @@ import { State } from '../../state/index';
 import * as _ from 'lodash';
 import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
 import { actionCreator } from '../../action/index';
-import { Layout } from 'antd/lib';
+import { Layout } from 'antd';
 import Splitter from '../../components/splitter';
 import { UpdateLeftPanelType, ResizeLeftPanelType } from '../../action/ui';
 import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType, RunScheduleType } from '../../action/schedule';

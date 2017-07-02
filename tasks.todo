@@ -1,20 +1,20 @@
 0.1.0:
-    ✔ create/update/del team @today @done (3/30/2017, 9:31:31 PM)
+    ✔ create/update/del project @today @done (3/30/2017, 9:31:31 PM)
     ✔ record tree @today @done (2017/4/1 下午7:16:50)
     ✔ test script @done (3/31/2017, 1:07:53 PM)
     ✔ register's email @done (4/7/2017, 10:43:51 AM)
     ✔ find password @done (4/11/2017, 10:22:32 AM)
     ✔ change password @done (4/11/2017, 10:22:33 AM)
     ✔ run time @done (3/31/2017, 9:51:45 PM)
-    ✔ share to team @done (4/11/2017, 10:22:36 AM)
+    ✔ share to project @done (4/11/2017, 10:22:36 AM)
     ✔ invite user @done (2017/4/9 下午4:55:51)
-    ✔ invite to team @done (2017/4/9 下午4:55:52)
+    ✔ invite to project @done (2017/4/9 下午4:55:52)
     ✔ session maxage(2d, rolling) @done (2017/4/2 上午12:11:25)
     ✔ error handle @done (2017/4/2 下午3:04:54)
     ✔ miss session @done (2017/4/2 下午6:48:35)
     ✔ message @done (2017/4/2 下午10:11:44)
     ✔ auto generate accout for invite user @done (2017/4/9 下午10:59:31) // TODO: need mail password??
-    ✔ team @done (2017/5/30 下午12:46:19)
+    ✔ project @done (2017/5/30 下午12:46:19)
     ✔ tab change/unchange status @done (5/16/2017, 12:47:02 PM)
     ✔ confirm when close changed tab @done (5/16/2017, 1:36:26 PM)
     ✔ request header/body option @done (2017/5/16 下午10:05:11)
@@ -36,7 +36,7 @@
     ✔ top banner @done (2017/6/1 下午10:33:13)
     ✔ udpate tab name after saving request @done (2017/6/3 下午9:38:49)
     ✔ can't open the same record after delete its tab @done (2017/6/3 下午9:34:58)
-    ✔ own team @done (2017/6/4 下午12:24:39)
+    ✔ own project @done (2017/6/4 下午12:24:39)
     ✔ store cookie after request @done (2017/6/3 下午7:48:39)
     ✔ schedule run now @done (6/22/2017, 6:03:06 PM)
     ✔ should not show info if there is no schedule @done (6/22/2017, 6:03:14 PM)
@@ -68,12 +68,12 @@
     ☐ collection tree follow active tab
     ☐ set cookie record
     ☐ fetch data per 30s
-    ☐ team share collection/env
+    ☐ project share collection/env
     ☐ body type
-    ☐ team share collection/env for own
+    ☐ project share collection/env for own
 0.3.0:
     ☐ data mock
-    ☐ team permission
+    ☐ project permission
 0.4.0:
     ☐ api document
     ☐ record auth

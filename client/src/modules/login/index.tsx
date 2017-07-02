@@ -80,10 +80,10 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
                 <Row style={{ height: '80%', marginLeft: 18, marginRight: 18 }} type="flex" justify="center" align="middle" gutter={36}>
                     <Col span={13}>
                         <div style={{ float: 'right', maxWidth: 550 }}>
-                            <div className="login-page-desc-title">Api integrated testing tool for project</div>
+                            <div className="login-page-desc-title">Api integrated testing tool for team</div>
                             <div className="login-page-desc-content">
-                                Hitchhiker is an <b><a target="blank" href="https://github.com/brookshi/hitchhiker">open source</a></b> Restful Api integrated testing tool. You can deploy it in your local server. It make easier to manage Api with your project members.<br /><br />
-                                More useful features (Schedule, Document, Api Mock etc.) will come in the near future.
+                                Hitchhiker is an <b><a target="blank" href="https://github.com/brookshi/hitchhiker">open source</a></b> Restful Api integrated testing tool. You can deploy it in your local server. It make easier to manage Api with your team.<br /><br />
+                                More useful features (Stress Test, Document, Api Mock etc.) will come in future.
                             </div>
                         </div>
                     </Col>
