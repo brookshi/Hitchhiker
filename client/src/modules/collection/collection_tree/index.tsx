@@ -95,6 +95,10 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         };
     }
 
+    shouldComponentUpdate(nextProps: CollectionListProps, nextState: CollectionListState) {
+        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    }
+
     componentDidUpdate(prevProps: CollectionListProps, prevState: CollectionListState) {
         if (this.currentNewFolder && this.folderRefs[this.currentNewFolder.id]) {
             this.folderRefs[this.currentNewFolder.id].edit();

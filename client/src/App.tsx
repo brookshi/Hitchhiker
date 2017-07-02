@@ -15,6 +15,7 @@ import LoginPage from './modules/login';
 import { RequestStatus } from './common/request_status';
 import Perf from 'react-addons-perf';
 import './style/App.less';
+import * as _ from 'lodash';
 
 const { Header, Sider } = Layout;
 
@@ -41,6 +42,10 @@ class App extends React.Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props);
     (window as any).Perf = Perf;
+  }
+
+  shouldComponentUpdate(nextProps: AppProps, nextState: AppState) {
+    return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
   }
 
   private onClick = (param: ClickParam) => {
