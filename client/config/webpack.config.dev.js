@@ -9,7 +9,6 @@ var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeMod
 var getClientEnvironment = require('./env');
 var paths = require('./paths');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var shortId = require('shortid');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
@@ -23,12 +22,8 @@ var env = getClientEnvironment(publicUrl);
 
 var cssFilename = 'static/css/[name].[contenthash:8].css';
 
-var hash = shortId.generate();
-
 var theme = require(paths.appPackageJson).theme;
-if (theme['@icon-url']) {
-  theme['@icon-url'] = theme['@icon-url'].replace('{hash}', hash)
-}
+
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
 // The production configuration is different and lives in a separate file.
@@ -123,15 +118,15 @@ module.exports = {
           /\.css$/,
           /\.json$/,
           /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-          // /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-          // /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-          // /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-          // /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+          /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+          /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+          /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+          /\.eot(\?v=\d+\.\d+\.\d+)?$/,
         ],
         loader: 'url',
         query: {
           limit: 10000,
-          name: `static/media/[name].${hash}.[ext]`
+          name: `static/media/[name].[ext]`
         }
       },
       // Compile .tsx?
@@ -185,26 +180,26 @@ module.exports = {
         loader: `${require.resolve('url-loader')}?` +
           `limit=10000&minetype=image/svg+xml`,
       },
-      // {
-      //   test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-      //   loader: `${require.resolve('url-loader')}?` +
-      //     `limit=10000&name=static/fonts/[name].[ext]&minetype=application/font-woff`,
-      // },
-      // {
-      //   test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-      //   loader: `${require.resolve('url-loader')}?` +
-      //     `limit=10000&minetype=application/font-woff`,
-      // },
-      // {
-      //   test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-      //   loader: `${require.resolve('url-loader')}?` +
-      //     `limit=10000&minetype=application/octet-stream`,
-      // },
-      // {
-      //   test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-      //   loader: `${require.resolve('url-loader')}?` +
-      //     `limit=10000&minetype=application/vnd.ms-fontobject`,
-      // },
+      {
+        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+        loader: `${require.resolve('url-loader')}?` +
+          `limit=10000&name=static/fonts/[name].[ext]&minetype=application/font-woff`,
+      },
+      {
+        test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+        loader: `${require.resolve('url-loader')}?` +
+          `limit=10000&minetype=application/font-woff`,
+      },
+      {
+        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+        loader: `${require.resolve('url-loader')}?` +
+          `limit=10000&minetype=application/octet-stream`,
+      },
+      {
+        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+        loader: `${require.resolve('url-loader')}?` +
+          `limit=10000&minetype=application/vnd.ms-fontobject`,
+      }
       // ** STOP ** Are you adding a new loader?
       // Remember to add the new extension(s) to the "url" loader exclusion list.
     ]

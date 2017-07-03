@@ -30,6 +30,7 @@
     "redux": "^3.6.0",
     "redux-saga": "^0.15.3",
     "reflect-metadata": "^0.1.10",
+    "reselect": "^3.0.1",
     "shortid": "^2.2.8",
     "uuid": "^3.0.1"
   },
@@ -104,6 +105,6 @@
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$"
   },
   "theme": {
-    "@icon-url": "'/static/fonts/iconfont.{hash}'"
+    "@icon-url": "'/static/fonts/iconfont'"
   }
 }
