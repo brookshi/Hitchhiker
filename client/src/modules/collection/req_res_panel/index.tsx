@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { Tabs, Badge, Modal, Button, Tooltip, Select } from 'antd';
+import { Tabs, Badge, Modal, Button } from 'antd';
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 import { RunResult } from '../../../../../api/interfaces/dto_run_result';
 import { State } from '../../../state';
@@ -22,8 +22,7 @@ import { StringUtil } from '../../../utils/string_util';
 import * as _ from 'lodash';
 import './style/index.less';
 import { noEnvironment } from '../../../common/constants';
-
-const Option = Select.Option;
+import EnvironmentSelect from './environment_select';
 
 interface ReqResPanelStateProps {
 
@@ -199,37 +198,6 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         this.setState({ ...this.state, currentEditKey: '', isConfirmCloseDlgOpen: false });
     }
 
-    private onEnvChanged = (value) => {
-        this.props.switchEnv(this.activeRecordProjectId, value);
-    }
-
-    private editEnv = () => {
-        this.props.editEnv(this.activeRecordProjectId, this.activeEnvId);
-    }
-
-    private getTabExtraContent = () => {
-        const envs = this.props.envState.environments[this.activeRecordProjectId] || [];
-
-        return (
-            <div>
-                <Tooltip mouseEnterDelay={1} placement="left" title="new tab">
-                    <Button className="record-add-btn" type="primary" icon="plus" onClick={this.props.addTab} />
-                </Tooltip>
-                <span className="req-tab-extra-env">
-                    <Select value={this.activeEnvId} className="req-tab-extra-env-select" onChange={(this.onEnvChanged)}>
-                        <Option key={noEnvironment} value={noEnvironment}>No Environment</Option>
-                        {
-                            envs.map(e => (
-                                <Option key={e.id} value={e.id}>{e.name}</Option>
-                            ))
-                        }
-                    </Select>
-                    <Button className="record-add-btn" icon="edit" onClick={this.editEnv} />
-                </span>
-            </div>
-        );
-    }
-
     private sendRequest = (record: DtoRecord, environment: string, cookies: _.Dictionary<_.Dictionary<string>>) => {
         const headers = [...record.headers || []];
         const hostName = new URL(record.url || '').hostname;
@@ -258,7 +226,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                     onEdit={this.onEdit}
                     animated={false}
                     hideAdd={true}
-                    tabBarExtraContent={this.getTabExtraContent()}
+                    tabBarExtraContent={<EnvironmentSelect />}
                 >
                     {
                         recordStates.map(recordState => {
