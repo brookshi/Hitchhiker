@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Select, Input, Dropdown, Menu, Button, Tabs, Badge, Modal, TreeSelect, Icon, message } from 'antd';
+import { Form, Select, Input, Dropdown, Menu, Button, Tabs, Badge, Modal, TreeSelect, message } from 'antd';
 import { HttpMethod } from '../../../common/http_method';
 import Editor from '../../../components/editor';
 import KeyValueList from '../../../components/key_value';
@@ -11,10 +11,9 @@ import { nameWithTag } from '../../../components/name_with_tag/index';
 import { normalBadgeStyle } from '../../../style/theme';
 import { TreeData } from 'antd/lib/tree-select/interface';
 import { bodyTypes } from '../../../common/body_type';
-import { testSnippets } from '../../../common/test_snippet';
 import './style/index.less';
 import { ValidateStatus, KeyValueEditMode, KeyValueEditType, ValidateType } from '../../../common/custom_type';
-import { reqResUIDefaultValue } from '../../../state/ui';
+import RequestTabExtra from './request_tab_extra';
 
 const FItem = Form.Item;
 const Option = Select.Option;
@@ -54,8 +53,6 @@ interface RequestPanelStateProps {
 interface RequestPanelState {
 
     nameValidateStatus?: ValidateStatus;
-
-    urlValidateStatus?: ValidateStatus;
 
     headersEditMode: KeyValueEditMode;
 
@@ -117,76 +114,6 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     }
 
     private currentBodyType = () => this.props.activeRecord.bodyType || defaultBodyType;
-
-    private getTabExtraFunc = () => {
-        const { activeTabKey } = this.props;
-        return (
-            activeTabKey === reqResUIDefaultValue.activeReqTab ? (
-                <Button className="tab-extra-button" onClick={this.onHeaderModeChanged}>
-                    {KeyValueEditType.getReverseMode(this.state.headersEditMode)}
-                </Button>
-            ) : (
-                    activeTabKey === 'body' ? (
-                        <Dropdown overlay={this.getBodyTypeMenu()} trigger={['click']} style={{ width: 200 }}>
-                            <a className="ant-dropdown-link" href="#">
-                                {this.currentBodyType()} <Icon type="down" />
-                            </a>
-                        </Dropdown>
-                    ) : (
-                            <Dropdown overlay={this.snippetsMenu} trigger={['click']}>
-                                <a className="ant-dropdown-link" href="#">
-                                    Snippets <Icon type="down" />
-                                </a>
-                            </Dropdown>
-                        ))
-        );
-    }
-
-    private onSelectSnippet = (e) => {
-        const snippet = testSnippets[e.key];
-        const { activeRecord } = this.props;
-        const testValue = activeRecord.test && activeRecord.test.length > 0 ? (`${activeRecord.test}\n\n${snippet}`) : snippet;
-        this.onRecordChanged({ ...activeRecord, test: testValue });
-    }
-
-    private snippetsMenu = (
-        <Menu onClick={this.onSelectSnippet}>
-            {Object.keys(testSnippets).map(s => <Menu.Item key={s}>{s}</Menu.Item>)}
-        </Menu>
-    );
-
-    private onBodyTypeChanged = (e) => {
-        const { headers } = this.props.activeRecord;
-        if (!headers) {
-            return;
-        }
-        const record = { ...this.props.activeRecord };
-        record.bodyType = e.key;
-        const headerKeys = headers.map(h => h.key ? h.key.toLowerCase() : '');
-        const index = headerKeys.indexOf('content-type');
-        if (index >= 0) {
-            headers[index] = { ...headers[index], value: record.bodyType };
-        } else {
-            headers.push({ isActive: true, key: 'content-type', value: record.bodyType, id: StringUtil.generateUID() });
-        }
-        record.headers = headers.filter(header => header.key || header.value);
-        this.onRecordChanged(record);
-    }
-
-    private getBodyTypeMenu = () => {
-        return (
-            <Menu onClick={this.onBodyTypeChanged} selectedKeys={[this.currentBodyType()]}>
-                {Object.keys(bodyTypes).map(type => <Menu.Item key={type}>{type}</Menu.Item>)}
-            </Menu>
-        );
-    }
-
-    private onHeaderModeChanged = () => {
-        this.setState({
-            ...this.state,
-            headersEditMode: KeyValueEditType.getReverseMode(this.state.headersEditMode)
-        });
-    }
 
     private onHeadersChanged = (data: DtoHeader[]) => {
         this.onRecordChanged({ ...this.props.activeRecord, headers: data });
@@ -281,7 +208,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
             </Menu>
         );
 
-        const { nameValidateStatus, urlValidateStatus, headersEditMode } = this.state;
+        const { nameValidateStatus, headersEditMode } = this.state;
         const { activeRecord, isRequesting, style } = this.props;
 
         return (
@@ -300,7 +227,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                             value={activeRecord.name} />
                     </FItem>
                     <div className="ant-form-inline url-panel">
-                        <FItem className="req-url" hasFeedback={true} validateStatus={urlValidateStatus}>
+                        <div className="ant-row ant-form-item req-url">
                             <Input
                                 placeholder="please enter url of this request"
                                 size="large"
@@ -308,17 +235,17 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                                 onChange={(e) => this.onInputChanged(e.currentTarget.value, 'url')}
                                 addonBefore={this.getMethods(activeRecord.method)}
                                 value={activeRecord.url} />
-                        </FItem>
-                        <FItem className="req-send">
+                        </div>
+                        <div className="ant-row ant-form-item req-send">
                             <Button type="primary" icon="rocket" loading={isRequesting} onClick={this.sendRequest}>
                                 Send
                         </Button>
-                        </FItem>
-                        <FItem className="req-save" style={{ marginRight: 0 }}>
+                        </div>
+                        <div className="ant-row ant-form-item req-save" style={{ marginRight: 0 }}>
                             <DButton overlay={menu} onClick={this.onSave}>
                                 Save
                         </DButton>
-                        </FItem>
+                        </div>
                     </div>
                     <div>
                         <Tabs
@@ -327,7 +254,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                             activeKey={this.props.activeTabKey}
                             animated={false}
                             onChange={this.onTabChanged}
-                            tabBarExtraContent={this.getTabExtraFunc()}>
+                            tabBarExtraContent={<RequestTabExtra />}>
                             <TabPane tab={nameWithTag('Headers', activeRecord.headers ? (Math.max(0, activeRecord.headers.length)).toString() : '')} key="headers">
                                 <KeyValueList
                                     mode={headersEditMode}

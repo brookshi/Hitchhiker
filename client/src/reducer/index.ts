@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { root as displayRecordsState, collectionState } from './collection';
 import { State } from '../state';
-import { UpdateTabChangedType } from '../action/record';
+import { UpdateTabChangedType, ChangeBodyType, AppendTestType } from '../action/record';
 import * as _ from 'lodash';
 import { uiState } from './ui';
 import { userState } from './user';
@@ -11,6 +11,7 @@ import { FetchLocalDataSuccessType } from '../action/local_data';
 import { localDataState } from './local_data';
 import { syncDefaultValue } from '../state/ui';
 import { scheduleState } from './schedule';
+import { DtoRecord } from '../../../api/interfaces/dto_record';
 
 export const reduceReducers = (...reducers) => {
     return (state, action) =>
@@ -32,25 +33,37 @@ export function rootReducer(state: State, action: any): State {
         scheduleState
     })(state, action);
 
-    const finalState = root(intermediateState, action);
+    const finalState = multipleStateReducer(intermediateState, action);
 
     return finalState;
 };
 
-function root(state: State, action: any): State {
+function multipleStateReducer(state: State, action: any): State {
     switch (action.type) {
-        case UpdateTabChangedType: {
-            const record = action.value;
-            const cid = record.collectionId;
-            let isChanged = true;
-            if (cid) {
-                isChanged = !_.isEqual(state.collectionState.collectionsInfo.records[record.collectionId][record.id], record);
+        case ChangeBodyType: {
+            const { id, bodyType, header } = action.value;
+            const record = getActiveRecord(state, id);
+            const headers = record.headers || [];
+            record.bodyType = bodyType;
+            const headerKeys = headers.map(h => h.key ? h.key.toLowerCase() : '');
+            const index = headerKeys.indexOf('content-type');
+            if (index >= 0) {
+                headers[index] = { ...headers[index], value: bodyType };
+            } else {
+                headers.push(header);
             }
-            const recordStates = state.displayRecordsState.recordStates;
-            const index = recordStates.findIndex(r => r.record.id === action.value.id);
-            recordStates[index].record = { ...action.value };
-            recordStates[index].isChanged = isChanged;
-            return { ...state, displayRecordsState: { ...state.displayRecordsState, recordStates: [...recordStates] } };
+            record.headers = headers.filter(h => h.key || h.value);
+            return updateStateRecord(state, record);
+        }
+        case AppendTestType: {
+            const { id, test } = action.value;
+            const record = getActiveRecord(state, id);
+            const testValue = record.test && record.test.length > 0 ? (`${record.test}\n\n${test}`) : test;
+            record.test = testValue;
+            return updateStateRecord(state, record);
+        }
+        case UpdateTabChangedType: {
+            return updateStateRecord(state, action.value);
         }
         case FetchLocalDataSuccessType: {
             if (!action.value) {
@@ -93,5 +106,26 @@ function root(state: State, action: any): State {
             };
         }
         default: return state;
+    }
+
+    function getActiveRecord(rootState: State, id: string): DtoRecord {
+        const recordState = rootState.displayRecordsState.recordStates.find(r => r.record.id === id);
+        if (!recordState) {
+            throw new Error('miss active record state');
+        }
+        return recordState.record;
+    }
+
+    function updateStateRecord(rootState: State, record: any): State {
+        const cid = record.collectionId;
+        let isChanged = true;
+        if (cid) {
+            isChanged = !_.isEqual(rootState.collectionState.collectionsInfo.records[record.collectionId][record.id], record);
+        }
+        const recordStates = rootState.displayRecordsState.recordStates;
+        const index = recordStates.findIndex(r => r.record.id === record.id);
+        recordStates[index].record = { ...record };
+        recordStates[index].isChanged = isChanged;
+        return { ...rootState, displayRecordsState: { ...rootState.displayRecordsState, recordStates: [...recordStates] } };
     }
 }

@@ -8,21 +8,24 @@ import { defaultBodyType } from '../../../common/constants';
 import { DtoHeader } from '../../../../../api/interfaces/dto_header';
 import { StringUtil } from '../../../utils/string_util';
 import { testSnippets } from '../../../common/test_snippet';
+import { getActiveTabKey, getBodyType } from './selector';
+import { actionCreator } from '../../../action/index';
+import { ChangeBodyType, AppendTestType } from '../../../action/record';
 
 interface RequestTabExtraStateProps {
+
+    activeKey: string;
 
     activeTabKey: string;
 
     bodyType: string;
-
-    test: string;
 }
 
 interface RequestTabExtraDispatchProps {
 
-    changeBodyType(bodyType: string, newHeader: DtoHeader);
+    changeBodyType(id: string, bodyType: string, newHeader: DtoHeader);
 
-    appendTest(test: string);
+    appendTest(id: string, test: string);
 }
 
 type RequestTabExtraProps = RequestTabExtraStateProps & RequestTabExtraDispatchProps;
@@ -59,14 +62,14 @@ class RequestTabExtra extends React.Component<RequestTabExtraProps, RequestTabEx
     private onBodyTypeChanged = (e) => {
         const bodyType = e.key;
         const header = { isActive: true, key: 'content-type', value: bodyType, id: StringUtil.generateUID() };
-        this.props.changeBodyType(bodyType, header);
+        this.props.changeBodyType(this.props.activeKey, bodyType, header);
     }
 
     private currentBodyType = () => this.props.bodyType || defaultBodyType;
 
     private onSelectSnippet = (e) => {
         const snippet = testSnippets[e.key];
-        this.props.appendTest(snippet);
+        this.props.appendTest(this.props.activeKey, snippet);
     }
 
     private snippetsMenu = (
@@ -104,13 +107,16 @@ class RequestTabExtra extends React.Component<RequestTabExtraProps, RequestTabEx
 
 const mapStateToProps = (state: any): RequestTabExtraStateProps => {
     return {
-        // ...mapStateToProps
+        activeKey: state.displayRecordsState.activeKey,
+        activeTabKey: getActiveTabKey(state),
+        bodyType: getBodyType(state)
     };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): RequestTabExtraDispatchProps => {
     return {
-        // ...mapDispatchToProps
+        changeBodyType: (id, bodyType, header) => dispatch(actionCreator(ChangeBodyType, { id, bodyType, header })),
+        appendTest: (id, test) => dispatch(actionCreator(AppendTestType, { id, test }))
     };
 };
 

@@ -29,6 +29,10 @@ export const DeleteRecordType = 'delete record';
 
 export const MoveRecordType = 'move record';
 
+export const ChangeBodyType = 'change body type';
+
+export const AppendTestType = 'append test';
+
 export function* sendRequest() {
     yield takeEvery(SendRequestType, function* (action: any) {
         let runResult: any = {};

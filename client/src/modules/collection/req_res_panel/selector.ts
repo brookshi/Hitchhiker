@@ -1,8 +1,11 @@
 import { createSelector } from 'reselect';
 import { State } from '../../../state';
-import { noEnvironment } from '../../../common/constants';
+import { noEnvironment, defaultBodyType } from '../../../common/constants';
+import { reqResUIDefaultValue } from '../../../state/ui';
 
 const getActiveKey = (state: State) => state.displayRecordsState.activeKey;
+
+const getReqResUIState = (state: State) => state.uiState.reqResUIState;
 
 const getRecordState = (state: State) => state.displayRecordsState.recordStates;
 
@@ -41,5 +44,19 @@ export const getProjectEnvs = createSelector(
     [getEnvs, getActiveRecordProjectId],
     (envs, activeRecordProjectId) => {
         return envs[activeRecordProjectId] || [];
+    }
+);
+
+export const getActiveTabKey = createSelector(
+    [getActiveKey, getReqResUIState],
+    (key, reqResUIState) => {
+        return reqResUIState[key] ? reqResUIState[key].activeReqTab : reqResUIDefaultValue.activeReqTab;
+    }
+);
+
+export const getBodyType = createSelector(
+    [getActiveRecord],
+    (record) => {
+        return record.bodyType || defaultBodyType;
     }
 );
