@@ -1,9 +1,7 @@
 import React from 'react';
-import { Form, Select, Input, Dropdown, Menu, Button, Tabs, Badge, Modal, TreeSelect, message } from 'antd';
-import { HttpMethod } from '../../../common/http_method';
+import { Form, Input, Tabs, Badge, Modal, TreeSelect, message } from 'antd';
 import Editor from '../../../components/editor';
 import KeyValueList from '../../../components/key_value';
-import { SelectValue } from 'antd/lib/select';
 import { StringUtil } from '../../../utils/string_util';
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 import { DtoHeader } from '../../../../../api/interfaces/dto_header';
@@ -14,10 +12,9 @@ import { bodyTypes } from '../../../common/body_type';
 import './style/index.less';
 import { ValidateStatus, KeyValueEditMode, KeyValueEditType, ValidateType } from '../../../common/custom_type';
 import RequestTabExtra from './request_tab_extra';
+import RequestUrlPanel from './request_url_panel';
 
 const FItem = Form.Item;
-const Option = Select.Option;
-const DButton = Dropdown.Button as any;
 const TabPane = Tabs.TabPane;
 
 const defaultBodyType = 'application/json';
@@ -101,26 +98,10 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         this.props.onResize(this.reqPanel.clientHeight);
     }
 
-    private getMethods = (defaultValue?: string) => {
-        const value = (defaultValue || HttpMethod.GET).toUpperCase();
-        return (
-            <Select defaultValue={value} onChange={this.onMethodChanged} style={{ width: 100 }}>
-                {
-                    Object.keys(HttpMethod).map(k =>
-                        <Option key={k} value={k}>{k}</Option>)
-                }
-            </Select>
-        );
-    }
-
     private currentBodyType = () => this.props.activeRecord.bodyType || defaultBodyType;
 
     private onHeadersChanged = (data: DtoHeader[]) => {
         this.onRecordChanged({ ...this.props.activeRecord, headers: data });
-    }
-
-    private onMethodChanged = (selectedValue: SelectValue) => {
-        this.onRecordChanged({ ...this.props.activeRecord, method: selectedValue.toString() });
     }
 
     private onInputChanged = (value: string, type: string) => {
@@ -150,13 +131,13 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         return false;
     }
 
-    private onSaveAs = (e) => {
+    private onSaveAs = () => {
         if (this.canSave()) {
             this.setState({ ...this.state, isSaveAsDlgOpen: true });
         }
     }
 
-    private onSave = (e) => {
+    private onSave = () => {
         if (this.canSave()) {
             const { activeRecord } = this.props;
             if (activeRecord.id.startsWith(newRecordFlag)) {
@@ -202,11 +183,6 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     }
 
     public render() {
-        const menu = (
-            <Menu onClick={this.onSaveAs}>
-                <Menu.Item key="save_as">Save As</Menu.Item>
-            </Menu>
-        );
 
         const { nameValidateStatus, headersEditMode } = this.state;
         const { activeRecord, isRequesting, style } = this.props;
@@ -226,27 +202,16 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                             onChange={(e) => this.onInputChanged(e.currentTarget.value, 'name')}
                             value={activeRecord.name} />
                     </FItem>
-                    <div className="ant-form-inline url-panel">
-                        <div className="ant-row ant-form-item req-url">
-                            <Input
-                                placeholder="please enter url of this request"
-                                size="large"
-                                spellCheck={false}
-                                onChange={(e) => this.onInputChanged(e.currentTarget.value, 'url')}
-                                addonBefore={this.getMethods(activeRecord.method)}
-                                value={activeRecord.url} />
-                        </div>
-                        <div className="ant-row ant-form-item req-send">
-                            <Button type="primary" icon="rocket" loading={isRequesting} onClick={this.sendRequest}>
-                                Send
-                        </Button>
-                        </div>
-                        <div className="ant-row ant-form-item req-save" style={{ marginRight: 0 }}>
-                            <DButton overlay={menu} onClick={this.onSave}>
-                                Save
-                        </DButton>
-                        </div>
-                    </div>
+                    <RequestUrlPanel
+                        url={activeRecord.url || ''}
+                        httpMethod={activeRecord.method || ''}
+                        isRequesting={isRequesting}
+                        onMethodChanged={method => this.onInputChanged(method, 'method')}
+                        onUrlChanged={url => this.onInputChanged(url, 'url')}
+                        onSave={this.onSave}
+                        onSaveAs={this.onSaveAs}
+                        sendRequest={this.sendRequest}
+                    />
                     <div>
                         <Tabs
                             className="req-res-tabs"
