@@ -1,6 +1,10 @@
 import React from 'react';
+import { connect, Dispatch } from 'react-redux';
 import { Input, Button, Dropdown, Select, Menu } from 'antd';
 import { HttpMethod } from '../../../common/http_method';
+import { getActiveRecord, getActiveRecordState } from './selector';
+import { actionCreator } from "../../../action/index";
+import { SaveRecordType, SaveAsRecordType, ChangeDisplayRecordType, SendRequestType } from "../../../action/record";
 
 const DButton = Dropdown.Button as any;
 const Option = Select.Option;
@@ -12,10 +16,11 @@ interface RequestUrlPanelStateProps {
     httpMethod: string;
 
     isRequesting: boolean;
+}
 
-    onMethodChanged(value: string);
+interface RequestUrlPanelDispatchProps {
 
-    onUrlChanged(value: string);
+    onRecordChanged(value: { [key: string]: string });
 
     onSaveAs();
 
@@ -24,9 +29,11 @@ interface RequestUrlPanelStateProps {
     sendRequest();
 }
 
+type RequestUrlPanelProps = RequestUrlPanelStateProps & RequestUrlPanelDispatchProps;
+
 interface RequestUrlPanelState { }
 
-export default class RequestUrlPanel extends React.Component<RequestUrlPanelStateProps, RequestUrlPanelState> {
+class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPanelState> {
 
     shouldComponentUpdate(nextProps: RequestUrlPanelStateProps, nextState: RequestUrlPanelState) {
         const { url, httpMethod, isRequesting } = this.props;
@@ -37,7 +44,7 @@ export default class RequestUrlPanel extends React.Component<RequestUrlPanelStat
     private getMethods = (defaultValue?: string) => {
         const value = (defaultValue || HttpMethod.GET).toUpperCase();
         return (
-            <Select defaultValue={value} onChange={this.props.onMethodChanged} style={{ width: 100 }}>
+            <Select defaultValue={value} onChange={e => this.props.onRecordChanged({ method: e.toString() })} style={{ width: 100 }}>
                 {
                     Object.keys(HttpMethod).map(k =>
                         <Option key={k} value={k}>{k}</Option>)
@@ -48,7 +55,7 @@ export default class RequestUrlPanel extends React.Component<RequestUrlPanelStat
 
     public render() {
 
-        const { url, httpMethod, isRequesting, onUrlChanged, onSave, onSaveAs, sendRequest } = this.props;
+        const { url, httpMethod, isRequesting, onRecordChanged, onSave, onSaveAs, sendRequest } = this.props;
 
         const menu = (
             <Menu onClick={onSaveAs}>
@@ -63,7 +70,7 @@ export default class RequestUrlPanel extends React.Component<RequestUrlPanelStat
                         placeholder="please enter url of this request"
                         size="large"
                         spellCheck={false}
-                        onChange={(e) => onUrlChanged(e.currentTarget.value)}
+                        onChange={(e) => onRecordChanged({ url: e.currentTarget.value })}
                         addonBefore={this.getMethods(httpMethod)}
                         value={url} />
                 </div>
@@ -81,3 +88,27 @@ export default class RequestUrlPanel extends React.Component<RequestUrlPanelStat
         );
     }
 }
+
+const mapStateToProps = (state: any): RequestUrlPanelStateProps => {
+    const record = getActiveRecord(state);
+    const recordState = getActiveRecordState(state);
+    return {
+        url: record.url || '',
+        httpMethod: record.method || '',
+        isRequesting: !!recordState && recordState.isRequesting
+    };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch<any>): RequestUrlPanelDispatchProps => {
+    return {
+        onRecordChanged: (value) => dispatch(actionCreator(ChangeDisplayRecordType, value)),
+        onSave: () => dispatch(actionCreator(SaveRecordType, { isNew: false })),
+        onSaveAs: () => dispatch(actionCreator(SaveAsRecordType, { isNew: true })),
+        sendRequest: () => dispatch(actionCreator(SendRequestType)),
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(RequestUrlPanel);

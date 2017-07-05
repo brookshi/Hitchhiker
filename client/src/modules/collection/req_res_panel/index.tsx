@@ -51,7 +51,7 @@ interface ReqResPanelDispatchProps {
 
     activeTab(key: string);
 
-    sendRequest(record: DtoRecord, environment: string, cookies: _.Dictionary<_.Dictionary<string>>);
+    sendRequest(record: DtoRecord, environment: string);
 
     onChanged(record: DtoRecord);
 
@@ -211,7 +211,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         const allCookies = { ...localCookies, ...recordCookies };
         _.remove(headers, h => h.key === 'Cookie');
 
-        this.props.sendRequest({ ...record, headers: [...headers, { key: 'Cookie', value: _.values(allCookies).join('; '), isActive: true }] }, environment, cookies);
+        this.props.sendRequest({ ...record, headers: [...headers, { key: 'Cookie', value: _.values(allCookies).join('; '), isActive: true }] }, environment);
     }
 
     public render() {

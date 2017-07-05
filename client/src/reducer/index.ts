@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { root as displayRecordsState, collectionState } from './collection';
 import { State } from '../state';
-import { UpdateTabChangedType, ChangeBodyType, AppendTestType } from '../action/record';
+import { UpdateTabChangedType, SwitchBodyType, AppendTestType, ChangeDisplayRecordType } from '../action/record';
 import * as _ from 'lodash';
 import { uiState } from './ui';
 import { userState } from './user';
@@ -40,7 +40,7 @@ export function rootReducer(state: State, action: any): State {
 
 function multipleStateReducer(state: State, action: any): State {
     switch (action.type) {
-        case ChangeBodyType: {
+        case SwitchBodyType: {
             const { id, bodyType, header } = action.value;
             const record = getActiveRecord(state, id);
             const headers = record.headers || [];
@@ -61,6 +61,10 @@ function multipleStateReducer(state: State, action: any): State {
             const testValue = record.test && record.test.length > 0 ? (`${record.test}\n\n${test}`) : test;
             record.test = testValue;
             return updateStateRecord(state, record);
+        }
+        case ChangeDisplayRecordType: {
+            const record = getActiveRecord(state, state.displayRecordsState.activeKey);
+            return updateStateRecord(state, { ...record, ...action.value });
         }
         case UpdateTabChangedType: {
             return updateStateRecord(state, action.value);

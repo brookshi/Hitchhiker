@@ -10,7 +10,7 @@ import { StringUtil } from '../../../utils/string_util';
 import { testSnippets } from '../../../common/test_snippet';
 import { getActiveTabKey, getBodyType } from './selector';
 import { actionCreator } from '../../../action/index';
-import { ChangeBodyType, AppendTestType } from '../../../action/record';
+import { SwitchBodyType, AppendTestType } from '../../../action/record';
 
 interface RequestTabExtraStateProps {
 
@@ -115,7 +115,7 @@ const mapStateToProps = (state: any): RequestTabExtraStateProps => {
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): RequestTabExtraDispatchProps => {
     return {
-        changeBodyType: (id, bodyType, header) => dispatch(actionCreator(ChangeBodyType, { id, bodyType, header })),
+        changeBodyType: (id, bodyType, header) => dispatch(actionCreator(SwitchBodyType, { id, bodyType, header })),
         appendTest: (id, test) => dispatch(actionCreator(AppendTestType, { id, test }))
     };
 };

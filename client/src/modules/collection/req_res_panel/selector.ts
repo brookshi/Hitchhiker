@@ -7,7 +7,7 @@ const getActiveKey = (state: State) => state.displayRecordsState.activeKey;
 
 const getReqResUIState = (state: State) => state.uiState.reqResUIState;
 
-const getRecordState = (state: State) => state.displayRecordsState.recordStates;
+const getRecordStates = (state: State) => state.displayRecordsState.recordStates;
 
 const getActiveEnv = (state: State) => state.environmentState.activeEnv;
 
@@ -15,10 +15,16 @@ const getEnvs = (state: State) => state.environmentState.environments;
 
 const getCollections = (state: State) => state.collectionState.collectionsInfo.collections;
 
-export const getActiveRecord = createSelector(
-    [getActiveKey, getRecordState],
+export const getActiveRecordState = createSelector(
+    [getActiveKey, getRecordStates],
     (activeKey, recordStates) => {
-        const recordState = recordStates.find(r => r.record.id === activeKey);
+        return recordStates.find(r => r.record.id === activeKey);
+    }
+);
+
+export const getActiveRecord = createSelector(
+    [getActiveRecordState],
+    (recordState) => {
         if (!recordState) {
             throw new Error('miss active record state');
         }

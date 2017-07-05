@@ -1,11 +1,9 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { configureStore } from './store';
+import { store } from './store';
 import App from './App';
 import LocalStore from './utils/local_store';
-
-const store = configureStore();
 
 LocalStore.init();
 

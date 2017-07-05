@@ -14,7 +14,7 @@ const composeEnhancers = window[reduxDebugFlag] || compose;
 
 let isStoring = false;
 
-export function configureStore() {
+function configureStore() {
     const store = createStore(
         rootReducer, {},
         composeEnhancers(
@@ -32,3 +32,5 @@ export function configureStore() {
     });
     return store;
 }
+
+export const store = configureStore();

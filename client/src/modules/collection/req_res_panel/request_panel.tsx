@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Tabs, Badge, Modal, TreeSelect, message } from 'antd';
+import { Form, Input, Tabs, Badge, Modal, TreeSelect } from 'antd';
 import Editor from '../../../components/editor';
 import KeyValueList from '../../../components/key_value';
 import { StringUtil } from '../../../utils/string_util';
@@ -123,30 +123,30 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         this.props.onChanged(record);
     }
 
-    private canSave = () => {
-        if (this.props.activeRecord.name.trim() !== '') {
-            return true;
-        }
-        message.warning('miss name');
-        return false;
-    }
+    // private canSave = () => {
+    //     if (this.props.activeRecord.name.trim() !== '') {
+    //         return true;
+    //     }
+    //     message.warning('miss name');
+    //     return false;
+    // }
 
-    private onSaveAs = () => {
-        if (this.canSave()) {
-            this.setState({ ...this.state, isSaveAsDlgOpen: true });
-        }
-    }
+    // private onSaveAs = () => {
+    //     if (this.canSave()) {
+    //         this.setState({ ...this.state, isSaveAsDlgOpen: true });
+    //     }
+    // }
 
-    private onSave = () => {
-        if (this.canSave()) {
-            const { activeRecord } = this.props;
-            if (activeRecord.id.startsWith(newRecordFlag)) {
-                this.setState({ ...this.state, isSaveDlgOpen: true });
-            } else {
-                this.props.save(activeRecord);
-            }
-        }
-    }
+    // private onSave = () => {
+    //     if (this.canSave()) {
+    //         const { activeRecord } = this.props;
+    //         if (activeRecord.id.startsWith(newRecordFlag)) {
+    //             this.setState({ ...this.state, isSaveDlgOpen: true });
+    //         } else {
+    //             this.props.save(activeRecord);
+    //         }
+    //     }
+    // }
 
     private onSaveNew = (e) => {
         if (!this.state.selectedFolderId) {
@@ -174,9 +174,9 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
         this.props.selectReqTab(this.props.activeRecord.id, key);
     }
 
-    private sendRequest = () => {
-        this.props.sendRequest(this.props.activeRecord);
-    }
+    // private sendRequest = () => {
+    //     this.props.sendRequest(this.props.activeRecord);
+    // }
 
     private setReqPanel = (ele: any) => {
         this.reqPanel = ele;
@@ -185,7 +185,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     public render() {
 
         const { nameValidateStatus, headersEditMode } = this.state;
-        const { activeRecord, isRequesting, style } = this.props;
+        const { activeRecord, style } = this.props;
 
         return (
             <div ref={this.setReqPanel}>
@@ -202,16 +202,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                             onChange={(e) => this.onInputChanged(e.currentTarget.value, 'name')}
                             value={activeRecord.name} />
                     </FItem>
-                    <RequestUrlPanel
-                        url={activeRecord.url || ''}
-                        httpMethod={activeRecord.method || ''}
-                        isRequesting={isRequesting}
-                        onMethodChanged={method => this.onInputChanged(method, 'method')}
-                        onUrlChanged={url => this.onInputChanged(url, 'url')}
-                        onSave={this.onSave}
-                        onSaveAs={this.onSaveAs}
-                        sendRequest={this.sendRequest}
-                    />
+                    <RequestUrlPanel />
                     <div>
                         <Tabs
                             className="req-res-tabs"
