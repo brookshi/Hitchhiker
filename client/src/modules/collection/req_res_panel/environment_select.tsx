@@ -1,18 +1,18 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { Button, Tooltip, Select } from 'antd';
-import { DtoEnvironment } from '../../../../../api/interfaces/dto_environment';
 import { noEnvironment } from '../../../common/constants';
-import { getProjectEnvs, getActiveEnvId, getActiveRecordProjectId } from './selector';
+import { getProjectEnvsSelector, getActiveEnvIdSelector, getActiveRecordProjectIdSelector } from './selector';
 import { actionCreator } from '../../../action/index';
 import { AddTabType } from '../../../action/record';
 import { SwitchEnvType, EditEnvType } from '../../../action/project';
+import { State } from "../../../state/index";
 
 const Option = Select.Option;
 
 interface EnvironmentSelectStateProps {
 
-    envs: DtoEnvironment[];
+    envs: Array<{ id: string, name: string }>;
 
     activeEnvId: string;
 
@@ -67,12 +67,18 @@ class EnvironmentSelect extends React.Component<EnvironmentSelectProps, Environm
     }
 }
 
-const mapStateToProps = (state: any): EnvironmentSelectStateProps => {
-    return {
-        envs: getProjectEnvs(state),
-        activeEnvId: getActiveEnvId(state),
-        activeRecordProjectId: getActiveRecordProjectId(state)
+const makeMapStateToProps = () => {
+    const getProjectEnvs = getProjectEnvsSelector();
+    const getActiveEnvId = getActiveEnvIdSelector();
+    const getActiveRecordProjectId = getActiveRecordProjectIdSelector();
+    const mapStateToProps: (state: State) => EnvironmentSelectStateProps = state => {
+        return {
+            envs: getProjectEnvs(state),
+            activeEnvId: getActiveEnvId(state),
+            activeRecordProjectId: getActiveRecordProjectId(state)
+        };
     };
+    return mapStateToProps;
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): EnvironmentSelectDispatchProps => {
@@ -84,6 +90,6 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): EnvironmentSelectDispatchP
 };
 
 export default connect(
-    mapStateToProps,
+    makeMapStateToProps(),
     mapDispatchToProps,
 )(EnvironmentSelect);

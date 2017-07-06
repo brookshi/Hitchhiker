@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { root as displayRecordsState, collectionState } from './collection';
 import { State } from '../state';
-import { UpdateTabChangedType, SwitchBodyType, AppendTestType, ChangeDisplayRecordType } from '../action/record';
+import { UpdateDisplayRecordType, SwitchBodyType, AppendTestType, ChangeDisplayRecordType } from '../action/record';
 import * as _ from 'lodash';
 import { uiState } from './ui';
 import { userState } from './user';
@@ -66,7 +66,7 @@ function multipleStateReducer(state: State, action: any): State {
             const record = getActiveRecord(state, state.displayRecordsState.activeKey);
             return updateStateRecord(state, { ...record, ...action.value });
         }
-        case UpdateTabChangedType: {
+        case UpdateDisplayRecordType: {
             return updateStateRecord(state, action.value);
         }
         case FetchLocalDataSuccessType: {
@@ -126,10 +126,9 @@ function multipleStateReducer(state: State, action: any): State {
         if (cid) {
             isChanged = !_.isEqual(rootState.collectionState.collectionsInfo.records[record.collectionId][record.id], record);
         }
-        const recordStates = rootState.displayRecordsState.recordStates;
+        const recordStates = [...rootState.displayRecordsState.recordStates];
         const index = recordStates.findIndex(r => r.record.id === record.id);
-        recordStates[index].record = { ...record };
-        recordStates[index].isChanged = isChanged;
+        recordStates[index] = { ...recordStates[index], record: { ...record }, isChanged: isChanged };
         return { ...rootState, displayRecordsState: { ...rootState.displayRecordsState, recordStates: [...recordStates] } };
     }
 }

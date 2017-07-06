@@ -16,3 +16,5 @@ export const successColor = '#87d068';
 export const failColor = '#f50';
 
 export const defaultBodyType = 'application/json';
+
+export const newRecordFlag = '@new';

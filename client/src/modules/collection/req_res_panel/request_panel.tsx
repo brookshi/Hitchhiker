@@ -1,13 +1,11 @@
 import React from 'react';
-import { Form, Input, Tabs, Badge, Modal, TreeSelect } from 'antd';
+import { Form, Input, Tabs, Badge } from 'antd';
 import Editor from '../../../components/editor';
 import KeyValueList from '../../../components/key_value';
-import { StringUtil } from '../../../utils/string_util';
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 import { DtoHeader } from '../../../../../api/interfaces/dto_header';
 import { nameWithTag } from '../../../components/name_with_tag/index';
 import { normalBadgeStyle } from '../../../style/theme';
-import { TreeData } from 'antd/lib/tree-select/interface';
 import { bodyTypes } from '../../../common/body_type';
 import './style/index.less';
 import { ValidateStatus, KeyValueEditMode, KeyValueEditType, ValidateType } from '../../../common/custom_type';
@@ -18,31 +16,18 @@ const FItem = Form.Item;
 const TabPane = Tabs.TabPane;
 
 const defaultBodyType = 'application/json';
-const newRecordFlag = '@new';
 
 interface RequestPanelStateProps {
-
-    isRequesting: boolean;
 
     activeRecord: DtoRecord;
 
     style?: any;
 
-    collectionTreeData?: TreeData[];
-
     activeTabKey: string;
-
-    sendRequest(record: DtoRecord);
 
     onChanged(record: DtoRecord);
 
     onResize(height: number);
-
-    save(record: DtoRecord);
-
-    saveAs(record: DtoRecord);
-
-    updateTabRecordId(oldId: string, newId: string);
 
     selectReqTab(recordId: string, tab: string);
 }
@@ -52,12 +37,6 @@ interface RequestPanelState {
     nameValidateStatus?: ValidateStatus;
 
     headersEditMode: KeyValueEditMode;
-
-    isSaveDlgOpen: boolean;
-
-    isSaveAsDlgOpen: boolean;
-
-    selectedFolderId?: string;
 }
 
 class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelState> {
@@ -67,9 +46,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     constructor(props: RequestPanelStateProps) {
         super(props);
         this.state = {
-            headersEditMode: KeyValueEditType.keyValueEdit,
-            isSaveDlgOpen: false,
-            isSaveAsDlgOpen: false
+            headersEditMode: KeyValueEditType.keyValueEdit
         };
     }
 
@@ -148,27 +125,27 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
     //     }
     // }
 
-    private onSaveNew = (e) => {
-        if (!this.state.selectedFolderId) {
-            return;
-        }
-        const record = { ...this.props.activeRecord };
-        [record.collectionId, record.pid] = this.state.selectedFolderId.split('::');
+    // private onSaveNew = (e) => {
+    //     if (!this.state.selectedFolderId) {
+    //         return;
+    //     }
+    //     const record = { ...this.props.activeRecord };
+    //     [record.collectionId, record.pid] = this.state.selectedFolderId.split('::');
 
-        const oldRecordId = record.id;
-        if (this.state.isSaveAsDlgOpen) {
-            record.id = StringUtil.generateUID();
-            this.props.saveAs(record);
-            this.setState({ ...this.state, isSaveAsDlgOpen: false });
-        } else {
-            if (oldRecordId.startsWith(newRecordFlag)) {
-                record.id = StringUtil.generateUID();
-                this.props.updateTabRecordId(oldRecordId, record.id);
-            }
-            this.props.save(record);
-            this.setState({ ...this.state, isSaveDlgOpen: false });
-        }
-    }
+    //     const oldRecordId = record.id;
+    //     if (this.state.isSaveAsDlgOpen) {
+    //         record.id = StringUtil.generateUID();
+    //         this.props.saveAs(record);
+    //         this.setState({ ...this.state, isSaveAsDlgOpen: false });
+    //     } else {
+    //         if (oldRecordId.startsWith(newRecordFlag)) {
+    //             record.id = StringUtil.generateUID();
+    //             this.props.updateTabRecordId(oldRecordId, record.id);
+    //         }
+    //         this.props.save(record);
+    //         this.setState({ ...this.state, isSaveDlgOpen: false });
+    //     }
+    // }
 
     private onTabChanged = (key) => {
         this.props.selectReqTab(this.props.activeRecord.id, key);
@@ -241,7 +218,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                         </Tabs>
                     </div>
                 </Form>
-                <Modal
+                {/*<Modal
                     title="Save Request"
                     visible={this.state.isSaveDlgOpen || this.state.isSaveAsDlgOpen}
                     okText="OK"
@@ -259,7 +236,7 @@ class RequestPanel extends React.Component<RequestPanelStateProps, RequestPanelS
                         value={this.state.selectedFolderId}
                         onChange={(e) => this.setState({ ...this.state, selectedFolderId: e })}
                         treeData={this.props.collectionTreeData} />
-                </Modal>
+                </Modal>*/}
             </div>
         );
     }

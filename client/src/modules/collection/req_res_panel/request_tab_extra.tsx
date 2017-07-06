@@ -8,9 +8,10 @@ import { defaultBodyType } from '../../../common/constants';
 import { DtoHeader } from '../../../../../api/interfaces/dto_header';
 import { StringUtil } from '../../../utils/string_util';
 import { testSnippets } from '../../../common/test_snippet';
-import { getActiveTabKey, getBodyType } from './selector';
+import { getActiveTabKeySelector, getBodyTypeSelector } from './selector';
 import { actionCreator } from '../../../action/index';
 import { SwitchBodyType, AppendTestType } from '../../../action/record';
+import { State } from "../../../state/index";
 
 interface RequestTabExtraStateProps {
 
@@ -105,12 +106,17 @@ class RequestTabExtra extends React.Component<RequestTabExtraProps, RequestTabEx
     }
 }
 
-const mapStateToProps = (state: any): RequestTabExtraStateProps => {
-    return {
-        activeKey: state.displayRecordsState.activeKey,
-        activeTabKey: getActiveTabKey(state),
-        bodyType: getBodyType(state)
+const makeMapStateToProps = () => {
+    const getActiveTabKey = getActiveTabKeySelector();
+    const getBodyType = getBodyTypeSelector();
+    const mapStateToProps: (state: State) => RequestTabExtraStateProps = state => {
+        return {
+            activeKey: state.displayRecordsState.activeKey,
+            activeTabKey: getActiveTabKey(state),
+            bodyType: getBodyType(state)
+        };
     };
+    return mapStateToProps;
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): RequestTabExtraDispatchProps => {
@@ -121,6 +127,6 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): RequestTabExtraDispatchPro
 };
 
 export default connect(
-    mapStateToProps,
+    makeMapStateToProps(),
     mapDispatchToProps,
 )(RequestTabExtra);

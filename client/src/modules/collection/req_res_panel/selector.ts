@@ -2,6 +2,10 @@ import { createSelector } from 'reselect';
 import { State } from '../../../state';
 import { noEnvironment, defaultBodyType } from '../../../common/constants';
 import { reqResUIDefaultValue } from '../../../state/ui';
+import { DtoCollection } from "../../../../../api/interfaces/dto_collection";
+import { RecordCategory } from "../../../common/record_category";
+import { TreeData } from 'antd/lib/tree-select/interface';
+import * as _ from "lodash";
 
 const getActiveKey = (state: State) => state.displayRecordsState.activeKey;
 
@@ -15,54 +19,102 @@ const getEnvs = (state: State) => state.environmentState.environments;
 
 const getCollections = (state: State) => state.collectionState.collectionsInfo.collections;
 
-export const getActiveRecordState = createSelector(
-    [getActiveKey, getRecordStates],
-    (activeKey, recordStates) => {
-        return recordStates.find(r => r.record.id === activeKey);
-    }
-);
+const getCollectionsInfo = (state: State) => state.collectionState.collectionsInfo;
 
-export const getActiveRecord = createSelector(
-    [getActiveRecordState],
-    (recordState) => {
-        if (!recordState) {
-            throw new Error('miss active record state');
+// export const getActiveRecordState = (state: State) => {
+//     return getRecordStates(state).find(r => r.record.id === getActiveKey(state));
+// };
+
+// export const getActiveRecord = (activeKey, recordStates) => {
+//     const recordState = getActiveRecordState(activeKey, recordStates);
+//     if (!recordState) {
+//         throw new Error('miss active record state');
+//     }
+//     return recordState.record;
+// }
+
+export const getActiveRecordStateSelector = () => {
+    return createSelector(
+        [getActiveKey, getRecordStates],
+        (activeKey, recordStates) => {
+            return recordStates.find(r => r.record.id === activeKey);
         }
-        return recordState.record;
-    }
-);
+    );
+};
 
-export const getActiveRecordProjectId = createSelector(
-    [getActiveRecord, getCollections],
-    (activeRecord, collections) => {
-        return activeRecord.collectionId && collections[activeRecord.collectionId] ? collections[activeRecord.collectionId].projectId : '';
-    }
-);
+export const getActiveRecordSelector = () => {
+    return createSelector(
+        [getActiveKey, getActiveRecordStateSelector()],
+        (activeKey, recordState) => {
+            if (!recordState) {
+                throw new Error('miss active record state');
+            }
+            return recordState.record;
+        }
+    );
+};
 
-export const getActiveEnvId = createSelector(
-    [getActiveEnv, getActiveRecordProjectId],
-    (activeEnv, activeRecordProjectId) => {
-        return activeEnv[activeRecordProjectId] || noEnvironment;
-    }
-);
+export const getActiveRecordProjectIdSelector = () => {
+    return createSelector(
+        [getActiveRecordSelector(), getCollections],
+        (activeRecord, collections) => {
+            return activeRecord.collectionId && collections[activeRecord.collectionId] ? collections[activeRecord.collectionId].projectId : '';
+        }
+    );
+};
 
-export const getProjectEnvs = createSelector(
-    [getEnvs, getActiveRecordProjectId],
-    (envs, activeRecordProjectId) => {
-        return envs[activeRecordProjectId] || [];
-    }
-);
+export const getActiveEnvIdSelector = () => {
+    return createSelector(
+        [getActiveEnv, getActiveRecordProjectIdSelector()],
+        (activeEnv, activeRecordProjectId) => {
+            return activeEnv[activeRecordProjectId] || noEnvironment;
+        }
+    );
+};
 
-export const getActiveTabKey = createSelector(
-    [getActiveKey, getReqResUIState],
-    (key, reqResUIState) => {
-        return reqResUIState[key] ? reqResUIState[key].activeReqTab : reqResUIDefaultValue.activeReqTab;
-    }
-);
+export const getProjectEnvsSelector = () => {
+    return createSelector(
+        [getEnvs, getActiveRecordProjectIdSelector()],
+        (envs, activeRecordProjectId) => {
+            return envs[activeRecordProjectId] || [];
+        }
+    );
+};
 
-export const getBodyType = createSelector(
-    [getActiveRecord],
-    (record) => {
-        return record.bodyType || defaultBodyType;
-    }
-);
+export const getActiveTabKeySelector = () => {
+    return createSelector(
+        [getActiveKey, getReqResUIState],
+        (key, reqResUIState) => {
+            return reqResUIState[key] ? reqResUIState[key].activeReqTab : reqResUIDefaultValue.activeReqTab;
+        }
+    );
+};
+
+export const getBodyTypeSelector = () => {
+    return createSelector(
+        [getActiveRecordSelector()],
+        (record) => {
+            return record.bodyType || defaultBodyType;
+        }
+    );
+};
+
+export const getCollectionTreeDataSelector = () => {
+    return createSelector(
+        [getCollectionsInfo],
+        (collectionsInfo) => {
+            const treeData = new Array<TreeData>();
+            _.chain(collectionsInfo.collections).values<DtoCollection>().sortBy(c => c.name).value().forEach(c => {
+                treeData.push({
+                    key: c.id,
+                    value: c.id,
+                    label: c.name,
+                    children: _.sortBy(_.values(collectionsInfo.records[c.id])
+                        .filter(r => r.category === RecordCategory.folder)
+                        .map(r => ({ key: `${c.id}::${r.id}`, value: `${c.id}::${r.id}`, label: r.name })), t => t.label)
+                });
+            });
+            return treeData;
+        }
+    );
+};

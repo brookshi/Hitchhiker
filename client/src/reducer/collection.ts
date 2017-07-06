@@ -20,10 +20,9 @@ const getNewRecordState: () => RecordState = () => {
 export function collectionState(state: CollectionState = collectionDefaultValue, action: any): CollectionState {
     switch (action.type) {
         case FetchCollectionSuccessType: {
-            console.log(action.value);
             const collectionInfo = action.value as DtoCollectionWithRecord;
             const keys = _.keys(collectionInfo.collections);
-            return { ...state, collectionsInfo: _.cloneDeep(collectionInfo), fetchCollectionState: { status: RequestStatus.success }, openKeys: keys.length > 0 ? [keys[0]] : [] };
+            return { ...state, collectionsInfo: collectionInfo, fetchCollectionState: { status: RequestStatus.success }, openKeys: keys.length > 0 ? [keys[0]] : [] };
         }
         case FetchCollectionPendingType: {
             return { ...state, fetchCollectionState: { status: RequestStatus.pending } };
@@ -40,27 +39,31 @@ export function collectionState(state: CollectionState = collectionDefaultValue,
         case SaveAsRecordType:
         case SaveRecordType:
         case MoveRecordType: {
-            const record = _.cloneDeep(action.value.record);
+            const record = action.value.record;
             const oldRecord = _.values(state.collectionsInfo.records).find(s => !!s[record.id]);
+            let records = {
+                ...state.collectionsInfo.records,
+                [record.collectionId]: {
+                    ...state.collectionsInfo.records[record.collectionId],
+                    [record.id]: record
+                }
+            };
             if (oldRecord) {
-                Reflect.deleteProperty(state.collectionsInfo.records[oldRecord[record.id].collectionId], record.id);
+                const oldCollectionId = oldRecord[record.id].collectionId;
+                const collectionRecords = { ...records[oldCollectionId] };
+                Reflect.deleteProperty(collectionRecords, record.id);
+                records = { ...records, [oldCollectionId]: { ...collectionRecords } };
             }
             return {
                 ...state,
                 collectionsInfo: {
                     ...state.collectionsInfo,
-                    records: {
-                        ...state.collectionsInfo.records,
-                        [record.collectionId]: {
-                            ...state.collectionsInfo.records[record.collectionId],
-                            [record.id]: record
-                        }
-                    }
+                    records
                 }
             };
         }
         case SaveCollectionType: {
-            const collection = _.cloneDeep(action.value.collection);
+            const collection = action.value.collection;
             return {
                 ...state,
                 collectionsInfo: {
@@ -74,7 +77,7 @@ export function collectionState(state: CollectionState = collectionDefaultValue,
         }
         case DeleteRecordType: {
             const { id, collectionId, category } = action.value;
-            const recordsInCollection = state.collectionsInfo.records[collectionId];
+            const recordsInCollection = { ...state.collectionsInfo.records[collectionId] };
             if (category === RecordCategory.folder) {
                 _.values(recordsInCollection).filter(r => r.pid === id).map(r => r.id).forEach(i => Reflect.deleteProperty(recordsInCollection, i));
             }
@@ -83,15 +86,17 @@ export function collectionState(state: CollectionState = collectionDefaultValue,
                 ...state,
                 collectionsInfo: {
                     ...state.collectionsInfo,
-                    records: { ...state.collectionsInfo.records, [collectionId]: { ...recordsInCollection } }
+                    records: { ...state.collectionsInfo.records, [collectionId]: recordsInCollection }
                 }
             };
         }
         case DeleteCollectionType: {
             const collectionId = action.value;
-            Reflect.deleteProperty(state.collectionsInfo.collections, collectionId);
-            Reflect.deleteProperty(state.collectionsInfo.records, collectionId);
-            return { ...state, collections: { ...state.collectionsInfo.collections }, records: { ...state.collectionsInfo.records } };
+            const collections = { ...state.collectionsInfo.collections };
+            const records = { ...state.collectionsInfo.records };
+            Reflect.deleteProperty(collections, collectionId);
+            Reflect.deleteProperty(records, collectionId);
+            return { ...state, collections, records };
         }
         default: return state;
     }
