@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { root as displayRecordsState, collectionState } from './collection';
 import { State } from '../state';
-import { UpdateDisplayRecordType, SwitchBodyType, AppendTestType, ChangeDisplayRecordType } from '../action/record';
+import { UpdateDisplayRecordType } from '../action/record';
 import * as _ from 'lodash';
 import { uiState } from './ui';
 import { userState } from './user';
@@ -11,7 +11,6 @@ import { FetchLocalDataSuccessType } from '../action/local_data';
 import { localDataState } from './local_data';
 import { syncDefaultValue } from '../state/ui';
 import { scheduleState } from './schedule';
-import { DtoRecord } from '../../../api/interfaces/dto_record';
 
 export const reduceReducers = (...reducers) => {
     return (state, action) =>
@@ -40,32 +39,32 @@ export function rootReducer(state: State, action: any): State {
 
 function multipleStateReducer(state: State, action: any): State {
     switch (action.type) {
-        case SwitchBodyType: {
-            const { id, bodyType, header } = action.value;
-            const record = getActiveRecord(state, id);
-            const headers = record.headers || [];
-            record.bodyType = bodyType;
-            const headerKeys = headers.map(h => h.key ? h.key.toLowerCase() : '');
-            const index = headerKeys.indexOf('content-type');
-            if (index >= 0) {
-                headers[index] = { ...headers[index], value: bodyType };
-            } else {
-                headers.push(header);
-            }
-            record.headers = headers.filter(h => h.key || h.value);
-            return updateStateRecord(state, record);
-        }
-        case AppendTestType: {
-            const { id, test } = action.value;
-            const record = getActiveRecord(state, id);
-            const testValue = record.test && record.test.length > 0 ? (`${record.test}\n\n${test}`) : test;
-            record.test = testValue;
-            return updateStateRecord(state, record);
-        }
-        case ChangeDisplayRecordType: {
-            const record = getActiveRecord(state, state.displayRecordsState.activeKey);
-            return updateStateRecord(state, { ...record, ...action.value });
-        }
+        // case SwitchBodyType: {
+        //     const { id, bodyType, header } = action.value;
+        //     const record = getActiveRecord(state, id);
+        //     const headers = record.headers || [];
+        //     record.bodyType = bodyType;
+        //     const headerKeys = headers.map(h => h.key ? h.key.toLowerCase() : '');
+        //     const index = headerKeys.indexOf('content-type');
+        //     if (index >= 0) {
+        //         headers[index] = { ...headers[index], value: bodyType };
+        //     } else {
+        //         headers.push(header);
+        //     }
+        //     record.headers = headers.filter(h => h.key || h.value);
+        //     return updateStateRecord(state, record);
+        // }
+        // case AppendTestType: {
+        //     const { id, test } = action.value;
+        //     const record = getActiveRecord(state, id);
+        //     const testValue = record.test && record.test.length > 0 ? (`${record.test}\n\n${test}`) : test;
+        //     record.test = testValue;
+        //     return updateStateRecord(state, record);
+        // }
+        // case ChangeDisplayRecordType: {
+        //     const record = getActiveRecord(state, state.displayRecordsState.activeKey);
+        //     return updateStateRecord(state, { ...record, ...action.value });
+        // }
         case UpdateDisplayRecordType: {
             return updateStateRecord(state, action.value);
         }
@@ -76,12 +75,14 @@ function multipleStateReducer(state: State, action: any): State {
             const { displayRecordsState, uiState, collectionState, projectState, environmentState, scheduleState } = action.value as State;
             const onlineRecords = state.collectionState.collectionsInfo.records;
 
-            displayRecordsState.recordStates.forEach(recordState => {
-                const onlineRecordDict = onlineRecords[recordState.record.collectionId];
-                if (onlineRecordDict && onlineRecordDict[recordState.record.id]) {
-                    recordState.name = onlineRecordDict[recordState.record.id].name;
-                    if (!recordState.isChanged) {
-                        recordState.record = onlineRecordDict[recordState.record.id];
+            _.keys(displayRecordsState.recordStates).forEach(key => {
+                const recordState = displayRecordsState.recordStates[key];
+                const { record, isChanged } = recordState;
+                const onlineRecordDict = onlineRecords[record.collectionId];
+                if (onlineRecordDict && onlineRecordDict[record.id]) {
+                    recordState.name = onlineRecordDict[record.id].name;
+                    if (!isChanged) {
+                        recordState.record = onlineRecordDict[record.id];
                     }
                 }
             });
@@ -112,13 +113,13 @@ function multipleStateReducer(state: State, action: any): State {
         default: return state;
     }
 
-    function getActiveRecord(rootState: State, id: string): DtoRecord {
-        const recordState = rootState.displayRecordsState.recordStates.find(r => r.record.id === id);
-        if (!recordState) {
-            throw new Error('miss active record state');
-        }
-        return recordState.record;
-    }
+    // function getActiveRecord(rootState: State, id: string): DtoRecord {
+    //     const recordState = rootState.displayRecordsState.recordStates.find(r => r.record.id === id);
+    //     if (!recordState) {
+    //         throw new Error('miss active record state');
+    //     }
+    //     return recordState.record;
+    // }
 
     function updateStateRecord(rootState: State, record: any): State {
         const cid = record.collectionId;
@@ -126,9 +127,13 @@ function multipleStateReducer(state: State, action: any): State {
         if (cid) {
             isChanged = !_.isEqual(rootState.collectionState.collectionsInfo.records[record.collectionId][record.id], record);
         }
-        const recordStates = [...rootState.displayRecordsState.recordStates];
-        const index = recordStates.findIndex(r => r.record.id === record.id);
-        recordStates[index] = { ...recordStates[index], record: { ...record }, isChanged: isChanged };
-        return { ...rootState, displayRecordsState: { ...rootState.displayRecordsState, recordStates: [...recordStates] } };
+        const recordStates = rootState.displayRecordsState.recordStates;
+        return {
+            ...rootState,
+            displayRecordsState: {
+                ...rootState.displayRecordsState,
+                recordStates: { ...recordStates, [record.id]: { ...recordStates[record.id], record, isChanged } }
+            }
+        };
     }
 }

@@ -106,6 +106,7 @@ export function root(state: DisplayRecordsState = displayRecordsDefaultValue, ac
     const intermediateState = combineReducers<DisplayRecordsState>({
         activeKey,
         recordStates,
+        recordsOrder,
         responseState: (s = displayRecordsDefaultValue.responseState, a) => s
     })(state, action);
 
@@ -127,62 +128,64 @@ function activeKey(state: string = displayRecordsDefaultValue.activeKey, action:
     }
 }
 
-function recordStates(states: RecordState[] = displayRecordsDefaultValue.recordStates, action: any): RecordState[] {
+function recordsOrder(state: string[] = displayRecordsDefaultValue.recordsOrder, action: any): string[] {
     switch (action.type) {
-        case SendRequestType: {
-            let index = states.findIndex(r => r.record.id === action.value.record.id);
-            states[index].isRequesting = true;
-            return [...states];
-        }
-        case SaveRecordType: {
-            const index = states.findIndex(r => r.record.id === action.value.record.id);
-            if (index > -1) {
-                states[index].record = { ..._.cloneDeep(action.value.record) };
-                states[index].name = action.value.record.name;
-                states[index].isChanged = false;
-                return [...states];
-            }
-            return states;
-        }
-        case MoveRecordType: {
-            const record = action.value.record;
-            const index = states.findIndex(r => r.record.id === record.id);
-            if (index > -1) {
-                states[index].record = { ...record, pid: record.pid, collectionId: record.collectionId };
-                return [...states];
-            }
-            return states;
-        }
-        case CancelRequestType: {
-            const index = states.findIndex(r => r.record.id === action.value);
-            states[index].isRequesting = false;
-            return [...states];
-        }
         case ActiveRecordType: {
-            const isNotExist = !states.find(r => r.record.id === action.value.id);
-            if (isNotExist) {
-                if (!action.value.collectionId && action.value.collection) {
-                    action.value.collectionId = action.value.collection.id;
-                }
-                states = [
-                    ...states,
-                    {
-                        name: action.value.name, record: _.cloneDeep(action.value), isChanged: false,
-                        isRequesting: false
-                    }
-                ];
-            }
-            return [...states];
+            return [...state, action.value.id];
         }
         case UpdateTabRecordId: {
-            const index = states.findIndex(r => r.record.id === action.value.oldId);
+            const { oldId, newId } = action.value;
+            const index = state.indexOf(oldId);
             if (index > -1) {
-                states[index] = {
-                    ...states[index],
-                    record: { ..._.cloneDeep(states[index].record), id: action.value.newId }
-                };
+                const newState = [...state];
+                newState[index] = newId;
+                return newState;
             }
-            return [...states];
+            return state;
+        }
+        default:
+            return state;
+    }
+}
+
+function recordStates(states: _.Dictionary<RecordState> = displayRecordsDefaultValue.recordStates, action: any): _.Dictionary<RecordState> {
+    switch (action.type) {
+        case SendRequestType: {
+            const id = action.value.record.id;
+            return { ...states, [id]: { ...states[id], isRequesting: true } };
+        }
+        case SaveRecordType: {
+            const { id, name } = action.value.record;
+            return { ...states, [id]: { ...states[id], record: action.value.record, name, isChanged: false } };
+        }
+        case MoveRecordType: {
+            const { id, pid, collectionId } = action.value.record;
+            return { ...states, [id]: { ...states[id], record: action.value.record, pid, collectionId } };
+        }
+        case CancelRequestType: {
+            return { ...states, [action.value]: { ...states[action.value], isRequesting: false } };
+        }
+        case ActiveRecordType: {
+            const { id, name, collection } = action.value;
+            return {
+                ...states,
+                [id]: {
+                    name: name,
+                    record: { ...action.value, collectionId: collection.id },
+                    isChanged: false,
+                    isRequesting: false
+                }
+            };
+        }
+        case UpdateTabRecordId: {
+            const { oldId, newId } = action.value;
+            const state = states[oldId];
+            if (state) {
+                const newStates = { ...states };
+                Reflect.deleteProperty(newStates, oldId);
+                return { ...newStates, [newId]: { ...state, record: { ...state.record, id: newId } } };
+            }
+            return states;
         }
         default:
             return states;
@@ -190,54 +193,84 @@ function recordStates(states: RecordState[] = displayRecordsDefaultValue.recordS
 }
 
 function recordWithResState(state: DisplayRecordsState = displayRecordsDefaultValue, action: any): DisplayRecordsState {
-    let { recordStates, activeKey, responseState } = state;
+    let { recordStates, activeKey, responseState, recordsOrder } = state;
     switch (action.type) {
-        case AddTabType:
+        case AddTabType: {
             const newRecordState = getNewRecordState();
             return {
                 ...state,
-                recordStates: [
+                recordStates: {
                     ...recordStates,
-                    newRecordState
-                ],
+                    [newRecordState.record.id]: newRecordState
+                },
                 activeKey: newRecordState.record.id
             };
+        }
         case RemoveTabType: {
-            let index = recordStates.findIndex(r => r.record.id === action.value);
-            Reflect.deleteProperty(responseState, action.value);
-            if (index > -1) {
-                const activeIndex = recordStates.findIndex(r => r.record.id === activeKey);
-                recordStates.splice(index, 1);
-                if (recordStates.length === 0) {
-                    recordStates.push(getNewRecordState());
+            const newResponseState = { ...responseState };
+            Reflect.deleteProperty(newResponseState, action.value);
+            if (recordStates[action.value]) {
+                const newRecordStates = { ...recordStates };
+                const newRecordsOrder = { ...recordsOrder };
+                Reflect.deleteProperty(newRecordStates, action.value);
+                Reflect.deleteProperty(recordsOrder, action.value);
+
+                if (_.keys(newRecordStates).length === 0) {
+                    const newRecordState = getNewRecordState();
+                    newRecordStates[newRecordState.record.id] = newRecordState;
+                    activeKey = newRecordState.record.id;
+                    newRecordsOrder.push(activeKey);
                 }
-                if (index === activeIndex) {
-                    index = index === recordStates.length ? index - 1 : index;
-                    activeKey = recordStates[index].record.id;
+
+                if (activeKey === action.value) {
+                    let index = recordsOrder.indexOf(activeKey);
+                    index = index === recordsOrder.length ? index - 1 : index;
+                    activeKey = newRecordStates[newRecordsOrder[index]].record.id;
                 }
-                return { ...state, recordStates: [...recordStates], activeKey: activeKey };
+                return { ...state, recordStates: newRecordStates, responseState: newResponseState, activeKey: activeKey };
+            }
+            return { ...state, responseState: newResponseState };
+        }
+        case SendRequestFulfilledType: {
+            const id = action.value.id;
+            return {
+                ...state,
+                recordStates: { ...recordStates, [id]: { ...recordStates[id], isRequesting: false } },
+                responseState: {
+                    ...state.responseState,
+                    [id]: action.value.runResult
+                }
+            };
+        }
+        case DeleteRecordType: {
+            const { id } = action.value;
+            if (recordStates[id]) {
+                const newStates = { ...recordStates };
+                Reflect.deleteProperty(newStates, id);
+                const newRecordsOrder = [..._.filter(recordsOrder, s => s !== action.value.id)];
+                if (newRecordsOrder.length === 0) {
+                    const newRecordState = getNewRecordState();
+                    activeKey = newRecordState.record.id;
+                    newStates[activeKey] = newRecordState;
+                    newRecordsOrder.push(activeKey);
+                }
+                return { ...state, recordStates: newStates, recordsOrder: newRecordsOrder, activeKey };
             }
             return state;
         }
-        case SendRequestFulfilledType: {
-            const index = recordStates.findIndex(r => r.record.id === action.value.id);
-            recordStates[index].isRequesting = false;
-            return {
-                ...state,
-                recordStates: [...recordStates],
-                responseState: {
-                    ...state.responseState,
-                    [action.value.id]: action.value.runResult
-                }
-            };
-        }
         case DeleteCollectionType: {
-            const restStates = recordStates.filter(s => s.record.collectionId !== action.value);
-            if (restStates.length === 0) {
-                restStates.push(getNewRecordState());
+            const restStates = _.keyBy(_.filter(recordStates, s => s.record.collectionId !== action.value), r => r.record.id);
+            const restRecordsOrder = _.filter(recordsOrder, s => !!restStates[s]);
+            if (restRecordsOrder.length === 0) {
+                const newRecordState = getNewRecordState();
+                activeKey = newRecordState.record.id;
+                restStates[activeKey] = newRecordState;
+                restRecordsOrder.push(activeKey);
             }
-            activeKey = restStates[0].record.id;
-            return { ...state, recordStates: [...restStates], activeKey };
+            if (recordStates[activeKey].record.collectionId === action.value) {
+                activeKey = restStates[0].record.id;
+            }
+            return { ...state, recordStates: restStates, recordsOrder: restRecordsOrder, activeKey };
         }
         default:
             return state;

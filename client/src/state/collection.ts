@@ -32,7 +32,9 @@ export interface DisplayRecordsState {
 
     activeKey: string;
 
-    recordStates: RecordState[];
+    recordStates: _.Dictionary<RecordState>;
+
+    recordsOrder: string[];
 
     responseState: ResponseState;
 }
@@ -65,13 +67,15 @@ export const collectionDefaultValue: CollectionState = {
 
 export const displayRecordsDefaultValue: DisplayRecordsState = {
     activeKey: '@new',
-    recordStates: [
-        {
+    recordsOrder: [],
+    recordStates:
+    {
+        '@new': {
             name: 'new request',
             record: getDefaultRecord(true),
             isChanged: false,
             isRequesting: false
         }
-    ],
+    },
     responseState: {}
 };
