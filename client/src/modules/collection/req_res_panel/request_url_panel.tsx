@@ -69,7 +69,8 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
             isRequesting !== nextProps.isRequesting ||
             environment !== nextProps.environment ||
             collectionTreeData !== nextProps.collectionTreeData ||
-            cookies !== nextProps.cookies;
+            cookies !== nextProps.cookies ||
+            !_.isEqual(this.state, nextState);
     }
 
     private getMethods = (defaultValue?: string) => {

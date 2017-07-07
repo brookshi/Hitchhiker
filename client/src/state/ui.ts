@@ -1,4 +1,6 @@
 import { SyncItem } from '../utils/request_manager';
+import { defaultLeftPanelWidth, defaultModuleKey, defaultReqTabKey, defaultResTabKey } from '../common/constants';
+import { KeyValueEditMode, KeyValueEditType } from '../common/custom_type';
 
 export interface AppUIState {
 
@@ -27,6 +29,8 @@ export interface ReqResUIState {
     activeResTab: string;
 
     activeReqTab: string;
+
+    headersEditMode: KeyValueEditMode;
 }
 
 export interface UIState {
@@ -39,16 +43,17 @@ export interface UIState {
 }
 
 export const appUIDefaultValue: AppUIState = {
-    activeModule: 'collection',
-    leftPanelWidth: 300,
+    activeModule: defaultModuleKey,
+    leftPanelWidth: defaultLeftPanelWidth,
     collapsed: false
 };
 
 export const reqResUIDefaultValue: ReqResUIState = {
     isReqPanelHidden: false,
-    activeResTab: 'content',
-    activeReqTab: 'headers',
-    resHeight: 0
+    activeResTab: defaultResTabKey,
+    activeReqTab: defaultReqTabKey,
+    resHeight: 0,
+    headersEditMode: KeyValueEditType.keyValueEdit
 };
 
 export const syncDefaultValue: SyncState = {

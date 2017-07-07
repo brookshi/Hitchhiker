@@ -20,9 +20,9 @@ export function projectState(state: ProjectState = projectDefaultValue, action: 
         }
         case QuitProjectType:
         case DisbandProjectType: {
-            const projects = state.projects;
+            const projects = { ...state.projects };
             Reflect.deleteProperty(projects, action.value.id);
-            return { ...state, projects: { ...projects } };
+            return { ...state, projects };
         }
         case EditEnvType: {
             const activeProject = action.value.projectId || _.keys(state.projects)[0];

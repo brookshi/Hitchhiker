@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { root as displayRecordsState, collectionState } from './collection';
 import { State } from '../state';
-import { UpdateDisplayRecordType } from '../action/record';
+import { UpdateDisplayRecordType, UpdateDisplayRecordPropertyType } from '../action/record';
 import * as _ from 'lodash';
 import { uiState } from './ui';
 import { userState } from './user';
@@ -39,32 +39,10 @@ export function rootReducer(state: State, action: any): State {
 
 function multipleStateReducer(state: State, action: any): State {
     switch (action.type) {
-        // case SwitchBodyType: {
-        //     const { id, bodyType, header } = action.value;
-        //     const record = getActiveRecord(state, id);
-        //     const headers = record.headers || [];
-        //     record.bodyType = bodyType;
-        //     const headerKeys = headers.map(h => h.key ? h.key.toLowerCase() : '');
-        //     const index = headerKeys.indexOf('content-type');
-        //     if (index >= 0) {
-        //         headers[index] = { ...headers[index], value: bodyType };
-        //     } else {
-        //         headers.push(header);
-        //     }
-        //     record.headers = headers.filter(h => h.key || h.value);
-        //     return updateStateRecord(state, record);
-        // }
-        // case AppendTestType: {
-        //     const { id, test } = action.value;
-        //     const record = getActiveRecord(state, id);
-        //     const testValue = record.test && record.test.length > 0 ? (`${record.test}\n\n${test}`) : test;
-        //     record.test = testValue;
-        //     return updateStateRecord(state, record);
-        // }
-        // case ChangeDisplayRecordType: {
-        //     const record = getActiveRecord(state, state.displayRecordsState.activeKey);
-        //     return updateStateRecord(state, { ...record, ...action.value });
-        // }
+        case UpdateDisplayRecordPropertyType: {
+            const { activeKey, recordStates } = state.displayRecordsState;
+            return updateStateRecord(state, { ...recordStates[activeKey].record, ...action.value });
+        }
         case UpdateDisplayRecordType: {
             return updateStateRecord(state, action.value);
         }
@@ -112,14 +90,6 @@ function multipleStateReducer(state: State, action: any): State {
         }
         default: return state;
     }
-
-    // function getActiveRecord(rootState: State, id: string): DtoRecord {
-    //     const recordState = rootState.displayRecordsState.recordStates.find(r => r.record.id === id);
-    //     if (!recordState) {
-    //         throw new Error('miss active record state');
-    //     }
-    //     return recordState.record;
-    // }
 
     function updateStateRecord(rootState: State, record: any): State {
         const cid = record.collectionId;

@@ -22,12 +22,12 @@ export function localDataState(state: LocalDataState = localDataDefaultValue, ac
                 return state;
             }
 
-            const hostCookies = state.cookies[res.host] || {};
+            const hostCookies = state.cookies[res.host] ? { ...state.cookies[res.host] } : {};
             res.cookies.forEach(c => {
                 const keyPair = StringUtil.readCookie(c);
                 hostCookies[keyPair.key] = keyPair.value;
             });
-            return { ...state, cookies: { ...state.cookies, [res.host]: { ...hostCookies } } };
+            return { ...state, cookies: { ...state.cookies, [res.host]: hostCookies } };
         }
         default:
             return state;

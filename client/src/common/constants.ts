@@ -18,3 +18,11 @@ export const failColor = '#f50';
 export const defaultBodyType = 'application/json';
 
 export const newRecordFlag = '@new';
+
+export const defaultReqTabKey = 'headers';
+
+export const defaultResTabKey = 'content';
+
+export const defaultModuleKey = 'collection';
+
+export const defaultLeftPanelWidth = 300;

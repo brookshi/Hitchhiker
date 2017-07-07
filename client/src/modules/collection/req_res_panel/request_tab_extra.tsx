@@ -4,14 +4,15 @@ import { reqResUIDefaultValue } from '../../../state/ui';
 import { Button, Dropdown, Icon, Menu } from 'antd';
 import { KeyValueEditType, KeyValueEditMode } from '../../../common/custom_type';
 import { bodyTypes } from '../../../common/body_type';
-import { defaultBodyType } from '../../../common/constants';
-import { DtoHeader } from '../../../../../api/interfaces/dto_header';
+import { defaultBodyType, defaultReqTabKey } from '../../../common/constants';
 import { StringUtil } from '../../../utils/string_util';
 import { testSnippets } from '../../../common/test_snippet';
-import { getActiveTabKeySelector, getBodyTypeSelector } from './selector';
+import { getActiveTabKeySelector, getActiveRecordSelector, getHeadersEditModeSelector } from './selector';
 import { actionCreator } from '../../../action/index';
-import { SwitchBodyType, AppendTestType } from '../../../action/record';
-import { State } from "../../../state/index";
+import { UpdateDisplayRecordType } from '../../../action/record';
+import { State } from '../../../state/index';
+import { DtoRecord } from '../../../../../api/interfaces/dto_record';
+import { SwitchHeadersEditModeType } from '../../../action/ui';
 
 interface RequestTabExtraStateProps {
 
@@ -19,37 +20,34 @@ interface RequestTabExtraStateProps {
 
     activeTabKey: string;
 
-    bodyType: string;
+    headersEditMode: KeyValueEditMode;
+
+    record: DtoRecord;
 }
 
 interface RequestTabExtraDispatchProps {
 
-    changeBodyType(id: string, bodyType: string, newHeader: DtoHeader);
+    changeRecord(record: DtoRecord);
 
-    appendTest(id: string, test: string);
+    switchHeadersEditMode(recordId: string, mode: KeyValueEditMode);
 }
 
 type RequestTabExtraProps = RequestTabExtraStateProps & RequestTabExtraDispatchProps;
 
-interface RequestTabExtraState {
-
-    headersEditMode: KeyValueEditMode;
-}
+interface RequestTabExtraState { }
 
 class RequestTabExtra extends React.Component<RequestTabExtraProps, RequestTabExtraState> {
 
-    constructor(props: RequestTabExtraProps) {
-        super(props);
-        this.state = {
-            headersEditMode: KeyValueEditType.keyValueEdit
-        };
+    public shouldComponentUpdate(nextProps: RequestTabExtraProps, nextState: RequestTabExtraState) {
+        return nextProps.activeKey !== this.props.activeKey ||
+            nextProps.activeTabKey !== this.props.activeTabKey ||
+            nextProps.record.bodyType !== this.props.record.bodyType ||
+            nextProps.headersEditMode !== this.props.headersEditMode;
     }
 
     private onHeaderModeChanged = () => {
-        this.setState({
-            ...this.state,
-            headersEditMode: KeyValueEditType.getReverseMode(this.state.headersEditMode)
-        });
+        const { activeKey, headersEditMode, switchHeadersEditMode } = this.props;
+        switchHeadersEditMode(activeKey, KeyValueEditType.getReverseMode(headersEditMode));
     }
 
     private getBodyTypeMenu = () => {
@@ -62,15 +60,26 @@ class RequestTabExtra extends React.Component<RequestTabExtraProps, RequestTabEx
 
     private onBodyTypeChanged = (e) => {
         const bodyType = e.key;
+        const { record, changeRecord } = this.props;
         const header = { isActive: true, key: 'content-type', value: bodyType, id: StringUtil.generateUID() };
-        this.props.changeBodyType(this.props.activeKey, bodyType, header);
+        const headers = record.headers || [];
+        const headerKeys = headers.map(h => h.key ? h.key.toLowerCase() : '');
+        const index = headerKeys.indexOf('content-type');
+        if (index >= 0) {
+            headers[index] = { ...headers[index], value: bodyType };
+        } else {
+            headers.push(header);
+        }
+        changeRecord({ ...record, bodyType, headers });
     }
 
-    private currentBodyType = () => this.props.bodyType || defaultBodyType;
+    private currentBodyType = () => this.props.record.bodyType || defaultBodyType;
 
     private onSelectSnippet = (e) => {
         const snippet = testSnippets[e.key];
-        this.props.appendTest(this.props.activeKey, snippet);
+        const { record, changeRecord } = this.props;
+        const test = record.test && record.test.length > 0 ? (`${record.test}\n\n${snippet}`) : snippet;
+        changeRecord({ ...record, test });
     }
 
     private snippetsMenu = (
@@ -81,12 +90,13 @@ class RequestTabExtra extends React.Component<RequestTabExtraProps, RequestTabEx
 
     public render() {
 
-        const { activeTabKey } = this.props;
+        let { activeTabKey, headersEditMode } = this.props;
+        activeTabKey = activeTabKey || defaultReqTabKey;
 
         return (
             activeTabKey === reqResUIDefaultValue.activeReqTab ? (
                 <Button className="tab-extra-button" onClick={this.onHeaderModeChanged}>
-                    {KeyValueEditType.getReverseMode(this.state.headersEditMode)}
+                    {KeyValueEditType.getReverseMode(headersEditMode)}
                 </Button>
             ) : (
                     activeTabKey === 'body' ? (
@@ -106,27 +116,23 @@ class RequestTabExtra extends React.Component<RequestTabExtraProps, RequestTabEx
     }
 }
 
-const makeMapStateToProps = () => {
-    const getActiveTabKey = getActiveTabKeySelector();
-    const getBodyType = getBodyTypeSelector();
-    const mapStateToProps: (state: State) => RequestTabExtraStateProps = state => {
-        return {
-            activeKey: state.displayRecordsState.activeKey,
-            activeTabKey: getActiveTabKey(state),
-            bodyType: getBodyType(state)
-        };
+const mapStateToProps = (state: State): RequestTabExtraStateProps => {
+    return {
+        activeKey: state.displayRecordsState.activeKey,
+        activeTabKey: getActiveTabKeySelector()(state),
+        headersEditMode: getHeadersEditModeSelector()(state),
+        record: getActiveRecordSelector()(state)
     };
-    return mapStateToProps;
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): RequestTabExtraDispatchProps => {
     return {
-        changeBodyType: (id, bodyType, header) => dispatch(actionCreator(SwitchBodyType, { id, bodyType, header })),
-        appendTest: (id, test) => dispatch(actionCreator(AppendTestType, { id, test }))
+        changeRecord: (record) => dispatch(actionCreator(UpdateDisplayRecordType, record)),
+        switchHeadersEditMode: (recordId, mode) => dispatch(actionCreator(SwitchHeadersEditModeType, { recordId, mode }))
     };
 };
 
 export default connect(
-    makeMapStateToProps(),
+    mapStateToProps,
     mapDispatchToProps,
 )(RequestTabExtra);

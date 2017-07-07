@@ -1,11 +1,11 @@
 import { createSelector } from 'reselect';
 import { State } from '../../../state';
-import { noEnvironment, defaultBodyType } from '../../../common/constants';
+import { noEnvironment } from '../../../common/constants';
 import { reqResUIDefaultValue } from '../../../state/ui';
-import { DtoCollection } from "../../../../../api/interfaces/dto_collection";
-import { RecordCategory } from "../../../common/record_category";
+import { DtoCollection } from '../../../../../api/interfaces/dto_collection';
+import { RecordCategory } from '../../../common/record_category';
 import { TreeData } from 'antd/lib/tree-select/interface';
-import * as _ from "lodash";
+import * as _ from 'lodash';
 
 const getActiveKey = (state: State) => state.displayRecordsState.activeKey;
 
@@ -37,7 +37,7 @@ export const getActiveRecordStateSelector = () => {
     return createSelector(
         [getActiveKey, getRecordStates],
         (activeKey, recordStates) => {
-            return recordStates.find(r => r.record.id === activeKey);
+            return recordStates[activeKey];
         }
     );
 };
@@ -90,11 +90,11 @@ export const getActiveTabKeySelector = () => {
     );
 };
 
-export const getBodyTypeSelector = () => {
+export const getHeadersEditModeSelector = () => {
     return createSelector(
-        [getActiveRecordSelector()],
-        (record) => {
-            return record.bodyType || defaultBodyType;
+        [getActiveKey, getReqResUIState],
+        (key, reqResUIState) => {
+            return reqResUIState[key] ? reqResUIState[key].headersEditMode : reqResUIDefaultValue.headersEditMode;
         }
     );
 };

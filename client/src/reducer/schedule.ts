@@ -20,15 +20,36 @@ export function scheduleState(state: ScheduleState = scheduleDefaultValue, actio
             return { ...state, activeSchedule: action.value };
         }
         case DeleteScheduleType: {
-            const schedules = state.schedules;
+            const schedules = { ...state.schedules };
             Reflect.deleteProperty(schedules, action.value.id);
-            return { ...state, schedules: { ...schedules } };
+            return { ...state, schedules };
         }
         case RunScheduleType: {
-            return { ...state, runState: { ...state.runState, [action.value]: { isRunning: true, consoleRunResults: [] } } };
+            return {
+                ...state,
+                runState: {
+                    ...state.runState,
+                    [action.value]: {
+                        isRunning: true,
+                        consoleRunResults: []
+                    }
+                }
+            };
         }
         case ScheduleChunkDataType: {
-            return { ...state, runState: { ...state.runState, [action.value.id]: { isRunning: true, consoleRunResults: [...state.runState[action.value.id].consoleRunResults, action.value.data] } } };
+            return {
+                ...state,
+                runState: {
+                    ...state.runState,
+                    [action.value.id]: {
+                        isRunning: true,
+                        consoleRunResults: [
+                            ...state.runState[action.value.id].consoleRunResults,
+                            action.value.data
+                        ]
+                    }
+                }
+            };
         }
         case RunScheduleFulfillType: {
             const schedule = state.schedules[action.value.id];

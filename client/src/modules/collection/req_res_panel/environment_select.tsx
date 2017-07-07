@@ -6,7 +6,7 @@ import { getProjectEnvsSelector, getActiveEnvIdSelector, getActiveRecordProjectI
 import { actionCreator } from '../../../action/index';
 import { AddTabType } from '../../../action/record';
 import { SwitchEnvType, EditEnvType } from '../../../action/project';
-import { State } from "../../../state/index";
+import { State } from '../../../state/index';
 
 const Option = Select.Option;
 

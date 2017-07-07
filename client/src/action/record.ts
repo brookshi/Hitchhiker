@@ -7,7 +7,9 @@ export const AddTabType = 'add tab';
 
 export const RemoveTabType = 'remove tab';
 
-export const UpdateDisplayRecordType = 'update changed tab';
+export const UpdateDisplayRecordType = 'update display record';
+
+export const UpdateDisplayRecordPropertyType = 'update display record property';
 
 export const ActiveTabType = 'active tab';
 
@@ -28,12 +30,6 @@ export const ActiveRecordType = 'active record';
 export const DeleteRecordType = 'delete record';
 
 export const MoveRecordType = 'move record';
-
-export const SwitchBodyType = 'change body type';
-
-export const AppendTestType = 'append test';
-
-export const ChangeDisplayRecordType = 'change display record';
 
 export function* sendRequest() {
     yield takeEvery(SendRequestType, function* (action: any) {

@@ -48,7 +48,7 @@ export function collectionState(state: CollectionState = collectionDefaultValue,
                     [record.id]: record
                 }
             };
-            if (oldRecord) {
+            if (action.type === MoveRecordType && oldRecord) {
                 const oldCollectionId = oldRecord[record.id].collectionId;
                 const collectionRecords = { ...records[oldCollectionId] };
                 Reflect.deleteProperty(collectionRecords, record.id);

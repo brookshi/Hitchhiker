@@ -27,7 +27,7 @@ interface ReqResPanelStateProps {
 
     activeKey: string;
 
-    recordStates: RecordState[];
+    recordStates: _.Dictionary<RecordState>;
 
     responseState: ResponseState;
 
@@ -113,7 +113,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 
     private get activeRecordState(): RecordState {
-        const recordState = this.props.recordStates.find(r => r.record.id === this.props.activeKey);
+        const recordState = this.props.recordStates[this.props.activeKey];
         if (recordState) {
             return recordState;
         }
@@ -166,7 +166,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 
     private onTabChanged = (key) => {
-        const recordState = this.props.recordStates.find(r => r.record.id === key);
+        const recordState = this.props.recordStates[key];
         if (recordState) {
             this.props.activeTab(recordState.record.id);
         }
@@ -174,8 +174,8 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
     private onEdit = (key, action) => {
         if (action === 'remove') {
-            const index = this.props.recordStates.findIndex(r => r.record.id === key);
-            if (key.startsWith('@new') || (index >= 0 && !this.props.recordStates[index].isChanged)) {
+            const recordState = this.props.recordStates[key];
+            if (key.startsWith('@new') || (!!recordState && !recordState.isChanged)) {
                 this.props.removeTab(key);
                 return;
             }
@@ -189,8 +189,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 
     private closeTabWithSave = () => {
-        const index = this.props.recordStates.findIndex(r => r.record.id === this.state.currentEditKey);
-        this.props.save(this.props.recordStates[index].record);
+        this.props.save(this.props.recordStates[this.state.currentEditKey].record);
         this.props.removeTab(this.state.currentEditKey);
         this.setState({ ...this.state, currentEditKey: '', isConfirmCloseDlgOpen: false });
     }
@@ -210,7 +209,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                     tabBarExtraContent={<EnvironmentSelect />}
                 >
                     {
-                        recordStates.map(recordState => {
+                        _.values(recordStates).map(recordState => {
                             const { name, record } = recordState;
                             const reqStyle = reqResUIState.isReqPanelHidden ? { display: 'none' } : {};
                             return (

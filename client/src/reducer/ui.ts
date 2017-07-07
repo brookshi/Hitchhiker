@@ -1,7 +1,7 @@
 import { EditEnvType } from '../action/project';
 import { UIState, AppUIState, appUIDefaultValue, ReqResUIState, uiDefaultValue, SyncState, syncDefaultValue } from '../state/ui';
 import { combineReducers } from 'redux';
-import { ResizeLeftPanelType, UpdateLeftPanelType, SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType } from '../action/ui';
+import { ResizeLeftPanelType, UpdateLeftPanelType, SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType, SwitchHeadersEditModeType } from '../action/ui';
 import { SyncType, SyncSuccessType, SyncRetryType } from '../action/index';
 import { RemoveTabType } from '../action/record';
 
@@ -36,9 +36,9 @@ function syncState(state: SyncState = syncDefaultValue, action: any): SyncState 
             return { ...state, syncCount: syncCount + 1, syncItems: [...syncItems, action.value], message: undefined };
         }
         case SyncSuccessType: {
-            const { syncCount, syncItems } = state;
+            const syncItems = [...state.syncItems];
             syncItems.shift();
-            return { ...state, syncCount: syncCount - 1, syncItems: [...syncItems], message: undefined };
+            return { ...state, syncCount: state.syncCount - 1, syncItems, message: undefined };
         }
         case SyncRetryType: {
             const { errMsg, delay, time, syncItem } = action.value;
@@ -68,8 +68,13 @@ function reqResUIState(state: _.Dictionary<ReqResUIState> = {}, action: any): _.
             return { ...state, [recordId]: { ...state[recordId], resHeight: height } };
         }
         case RemoveTabType: {
-            Reflect.deleteProperty(state, action.value);
-            return { ...state };
+            const newState = { ...state };
+            Reflect.deleteProperty(newState, action.value);
+            return newState;
+        }
+        case SwitchHeadersEditModeType: {
+            const { mode, recordId } = action.value;
+            return { ...state, [recordId]: { ...state[recordId], headersEditMode: mode } };
         }
         default:
             return state;

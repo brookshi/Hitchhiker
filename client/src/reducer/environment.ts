@@ -10,23 +10,24 @@ export function environmentState(state: EnvironmentState = environmentDefaultVal
         }
         case SaveEnvironmentType: {
             const newEnv = action.value.env;
-            const envs = state.environments[newEnv.project.id];
+            const envs = [...state.environments[newEnv.project.id]];
             if (!action.value.isNew) {
                 _.remove(envs, e => e.id === newEnv.id);
             }
-            return { ...state, environments: { ...state.environments, [newEnv.project.id]: [...envs, newEnv] } };
+            envs.push(newEnv);
+            return { ...state, environments: { ...state.environments, [newEnv.project.id]: envs } };
         }
         case QuitProjectType:
         case DisbandProjectType: {
-            const envs = state.environments;
+            const envs = { ...state.environments };
             Reflect.deleteProperty(envs, action.value.id);
-            return { ...state, environments: { ...envs } };
+            return { ...state, environments: envs };
         }
         case DelEnvironmentType: {
             const { projectId, envId } = action.value;
-            const envs = state.environments[projectId];
+            const envs = { ...state.environments[projectId] };
             _.remove(envs, e => e.id === envId);
-            return { ...state, environments: { ...state.environments, [projectId]: [...envs] } };
+            return { ...state, environments: { ...state.environments, [projectId]: envs } };
         }
         case SwitchEnvType: {
             const { projectId, envId } = action.value;
