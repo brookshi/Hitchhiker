@@ -12,7 +12,7 @@ import { SelectResTabType, ToggleReqPanelVisibleType } from '../../../action/ui'
 import ResponseLoadingPanel from './response_loading_panel';
 import ResErrorPanel from '../../../components/res_error_panel';
 import { State } from '../../../state/index';
-import { reqResUIDefaultValue } from "../../../state/ui";
+import { getActiveRecordSelector, getActiveRecordStateSelector, getResHeightSelector, getResActiveTabKeySelector, getIsResPanelMaximumSelector } from './selector';
 
 const TabPane = Tabs.TabPane;
 
@@ -167,16 +167,17 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
 }
 
 const mapStateToProps = (state: State): ResponsePanelStateProps => {
+    const record = getActiveRecordSelector()(state);
+    const recordState = getActiveRecordStateSelector()(state);
     const activeKey = state.displayRecordsState.activeKey;
-    const activeReqResUiState = state.uiState.reqResUIState[activeKey];
     return {
         activeKey,
-        url: state.displayRecordsState.recordStates[activeKey].record.url,
-        isRequesting: state.displayRecordsState.recordStates[activeKey].isRequesting,
+        url: record.url,
+        isRequesting: recordState.isRequesting,
         res: state.displayRecordsState.responseState[activeKey],
-        height: activeReqResUiState ? activeReqResUiState.resHeight : reqResUIDefaultValue.resHeight,
-        activeTab: activeReqResUiState ? activeReqResUiState.activeResTab : reqResUIDefaultValue.activeResTab,
-        isResPanelMaximum: activeReqResUiState ? activeReqResUiState.isResPanelMaximum : reqResUIDefaultValue.isResPanelMaximum
+        height: getResHeightSelector()(state),
+        activeTab: getResActiveTabKeySelector()(state),
+        isResPanelMaximum: getIsResPanelMaximumSelector()(state)
     };
 };
 

@@ -7,7 +7,7 @@ import { bodyTypes } from '../../../common/body_type';
 import { defaultBodyType, defaultReqTabKey } from '../../../common/constants';
 import { StringUtil } from '../../../utils/string_util';
 import { testSnippets } from '../../../common/test_snippet';
-import { getReqActiveTabKeySelector, getActiveRecordSelector, getHeadersEditModeSelector } from './selector';
+import { getActiveRecordSelector, getReqActiveTabKeySelector, getHeadersEditModeSelector } from './selector';
 import { actionCreator } from '../../../action/index';
 import { UpdateDisplayRecordType } from '../../../action/record';
 import { State } from '../../../state/index';

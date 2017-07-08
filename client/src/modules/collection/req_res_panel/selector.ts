@@ -81,29 +81,56 @@ export const getProjectEnvsSelector = () => {
     );
 };
 
-export const getReqActiveTabKeySelector = () => {
+export const getActiveReqResUIStateSelector = () => {
     return createSelector(
         [getActiveKey, getReqResUIState],
         (key, reqResUIState) => {
-            return reqResUIState[key] ? reqResUIState[key].activeReqTab : reqResUIDefaultValue.activeReqTab;
+            return reqResUIState[key] || reqResUIDefaultValue;
+        }
+    );
+};
+
+export const getReqActiveTabKeySelector = () => {
+    return createSelector(
+        [getActiveReqResUIStateSelector()],
+        (activeReqResUIState) => {
+            return activeReqResUIState.activeReqTab || reqResUIDefaultValue.activeReqTab;
         }
     );
 };
 
 export const getResActiveTabKeySelector = () => {
     return createSelector(
-        [getActiveKey, getReqResUIState],
-        (key, reqResUIState) => {
-            return reqResUIState[key] ? reqResUIState[key].activeResTab : reqResUIDefaultValue.activeResTab;
+        [getActiveReqResUIStateSelector()],
+        (activeReqResUIState) => {
+            return activeReqResUIState.activeResTab || reqResUIDefaultValue.activeResTab;
         }
     );
 };
 
 export const getHeadersEditModeSelector = () => {
     return createSelector(
-        [getActiveKey, getReqResUIState],
-        (key, reqResUIState) => {
-            return reqResUIState[key] ? reqResUIState[key].headersEditMode : reqResUIDefaultValue.headersEditMode;
+        [getActiveReqResUIStateSelector()],
+        (activeReqResUIState) => {
+            return activeReqResUIState.headersEditMode || reqResUIDefaultValue.headersEditMode;
+        }
+    );
+};
+
+export const getResHeightSelector = () => {
+    return createSelector(
+        [getActiveReqResUIStateSelector()],
+        (activeReqResUIState) => {
+            return activeReqResUIState.resHeight || reqResUIDefaultValue.resHeight;
+        }
+    );
+};
+
+export const getIsResPanelMaximumSelector = () => {
+    return createSelector(
+        [getActiveReqResUIStateSelector()],
+        (activeReqResUIState) => {
+            return activeReqResUIState.isResPanelMaximum === undefined ? reqResUIDefaultValue.isResPanelMaximum : activeReqResUIState.isResPanelMaximum;
         }
     );
 };

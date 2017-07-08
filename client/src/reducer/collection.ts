@@ -203,6 +203,7 @@ function recordWithResState(state: DisplayRecordsState = displayRecordsDefaultVa
                     ...recordStates,
                     [newRecordState.record.id]: newRecordState
                 },
+                recordsOrder: [...recordsOrder, newRecordState.record.id],
                 activeKey: newRecordState.record.id
             };
         }
@@ -211,9 +212,9 @@ function recordWithResState(state: DisplayRecordsState = displayRecordsDefaultVa
             Reflect.deleteProperty(newResponseState, action.value);
             if (recordStates[action.value]) {
                 const newRecordStates = { ...recordStates };
-                const newRecordsOrder = { ...recordsOrder };
                 Reflect.deleteProperty(newRecordStates, action.value);
-                Reflect.deleteProperty(recordsOrder, action.value);
+                const newRecordsOrder = recordsOrder.filter(r => r !== action.value);
+                let index = recordsOrder.indexOf(activeKey);
 
                 if (_.keys(newRecordStates).length === 0) {
                     const newRecordState = getNewRecordState();
@@ -223,11 +224,10 @@ function recordWithResState(state: DisplayRecordsState = displayRecordsDefaultVa
                 }
 
                 if (activeKey === action.value) {
-                    let index = recordsOrder.indexOf(activeKey);
-                    index = index === recordsOrder.length ? index - 1 : index;
+                    index = index === newRecordsOrder.length ? index - 1 : index;
                     activeKey = newRecordStates[newRecordsOrder[index]].record.id;
                 }
-                return { ...state, recordStates: newRecordStates, responseState: newResponseState, activeKey: activeKey };
+                return { ...state, recordStates: newRecordStates, recordsOrder: newRecordsOrder, responseState: newResponseState, activeKey: activeKey };
             }
             return { ...state, responseState: newResponseState };
         }
@@ -247,7 +247,7 @@ function recordWithResState(state: DisplayRecordsState = displayRecordsDefaultVa
             if (recordStates[id]) {
                 const newStates = { ...recordStates };
                 Reflect.deleteProperty(newStates, id);
-                const newRecordsOrder = [..._.filter(recordsOrder, s => s !== action.value.id)];
+                const newRecordsOrder = _.filter(recordsOrder, s => s !== action.value.id);
                 if (newRecordsOrder.length === 0) {
                     const newRecordState = getNewRecordState();
                     activeKey = newRecordState.record.id;

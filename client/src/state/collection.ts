@@ -67,7 +67,7 @@ export const collectionDefaultValue: CollectionState = {
 
 export const displayRecordsDefaultValue: DisplayRecordsState = {
     activeKey: '@new',
-    recordsOrder: [],
+    recordsOrder: ['@new'],
     recordStates:
     {
         '@new': {

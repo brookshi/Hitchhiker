@@ -12,8 +12,8 @@ import { actionCreator } from '../../../action/index';
 import { ActiveTabType, SaveRecordType, AddTabType, RemoveTabType } from '../../../action/record';
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 import { State } from '../../../state/index';
-import { reqResUIDefaultValue } from '../../../state/ui';
-import { ResizeResHeightType } from "../../../action/ui";
+import { ResizeResHeightType } from '../../../action/ui';
+import { getReqActiveTabKeySelector, getIsResPanelMaximumSelector } from './selector';
 
 interface ReqResPanelStateProps {
 
@@ -195,12 +195,11 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
 const mapStateToProps = (state: State): ReqResPanelStateProps => {
     const { activeKey, recordStates } = state.displayRecordsState;
-    const activeReqResUiState = state.uiState.reqResUIState[activeKey];
     return {
         activeKey,
         recordStates,
-        isResPanelMaximum: activeReqResUiState ? activeReqResUiState.isResPanelMaximum : reqResUIDefaultValue.isResPanelMaximum,
-        activeReqTab: activeReqResUiState ? activeReqResUiState.activeReqTab : reqResUIDefaultValue.activeReqTab
+        isResPanelMaximum: getIsResPanelMaximumSelector()(state),
+        activeReqTab: getReqActiveTabKeySelector()(state)
     };
 };
 
