@@ -22,7 +22,7 @@ export interface SyncState {
 
 export interface ReqResUIState {
 
-    isReqPanelHidden: boolean;
+    isResPanelMaximum: boolean;
 
     resHeight: number;
 
@@ -49,7 +49,7 @@ export const appUIDefaultValue: AppUIState = {
 };
 
 export const reqResUIDefaultValue: ReqResUIState = {
-    isReqPanelHidden: false,
+    isResPanelMaximum: false,
     activeResTab: defaultResTabKey,
     activeReqTab: defaultReqTabKey,
     resHeight: 0,

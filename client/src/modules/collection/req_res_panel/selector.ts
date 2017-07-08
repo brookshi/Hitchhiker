@@ -81,11 +81,20 @@ export const getProjectEnvsSelector = () => {
     );
 };
 
-export const getActiveTabKeySelector = () => {
+export const getReqActiveTabKeySelector = () => {
     return createSelector(
         [getActiveKey, getReqResUIState],
         (key, reqResUIState) => {
             return reqResUIState[key] ? reqResUIState[key].activeReqTab : reqResUIDefaultValue.activeReqTab;
+        }
+    );
+};
+
+export const getResActiveTabKeySelector = () => {
+    return createSelector(
+        [getActiveKey, getReqResUIState],
+        (key, reqResUIState) => {
+            return reqResUIState[key] ? reqResUIState[key].activeResTab : reqResUIDefaultValue.activeResTab;
         }
     );
 };

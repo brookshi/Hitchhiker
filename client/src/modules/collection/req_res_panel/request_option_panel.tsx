@@ -13,8 +13,9 @@ import KeyValueList from '../../../components/key_value';
 import { UpdateDisplayRecordPropertyType } from '../../../action/record';
 import { bodyTypes } from '../../../common/body_type';
 import { defaultBodyType } from '../../../common/constants';
-import { getActiveRecordSelector, getActiveTabKeySelector, getHeadersEditModeSelector } from './selector';
+import { getActiveRecordSelector, getReqActiveTabKeySelector, getHeadersEditModeSelector } from './selector';
 import { State } from '../../../state/index';
+import * as _ from 'lodash';
 
 const TabPane = Tabs.TabPane;
 
@@ -47,6 +48,10 @@ type RequestOptionPanelProps = RequestOptionPanelStateProps & RequestOptionPanel
 interface RequestOptionPanelState { }
 
 class RequestOptionPanel extends React.Component<RequestOptionPanelProps, RequestOptionPanelState> {
+
+    shouldComponentUpdate(nextProps: RequestOptionPanelProps, nextState: RequestOptionPanelState) {
+        return !_.isEqual(_.omit(this.props, _.functions(this.props)), _.omit(nextProps, _.functions(this.props)));
+    }
 
     private onTabChanged = (key) => {
         this.props.selectReqTab(this.props.activeKey, key);
@@ -100,7 +105,7 @@ const mapStateToProps = (state: State): RequestOptionPanelStateProps => {
     const record = getActiveRecordSelector()(state);
     return {
         activeKey: state.displayRecordsState.activeKey,
-        activeTabKey: getActiveTabKeySelector()(state),
+        activeTabKey: getReqActiveTabKeySelector()(state),
         headers: record.headers,
         body: record.body,
         test: record.test,

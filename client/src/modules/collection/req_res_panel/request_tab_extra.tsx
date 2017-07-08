@@ -7,7 +7,7 @@ import { bodyTypes } from '../../../common/body_type';
 import { defaultBodyType, defaultReqTabKey } from '../../../common/constants';
 import { StringUtil } from '../../../utils/string_util';
 import { testSnippets } from '../../../common/test_snippet';
-import { getActiveTabKeySelector, getActiveRecordSelector, getHeadersEditModeSelector } from './selector';
+import { getReqActiveTabKeySelector, getActiveRecordSelector, getHeadersEditModeSelector } from './selector';
 import { actionCreator } from '../../../action/index';
 import { UpdateDisplayRecordType } from '../../../action/record';
 import { State } from '../../../state/index';
@@ -119,7 +119,7 @@ class RequestTabExtra extends React.Component<RequestTabExtraProps, RequestTabEx
 const mapStateToProps = (state: State): RequestTabExtraStateProps => {
     return {
         activeKey: state.displayRecordsState.activeKey,
-        activeTabKey: getActiveTabKeySelector()(state),
+        activeTabKey: getReqActiveTabKeySelector()(state),
         headersEditMode: getHeadersEditModeSelector()(state),
         record: getActiveRecordSelector()(state)
     };

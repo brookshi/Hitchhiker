@@ -1,30 +1,20 @@
 import React from 'react';
-import { Tabs, Icon, Button, Tag } from 'antd';
+import { connect, Dispatch } from 'react-redux';
+import { Tabs, Button, Tag, Icon } from 'antd';
 import Editor from '../../../components/editor';
 import './style/index.less';
 import { RunResult } from '../../../../../api/interfaces/dto_run_result';
 import { StringUtil } from '../../../utils/string_util';
 import { nameWithTag } from '../../../components/name_with_tag';
 import { successColor, failColor, pass, fail } from '../../../common/constants';
+import { actionCreator } from '../../../action/index';
+import { SelectResTabType, ToggleReqPanelVisibleType } from '../../../action/ui';
+import ResponseLoadingPanel from './response_loading_panel';
+import ResErrorPanel from '../../../components/res_error_panel';
+import { State } from '../../../state/index';
+import { reqResUIDefaultValue } from "../../../state/ui";
 
 const TabPane = Tabs.TabPane;
-
-interface ResPanelProps {
-
-    height?: number;
-
-    res: RunResult;
-
-    activeTab: string;
-
-    isReqPanelHidden: boolean;
-
-    toggleResPanelMaximize();
-
-    onTabChanged(key: string);
-}
-
-interface ResPanelState { }
 
 /*const contentExtra = (
     <div>
@@ -33,60 +23,99 @@ interface ResPanelState { }
     </div>
 );*/
 
-const tabPanelCookie = (cookies: string[]) => (
-    cookies.map((cookie, index) => <div key={`res-cookie-${index}`}> {cookie} </div>)
+interface ResponsePanelStateProps {
+
+    activeKey: string;
+
+    url?: string;
+
+    height?: number;
+
+    res: RunResult;
+
+    activeTab: string;
+
+    isResPanelMaximum: boolean;
+
+    isRequesting: boolean;
+}
+
+interface ResponsePanelDispatchProps {
+
+    toggleResPanelMaximize(id: string, visible: boolean);
+
+    selectResTab(id: string, key: string);
+}
+
+type ResponsePanelProps = ResponsePanelStateProps & ResponsePanelDispatchProps;
+
+interface ResponsePanelState { }
+
+const ResponseEmptyPanel = (
+    <div>
+        <div className="res-non-header">Response</div>
+        <div className="res-non-content">Hit
+            <span>
+                <Icon type="rocket" />
+                Send
+            </span>
+            to get a response.</div>
+    </div>
 );
 
-const tabPanelHeaders = (headers: { [key: string]: string; }) => (
-    <ul className="res-tabpanel-list">
-        {
-            headers ? Object.keys(headers).map(key => (
-                <li key={`res-header-${key}`}>
-                    <span className="tabpanel-headers-key">{key}: </span>
-                    <span>{headers[key]}</span>
-                </li>)
-            ) : ''
-        }
-    </ul>
-);
+class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelState> {
 
-const tabPanelTest = (tests: { [key: string]: boolean }) => (
-    <ul className="res-tabpanel-list">
-        {
-            tests ? Object.keys(tests).map(key => (
-                <li key={`res-test-${key}`}>
-                    <Tag color={tests[key] ? successColor : failColor}>{tests[key] ? pass : fail}</Tag>
-                    <span>{key}</span>
-                </li>)
-            ) : ''
-        }
-    </ul>
-);
+    private tabPanelCookie = (cookies: string[]) => (
+        cookies.map((cookie, index) => <div key={`res-cookie-${index}`}> {cookie} </div>)
+    )
 
-class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
+    private tabPanelHeaders = (headers: { [key: string]: string; }) => (
+        <ul className="res-tabpanel-list">
+            {
+                headers ? Object.keys(headers).map(key => (
+                    <li key={`res-header-${key}`}>
+                        <span className="tabpanel-headers-key">{key}: </span>
+                        <span>{headers[key]}</span>
+                    </li>)
+                ) : ''
+            }
+        </ul>
+    )
 
-    constructor(props: ResPanelProps) {
-        super(props);
-        this.state = {
-            panelStatus: 'up'
-        };
-    }
+    private tabPanelTest = (tests: { [key: string]: boolean }) => (
+        <ul className="res-tabpanel-list">
+            {
+                tests ? Object.keys(tests).map(key => (
+                    <li key={`res-test-${key}`}>
+                        <Tag color={tests[key] ? successColor : failColor}>{tests[key] ? pass : fail}</Tag>
+                        <span>{key}</span>
+                    </li>)
+                ) : ''
+            }
+        </ul>
+    )
 
-    public render() {
-        let { body, elapsed, status, statusMessage, cookies, headers, tests } = this.props.res;
-        if (!body) {
-            return <div />;
-        }
-        cookies = cookies || [];
-        const extraContent = (
+    private getExtraContent = () => {
+        const { res, toggleResPanelMaximize, isResPanelMaximum, activeKey } = this.props;
+        let { elapsed, status, statusMessage } = res;
+        return (
             <div>
                 <span>Status:</span>
                 <span className="res-status">{status} {statusMessage}</span>
                 <span style={{ marginLeft: '16px' }}>Time:</span>
                 <span className="res-status">{elapsed}ms</span>
-                <span><Button className="res-toggle-size-btn" icon={this.props.isReqPanelHidden ? 'down' : 'up'} onClick={this.props.toggleResPanelMaximize} /></span>
+                <span><Button className="res-toggle-size-btn" icon={isResPanelMaximum ? 'down' : 'up'} onClick={() => toggleResPanelMaximize(activeKey, !isResPanelMaximum)} /></span>
             </div>
         );
+    }
+
+    private get normalResponsePanel() {
+        const { res, selectResTab, activeKey } = this.props;
+        let { body, cookies, headers, tests } = res;
+        if (!body) {
+            return <div />;
+        }
+        cookies = cookies || [];
 
         const value = StringUtil.beautify(body, headers['Content-Type']);
         const testKeys = Object.keys(tests);
@@ -98,42 +127,67 @@ class ResPanel extends React.Component<ResPanelProps, ResPanelState> {
                 className="req-res-tabs res-tab"
                 defaultActiveKey="content"
                 activeKey={this.props.activeTab}
-                onChange={this.props.onTabChanged}
+                onChange={v => selectResTab(activeKey, v)}
                 animated={false}
-                tabBarExtraContent={extraContent}>
+                tabBarExtraContent={this.getExtraContent()}>
                 <TabPane tab="Content" key="content">
                     <Editor type="json" value={value} height={this.props.height} readOnly={true} />
                 </TabPane>
                 <TabPane className="display-tab-panel" tab={nameWithTag('Headers', Object.keys(headers).length.toString())} key="headers">
                     {
-                        tabPanelHeaders(headers)
+                        this.tabPanelHeaders(headers)
                     }
                 </TabPane>
                 <TabPane className="display-tab-panel" tab={nameWithTag('Cookies', cookies.length.toString())} key="cookies">
                     {
-                        tabPanelCookie(cookies)
+                        this.tabPanelCookie(cookies)
                     }
                 </TabPane>
                 <TabPane className="display-tab-panel" tab={nameWithTag('Test', testsTag, successTestLen === testKeys.length ? 'normal' : 'warning')} key="test">
                     {
-                        tabPanelTest(tests)
+                        this.tabPanelTest(tests)
                     }
                 </TabPane>
             </Tabs>
         );
     }
+
+    public render() {
+
+        const { isRequesting, res, url } = this.props;
+
+        return isRequesting ? (
+            <ResponseLoadingPanel />
+        ) : (
+                res ? (
+                    res.error ? <ResErrorPanel url={url} error={res.error} /> : this.normalResponsePanel
+                ) : ResponseEmptyPanel
+            );
+    }
 }
 
-export default ResPanel;
+const mapStateToProps = (state: State): ResponsePanelStateProps => {
+    const activeKey = state.displayRecordsState.activeKey;
+    const activeReqResUiState = state.uiState.reqResUIState[activeKey];
+    return {
+        activeKey,
+        url: state.displayRecordsState.recordStates[activeKey].record.url,
+        isRequesting: state.displayRecordsState.recordStates[activeKey].isRequesting,
+        res: state.displayRecordsState.responseState[activeKey],
+        height: activeReqResUiState ? activeReqResUiState.resHeight : reqResUIDefaultValue.resHeight,
+        activeTab: activeReqResUiState ? activeReqResUiState.activeResTab : reqResUIDefaultValue.activeResTab,
+        isResPanelMaximum: activeReqResUiState ? activeReqResUiState.isResPanelMaximum : reqResUIDefaultValue.isResPanelMaximum
+    };
+};
 
-export const nonResPanel = (
-    <div>
-        <div className="res-non-header">Response</div>
-        <div className="res-non-content">Hit
-            <span>
-                <Icon type="rocket" />
-                Send
-            </span>
-            to get a response.</div>
-    </div>
-);
+const mapDispatchToProps = (dispatch: Dispatch<any>): ResponsePanelDispatchProps => {
+    return {
+        selectResTab: (recordId, tab) => dispatch(actionCreator(SelectResTabType, { recordId, tab })),
+        toggleResPanelMaximize: (recordId, visible) => dispatch(actionCreator(ToggleReqPanelVisibleType, { recordId, visible })),
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(ResponsePanel);

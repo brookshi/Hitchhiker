@@ -1,27 +1,19 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { Tabs, Badge, Modal, Button } from 'antd';
-import { DtoRecord } from '../../../../../api/interfaces/dto_record';
-import { RunResult } from '../../../../../api/interfaces/dto_run_result';
-import { State } from '../../../state';
-import { ResponseState, RecordState } from '../../../state/collection';
-import { EnvironmentState } from '../../../state/environment';
-import RequestPanel from './request_panel';
-import ResPanel, { nonResPanel } from './response_panel';
-import ResponseLoadingPanel from './res_loading_panel';
-import ResErrorPanel from '../../../components/res_error_panel';
-import { TreeData } from 'antd/lib/tree-select/interface';
-import { DtoCollectionWithRecord, DtoCollection } from '../../../../../api/interfaces/dto_collection';
-import { RecordCategory } from '../../../common/record_category';
-import { actionCreator } from '../../../action';
-import { UpdateTabRecordId, AddTabType, RemoveTabType, UpdateDisplayRecordType, SendRequestType, CancelRequestType, ActiveTabType, SaveRecordType, SaveAsRecordType } from '../../../action/record';
-import { SwitchEnvType, EditEnvType } from '../../../action/project';
-import { SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType } from '../../../action/ui';
-import { ReqResUIState, reqResUIDefaultValue } from '../../../state/ui';
+import RequestUrlPanel from './request_url_panel';
+import RequestOptionPanel from './request_option_panel';
+import RequestNamePanel from './request_name_panel';
+import ResponsePanel from './response_panel'; import { Tabs, Badge, Modal, Button } from 'antd';
 import * as _ from 'lodash';
-import './style/index.less';
-import { noEnvironment } from '../../../common/constants';
 import EnvironmentSelect from './environment_select';
+import './style/index.less';
+import { RecordState } from '../../../state/collection';
+import { actionCreator } from '../../../action/index';
+import { ActiveTabType, SaveRecordType, AddTabType, RemoveTabType } from '../../../action/record';
+import { DtoRecord } from '../../../../../api/interfaces/dto_record';
+import { State } from '../../../state/index';
+import { reqResUIDefaultValue } from '../../../state/ui';
+import { ResizeResHeightType } from "../../../action/ui";
 
 interface ReqResPanelStateProps {
 
@@ -29,15 +21,9 @@ interface ReqResPanelStateProps {
 
     recordStates: _.Dictionary<RecordState>;
 
-    responseState: ResponseState;
+    isResPanelMaximum: boolean;
 
-    collections: _.Dictionary<DtoCollection>;
-
-    envState: EnvironmentState;
-
-    reqResUIState: ReqResUIState;
-
-    cookies: _.Dictionary<_.Dictionary<string>>;
+    activeReqTab: string;
 }
 
 interface ReqResPanelDispatchProps {
@@ -48,27 +34,7 @@ interface ReqResPanelDispatchProps {
 
     activeTab(key: string);
 
-    sendRequest(record: DtoRecord, environment: string);
-
-    onChanged(record: DtoRecord);
-
-    cancelRequest(id: string);
-
     save(record: DtoRecord);
-
-    saveAs(record: DtoRecord);
-
-    updateTabRecordId(oldId: string, newId: string);
-
-    switchEnv(projectId: string, envId: string);
-
-    editEnv(projectId: string, envId: string);
-
-    selectReqTab(recordId: string, tab: string);
-
-    selectResTab(recordId: string, tab: string);
-
-    toggleReqPanelVisible(recordId: string, visible: boolean);
 
     resizeResHeight(recordId: string, height: number);
 }
@@ -84,57 +50,11 @@ interface ReqResPanelState {
 
 class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
+    private reqPanel: any;
+
     private reqResPanel: any;
+
     private reqHeight: number;
-
-    private get responsePanel() {
-        const { activeKey, cancelRequest, reqResUIState, selectResTab } = this.props;
-        return this.activeRecordState && this.activeRecordState.isRequesting ? (
-            <ResponseLoadingPanel
-                activeKey={activeKey}
-                cancelRequest={cancelRequest}
-            />
-        ) : (
-                this.activeResponse ? (
-                    this.activeResponse.error ?
-                        <ResErrorPanel url={this.activeRecord.url} error={this.activeResponse.error} /> :
-                        (
-                            <ResPanel
-                                activeTab={reqResUIState.activeResTab}
-                                onTabChanged={key => selectResTab(activeKey, key)}
-                                height={reqResUIState.resHeight}
-                                res={this.activeResponse}
-                                toggleResPanelMaximize={this.toggleReqPanelVisible}
-                                isReqPanelHidden={reqResUIState.isReqPanelHidden}
-                            />
-                        )
-                ) : nonResPanel
-            );
-    }
-
-    private get activeRecordState(): RecordState {
-        const recordState = this.props.recordStates[this.props.activeKey];
-        if (recordState) {
-            return recordState;
-        }
-        throw new Error('miss active record state');
-    }
-
-    private get activeRecord(): DtoRecord {
-        return this.activeRecordState.record;
-    }
-
-    private get activeResponse(): RunResult | undefined {
-        return this.props.responseState[this.props.activeKey];
-    }
-
-    private get activeRecordProjectId(): string {
-        return this.activeRecord.collectionId && this.props.collections[this.activeRecord.collectionId] ? this.props.collections[this.activeRecord.collectionId].projectId : '';
-    }
-
-    private get activeEnvId(): string {
-        return this.props.envState.activeEnv[this.activeRecordProjectId] || noEnvironment;
-    }
 
     constructor(props: ReqResPanelProps) {
         super(props);
@@ -144,38 +64,34 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         };
     }
 
-    private updateReqPanelHeight = (reqHeight: number) => {
-        this.adjustResPanelHeight(reqHeight);
+    shouldComponentUpdate(nextProps: ReqResPanelProps, nextState: ReqResPanelState) {
+        return !_.isEqual(this.getUsingProperties(this.props), this.getUsingProperties(nextProps));
     }
 
-    private adjustResPanelHeight = (reqHeight: number) => {
-        this.reqHeight = reqHeight;
-        if (!this.reqResPanel || !reqHeight) {
-            return;
-        }
-
-        const resHeight = this.reqResPanel.clientHeight - reqHeight - 88;
-        if (resHeight !== this.props.reqResUIState.resHeight) {
-            this.props.resizeResHeight(this.props.activeKey, resHeight);
-        }
+    public componentDidMount() {
+        this.adjustResPanelHeight();
     }
 
-    private toggleReqPanelVisible = () => {
-        this.props.toggleReqPanelVisible(this.props.activeKey, this.props.reqResUIState.isReqPanelHidden);
-        this.adjustResPanelHeight(0.1);
+    componentDidUpdate(prevProps: ReqResPanelProps, prevState: ReqResPanelState) {
+        this.adjustResPanelHeight();
     }
 
-    private onTabChanged = (key) => {
-        const recordState = this.props.recordStates[key];
-        if (recordState) {
-            this.props.activeTab(recordState.record.id);
-        }
+    private getUsingProperties = (props: ReqResPanelProps) => {
+        return {
+            activeKey: props.activeKey,
+            isResPanelMaximum: props.isResPanelMaximum,
+            activeReqTab: props.activeReqTab,
+            recordProperties: _.values(props.recordStates).map(r => ({
+                isChanged: r.isChanged,
+                name: r.name,
+                id: r.record
+            }))
+        };
     }
 
     private onEdit = (key, action) => {
         if (action === 'remove') {
-            const recordState = this.props.recordStates[key];
-            if (key.startsWith('@new') || (!!recordState && !recordState.isChanged)) {
+            if (key.startsWith('@new') || !this.props.recordStates[key].isChanged) {
                 this.props.removeTab(key);
                 return;
             }
@@ -194,122 +110,106 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         this.setState({ ...this.state, currentEditKey: '', isConfirmCloseDlgOpen: false });
     }
 
+    private adjustResPanelHeight = () => {
+        if (!this.reqPanel || this.reqHeight === this.reqPanel.clientHeight) {
+            return;
+        }
+        const { activeKey, resizeResHeight } = this.props;
+        this.reqHeight = this.reqPanel.clientHeight;
+        const resHeight = this.reqResPanel.clientHeight - this.reqHeight - 88;
+        resizeResHeight(activeKey, resHeight);
+    }
+
+    private get confirmCloseDialog() {
+        return (
+            <Modal title="Close Tab"
+                visible={this.state.isConfirmCloseDlgOpen}
+                onCancel={() => this.setState({ ...this.state, isConfirmCloseDlgOpen: false })}
+                footer={[(
+                    <Button key="dont_save" onClick={this.closeTabWithoutSave} >
+                        Don't Save
+                    </Button>
+                ), (
+                    <Button key="cancel_save" onClick={() => this.setState({ ...this.state, isConfirmCloseDlgOpen: false })} >
+                        Cancel
+                    </Button>
+                ), (
+                    <Button key="save" type="primary" onClick={this.closeTabWithSave} >
+                        Save
+                    </Button>
+                )]}
+            >
+                Your changed will be lost if you close this tab without saving.
+            </Modal>
+        );
+    }
+
     public render() {
-        const { activeKey, reqResUIState, recordStates, onChanged, selectReqTab } = this.props;
+
+        const { recordStates, activeKey, activeTab, isResPanelMaximum } = this.props;
 
         return (
-            <div className="request-tab" ref={ele => { this.reqResPanel = ele; this.adjustResPanelHeight(this.reqHeight); }}>
+            <div className="request-tab" ref={ele => this.reqResPanel = ele}>
                 <Tabs
                     activeKey={activeKey}
                     type="editable-card"
-                    onChange={this.onTabChanged}
+                    onChange={activeTab}
                     onEdit={this.onEdit}
                     animated={false}
                     hideAdd={true}
                     tabBarExtraContent={<EnvironmentSelect />}
                 >
                     {
-                        _.values(recordStates).map(recordState => {
-                            const { name, record } = recordState;
-                            const reqStyle = reqResUIState.isReqPanelHidden ? { display: 'none' } : {};
+                        _.keys(recordStates).map(key => {
+                            const { name, isChanged } = recordStates[key];
                             return (
                                 <Tabs.TabPane
-                                    key={record.id}
-                                    tab={<Badge count="" dot={recordState.isChanged}>{name}</Badge>}
+                                    key={key}
+                                    tab={<Badge count="" dot={isChanged}>{name}</Badge>}
                                     closable={true}
                                 >
                                     <div className="req-res-panel">
-                                        <RequestPanel
-                                            style={reqStyle}
-                                            activeRecord={record}
-                                            activeTabKey={reqResUIState.activeReqTab}
-                                            onChanged={onChanged}
-                                            onResize={this.updateReqPanelHeight}
-                                            selectReqTab={selectReqTab}
-                                        />
-                                        {this.responsePanel}
+                                        <div ref={(ele: any) => this.reqPanel = ele}>
+                                            {
+                                                !isResPanelMaximum ? (
+                                                    <div>
+                                                        <RequestNamePanel />
+                                                        <RequestUrlPanel />
+                                                        <RequestOptionPanel />
+                                                    </div>
+                                                ) : ''
+                                            }
+                                        </div>
+                                        <ResponsePanel />
                                     </div>
                                 </Tabs.TabPane>
                             );
                         })
                     }
                 </Tabs>
-                <Modal title="Close Tab"
-                    visible={this.state.isConfirmCloseDlgOpen}
-                    onCancel={() => this.setState({ ...this.state, isConfirmCloseDlgOpen: false })}
-                    footer={[(
-                        <Button
-                            key="dont_save"
-                            onClick={this.closeTabWithoutSave}
-                        >
-                            Don't Save
-                        </Button>
-                    ), (
-                        <Button
-                            key="cancel_save"
-                            onClick={() => this.setState({ ...this.state, isConfirmCloseDlgOpen: false })}
-                        >
-                            Cancel
-                        </Button>
-                    ), (
-                        <Button
-                            key="save"
-                            type="primary"
-                            onClick={this.closeTabWithSave}
-                        >
-                            Save
-                        </Button>
-                    )]}
-                >
-                    Your changed will be lost if you close this tab without saving.
-                </Modal>
+                {this.confirmCloseDialog}
             </div>
         );
     }
 }
 
-const selectCollectionTreeData = (collectionsInfo: DtoCollectionWithRecord) => {
-    const treeData = new Array<TreeData>();
-    _.chain(collectionsInfo.collections).values<DtoCollection>().sortBy(c => c.name).value().forEach(c => {
-        treeData.push({
-            key: c.id,
-            value: c.id,
-            label: c.name,
-            children: _.sortBy(_.values(collectionsInfo.records[c.id])
-                .filter(r => r.category === RecordCategory.folder)
-                .map(r => ({ key: `${c.id}::${r.id}`, value: `${c.id}::${r.id}`, label: r.name })), t => t.label)
-        });
-    });
-    return treeData;
-};
-
 const mapStateToProps = (state: State): ReqResPanelStateProps => {
+    const { activeKey, recordStates } = state.displayRecordsState;
+    const activeReqResUiState = state.uiState.reqResUIState[activeKey];
     return {
-        ...state.displayRecordsState,
-        collectionTreeData: selectCollectionTreeData(state.collectionState.collectionsInfo),
-        collections: state.collectionState.collectionsInfo.collections,
-        envState: state.environmentState,
-        reqResUIState: { ...reqResUIDefaultValue, ...state.uiState.reqResUIState[state.displayRecordsState.activeKey] },
-        cookies: state.localDataState.cookies
+        activeKey,
+        recordStates,
+        isResPanelMaximum: activeReqResUiState ? activeReqResUiState.isResPanelMaximum : reqResUIDefaultValue.isResPanelMaximum,
+        activeReqTab: activeReqResUiState ? activeReqResUiState.activeReqTab : reqResUIDefaultValue.activeReqTab
     };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): ReqResPanelDispatchProps => {
     return {
         activeTab: (key) => dispatch(actionCreator(ActiveTabType, key)),
-        sendRequest: (record: DtoRecord, environment: string) => dispatch(actionCreator(SendRequestType, { record, environment })),
         addTab: () => dispatch(actionCreator(AddTabType)),
         removeTab: (key) => dispatch(actionCreator(RemoveTabType, key)),
-        onChanged: (record) => dispatch(actionCreator(UpdateDisplayRecordType, record)),
-        cancelRequest: (id) => dispatch(actionCreator(CancelRequestType, id)),
         save: (record) => dispatch(actionCreator(SaveRecordType, { isNew: false, record })),
-        saveAs: (record) => dispatch(actionCreator(SaveAsRecordType, { isNew: true, record })),
-        updateTabRecordId: (oldId, newId) => dispatch(actionCreator(UpdateTabRecordId, { oldId, newId })),
-        switchEnv: (projectId, envId) => dispatch(actionCreator(SwitchEnvType, { projectId, envId })),
-        editEnv: (projectId, envId) => dispatch(actionCreator(EditEnvType, { projectId, envId })),
-        selectReqTab: (recordId, tab) => dispatch(actionCreator(SelectReqTabType, { recordId, tab })),
-        selectResTab: (recordId, tab) => dispatch(actionCreator(SelectResTabType, { recordId, tab })),
-        toggleReqPanelVisible: (recordId, visible) => dispatch(actionCreator(ToggleReqPanelVisibleType, { recordId, visible })),
         resizeResHeight: (recordId, height) => dispatch(actionCreator(ResizeResHeightType, { recordId, height }))
     };
 };

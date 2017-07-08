@@ -61,7 +61,7 @@ function reqResUIState(state: _.Dictionary<ReqResUIState> = {}, action: any): _.
         }
         case ToggleReqPanelVisibleType: {
             const { recordId, visible } = action.value;
-            return { ...state, [recordId]: { ...state[recordId], isReqPanelHidden: !visible } };
+            return { ...state, [recordId]: { ...state[recordId], isResPanelMaximum: visible } };
         }
         case ResizeResHeightType: {
             const { recordId, height } = action.value;

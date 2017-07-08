@@ -4,16 +4,13 @@ import { Form, Input } from 'antd';
 import { ValidateStatus, ValidateType } from '../../../common/custom_type';
 import { actionCreator } from '../../../action/index';
 import { UpdateDisplayRecordPropertyType } from '../../../action/record';
+import { getActiveRecordSelector } from './selector';
 
 const FItem = Form.Item;
 
 interface RequestNamePanelStateProps {
 
     name: string;
-
-    isResPanelMaximum: boolean;
-
-    style?: any;
 }
 
 interface RequestNamePanelDispatchProps {
@@ -42,13 +39,23 @@ class RequestNamePanel extends React.Component<RequestNamePanelProps, RequestNam
         });
     }
 
+    private onNameChanged = (value: string) => {
+        let nameValidateStatus = this.state.nameValidateStatus;
+        if ((value as string).trim() === '') {
+            nameValidateStatus = ValidateType.warning;
+        } else if (this.state.nameValidateStatus) {
+            nameValidateStatus = undefined;
+        }
+        this.props.changeRecord({ 'name': value });
+    }
+
     public render() {
 
         const { nameValidateStatus } = this.state;
-        const { name, style } = this.props;
+        const { name } = this.props;
 
         return (
-            <Form className="req-panel" style={style}>
+            <Form className="req-panel">
                 <FItem
                     className="req-name"
                     style={{ marginBottom: 8 }}
@@ -58,7 +65,7 @@ class RequestNamePanel extends React.Component<RequestNamePanelProps, RequestNam
                     <Input
                         placeholder="please enter name for this request"
                         spellCheck={false}
-                        onChange={(e) => this.props.changeRecord({ 'name': e.currentTarget.value })}
+                        onChange={(e) => this.onNameChanged(e.currentTarget.value)}
                         value={name} />
                 </FItem>
             </Form>
@@ -68,7 +75,7 @@ class RequestNamePanel extends React.Component<RequestNamePanelProps, RequestNam
 
 const mapStateToProps = (state: any): RequestNamePanelStateProps => {
     return {
-        // ...mapStateToProps
+        name: getActiveRecordSelector()(state).name
     };
 };
 
