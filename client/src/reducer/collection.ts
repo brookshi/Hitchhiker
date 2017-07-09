@@ -52,7 +52,7 @@ export function collectionState(state: CollectionState = collectionDefaultValue,
                 const oldCollectionId = oldRecord[record.id].collectionId;
                 const collectionRecords = { ...records[oldCollectionId] };
                 Reflect.deleteProperty(collectionRecords, record.id);
-                records = { ...records, [oldCollectionId]: { ...collectionRecords } };
+                records = { ...records, [oldCollectionId]: collectionRecords };
             }
             return {
                 ...state,
@@ -156,7 +156,10 @@ function recordStates(states: _.Dictionary<RecordState> = displayRecordsDefaultV
         }
         case SaveRecordType: {
             const { id, name } = action.value.record;
-            return { ...states, [id]: { ...states[id], record: action.value.record, name, isChanged: false } };
+            if (states[id]) {
+                return { ...states, [id]: { ...states[id], record: action.value.record, name, isChanged: false } };
+            }
+            return states;
         }
         case MoveRecordType: {
             const { id, pid, collectionId } = action.value.record;

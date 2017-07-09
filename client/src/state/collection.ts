@@ -4,18 +4,17 @@ import { RunResult } from '../../../api/interfaces/dto_run_result';
 import { StringUtil } from '../utils/string_util';
 import { RecordCategory } from '../common/record_category';
 import { requestStateDefaultValue, RequestState } from './index';
+import { allProject, newRecordFlag, newRequestName } from '../common/constants';
 
 export function getDefaultRecord(isInit: boolean = false): DtoRecord {
     return {
-        id: isInit ? '@new' : `@new${StringUtil.generateUID()}`,
+        id: isInit ? newRecordFlag : `${newRecordFlag}${StringUtil.generateUID()}`,
         category: RecordCategory.record,
-        name: 'new request',
+        name: newRequestName,
         collectionId: '',
         headers: []
     };
 }
-
-export const AllProject = 'All';
 
 export interface CollectionState {
 
@@ -58,7 +57,7 @@ export interface ResponseState {
 export const collectionDefaultValue: CollectionState = {
     fetchCollectionState: requestStateDefaultValue,
     openKeys: [],
-    selectedProject: AllProject,
+    selectedProject: allProject,
     collectionsInfo: {
         collections: {},
         records: {}
@@ -66,12 +65,12 @@ export const collectionDefaultValue: CollectionState = {
 };
 
 export const displayRecordsDefaultValue: DisplayRecordsState = {
-    activeKey: '@new',
-    recordsOrder: ['@new'],
+    activeKey: newRecordFlag,
+    recordsOrder: [newRecordFlag],
     recordStates:
     {
-        '@new': {
-            name: 'new request',
+        [newRecordFlag]: {
+            name: newRequestName,
             record: getDefaultRecord(true),
             isChanged: false,
             isRequesting: false

@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect, Dispatch, MapStateToPropsFactory } from 'react-redux';
 import { Menu, Dropdown, Icon, Button, Modal, TreeSelect, Input, Tooltip } from 'antd';
 import { State } from '../../../state';
 import RecordFolder from './record_folder';
 import RecordItem from './record_item';
 import CollectionItem from './collection_item';
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
-import { SelectParam } from 'antd/lib/menu';
 import * as _ from 'lodash';
 import { DtoCollection } from '../../../../../api/interfaces/dto_collection';
 import { RecordCategory } from '../../../common/record_category';
@@ -15,18 +14,17 @@ import { DeleteCollectionType, SaveCollectionType, SelectedProjectChangedType, C
 import { DeleteRecordType, SaveRecordType, RemoveTabType, ActiveRecordType, MoveRecordType } from '../../../action/record';
 import { StringUtil } from '../../../utils/string_util';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { AllProject } from '../../../state/collection';
-import './style/index.less';
-import { DtoProject } from '../../../../../api/interfaces/dto_project';
 import { ProjectSelectedDialogMode, ProjectSelectedDialogType } from '../../../common/custom_type';
+import { getProjectsIdNameStateSelector, getOpenKeysSelector, getDisplayCollctionSelector } from './selector';
+import { newCollectionName, allProject } from '../../../common/constants';
+import './style/index.less';
 
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
-const NewCollectionName = 'New collection';
 
 interface CollectionListStateProps {
 
-    collections: _.Dictionary<DtoCollection>;
+    collections: DtoCollection[];
 
     records: _.Dictionary<_.Dictionary<DtoRecord>>;
 
@@ -90,13 +88,9 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         this.state = {
             projectSelectedDlgMode: ProjectSelectedDialogType.create,
             isProjectSelectedDlgOpen: false,
-            newCollectionName: NewCollectionName,
+            newCollectionName: newCollectionName,
             shareCollectionId: ''
         };
-    }
-
-    shouldComponentUpdate(nextProps: CollectionListProps, nextState: CollectionListState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
 
     componentDidUpdate(prevProps: CollectionListProps, prevState: CollectionListState) {
@@ -104,14 +98,6 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             this.folderRefs[this.currentNewFolder.id].edit();
             this.currentNewFolder = undefined;
         }
-    }
-
-    private onOpenChanged = (openKeys: string[]) => {
-        this.props.openKeysChanged(openKeys);
-    }
-
-    private onSelectChanged = (param: SelectParam) => {
-        this.props.activeRecord(param.item.props.data);
     }
 
     private createFolder = (folder: DtoRecord) => {
@@ -151,38 +137,18 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         }
     }
 
-    private onProjectChanged = (e) => {
-        this.props.selectProject(e.key);
-    }
-
     private getProjectMenu = () => {
         const projects = this.props.projects;
         return (
-            <Menu style={{ minWidth: 150 }} onClick={this.onProjectChanged} selectedKeys={[this.props.selectedProject]}>
-                <Menu.Item key={AllProject}>{AllProject}</Menu.Item>
+            <Menu style={{ minWidth: 150 }} onClick={e => this.props.selectProject(e.key)} selectedKeys={[this.props.selectedProject]}>
+                <Menu.Item key={allProject}>{allProject}</Menu.Item>
                 {projects.map(t => <Menu.Item key={t.id}>{t.name}</Menu.Item>)}
             </Menu>
         );
     }
 
     private getCurrentProject = () => {
-        return this.props.projects.find(t => t.id === this.props.selectedProject) || { id: AllProject, name: AllProject };
-    }
-
-    private getOpenKeys = () => {
-        const openKeys = this.props.openKeys;
-        if (this.props.selectedProject === AllProject) {
-            return openKeys;
-        }
-        return _.filter(openKeys, k => this.props.collections[k] && this.props.collections[k].projectId === this.props.selectedProject);
-    }
-
-    private getDisplayCollections = () => {
-        const collections = _.chain(this.props.collections).values<DtoCollection>().sortBy('name').value();
-        if (this.props.selectedProject === AllProject) {
-            return collections;
-        }
-        return _.filter(collections, c => c.projectId === this.props.selectedProject);
+        return this.props.projects.find(t => t.id === this.props.selectedProject) || { id: allProject, name: allProject };
     }
 
     private addCollection = () => {
@@ -201,20 +167,22 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             description: ''
         };
         this.props.saveCollection(collection);
-        this.setState({ ...this.state, isProjectSelectedDlgOpen: false, newCollectionName: NewCollectionName, selectedProjectInDlg: undefined });
+        this.setState({ ...this.state, isProjectSelectedDlgOpen: false, newCollectionName, selectedProjectInDlg: undefined });
     }
 
     private shareCollection = () => {
+        // TODO: share
         console.log('share');
     }
 
     private loopRecords = (data: DtoRecord[], cid: string, inFolder: boolean = false) => {
+        const { openKeys, records, deleteRecord, duplicateRecord } = this.props;
+
         return data.map(r => {
             const recordStyle = { height: '30px', lineHeight: '30px' };
-            const { records } = this.props;
 
             if (r.category === RecordCategory.folder) {
-                const isOpen = this.props.openKeys.indexOf(r.id) > -1;
+                const isOpen = openKeys.indexOf(r.id) > -1;
                 const children = _.remove(data, (d) => d.pid === r.id);
                 return (
                     <SubMenu className="folder" key={r.id} title={(
@@ -222,7 +190,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                             ref={ele => this.folderRefs[r.id] = ele}
                             folder={{ ...r }}
                             isOpen={isOpen}
-                            deleteRecord={() => this.props.deleteRecord(r.id, records[cid])}
+                            deleteRecord={() => deleteRecord(r.id, records[cid])}
                             onNameChanged={(name) => this.changeFolderName(r, name)}
                             moveRecordToFolder={this.moveRecordToFolder}
                             moveToCollection={this.moveToCollection}
@@ -239,8 +207,8 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                         inFolder={inFolder}
                         moveRecordToFolder={this.moveRecordToFolder}
                         moveToCollection={this.moveToCollection}
-                        duplicateRecord={() => this.props.duplicateRecord(r)}
-                        deleteRecord={() => this.props.deleteRecord(r.id, records[cid])}
+                        duplicateRecord={() => duplicateRecord(r)}
+                        deleteRecord={() => deleteRecord(r.id, records[cid])}
                     />
                 </MenuItem>
             );
@@ -283,8 +251,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     }
 
     render() {
-        const { records, activeKey } = this.props;
-        const displayCollections = this.getDisplayCollections();
+        const { collections, records, activeKey, openKeys, deleteCollection, openKeysChanged, activeRecord } = this.props;
 
         return (
             <div className="collection-panel">
@@ -305,28 +272,28 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                     <PerfectScrollbar>
                         <Menu
                             className="collection-tree"
-                            onOpenChange={this.onOpenChanged}
+                            onOpenChange={openKeysChanged}
                             mode="inline"
                             inlineIndent={0}
-                            openKeys={this.getOpenKeys()}
+                            openKeys={openKeys}
                             selectedKeys={[activeKey]}
-                            onSelect={this.onSelectChanged}
+                            onSelect={param => activeRecord(param.item.props.data)}
                         >
                             {
-                                displayCollections.map(c => {
+                                collections.map(c => {
                                     const recordCount = _.values(records[c.id]).filter(r => r.category === RecordCategory.record).length;
                                     let sortRecords = _.chain(records[c.id]).values<DtoRecord>().sortBy(['category', 'name']).value();
 
                                     return (
                                         <SubMenu
-                                            className={`${c.id !== displayCollections[0].id ? 'collection-separator-line' : ''} collection-item`}
+                                            className={`${c.id !== collections[0].id ? 'collection-separator-line' : ''} collection-item`}
                                             key={c.id}
                                             title={(
                                                 <CollectionItem
                                                     collection={{ ...c }}
                                                     recordCount={recordCount}
                                                     onNameChanged={(name) => this.changeCollectionName(c, name)}
-                                                    deleteCollection={() => this.props.deleteCollection(c.id)}
+                                                    deleteCollection={() => deleteCollection(c.id)}
                                                     moveToCollection={this.moveToCollection}
                                                     createFolder={this.createFolder}
                                                     shareCollection={id => this.setState({ ...this.state, isProjectSelectedDlgOpen: true, projectSelectedDlgMode: ProjectSelectedDialogType.share, shareCollectionId: id })}
@@ -342,7 +309,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                                 })
                             }
                         </Menu>
-                        {displayCollections.length === 0 ? '' : <div className="collection-tree-bottom" />}
+                        {collections.length === 0 ? '' : <div className="collection-tree-bottom" />}
                     </PerfectScrollbar>
                 </div>
                 {this.projectSelectedDialog}
@@ -351,24 +318,24 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     }
 }
 
-const mapStateToProps = (state: State): CollectionListStateProps => {
-    const { collectionsInfo, openKeys, selectedProject } = state.collectionState;
-    let projects = _.chain(state.projectState.projects)
-        .values<DtoProject>()
-        .sortBy('name')
-        .sortBy(t => t.owner.id !== state.userState.userInfo.id)
-        .sortBy(t => t.isMe ? 0 : 1)
-        .value()
-        .map(t => ({ id: t.id ? t.id : '', name: t.name ? t.name : '' }));
+const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any, ownProps: any) => {
+    const getProjects = getProjectsIdNameStateSelector();
+    const getOpenKeys = getOpenKeysSelector();
+    const getCollections = getDisplayCollctionSelector();
 
-    return {
-        collections: collectionsInfo.collections,
-        records: collectionsInfo.records,
-        activeKey: state.displayRecordsState.activeKey,
-        projects,
-        openKeys,
-        selectedProject
+    const mapStateToProps: (state: State) => CollectionListStateProps = state => {
+        const { collectionsInfo, selectedProject } = state.collectionState;
+
+        return {
+            collections: getCollections(state),
+            records: collectionsInfo.records,
+            activeKey: state.displayRecordsState.activeKey,
+            projects: getProjects(state),
+            openKeys: getOpenKeys(state),
+            selectedProject
+        };
     };
+    return mapStateToProps;
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps => {
@@ -396,6 +363,6 @@ const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps
 };
 
 export default connect(
-    mapStateToProps,
+    makeMapStateToProps,
     mapDispatchToProps,
 )(CollectionList);

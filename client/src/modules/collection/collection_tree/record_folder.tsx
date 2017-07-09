@@ -34,6 +34,13 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
         this.state = { isDragOver: false };
     }
 
+    public shouldComponentUpdate(nextProps: RecordFolderProps, nextState: RecordFolderState) {
+        return this.props.folder.id !== nextProps.folder.id ||
+            this.props.folder.name !== nextProps.folder.name ||
+            this.props.isOpen !== nextProps.isOpen ||
+            this.state.isDragOver !== nextState.isDragOver;
+    }
+
     private getMenu = () => {
         return (
             <Menu className="item_menu" onClick={this.onClickMenu}>

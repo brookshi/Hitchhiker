@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, Dispatch, MapStateToProps } from 'react-redux';
+import { connect, Dispatch, MapStateToPropsFactory } from 'react-redux';
 import { Input, Button, Dropdown, Select, Menu, Modal, TreeSelect, message } from 'antd';
 import { HttpMethod } from '../../../common/http_method';
 import { getActiveRecordSelector, getActiveRecordStateSelector, getActiveEnvIdSelector, getCollectionTreeDataSelector } from './selector';
@@ -206,7 +206,7 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
     }
 }
 
-const makeMapStateToProps: (initialState: any, ownProps: any) => MapStateToProps<any, any> = (initialState: any, ownProps: any) => {
+const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any, ownProps: any) => {
     const getRecordState = getActiveRecordStateSelector();
     const getActiveEnvId = getActiveEnvIdSelector();
     const getActiveRecord = getActiveRecordSelector();

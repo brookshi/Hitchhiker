@@ -21,18 +21,6 @@ const getCollections = (state: State) => state.collectionState.collectionsInfo.c
 
 const getCollectionsInfo = (state: State) => state.collectionState.collectionsInfo;
 
-// export const getActiveRecordState = (state: State) => {
-//     return getRecordStates(state).find(r => r.record.id === getActiveKey(state));
-// };
-
-// export const getActiveRecord = (activeKey, recordStates) => {
-//     const recordState = getActiveRecordState(activeKey, recordStates);
-//     if (!recordState) {
-//         throw new Error('miss active record state');
-//     }
-//     return recordState.record;
-// }
-
 export const getActiveRecordStateSelector = () => {
     return createSelector(
         [getActiveKey, getRecordStates],

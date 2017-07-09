@@ -31,6 +31,12 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
         super(props);
     }
 
+    public shouldComponentUpdate(nextProps: RecordItemProps, nextState: RecordItemState) {
+        return this.props.record.id !== nextProps.record.id ||
+            this.props.record.name !== nextProps.record.name ||
+            this.props.inFolder !== nextProps.inFolder;
+    }
+
     private getMenu = () => {
         return (
             <Menu className="item_menu" onClick={this.onClickMenu}>

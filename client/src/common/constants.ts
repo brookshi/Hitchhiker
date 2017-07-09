@@ -1,7 +1,13 @@
 
 export const noEnvironment = 'No environment';
 
+export const newCollectionName = 'New collection';
+
+export const allProject = 'All';
+
 export const unknownName = 'unknown';
+
+export const newRequestName = 'new request';
 
 export const pass = 'PASS';
 

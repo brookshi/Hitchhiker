@@ -50,6 +50,13 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
         };
     }
 
+    public shouldComponentUpdate(nextProps: CollectionItemProps, nextState: CollectionItemState) {
+        return this.props.collection.id !== nextProps.collection.id ||
+            this.props.collection.name !== nextProps.collection.name ||
+            this.props.recordCount !== nextProps.recordCount ||
+            this.state.isDragOver !== nextState.isDragOver;
+    }
+
     private getMenu = () => {
         return (
             <Menu className="item_menu" onClick={this.onClickMenu}>
