@@ -11,6 +11,7 @@ import { Collection } from '../models/collection';
 import { HeaderService } from './header_service';
 import { StringUtil } from '../utils/string_util';
 import { RecordHistory } from '../models/record_history';
+import { EntityManager } from "typeorm";
 
 export class RecordService {
     private static _sort: number = 0;
@@ -145,10 +146,13 @@ export class RecordService {
         await HeaderService.deleteForRecord(id);
 
         const connection = await ConnectionManager.getInstance();
-        await connection.getRepository(Record).createQueryBuilder('record')
-            .delete()
-            .where('record.id=:id', { id: id })
-            .execute();
+        await connection.manager.transaction(async manager => {
+            await RecordService.clearHistories(manager, id);
+            await manager.createQueryBuilder(Record, 'record')
+                .delete()
+                .where('record.id=:id', { id: id })
+                .execute();
+        })
         return { success: true, message: Message.recordDeleteSuccess };
     }
 
@@ -195,7 +199,9 @@ export class RecordService {
         const connection = await ConnectionManager.getInstance();
         await connection.manager.transaction(async manager => {
             await manager.save(record);
-            await manager.save(RecordService.createRecordHistory(record));
+            if (record.category === RecordCategory.record) {
+                await manager.save(RecordService.createRecordHistory(record));
+            }
         });
         return { success: true, message: Message.recordSaveSuccess };
     }
@@ -246,5 +252,12 @@ export class RecordService {
             return header;
         });
         return history;
+    }
+
+    private static async clearHistories(manager: EntityManager, rid: string): Promise<any> {
+        await manager.createQueryBuilder(RecordHistory, 'recordHistory')
+            .where('record=:rid', { rid })
+            .delete()
+            .execute();
     }
 }

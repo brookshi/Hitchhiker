@@ -18,6 +18,8 @@ interface LoginPageStateProps {
 
     userId: string;
 
+    lastLoginName: string;
+
     loginState: RequestState;
 
     registerState: RequestState;
@@ -95,6 +97,7 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
                                     signIn={value => this.props.login(value)}
                                     switchPanel={this.switchPanel}
                                     resetLogin={this.props.resetLogin}
+                                    lastLoginName={this.props.lastLoginName}
                                     isCheckingSessionValid={this.state.isCheckingSessionValid}
                                     checkSessionFinish={() => this.setState({ ...this.state, isCheckingSessionValid: false })}
                                 />
@@ -143,8 +146,9 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
 }
 
 const mapStateToProps = (state: State): LoginPageStateProps => {
-    const { loginState, registerState, findPasswordState, userInfo } = state.userState;
+    const { loginState, registerState, findPasswordState, userInfo, lastLoginName } = state.userState;
     return {
+        lastLoginName,
         userId: userInfo.id,
         loginState,
         registerState,

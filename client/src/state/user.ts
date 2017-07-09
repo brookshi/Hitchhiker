@@ -3,6 +3,8 @@ import { RequestState, requestStateDefaultValue } from './index';
 
 export interface UserInfoState {
 
+    lastLoginName: string;
+
     userInfo: DtoResUser;
 
     loginState: RequestState;
@@ -15,6 +17,7 @@ export interface UserInfoState {
 }
 
 export const userInfoDefaultValue: UserInfoState = {
+    lastLoginName: '',
     userInfo: {
         projects: [],
         id: '',

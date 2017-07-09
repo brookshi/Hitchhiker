@@ -9,6 +9,8 @@ const FormItem = Form.Item;
 
 interface LoginPanelProps {
 
+    lastLoginName: string;
+
     isCheckingSessionValid: boolean;
 
     loginState: RequestState;
@@ -58,6 +60,7 @@ class LoginPanel extends React.Component<LoginProps, LoginPanelState> {
                     </div>
                     {
                         getFieldDecorator('email', {
+                            initialValue: this.props.lastLoginName,
                             rules: [{ required: true, message: 'Please enter your email!' }],
                         })
                             (
