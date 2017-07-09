@@ -11,6 +11,8 @@ export class SessionService {
             'api/user',
             'api/user/regconfirm',
             'api/user/findpwd',
+            'api/project/join',
+            'api/project/reject',
             '/',
             '/index.html'
         ];

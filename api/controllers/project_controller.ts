@@ -46,17 +46,17 @@ export default class ProjectController extends BaseController {
 
     // TODO: add relative page to display and redirect to login page is missing session
     @GET('/project/join')
-    async join(ctx: Koa.Context, @QueryParam('projectid') projectId: string, @QueryParam('token') token: string): Promise<ResObject> {
+    async join(ctx: Koa.Context, @QueryParam('projectid') projectId: string, @QueryParam('token') token: string) {
         const validateRst = await this.validateInfo(projectId, token);
 
         if (!validateRst.success) {
-            return validateRst;
+            return validateRst.message;
         }
 
         const data = <{ info: InviteToProjectToken, user: User, project: Project }>validateRst.result;
 
         if (data.user.projects.find(o => o.id === projectId)) {
-            return { success: false, message: Message.alreadyInProject };
+            return Message.alreadyInProject;
         }
 
         data.user.projects.push(data.project);
@@ -103,7 +103,7 @@ export default class ProjectController extends BaseController {
         const user = await UserService.getUserByEmail(info.userEmail, true);
         const userRst = user || (await UserService.createUserByEmail(info.userEmail, true)).result;
 
-        return { success: true, message: '', result: { info: info, user: userRst.result, project: project } };
+        return { success: true, message: '', result: { info: info, user: userRst, project: project } };
     }
 
     @POST('/project/:tid')

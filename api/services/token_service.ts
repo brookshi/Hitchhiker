@@ -9,7 +9,7 @@ export class TokenService {
     private static tokens: { [key: string]: number } = {};
 
     static isValidToken(token: string): boolean {
-        return !!TokenService.tokens[token];
+        return !!TokenService.tokens[encodeURIComponent(token)];
     }
 
     static removeToken(token: string) {

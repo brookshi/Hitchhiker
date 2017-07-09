@@ -89,7 +89,7 @@ export default class UserController extends BaseController {
     }
 
     @GET('/user/regconfirm')
-    async regConfirm(ctx: Koa.Context, @QueryParam('id') id: string, @QueryParam('token') token: string): Promise<string> {
+    async regConfirm( @QueryParam('id') id: string, @QueryParam('token') token: string): Promise<string> {
         const user = await UserService.getUserById(id);
         if (!user) {
             return Message.regConfirmFailedUserNotExist;

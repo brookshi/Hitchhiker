@@ -14,7 +14,7 @@ export class MailService {
     }
 
     static async inviterMail(target: string, inviter: User): Promise<{ err: any, body: any }> {
-        const url = `${Setting.instance.app.host}`; // TODO: invite to login page
+        const url = `${Setting.instance.app.host}`;
         const mailReqUrl = `${Setting.instance.mail.host}invite?target=${target}&inviter=${inviter.name}&inviteremail=${inviter.email}&url=${encodeURIComponent(url)}&lang=${Setting.instance.app.language}`;
 
         return await MailService.sendMail(mailReqUrl);
