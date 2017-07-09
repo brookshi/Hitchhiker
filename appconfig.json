@@ -12,7 +12,7 @@
         "storeMaxCount": 10
     },
     "user": {
-        "registerMailCheck": false
+        "registerMailCheck": true
     },
     "mail": {
         "host": "http://localhost:82/api/mail/"

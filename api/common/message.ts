@@ -1,3 +1,4 @@
+import { Setting } from '../utils/setting';
 
 export class Message {
     static userEmailRepeat: string = 'email is taken';
@@ -7,7 +8,8 @@ export class Message {
     static userCreateSuccess: string = 'create user success';
     static userCreateFailed: string = 'create user failed';
     static userCheckFailed: string = 'email or password error';
-    static accountNotActive: string = 'account is not active';
+    static accountNotActive: string = 'account is not active, please active it in your email';
+    static regSuccess = Setting.instance.needRegisterMailCheck ? 'register success, please active your account in your email' : 'register success, please login';
     static userLogout: string = 'logout success';
     static userLoginSuccess: string = 'login success';
     static userNotExist: string = 'user does not exist';

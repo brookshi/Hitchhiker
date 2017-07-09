@@ -8,14 +8,14 @@ import { Log } from '../utils/log';
 export class MailService {
     static registerMail(user: User) {
         const url = `${Setting.instance.app.api}user/regconfirm?id=${user.id}&token=${TokenService.buildRegToken()}`;
-        const mailReqUrl = `${Setting.instance.mail.api}register?target=${user.email}&name=${user.name}&url=${encodeURIComponent(url)}&lang=${Setting.instance.app.language}`;
+        const mailReqUrl = `${Setting.instance.mail.host}register?target=${user.email}&name=${user.name}&url=${encodeURIComponent(url)}&lang=${Setting.instance.app.language}`;
 
         MailService.sendMail(mailReqUrl);
     }
 
     static async inviterMail(target: string, inviter: User): Promise<{ err: any, body: any }> {
         const url = `${Setting.instance.app.host}`; // TODO: invite to login page
-        const mailReqUrl = `${Setting.instance.mail.api}invite?target=${target}&inviter=${inviter.name}&inviteremail=${inviter.email}&url=${encodeURIComponent(url)}&lang=${Setting.instance.app.language}`;
+        const mailReqUrl = `${Setting.instance.mail.host}invite?target=${target}&inviter=${inviter.name}&inviteremail=${inviter.email}&url=${encodeURIComponent(url)}&lang=${Setting.instance.app.language}`;
 
         return await MailService.sendMail(mailReqUrl);
     }

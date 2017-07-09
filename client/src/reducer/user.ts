@@ -21,7 +21,7 @@ export function userState(state: UserInfoState = userInfoDefaultValue, action: a
             return { ...state, loginState: { status: RequestStatus.failed, message: '' } };
         }
         case RegisterSuccessType: {
-            return { ...state, registerState: { status: RequestStatus.success, message: 'register success, please login' } };
+            return { ...state, registerState: { status: RequestStatus.success, message: action.value.message } };
         }
         case RegisterFailedType: {
             return { ...state, registerState: { status: RequestStatus.failed, message: action.value } };

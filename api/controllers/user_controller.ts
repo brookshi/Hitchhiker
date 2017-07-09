@@ -89,30 +89,30 @@ export default class UserController extends BaseController {
     }
 
     @GET('/user/regconfirm')
-    async regConfirm( @QueryParam('id') id: string, @QueryParam('token') token: string): Promise<ResObject> {
+    async regConfirm(ctx: Koa.Context, @QueryParam('id') id: string, @QueryParam('token') token: string): Promise<string> {
         const user = await UserService.getUserById(id);
         if (!user) {
-            return { success: false, message: Message.regConfirmFailedUserNotExist };
+            return Message.regConfirmFailedUserNotExist;
         }
 
         if (user.isActive) {
-            return { success: false, message: Message.regConfirmFailedUserConfirmed };
+            return Message.regConfirmFailedUserConfirmed;
         }
 
         const json = StringUtil.decrypt(token);
         const info = <RegToken>JSON.parse(json);
 
         if (!info || info.host !== Setting.instance.app.host) {
-            return { success: false, message: Message.regConfirmFailedInvalid };
+            return Message.regConfirmFailedInvalid;
         }
 
         if (DateUtil.diff(new Date(info.date), new Date()) > 24) {
-            return { success: false, message: Message.regConfirmFailedExpired };
+            return Message.regConfirmFailedExpired;
         }
 
         UserService.active(user.id);
 
-        return { success: true, message: Message.regConfirmSuccess };
+        return Message.regConfirmSuccess;
     }
 
     @GET('/user/invite/:emails')

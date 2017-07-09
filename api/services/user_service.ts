@@ -67,7 +67,7 @@ export class UserService {
 
         await ProjectService.createOwnProject(user);
 
-        return { success: true, message: Message.userCreateSuccess, result: user };
+        return { success: true, message: Message.regSuccess, result: user };
     }
 
     static async createUserByEmail(email: string, isAutoGenerate: boolean = false): Promise<ResObject> {

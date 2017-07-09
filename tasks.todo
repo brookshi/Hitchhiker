@@ -57,7 +57,7 @@
     ✔ user password should hide @done (2017/7/9 下午4:06:49)
     ✔ change pwd @done (6/29/2017, 2:06:04 PM)
     ✔ log @done (2017/7/9 下午3:54:02)
-    ☐ vm safety
+    ✔ vm safety @done (2017/7/9 下午5:04:31)
     ☐ invite user / test
     ☐ import postman
     ☐ write test case
@@ -65,6 +65,7 @@
     ☐ build to live
     ☐ unit test
 0.2.0:
+    ☐ header auto complete
     ☐ save all tabs, close all tabs, close all but active.
     ☐ collection tree follow active tab
     ☐ set cookie record
