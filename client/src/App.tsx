@@ -8,7 +8,6 @@ import HeaderPanel from './modules/header';
 import './style/perfect-scrollbar.min.css';
 import { State } from './state';
 import { connect, Dispatch } from 'react-redux';
-import Config from './common/config';
 import { actionCreator } from './action';
 import { UpdateLeftPanelType } from './action/ui';
 import LoginPage from './modules/login';
@@ -16,6 +15,7 @@ import { RequestStatus } from './common/request_status';
 import Perf from 'react-addons-perf';
 import './style/App.less';
 import * as _ from 'lodash';
+import { toolBarWidth } from './common/constants';
 
 const { Header, Sider } = Layout;
 
@@ -84,7 +84,7 @@ class App extends React.Component<AppProps, AppState> {
           <HeaderPanel />
         </Header>
         <Layout>
-          <Sider className="app-slider" style={{ maxWidth: Config.ToolBarWidth }}>
+          <Sider className="app-slider" style={{ maxWidth: toolBarWidth }}>
             <Menu
               className="sider-menu"
               mode="vertical"

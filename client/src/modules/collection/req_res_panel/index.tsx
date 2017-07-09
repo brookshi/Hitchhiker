@@ -14,6 +14,7 @@ import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 import { State } from '../../../state/index';
 import { ResizeResHeightType } from '../../../action/ui';
 import { getReqActiveTabKeySelector, getIsResPanelMaximumSelector } from './selector';
+import { newRecordFlag } from '../../../common/constants';
 
 interface ReqResPanelStateProps {
 
@@ -91,7 +92,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
     private onEdit = (key, action) => {
         if (action === 'remove') {
-            if (key.startsWith('@new') || !this.props.recordStates[key].isChanged) {
+            if (key.startsWith(newRecordFlag) || !this.props.recordStates[key].isChanged) {
                 this.props.removeTab(key);
                 return;
             }

@@ -9,7 +9,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import ScheduleEditDialog from './schedule_edit_dialog';
 import { Period } from '../../common/period';
 import { NotificationMode } from '../../common/notification_mode';
-import { noEnvironment } from '../../common/constants';
+import { noEnvironment, newScheduleName } from '../../common/constants';
 import { DateUtil } from '../../utils/date_util';
 import * as _ from 'lodash';
 import { ScheduleRunState } from '../../state/schedule';
@@ -56,7 +56,7 @@ interface ScheduleListState {
 const createDefaultSchedule: (user: DtoUser) => DtoSchedule = (user: DtoUser) => {
     return {
         id: StringUtil.generateUID(),
-        name: 'New Schedule',
+        name: newScheduleName,
         ownerId: user.id,
         collectionId: '',
         environmentId: noEnvironment,

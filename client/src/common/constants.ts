@@ -3,6 +3,12 @@ export const noEnvironment = 'No environment';
 
 export const newCollectionName = 'New collection';
 
+export const newFolderName = 'New Folder';
+
+export const newProjectName = 'New Project';
+
+export const newScheduleName = 'New Schedule';
+
 export const allProject = 'All';
 
 export const unknownName = 'unknown';
@@ -32,3 +38,9 @@ export const defaultResTabKey = 'content';
 export const defaultModuleKey = 'collection';
 
 export const defaultLeftPanelWidth = 300;
+
+export const minLeftPanelWidth = 100;
+
+export const maxLeftPanelWidth = 600;
+
+export const toolBarWidth = 50;

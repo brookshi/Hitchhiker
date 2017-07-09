@@ -2,6 +2,7 @@ import { LoginSuccessType } from '../action/user';
 import { SwitchEnvType, EditEnvType, QuitProjectType, DisbandProjectType, SaveEnvironmentType, DelEnvironmentType, EditEnvCompletedType } from '../action/project';
 import * as _ from 'lodash';
 import { EnvironmentState, environmentDefaultValue } from '../state/environment';
+import { noEnvironment } from '../common/constants';
 
 export function environmentState(state: EnvironmentState = environmentDefaultValue, action: any): EnvironmentState {
     switch (action.type) {
@@ -34,7 +35,7 @@ export function environmentState(state: EnvironmentState = environmentDefaultVal
             return { ...state, activeEnv: { [projectId]: envId } };
         }
         case EditEnvType: {
-            const isEditEnvDlgOpen = action.value.envId !== 'no environment';
+            const isEditEnvDlgOpen = action.value.envId !== noEnvironment;
             return { ...state, isEditEnvDlgOpen, editedEnvironment: action.value.envId };
         }
         case EditEnvCompletedType: {

@@ -6,6 +6,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import { DtoProject } from '../../../../api/interfaces/dto_project';
 import { StringUtil } from '../../utils/string_util';
 import { DtoUser } from '../../../../api/interfaces/dto_user';
+import { newProjectName } from '../../common/constants';
 
 interface ProjectListProps {
 
@@ -31,7 +32,7 @@ interface ProjectListState { }
 const createDefaultProject = (user: DtoUser) => {
     return {
         id: StringUtil.generateUID(),
-        name: 'New Project',
+        name: newProjectName,
         owner: user,
         members: [user]
     };

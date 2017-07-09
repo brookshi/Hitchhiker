@@ -6,11 +6,12 @@ import { RecordCategory } from '../common/record_category';
 import { CollectionState, collectionDefaultValue, RecordState, getDefaultRecord, DisplayRecordsState, displayRecordsDefaultValue } from '../state/collection';
 import { DtoCollectionWithRecord } from '../../../api/interfaces/dto_collection';
 import { RequestStatus } from '../common/request_status';
+import { newRequestName } from '../common/constants';
 
 const getNewRecordState: () => RecordState = () => {
     const newRecord = getDefaultRecord();
     return {
-        name: newRecord.name || 'new request',
+        name: newRecord.name || newRequestName,
         record: newRecord,
         isChanged: false,
         isRequesting: false

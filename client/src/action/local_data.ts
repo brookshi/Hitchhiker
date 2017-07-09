@@ -18,8 +18,6 @@ export function* fetchLocalData() {
         try {
             yield put(actionCreator(FetchLocalDataPendingType));
             const state = yield call(LocalStore.getState, action.value);
-            console.log('fetch');
-            console.log(state);
             yield delay(1000);
             yield put(actionCreator(FetchLocalDataSuccessType, state));
         } catch (err) {
@@ -31,7 +29,6 @@ export function* fetchLocalData() {
 export function* storeLocalData() {
     yield takeLatest(StoreLocalDataType, function* (action: any) {
         try {
-            console.log('store');
             yield delay(1000);
             yield call(LocalStore.setState, action.value.userId, action.value.state);
         } catch (err) {

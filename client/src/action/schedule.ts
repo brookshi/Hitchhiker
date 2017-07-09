@@ -43,7 +43,6 @@ function initScheduleWS(id: string) {
     return eventChannel(emitter => {
         const socket = new WebSocket('ws://localhost:3000/schedule');
         socket.onmessage = (ev: MessageEvent) => {
-            console.log(ev);
             const data = JSON.parse(ev.data);
             if (data.isResult) {
                 setTimeout(() => {
@@ -65,8 +64,6 @@ function initScheduleWS(id: string) {
             console.error(ev);
             emitter(END);
         };
-        return () => {
-            console.log('close socket');
-        };
+        return () => { return true; };
     });
 }

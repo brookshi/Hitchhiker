@@ -7,6 +7,7 @@ import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 import { StringUtil } from '../../../utils/string_util';
 import { RecordCategory } from '../../../common/record_category';
 import { DtoCollection } from '../../../../../api/interfaces/dto_collection';
+import { newFolderName } from '../../../common/constants';
 
 interface CollectionItemProps {
 
@@ -33,7 +34,7 @@ interface CollectionItemState {
 const createDefaultFolder: (collectionId: string) => DtoRecord = (cid) => {
     return {
         id: StringUtil.generateUID(),
-        name: 'New folder',
+        name: newFolderName,
         category: RecordCategory.folder,
         collectionId: cid
     };

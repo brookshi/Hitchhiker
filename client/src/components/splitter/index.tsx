@@ -1,6 +1,6 @@
 import React from 'react';
-import Config from '../../common/config';
 import './style/index.less';
+import { toolBarWidth, minLeftPanelWidth, maxLeftPanelWidth } from '../../common/constants';
 
 interface SplitterProps {
 
@@ -13,7 +13,7 @@ class Splitter extends React.Component<SplitterProps, SplitterState> {
 
     private onSplitterMove = (e) => {
         e.preventDefault();
-        const width = Math.min(Math.max(e.clientX - Config.ToolBarWidth, Config.MinLeftPanelWidth), Config.MaxLeftPanelWidth);
+        const width = Math.min(Math.max(e.clientX - toolBarWidth, minLeftPanelWidth), maxLeftPanelWidth);
         this.props.resizeCollectionPanel(width);
     }
 
