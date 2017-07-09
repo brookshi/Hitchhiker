@@ -1,7 +1,7 @@
 import { takeEvery, call, put } from 'redux-saga/effects';
 import RequestManager from '../utils/request_manager';
 import { HttpMethod } from '../common/http_method';
-import { syncAction, actionCreator } from './index';
+import { syncAction, actionCreator, SessionInvalidType } from './index';
 
 export const AddTabType = 'add tab';
 
@@ -37,6 +37,9 @@ export function* sendRequest() {
         let runResult: any = {};
         try {
             const res = yield call(RequestManager.post, 'http://localhost:3000/api/record/run', value);
+            if (res.status === 403) {
+                yield put(actionCreator(SessionInvalidType));
+            }
             if (RequestManager.checkCanceledThenRemove(value.record.id)) {
                 return;
             }
