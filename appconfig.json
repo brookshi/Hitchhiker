@@ -8,11 +8,11 @@
         "defaultPassword": "123456"
     },
     "schedule": {
-        "checkDuration": 600,
+        "duration": 600,
         "storeMaxCount": 10
     },
     "user": {
-        "registerMailCheck": true
+        "registerMailConfirm": false
     },
     "mail": {
         "host": "http://localhost:82/api/mail/"

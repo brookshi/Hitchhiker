@@ -78,7 +78,7 @@ export default class ProjectController extends BaseController {
         const data = <{ info: InviteToProjectToken, user: User, project: Project }>validateRst.result;
         MailService.rejectProjectMail(data.info.inviterEmail, data.info.userEmail, data.project.name);
 
-        return { success: true, message: Message.rejectProjectSuccess };
+        return Message.rejectProjectSuccess;
     }
 
     private async validateInfo(projectId: string, token: string): Promise<ResObject> {

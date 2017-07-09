@@ -9,7 +9,7 @@ export class Message {
     static userCreateFailed: string = 'create user failed';
     static userCheckFailed: string = 'email or password error';
     static accountNotActive: string = 'account is not active, please active it in your email';
-    static regSuccess = Setting.instance.needRegisterMailCheck ? 'register success, please active your account in your email' : 'register success, please login';
+    static regSuccess = Setting.instance.needRegisterMailConfirm ? 'register success, please active your account in your email' : 'register success, please login';
     static userLogout: string = 'logout success';
     static userLoginSuccess: string = 'login success';
     static userNotExist: string = 'user does not exist';

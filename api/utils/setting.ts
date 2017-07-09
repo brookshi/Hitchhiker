@@ -8,8 +8,8 @@ export class Setting {
         this._setting = require('../../appconfig');
     }
 
-    get needRegisterMailCheck(): boolean {
-        return this._setting.user.registerMailCheck;
+    get needRegisterMailConfirm(): boolean {
+        return this._setting.user.registerMailConfirm;
     }
 
     get mail() {
