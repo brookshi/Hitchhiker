@@ -61,6 +61,7 @@
     ✔ invite user / test @done (2017/7/9 下午10:38:42)
     ☐ import postman
     ☐ write test case
+    ☐ add sample collection/project/environment/schedule..
     ☐ test
     ☐ build to live
     ☐ unit test
