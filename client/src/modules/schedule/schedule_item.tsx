@@ -100,12 +100,12 @@ class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState>
     }
 
     public render() {
-        const { schedule, isOwner, isRunning } = this.props;
-        const { name, lastRunDate } = schedule;
+        const { schedule, isRunning } = this.props;
+        const { name, lastRunDate, suspend } = schedule;
 
         return (
             <Popover mouseEnterDelay={1.5} placement="bottom" title="Schedule information" content={this.scheduleInfo}>
-                {isOwner ? <div className="item-own" /> : ''}
+                {suspend ? <Icon className="schedule-item-suspend" type="pause-circle-o" /> : ''}
                 <ItemWithMenu
                     ref={ele => this.itemWithMenu = ele}
                     icon={<Icon className="c-icon" type="schedule" />}
