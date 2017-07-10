@@ -3,7 +3,7 @@ import { delay } from 'redux-saga';
 import RequestManager, { SyncItem } from '../utils/request_manager';
 import { sendRequest, saveRecord, saveAsRecord, deleteRecord, moveRecord } from './record';
 import { saveProject, quitProject, disbandProject, removeUser, inviteMember, saveEnvironment, delEnvironment } from './project';
-import { deleteCollection, saveCollection, refreshCollection } from './collection';
+import { deleteCollection, saveCollection, refreshCollection, importPostman } from './collection';
 import { login, logout, register, findPassword, getUserInfo, changePassword } from './user';
 import { storeLocalData, fetchLocalData } from './local_data';
 import { deleteSchedule, saveSchedule, runSchedule } from './schedule';
@@ -36,6 +36,7 @@ export function* rootSaga() {
         spawn(refreshCollection),
         spawn(deleteCollection),
         spawn(saveCollection),
+        spawn(importPostman),
         spawn(sendRequest),
         spawn(saveRecord),
         spawn(saveAsRecord),

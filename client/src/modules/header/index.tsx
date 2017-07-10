@@ -1,12 +1,16 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect, Dispatch, MapStateToPropsFactory } from 'react-redux';
 import './style/index.less';
-import { Icon, Badge, notification, Dropdown, Menu } from 'antd';
+import { Icon, Badge, notification, Dropdown, Menu, Modal, Upload, TreeSelect, message } from 'antd';
 import { State, RequestState } from '../../state/index';
 import { actionCreator } from '../../action/index';
 import { LogoutType, ChangePasswordType } from '../../action/user';
 import ChangePasswordDialog from './change_password_dialog';
 import { Password } from '../../../../api/interfaces/password';
+import { getProjectsIdNameStateSelector } from '../collection/collection_tree/selector';
+import { ImportPostmanDataType } from '../../action/collection';
+
+const Dragger = Upload.Dragger;
 
 interface HeaderPanelStateProps {
 
@@ -17,6 +21,8 @@ interface HeaderPanelStateProps {
     userName: string;
 
     changePasswordState: RequestState;
+
+    projects: { id: string, name: string }[];
 }
 
 interface HeaderPanelDispatchProps {
@@ -24,6 +30,8 @@ interface HeaderPanelDispatchProps {
     onChangePassword(password: Password);
 
     logout();
+
+    importPostman(projectId: string, data: any);
 }
 
 type HeaderPanelProps = HeaderPanelStateProps & HeaderPanelDispatchProps;
@@ -31,6 +39,10 @@ type HeaderPanelProps = HeaderPanelStateProps & HeaderPanelDispatchProps;
 interface HeaderPanelState {
 
     isChangePwdDlgOpen: boolean;
+
+    isImportDlgOpen: boolean;
+
+    selectedProjectInDlg: string;
 }
 
 class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
@@ -38,7 +50,9 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
     constructor(props: HeaderPanelProps) {
         super(props);
         this.state = {
-            isChangePwdDlgOpen: false
+            isChangePwdDlgOpen: false,
+            isImportDlgOpen: false,
+            selectedProjectInDlg: ''
         };
     }
 
@@ -63,6 +77,20 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
 
     private onChangePwd = (data: Password) => {
         this.props.onChangePassword(data);
+    }
+
+    private importPostman = (file: File) => {
+        if (!!this.state.selectedProjectInDlg) {
+            message.warning('Please select a project first.');
+            return;
+        }
+        const fr = new FileReader();
+        fr.onload = (e) => {
+            var data = JSON.parse((e.target as any).result);
+            this.props.importPostman(this.state.selectedProjectInDlg, data);
+        };
+        fr.readAsText(file);
+        this.setState({ ...this.state, isImportDlgOpen: false, selectedProjectInDlg: '' });
     }
 
     private userMenu = (
@@ -98,6 +126,11 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
                         {syncCount > 0 ? 'SYNCING' : 'IN SYNC'}
                     </span>
                     <span className="header-user">
+                        <a className="ant-dropdown-link" href="#" onClick={() => this.setState({ ...this.state, isImportDlgOpen: true })}>
+                            <Icon type="upload" /> Import
+                        </a>
+                    </span>
+                    <span className="header-user">
                         <Dropdown overlay={this.userMenu}>
                             <a className="ant-dropdown-link" href="#">
                                 {userName} <Icon type="down" />
@@ -111,30 +144,67 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
                     onCancel={this.onCancelChangePwd}
                     onOk={this.onChangePwd}
                 />
+                <Modal
+                    visible={this.state.isImportDlgOpen}
+                    title="Import data from Postman"
+                    width={500}
+                    closable={true}
+                    onCancel={() => this.setState({ ...this.state, isImportDlgOpen: false })}
+                    footer={[]} >
+                    <div>Select project for import data:</div>
+                    <TreeSelect
+                        allowClear={true}
+                        style={{ width: '100%' }}
+                        dropdownStyle={{ maxHeight: 500, overflow: 'auto' }}
+                        placeholder="Please select project"
+                        treeDefaultExpandAll={true}
+                        value={this.state.selectedProjectInDlg}
+                        onChange={(e) => this.setState({ ...this.state, selectedProjectInDlg: e })}
+                        treeData={this.props.projects.map(t => ({ key: t.id, value: t.id, label: t.name }))} />
+                    <div style={{ marginTop: 8, height: 180 }}>
+                        <Dragger
+                            showUploadList={false}
+                            accept=".json"
+                            customRequest={obj => { this.importPostman(obj.file); }}
+                            action="">
+                            <p className="ant-upload-drag-icon">
+                                <Icon type="inbox" />
+                            </p>
+                            <p className="ant-upload-text">Click or drag Postman json file to this area to import</p>
+                        </Dragger>
+                    </div>
+                </Modal>
             </div >
         );
     }
 }
 
-const mapStateToProps = (state: State): HeaderPanelStateProps => {
-    const { syncCount, message } = state.uiState.syncState;
-    const { name } = state.userState.userInfo;
-    return {
-        syncCount,
-        message,
-        userName: name,
-        changePasswordState: state.userState.changePasswordState
+const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any, ownProps: any) => {
+    const getProjects = getProjectsIdNameStateSelector();
+
+    const mapStateToProps: (state: State) => HeaderPanelStateProps = state => {
+        const { syncCount, message } = state.uiState.syncState;
+        const { name } = state.userState.userInfo;
+        return {
+            syncCount,
+            message,
+            userName: name,
+            changePasswordState: state.userState.changePasswordState,
+            projects: getProjects(state),
+        };
     };
+    return mapStateToProps;
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<HeaderPanelProps>): HeaderPanelDispatchProps => {
     return {
         logout: () => dispatch(actionCreator(LogoutType)),
-        onChangePassword: (password) => dispatch(actionCreator(ChangePasswordType, password))
+        onChangePassword: (password) => dispatch(actionCreator(ChangePasswordType, password)),
+        importPostman: (projectId, data) => dispatch(actionCreator(ImportPostmanDataType, { projectId, data }))
     };
 };
 
 export default connect(
-    mapStateToProps,
+    makeMapStateToProps,
     mapDispatchToProps,
 )(HeaderPanel);

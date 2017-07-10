@@ -21,6 +21,8 @@ export const SelectedProjectChangedType = 'select project';
 
 export const CollectionOpenKeysType = 'open/close collection';
 
+export const ImportPostmanDataType = 'import postman data';
+
 export function* refreshCollection() {
     yield takeLatest(RefreshCollectionType, function* () {
         try {
@@ -60,6 +62,13 @@ export function* shareCollection() { // TODO: improve: share collection with env
 export function* saveCollection() {
     yield takeEvery(SaveCollectionType, function* (action: any) {
         const channelAction = syncAction({ type: SaveCollectionType, method: action.value.isNew ? HttpMethod.POST : HttpMethod.PUT, url: `http://localhost:3000/api/collection`, body: action.value.collection });
+        yield put(channelAction);
+    });
+}
+
+export function* importPostman() {
+    yield takeEvery(ImportPostmanDataType, function* (action: any) {
+        const channelAction = syncAction({ type: ImportPostmanDataType, method: HttpMethod.POST, url: `http://localhost:3000/api/collection/postman/${action.value.projectid}`, body: action.value.data });
         yield put(channelAction);
     });
 }
