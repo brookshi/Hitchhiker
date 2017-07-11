@@ -7,7 +7,7 @@ export class RecordHistory {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(type => Record, record => record.doc)
+    @ManyToOne(type => Record, record => record.history)
     target: Record;
 
     @Column('json')

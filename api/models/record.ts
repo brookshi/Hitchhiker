@@ -35,7 +35,7 @@ export class Record {
     @Column()
     name: string;
 
-    @Column({ nullable: true })
+    @Column({ length: 2000, nullable: true })
     url: string;
 
     @Column({ nullable: true, default: 'GET' })

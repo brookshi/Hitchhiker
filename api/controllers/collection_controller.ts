@@ -56,8 +56,14 @@ export default class CollectionController extends BaseController {
         const user = SessionService.getUser(ctx);
         const collections = await MetadataService.convertPostmanCollection(user, projectId, info);
         const environments = await MetadataService.convertPostmanEnvV1(user, projectId, info);
-        collections.forEach(c => CollectionService.save(c));
-        environments.forEach(e => EnvironmentService.save(e));
+        await Promise.all(collections.map(c => CollectionService.save(c)));
+        // for (let r of collections[0].records) {//.forEach(async r => {
+        //     console.log(`${r.id}: ${r.headers.map(h => h.record.id).join(',')}`);
+        //     console.log(JSON.stringify(r));
+        //     await RecordService.create(r);
+        // }
+        //});
+        await Promise.all(environments.map(e => EnvironmentService.save(e)));
         return { success: true, message: Message.importPostmanSuccess };
     }
 }

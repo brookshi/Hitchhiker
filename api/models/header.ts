@@ -9,7 +9,7 @@ export class Header {
     @Column({ nullable: true })
     key: string;
 
-    @Column({ nullable: true })
+    @Column('text', { nullable: true })
     value: string;
 
     @Column({ default: true })

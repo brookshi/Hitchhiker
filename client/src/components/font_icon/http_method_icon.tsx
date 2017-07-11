@@ -21,7 +21,8 @@ class HttpMethodIcon extends React.Component<HttpMethodIconProps, HttpMethodIcon
     };
 
     static textMapping: { [key: string]: string } = {
-        DELETE: 'DEL'
+        DELETE: 'DEL',
+        OPTIONS: 'OPT'
     };
 
     get method() {

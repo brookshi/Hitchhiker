@@ -11,7 +11,7 @@ import { Collection } from '../models/collection';
 import { HeaderService } from './header_service';
 import { StringUtil } from '../utils/string_util';
 import { RecordHistory } from '../models/record_history';
-import { EntityManager } from "typeorm";
+import { EntityManager } from 'typeorm';
 
 export class RecordService {
     private static _sort: number = 0;
@@ -28,7 +28,8 @@ export class RecordService {
         if (target.headers instanceof Array) {
             record.headers = target.headers.map(o => {
                 let header = HeaderService.fromDto(o);
-                header.record = record;
+                header.record = new Record();
+                header.record.id = record.id;
                 return header;
             });
         }

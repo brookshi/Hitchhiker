@@ -11,6 +11,8 @@ import { DtoVariable } from '../interfaces/dto_variable';
 import { ProjectService } from './project_service';
 import { VariableService } from './variable_service';
 import { CollectionService } from './collection_service';
+import { StringUtil } from '../utils/string_util';
+import * as _ from 'lodash';
 
 export class MetadataService {
 
@@ -45,6 +47,7 @@ export class MetadataService {
         return data.environments.map(e => {
             const env = new Environment();
             env.name = e.name;
+            env.id = StringUtil.generateUID();
             env.variables = [];
             env.project = ProjectService.create(projectId);
 
@@ -55,6 +58,7 @@ export class MetadataService {
                     dtoVariable.isActive = v.enabled;
                     dtoVariable.sort = sort++;
                     const variable = VariableService.fromDto(dtoVariable);
+                    variable.id = StringUtil.generateUID();
                     variable.environment = env;
                     env.variables.push(variable);
                 });
@@ -65,7 +69,7 @@ export class MetadataService {
 
     static async convertPostmanCollectionV1(owner: User, projectId: string, data: PostmanCollectionV1): Promise<Collection> {
         let sort = await RecordService.getMaxSort();
-        const dtoCollection = { ...data, projectId: projectId };
+        const dtoCollection = { ...data, projectId: projectId, id: StringUtil.generateUID() };
         const collection = CollectionService.fromDto(dtoCollection);
 
         collection.owner = owner;
@@ -102,6 +106,7 @@ export class MetadataService {
         dtoRecord.collectionId = cid;
         dtoRecord.sort = sort;
         dtoRecord.category = RecordCategory.folder;
+        dtoRecord.id = StringUtil.generateUID();
         return dtoRecord;
     }
 
@@ -115,17 +120,18 @@ export class MetadataService {
         dtoRecord.category = RecordCategory.record;
         const folder = folders ? folders.find(f => f.order && !!f.order.find(o => o === dtoRecord.id)) : undefined;
         dtoRecord.pid = folder ? folder.id : '';
+        dtoRecord.id = StringUtil.generateUID();
         return dtoRecord;
     }
 
     private static convertBody(data: PostmanRecord): string {
-        return data.rawModeData || data.data;
+        return _.isString(data.rawModeData || data.data) ? (data.rawModeData || data.data) : '';
     }
 
     private static convertHeaders(headers: string | DtoHeader[]): DtoHeader[] {
         let sort = 0;
         if (headers instanceof Array) {
-            return headers;
+            return headers.map((h, i) => ({ ...h, id: StringUtil.generateUID(), sort: i }));
         }
         let rst = new Array<DtoHeader>();
         const headerArr = headers.split('\n');
