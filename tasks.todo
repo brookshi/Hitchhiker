@@ -59,17 +59,18 @@
     ✔ log @done (2017/7/9 下午3:54:02)
     ✔ vm safety @done (2017/7/9 下午5:04:31)
     ✔ invite user / test @done (2017/7/9 下午10:38:42)
-    ☐ import postman
-    ☐ write test case
-    ☐ add sample collection/project/environment/schedule..
+    ✔ import postman @done (7/11/2017, 6:38:16 PM)
+    ✔ write test case @done (7/11/2017, 6:38:20 PM)
+    ☐ add sample collection/project/environment/schedule.. for new user
     ☐ test
     ☐ build to live
     ☐ unit test
-0.2.0:
+0.1.1:
+    ☐ collection tree follow active tab(expand collection/folder)
     ☐ header auto complete
+
+0.2.0:
     ☐ save all tabs, close all tabs, close all but active.
-    ☐ collection tree follow active tab
-    ☐ set cookie record
     ☐ fetch data per 30s
     ☐ project share collection/env
     ☐ body type

@@ -15,7 +15,7 @@ import { DeleteRecordType, SaveRecordType, RemoveTabType, ActiveRecordType, Move
 import { StringUtil } from '../../../utils/string_util';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { ProjectSelectedDialogMode, ProjectSelectedDialogType } from '../../../common/custom_type';
-import { getProjectsIdNameStateSelector, getOpenKeysSelector, getDisplayCollctionSelector } from './selector';
+import { getProjectsIdNameStateSelector, getOpenKeysSelector, getDisplayCollectionSelector } from './selector';
 import { newCollectionName, allProject } from '../../../common/constants';
 import './style/index.less';
 
@@ -321,7 +321,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
 const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any, ownProps: any) => {
     const getProjects = getProjectsIdNameStateSelector();
     const getOpenKeys = getOpenKeysSelector();
-    const getCollections = getDisplayCollctionSelector();
+    const getCollections = getDisplayCollectionSelector();
 
     const mapStateToProps: (state: State) => CollectionListStateProps = state => {
         const { collectionsInfo, selectedProject } = state.collectionState;

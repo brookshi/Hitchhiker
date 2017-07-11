@@ -43,7 +43,7 @@ export const getOpenKeysSelector = () => {
     );
 };
 
-export const getDisplayCollctionSelector = () => {
+export const getDisplayCollectionSelector = () => {
     return createSelector(
         [getSelectedProject, getCollections],
         (selectedProject, collections) => {
