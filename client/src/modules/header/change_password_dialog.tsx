@@ -40,10 +40,10 @@ class ChangePasswordDialog extends React.Component<ChangePasswordDlgFormProps, C
         if (this.needShowMsg && nextProps.changePasswordState.message) {
             this.needShowMsg = false;
             if (nextProps.changePasswordState.status === RequestStatus.success) {
-                message.success(nextProps.changePasswordState.message);
+                message.success(nextProps.changePasswordState.message, 3);
                 this.onCancel();
             } else if (nextProps.changePasswordState.status === RequestStatus.failed) {
-                message.warning(nextProps.changePasswordState.message);
+                message.warning(nextProps.changePasswordState.message, 3);
             }
         }
     }

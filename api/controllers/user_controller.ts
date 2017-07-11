@@ -89,7 +89,7 @@ export default class UserController extends BaseController {
     }
 
     @GET('/user/regconfirm')
-    async regConfirm( @QueryParam('id') id: string, @QueryParam('token') token: string): Promise<string> {
+    async regConfirm(ctx: Koa.Context, @QueryParam('id') id: string, @QueryParam('token') token: string): Promise<string> {
         const user = await UserService.getUserById(id);
         if (!user) {
             return Message.regConfirmFailedUserNotExist;
@@ -112,7 +112,8 @@ export default class UserController extends BaseController {
 
         UserService.active(user.id);
 
-        return Message.regConfirmSuccess;
+        ctx.body = Message.regConfirmSuccess;
+        ctx.redirect(Setting.instance.app.host);
     }
 
     @GET('/user/invite/:emails')

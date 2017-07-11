@@ -36,7 +36,7 @@ class LoginPanel extends React.Component<LoginProps, LoginPanelState> {
             this.props.checkSessionFinish();
             this.props.resetLogin();
             if (!this.props.isCheckingSessionValid) {
-                message.warning(loginState.message);
+                message.warning(loginState.message, 3);
             }
         }
     }

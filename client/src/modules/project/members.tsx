@@ -67,7 +67,7 @@ class Members extends React.Component<MembersProps, MembersState> {
     private inviteMember = () => {
         const result = StringUtil.checkEmails(this.state.inviteEmails);
         if (!result.success) {
-            message.warning(result.message);
+            message.warning(result.message, 3);
             return;
         }
         this.props.invite(this.props.activeProject, this.state.inviteEmails);

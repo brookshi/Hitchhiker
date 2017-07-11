@@ -56,6 +56,16 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
         };
     }
 
+    public componentDidUpdate(prevProps: HeaderPanelProps, prevState: HeaderPanelState) {
+        const { message } = this.props;
+        if (!!message && notification.warning) {
+            notification.warning({
+                message: 'Warning Message',
+                description: message,
+            });
+        }
+    }
+
     private onUserMenuClick = (e) => {
         switch (e.key) {
             case 'logout': {
@@ -81,7 +91,7 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
 
     private importPostman = (file: File) => {
         if (!!this.state.selectedProjectInDlg) {
-            message.warning('Please select a project first.');
+            message.warning('Please select a project first.', 3);
             return;
         }
         const fr = new FileReader();
@@ -105,14 +115,7 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
     );
 
     public render() {
-        const { syncCount, message, userName, changePasswordState } = this.props;
-
-        if (message && notification.warning) {
-            notification.warning({
-                message: 'Warning Message',
-                description: message,
-            });
-        }
+        const { syncCount, userName, changePasswordState } = this.props;
 
         return (
             <div className="header">

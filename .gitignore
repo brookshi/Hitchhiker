@@ -39,3 +39,4 @@ jspm_packages
 bin
 typings
 build
+~$test case.xlsx

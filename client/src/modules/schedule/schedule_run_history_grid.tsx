@@ -114,7 +114,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                     {this.getCellDisplay(headers)}
                 </Tooltip>
                 {headers ? (
-                    <CopyToClipboard text={beautifyHeaders} onCopy={() => message.success('Headers copied!')}>
+                    <CopyToClipboard text={beautifyHeaders} onCopy={() => message.success('Headers copied!', 3)}>
                         <Button
                             className="schedule-sub-tab-btn"
                             style={{ marginLeft: 8 }}
@@ -136,7 +136,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                     {this.getCellDisplay(body)}
                 </Tooltip>
                 {body ? (
-                    <CopyToClipboard text={beautifyBody} onCopy={() => message.success('Body copied!')}>
+                    <CopyToClipboard text={beautifyBody} onCopy={() => message.success('Body copied!', 3)}>
                         <Button
                             className="schedule-sub-tab-btn"
                             style={{ marginLeft: 8 }}

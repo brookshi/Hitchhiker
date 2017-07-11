@@ -32,7 +32,7 @@ class FindPasswordPanel extends React.Component<FindPasswordProps, FindPasswordP
             return;
         }
         if (this.needCheckRequestState && nextProps.findPasswordState.message) {
-            (nextProps.findPasswordState.status === RequestStatus.success ? message.success : message.warning)(nextProps.findPasswordState.message);
+            (nextProps.findPasswordState.status === RequestStatus.success ? message.success : message.warning)(nextProps.findPasswordState.message, 3);
             this.needCheckRequestState = false;
         }
     }

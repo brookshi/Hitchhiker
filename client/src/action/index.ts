@@ -16,6 +16,8 @@ export const SyncFailedType = 'sync failed';
 
 export const SyncRetryType = 'sync retry';
 
+export const ResetSyncMsgType = 'reset sync message';
+
 export const SessionInvalidType = 'session invalid';
 
 export function actionCreator<T>(type: string, value?: T) { return { type, value }; };

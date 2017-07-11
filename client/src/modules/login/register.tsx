@@ -48,7 +48,7 @@ class RegisterPanel extends React.Component<RegisterProps, RegisterPanelState> {
         if (this.needCheckRequestState && nextProps.registerState.message) {
             const isRegisterSuccess = nextProps.registerState.status === RequestStatus.success;
             (isRegisterSuccess ? message.success : message.warning)
-                (nextProps.registerState.message.toString());
+                (nextProps.registerState.message.toString(), 3);
             if (isRegisterSuccess) {
                 this.props.switchPanel('login');
                 this.props.resetRegister();
