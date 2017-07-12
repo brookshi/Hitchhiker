@@ -42,19 +42,21 @@ export function collectionState(state: CollectionState = collectionDefaultValue,
         case MoveRecordType: {
             const record = action.value.record;
             const oldRecord = _.values(state.collectionsInfo.records).find(s => !!s[record.id]);
-            let records = {
-                ...state.collectionsInfo.records,
-                [record.collectionId]: {
-                    ...state.collectionsInfo.records[record.collectionId],
-                    [record.id]: record
-                }
-            };
+            let records = { ...state.collectionsInfo.records };
             if (action.type === MoveRecordType && oldRecord) {
                 const oldCollectionId = oldRecord[record.id].collectionId;
                 const collectionRecords = { ...records[oldCollectionId] };
                 Reflect.deleteProperty(collectionRecords, record.id);
                 records = { ...records, [oldCollectionId]: collectionRecords };
             }
+
+            records = {
+                ...records,
+                [record.collectionId]: {
+                    ...state.collectionsInfo.records[record.collectionId],
+                    [record.id]: record
+                }
+            };
             return {
                 ...state,
                 collectionsInfo: {
@@ -97,7 +99,7 @@ export function collectionState(state: CollectionState = collectionDefaultValue,
             const records = { ...state.collectionsInfo.records };
             Reflect.deleteProperty(collections, collectionId);
             Reflect.deleteProperty(records, collectionId);
-            return { ...state, collections, records };
+            return { ...state, collectionsInfo: { ...state.collectionsInfo, collections, records } };
         }
         default: return state;
     }
@@ -170,12 +172,12 @@ function recordStates(states: _.Dictionary<RecordState> = displayRecordsDefaultV
             return { ...states, [action.value]: { ...states[action.value], isRequesting: false } };
         }
         case ActiveRecordType: {
-            const { id, name, collection } = action.value;
+            const { id, name, collectionId, collection } = action.value;
             return {
                 ...states,
                 [id]: {
                     name: name,
-                    record: { ...action.value, collectionId: collection.id },
+                    record: { ...action.value, collectionId: collectionId || collection.id },
                     isChanged: false,
                     isRequesting: false
                 }
@@ -272,7 +274,7 @@ function recordWithResState(state: DisplayRecordsState = displayRecordsDefaultVa
                 restRecordsOrder.push(activeKey);
             }
             if (recordStates[activeKey].record.collectionId === action.value) {
-                activeKey = restStates[0].record.id;
+                activeKey = restStates[_.keys(restStates)[0]].record.id;
             }
             return { ...state, recordStates: restStates, recordsOrder: restRecordsOrder, activeKey };
         }

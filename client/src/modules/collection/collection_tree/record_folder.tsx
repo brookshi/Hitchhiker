@@ -22,7 +22,9 @@ interface RecordFolderProps {
 
 interface RecordFolderState {
 
-    isDragOver?: boolean;
+    isDragOver: boolean;
+
+    isEdit: boolean;
 }
 
 class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState> {
@@ -31,14 +33,15 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
 
     constructor(props: RecordFolderProps) {
         super(props);
-        this.state = { isDragOver: false };
+        this.state = { isDragOver: false, isEdit: false };
     }
 
     public shouldComponentUpdate(nextProps: RecordFolderProps, nextState: RecordFolderState) {
         return this.props.folder.id !== nextProps.folder.id ||
             this.props.folder.name !== nextProps.folder.name ||
             this.props.isOpen !== nextProps.isOpen ||
-            this.state.isDragOver !== nextState.isDragOver;
+            this.state.isDragOver !== nextState.isDragOver ||
+            this.state.isEdit !== nextState.isEdit;
     }
 
     private getMenu = () => {
@@ -62,6 +65,7 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
 
     edit = () => {
         if (this.itemWithMenu) {
+            this.setState({ ...this.state, isEdit: true });
             this.itemWithMenu.edit();
         }
     }
@@ -99,10 +103,9 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
     }
 
     public render() {
-
         return (
             <div className={this.state.isDragOver ? 'folder-item-container' : ''}
-                draggable={true}
+                draggable={!this.state.isEdit}
                 onDragStart={this.dragStart}
                 onDragOver={this.dragOver}
                 onDragLeave={this.dragLeave}
@@ -110,7 +113,10 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
             >
                 <ItemWithMenu
                     ref={ele => this.itemWithMenu = ele}
-                    onNameChanged={this.props.onNameChanged}
+                    onNameChanged={name => {
+                        this.setState({ ...this.state, isEdit: false });
+                        this.props.onNameChanged(name);
+                    }}
                     icon={(
                         <Icon
                             className="c-icon"

@@ -153,7 +153,7 @@ export class RecordService {
                 .delete()
                 .where('record.id=:id', { id: id })
                 .execute();
-        })
+        });
         return { success: true, message: Message.recordDeleteSuccess };
     }
 
@@ -257,7 +257,7 @@ export class RecordService {
 
     private static async clearHistories(manager: EntityManager, rid: string): Promise<any> {
         await manager.createQueryBuilder(RecordHistory, 'recordHistory')
-            .where('record=:rid', { rid })
+            .where('targetId=:rid', { rid })
             .delete()
             .execute();
     }

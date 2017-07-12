@@ -12,7 +12,7 @@
         "storeMaxCount": 10
     },
     "user": {
-        "registerMailConfirm": true
+        "registerMailConfirm": false
     },
     "mail": {
         "host": "http://localhost:82/api/mail/"
