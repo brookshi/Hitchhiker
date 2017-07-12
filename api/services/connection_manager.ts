@@ -1,4 +1,4 @@
-import { createConnection, Connection, ConnectionOptions } from 'typeorm';
+import { createConnection, Connection, ConnectionOptions, getConnection } from 'typeorm';
 import { Log } from '../utils/log';
 
 export class ConnectionManager {
@@ -30,7 +30,7 @@ export class ConnectionManager {
         while (ConnectionManager.instance === null) {
             await new Promise(resolve => setTimeout(resolve, 1000));
         }
-        return ConnectionManager.instance;
+        return getConnection();
     }
 
     static async init(): Promise<any> {
