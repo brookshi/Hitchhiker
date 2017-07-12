@@ -3,12 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@types/jest": "^19.2.4",
-    "@types/node": "^7.0.22",
-    "@types/react": "^15.0.25",
-    "@types/react-dom": "^0.14.23",
-    "@types/react-redux": "^4.4.41",
-    "@types/reflect-metadata": "0.0.5",
     "antd": "^2.10.4",
     "babel-core": "^6.24.1",
     "babel-loader": "^6.4.1",
@@ -35,6 +29,12 @@
     "uuid": "^3.0.1"
   },
   "devDependencies": {
+    "@types/jest": "^19.2.4",
+    "@types/node": "^7.0.22",
+    "@types/react": "^15.0.25",
+    "@types/react-dom": "^0.14.23",
+    "@types/react-redux": "^4.4.41",
+    "@types/reflect-metadata": "0.0.5",
     "app-root-path": "^2.0.1",
     "autoprefixer": "6.7.2",
     "case-sensitive-paths-webpack-plugin": "1.1.4",

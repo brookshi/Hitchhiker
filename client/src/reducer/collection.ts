@@ -134,7 +134,7 @@ function activeKey(state: string = displayRecordsDefaultValue.activeKey, action:
 function recordsOrder(state: string[] = displayRecordsDefaultValue.recordsOrder, action: any): string[] {
     switch (action.type) {
         case ActiveRecordType: {
-            return [...state, action.value.id];
+            return state.some(v => v === action.value.id) ? state : [...state, action.value.id];
         }
         case UpdateTabRecordId: {
             const { oldId, newId } = action.value;
