@@ -167,27 +167,25 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                                 <Tabs.TabPane
                                     key={key}
                                     tab={<Badge count="" dot={isChanged}>{name}</Badge>}
-                                    closable={true}
-                                >
-                                    <div className="req-res-panel">
-                                        <div ref={(ele: any) => this.reqPanel = ele}>
-                                            {
-                                                !isResPanelMaximum ? (
-                                                    <div>
-                                                        <RequestNamePanel />
-                                                        <RequestUrlPanel />
-                                                        <RequestOptionPanel />
-                                                    </div>
-                                                ) : ''
-                                            }
-                                        </div>
-                                        <ResponsePanel />
-                                    </div>
-                                </Tabs.TabPane>
+                                    closable={true} />
                             );
                         })
                     }
                 </Tabs>
+                <div className="req-res-panel">
+                    <div ref={(ele: any) => this.reqPanel = ele}>
+                        {
+                            !isResPanelMaximum ? (
+                                <div>
+                                    <RequestNamePanel />
+                                    <RequestUrlPanel />
+                                    <RequestOptionPanel />
+                                </div>
+                            ) : ''
+                        }
+                    </div>
+                    <ResponsePanel />
+                </div>
                 {this.confirmCloseDialog}
             </div>
         );

@@ -23,8 +23,9 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
         let rst = data as DtoHeader[];
         if (!(data instanceof Array)) {
             rst = StringUtil.stringToKeyValues(data.currentTarget.value) as DtoHeader[];
+        } else {
+            rst = rst.filter(header => header.key || header.value);
         }
-        rst = rst.filter(header => header.key || header.value);
         this.props.onHeadersChanged(rst);
     }
 
