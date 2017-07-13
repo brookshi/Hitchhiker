@@ -11,7 +11,7 @@ export function environmentState(state: EnvironmentState = environmentDefaultVal
         }
         case SaveEnvironmentType: {
             const newEnv = action.value.env;
-            const envs = [...state.environments[newEnv.project.id]];
+            const envs = [...(state.environments[newEnv.project.id] || [])];
             if (!action.value.isNew) {
                 _.remove(envs, e => e.id === newEnv.id);
             }

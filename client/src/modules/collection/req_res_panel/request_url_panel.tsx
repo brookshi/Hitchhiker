@@ -150,9 +150,13 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         this.props.sendRequest(environment, { ...record, headers: [...headers, { key: 'Cookie', value: _.values(allCookies).join('; '), isActive: true }] });
     }
 
+    private onUrlChanged = (url: string) => {
+        this.props.changeRecord({ ...this.props.record, url });
+    }
+
     public render() {
 
-        const { record, isRequesting, changeRecord, collectionTreeData } = this.props;
+        const { record, isRequesting, collectionTreeData } = this.props;
 
         const menu = (
             <Menu onClick={this.onSaveAs}>
@@ -167,7 +171,7 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
                         placeholder="please enter url of this request"
                         size="large"
                         spellCheck={false}
-                        onChange={(e) => changeRecord({ ...record, url: e.currentTarget.value })}
+                        onChange={(e) => this.onUrlChanged(e.currentTarget.value)}
                         addonBefore={this.getMethods(record.method)}
                         value={record.url} />
                 </div>

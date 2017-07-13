@@ -34,6 +34,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
     public shouldComponentUpdate(nextProps: RecordItemProps, nextState: RecordItemState) {
         return this.props.record.id !== nextProps.record.id ||
             this.props.record.name !== nextProps.record.name ||
+            this.props.record.method !== nextProps.record.method ||
             this.props.inFolder !== nextProps.inFolder;
     }
 

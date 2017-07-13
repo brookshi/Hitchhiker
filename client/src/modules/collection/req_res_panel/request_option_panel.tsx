@@ -48,9 +48,8 @@ type RequestOptionPanelProps = RequestOptionPanelStateProps & RequestOptionPanel
 interface RequestOptionPanelState { }
 
 class RequestOptionPanel extends React.Component<RequestOptionPanelProps, RequestOptionPanelState> {
-
     shouldComponentUpdate(nextProps: RequestOptionPanelProps, nextState: RequestOptionPanelState) {
-        return !_.isEqual(_.omit(this.props, _.functions(this.props)), _.omit(nextProps, _.functions(this.props)));
+        return !_.isEqual(_.omit(this.props, _.functionsIn(this.props)), _.omit(nextProps, _.functionsIn(nextProps)));
     }
 
     private onTabChanged = (key) => {
@@ -79,7 +78,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                     <KeyValueList
                         mode={headersEditMode}
                         onHeadersChanged={this.onHeadersChanged}
-                        headers={headers}
+                        headers={_.cloneDeep(headers)}
                     />
                 </TabPane>
                 <TabPane tab={(
