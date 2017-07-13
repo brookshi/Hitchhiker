@@ -13,7 +13,7 @@ export class ConnectionManager {
         password: 'hitchhiker888',
         database: 'hitchhiker',
         logging: {
-            logger: (level: string, message: any) => Log[level === 'log' ? 'debug' : level](message),
+            logger: (level: string, message: any) => Log[!Log[level] ? 'debug' : level](message),
             logQueries: true,
             logSchemaCreation: true,
             logFailedQueryError: true,

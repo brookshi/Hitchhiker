@@ -147,7 +147,7 @@ export class RecordService {
         await HeaderService.deleteForRecord(id);
 
         const connection = await ConnectionManager.getInstance();
-        await connection.manager.transaction(async manager => {
+        await connection.transaction(async manager => {
             await RecordService.clearHistories(manager, id);
             await manager.createQueryBuilder(Record, 'record')
                 .delete()
@@ -180,7 +180,7 @@ export class RecordService {
 
     static async sort(recordId: string, folderId: string, collectionId: string, newSort: number): Promise<ResObject> {
         const connection = await ConnectionManager.getInstance();
-        await connection.manager.transaction(async manager => {
+        await connection.transaction(async manager => {
             await manager.query('update record r set r.sort = r.sort+1 where r.sort >= ? and r.collectionId = ? and pid = ?', [newSort, collectionId, folderId]);
             await manager.createQueryBuilder(Record, 'record')
                 .where('record.id=:id', { 'id': recordId })
@@ -198,7 +198,7 @@ export class RecordService {
             record.id = StringUtil.generateUID();
         }
         const connection = await ConnectionManager.getInstance();
-        await connection.manager.transaction(async manager => {
+        await connection.transaction(async manager => {
             await manager.save(record);
             if (record.category === RecordCategory.record) {
                 await manager.save(RecordService.createRecordHistory(record));

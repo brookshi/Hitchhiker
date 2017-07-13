@@ -84,7 +84,7 @@ export class EnvironmentService {
         const env = await EnvironmentService.get(dtoEnv.id, true);
         const newEnv = EnvironmentService.fromDto(dtoEnv);
         EnvironmentService.adjustVariables(newEnv);
-        await connection.manager.transaction(async manager => {
+        await connection.transaction(async manager => {
             if (env && env.variables && env.variables.length > 0) {
                 await manager.remove(env.variables);
             }
@@ -98,7 +98,7 @@ export class EnvironmentService {
         const connection = await ConnectionManager.getInstance();
         const env = await EnvironmentService.get(id, true);
         if (env) {
-            await connection.manager.transaction(async manager => {
+            await connection.transaction(async manager => {
                 await manager.remove(env.variables);
                 await manager.remove(env);
             });
