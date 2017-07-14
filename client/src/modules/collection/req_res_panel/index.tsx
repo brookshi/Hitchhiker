@@ -13,7 +13,7 @@ import { ActiveTabType, SaveRecordType, AddTabType, RemoveTabType } from '../../
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 import { State } from '../../../state/index';
 import { ResizeResHeightType } from '../../../action/ui';
-import { getReqActiveTabKeySelector, getIsResPanelMaximumSelector } from './selector';
+import { getReqActiveTabKeySelector, getIsResPanelMaximumSelector, getActiveRecordStateSelector, getResHeightSelector } from './selector';
 import { newRecordFlag } from '../../../common/constants';
 
 interface ReqResPanelStateProps {
@@ -25,6 +25,10 @@ interface ReqResPanelStateProps {
     isResPanelMaximum: boolean;
 
     activeReqTab: string;
+
+    isRequesting: boolean;
+
+    resHeight: number;
 }
 
 interface ReqResPanelDispatchProps {
@@ -82,6 +86,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
             activeKey: props.activeKey,
             isResPanelMaximum: props.isResPanelMaximum,
             activeReqTab: props.activeReqTab,
+            isRequesting: props.isRequesting,
             recordProperties: _.values(props.recordStates).map(r => ({
                 isChanged: r.isChanged,
                 name: r.name,
@@ -112,13 +117,14 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 
     private adjustResPanelHeight = () => {
-        if (!this.reqPanel || this.reqHeight === this.reqPanel.clientHeight) {
-            return;
+        if (this.reqPanel) {
+            const { activeKey, resizeResHeight, resHeight } = this.props;
+            this.reqHeight = this.reqPanel.clientHeight;
+            const newResHeight = this.reqResPanel.clientHeight - this.reqHeight - 88;
+            if (resHeight !== newResHeight) {
+                resizeResHeight(activeKey, newResHeight);
+            }
         }
-        const { activeKey, resizeResHeight } = this.props;
-        this.reqHeight = this.reqPanel.clientHeight;
-        const resHeight = this.reqResPanel.clientHeight - this.reqHeight - 88;
-        resizeResHeight(activeKey, resHeight);
     }
 
     private get confirmCloseDialog() {
@@ -197,8 +203,10 @@ const mapStateToProps = (state: State): ReqResPanelStateProps => {
     return {
         activeKey,
         recordStates,
+        isRequesting: getActiveRecordStateSelector()(state).isRequesting,
         isResPanelMaximum: getIsResPanelMaximumSelector()(state),
-        activeReqTab: getReqActiveTabKeySelector()(state)
+        activeReqTab: getReqActiveTabKeySelector()(state),
+        resHeight: getResHeightSelector()(state),
     };
 };
 

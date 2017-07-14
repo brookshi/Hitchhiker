@@ -48,12 +48,22 @@ type RequestOptionPanelProps = RequestOptionPanelStateProps & RequestOptionPanel
 interface RequestOptionPanelState { }
 
 class RequestOptionPanel extends React.Component<RequestOptionPanelProps, RequestOptionPanelState> {
+
+    private bodyEditor: Editor;
+
     shouldComponentUpdate(nextProps: RequestOptionPanelProps, nextState: RequestOptionPanelState) {
         return !_.isEqual(_.omit(this.props, _.functionsIn(this.props)), _.omit(nextProps, _.functionsIn(nextProps)));
     }
 
     private onTabChanged = (key) => {
         this.props.selectReqTab(this.props.activeKey, key);
+    }
+
+    public componentDidUpdate(nextProps: RequestOptionPanelProps, nextState: RequestOptionPanelState) {
+        if (this.bodyEditor) {
+            this.bodyEditor.forceUpdate();
+
+        }
     }
 
     private onHeadersChanged = (data: DtoHeader[]) => {
@@ -86,7 +96,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                         Body
                     </Badge>
                 )} key="body">
-                    <Editor type={bodyTypes[this.currentBodyType()]} fixHeight={true} height={300} value={body} onChange={v => this.props.changeRecord({ 'body': v })} />
+                    <Editor ref={ele => this.bodyEditor = ele} type={bodyTypes[this.currentBodyType()]} fixHeight={true} height={300} value={body} onChange={v => this.props.changeRecord({ 'body': v })} />
                 </TabPane>
                 <TabPane tab={(
                     <Badge style={normalBadgeStyle} dot={!!test && test.length > 0} count="">

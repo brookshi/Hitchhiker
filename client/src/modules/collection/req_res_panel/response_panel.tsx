@@ -124,7 +124,7 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
 
         return (
             <Tabs
-                className="req-res-tabs res-tab"
+                className="req-res-tabs"
                 defaultActiveKey="content"
                 activeKey={this.props.activeTab}
                 onChange={v => selectResTab(activeKey, v)}

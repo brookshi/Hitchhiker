@@ -11,7 +11,7 @@ import { DtoCollection } from '../../../../../api/interfaces/dto_collection';
 import { RecordCategory } from '../../../common/record_category';
 import { actionCreator } from '../../../action';
 import { DeleteCollectionType, SaveCollectionType, SelectedProjectChangedType, CollectionOpenKeysType } from '../../../action/collection';
-import { DeleteRecordType, SaveRecordType, RemoveTabType, ActiveRecordType, MoveRecordType } from '../../../action/record';
+import { DeleteRecordType, SaveRecordType, RemoveTabType, ActiveRecordType, MoveRecordType, SaveAsRecordType } from '../../../action/record';
 import { StringUtil } from '../../../utils/string_util';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { ProjectSelectedDialogMode, ProjectSelectedDialogType } from '../../../common/custom_type';
@@ -354,8 +354,8 @@ const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps
         updateRecord: (record) => dispatch(actionCreator(SaveRecordType, { isNew: false, record })),
         saveCollection: (collection) => { dispatch(actionCreator(SaveCollectionType, { isNew: true, collection })); },
         updateCollection: (collection) => { dispatch(actionCreator(SaveCollectionType, { isNew: false, collection })); },
-        duplicateRecord: (record) => dispatch(actionCreator(SaveRecordType, { isNew: true, record: { ...record, id: StringUtil.generateUID(), name: `${record.name}.copy` } })),
-        createFolder: (record) => dispatch(actionCreator(SaveRecordType, { isNew: true, record })),
+        duplicateRecord: (record) => dispatch(actionCreator(SaveAsRecordType, { isNew: true, record: { ...record, id: StringUtil.generateUID(), name: `${record.name}.copy` } })),
+        createFolder: (record) => dispatch(actionCreator(SaveAsRecordType, { isNew: true, record })),
         moveRecord: record => dispatch(actionCreator(MoveRecordType, { record })),
         openKeysChanged: openKeys => dispatch(actionCreator(CollectionOpenKeysType, openKeys)),
         selectProject: projectId => dispatch(actionCreator(SelectedProjectChangedType, projectId))

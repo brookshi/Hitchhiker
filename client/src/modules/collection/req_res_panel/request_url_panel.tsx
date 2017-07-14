@@ -4,7 +4,7 @@ import { Input, Button, Dropdown, Select, Menu, Modal, TreeSelect, message } fro
 import { HttpMethod } from '../../../common/http_method';
 import { getActiveRecordSelector, getActiveRecordStateSelector, getActiveEnvIdSelector, getCollectionTreeDataSelector } from './selector';
 import { actionCreator } from '../../../action/index';
-import { SaveRecordType, SaveAsRecordType, SendRequestType, UpdateDisplayRecordType, UpdateTabRecordId } from '../../../action/record';
+import { SaveRecordType, SaveAsRecordType, SendRequestType, UpdateDisplayRecordType } from '../../../action/record';
 import { State } from '../../../state/index';
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 import { newRecordFlag } from '../../../common/constants';
@@ -34,11 +34,9 @@ interface RequestUrlPanelDispatchProps {
 
     saveAs(record: DtoRecord);
 
-    save(record: DtoRecord);
+    save(record: DtoRecord, isNew: boolean, oldId?: string);
 
     sendRequest(environment: string, record: DtoRecord);
-
-    updateTabRecordId(oldId: string, newId: string);
 }
 
 type RequestUrlPanelProps = RequestUrlPanelStateProps & RequestUrlPanelDispatchProps;
@@ -106,7 +104,7 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
             if (record.id.startsWith(newRecordFlag)) {
                 this.setState({ ...this.state, isSaveDlgOpen: true });
             } else {
-                this.props.save(record);
+                this.props.save(record, false);
             }
         }
     }
@@ -126,9 +124,8 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         } else {
             if (oldRecordId.startsWith(newRecordFlag)) {
                 record.id = StringUtil.generateUID();
-                this.props.updateTabRecordId(oldRecordId, record.id);
             }
-            this.props.save(record);
+            this.props.save(record, true, oldRecordId);
             this.setState({ ...this.state, isSaveDlgOpen: false });
         }
     }
@@ -231,10 +228,9 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
 const mapDispatchToProps = (dispatch: Dispatch<any>): RequestUrlPanelDispatchProps => {
     return {
         changeRecord: (record) => dispatch(actionCreator(UpdateDisplayRecordType, record)),
-        save: (record) => dispatch(actionCreator(SaveRecordType, { isNew: false, record })),
+        save: (record, isNew, oldId) => dispatch(actionCreator(SaveRecordType, { isNew, record, oldId })),
         saveAs: (record) => dispatch(actionCreator(SaveAsRecordType, { isNew: true, record })),
         sendRequest: (environment, record) => dispatch(actionCreator(SendRequestType, { environment, record })),
-        updateTabRecordId: (oldId, newId) => dispatch(actionCreator(UpdateTabRecordId, { oldId, newId })),
     };
 };
 

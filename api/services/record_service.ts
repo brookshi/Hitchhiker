@@ -114,6 +114,7 @@ export class RecordService {
 
     static async create(record: Record): Promise<ResObject> {
         record.sort = await RecordService.getMaxSort();
+        RecordService.adjustHeaders(record);
         return await RecordService.save(record);
     }
 

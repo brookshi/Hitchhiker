@@ -32,11 +32,14 @@ interface EditorState { }
 
 class Editor extends React.Component<EditorProps, EditorState> {
 
-    public render() {
-        const { type, value, height, width, readOnly, onChange } = this.props;
-        const activeHeight = height || 500;
+    private offsetHeight = -1;
 
-        let props = {
+    public render() {
+        this.offsetHeight = this.offsetHeight === 1 ? -1 : this.offsetHeight + 1;
+        const { type, value, height, width, readOnly, onChange } = this.props;
+        const activeHeight = (height || 500) + this.offsetHeight;
+
+        let props: any = {
             className: 'req-editor',
             mode: type,
             theme: 'eclipse',
@@ -47,6 +50,7 @@ class Editor extends React.Component<EditorProps, EditorState> {
             showPrintMargin: false,
             wrapEnabled: true,
             value: value,
+            focus: true,
             readOnly: readOnly,
             onChange: onChange,
             editorProps: { $blockScrolling: Infinity }

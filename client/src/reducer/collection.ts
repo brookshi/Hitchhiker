@@ -1,5 +1,5 @@
 import { FetchCollectionSuccessType, SaveCollectionType, DeleteCollectionType, SelectedProjectChangedType, CollectionOpenKeysType, FetchCollectionFailedType, FetchCollectionPendingType } from '../action/collection';
-import { ActiveTabType, ActiveRecordType, DeleteRecordType, MoveRecordType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, UpdateTabRecordId, SaveAsRecordType } from '../action/record';
+import { ActiveTabType, ActiveRecordType, DeleteRecordType, MoveRecordType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, SaveAsRecordType } from '../action/record';
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
 import { RecordCategory } from '../common/record_category';
@@ -124,8 +124,10 @@ function activeKey(state: string = displayRecordsDefaultValue.activeKey, action:
             return action.value;
         case ActiveRecordType:
             return action.value.id;
-        case UpdateTabRecordId:
-            return action.value.newId;
+        case SaveRecordType: {
+            const { isNew, oldId, record } = action.value;
+            return isNew && oldId ? record.id : state;
+        }
         default:
             return state;
     }
@@ -136,13 +138,15 @@ function recordsOrder(state: string[] = displayRecordsDefaultValue.recordsOrder,
         case ActiveRecordType: {
             return state.some(v => v === action.value.id) ? state : [...state, action.value.id];
         }
-        case UpdateTabRecordId: {
-            const { oldId, newId } = action.value;
-            const index = state.indexOf(oldId);
-            if (index > -1) {
-                const newState = [...state];
-                newState[index] = newId;
-                return newState;
+        case SaveRecordType: {
+            const { isNew, oldId, record } = action.value;
+            if (isNew) {
+                const index = state.indexOf(oldId);
+                if (index > -1) {
+                    const newState = [...state];
+                    newState[index] = record.id;
+                    return newState;
+                }
             }
             return state;
         }
@@ -158,8 +162,13 @@ function recordStates(states: _.Dictionary<RecordState> = displayRecordsDefaultV
             return { ...states, [id]: { ...states[id], isRequesting: true } };
         }
         case SaveRecordType: {
-            const { id, name } = action.value.record;
-            if (states[id]) {
+            const { isNew, record, oldId } = action.value;
+            const { id, name } = record;
+            if (isNew && oldId && states[oldId]) {
+                const newState = { ...states, [id]: { ...states[oldId], record: action.value.record, name, isChanged: false } };
+                Reflect.deleteProperty(newState, oldId);
+                return newState;
+            } else if (states[id]) {
                 return { ...states, [id]: { ...states[id], record: action.value.record, name, isChanged: false } };
             }
             return states;
@@ -183,16 +192,6 @@ function recordStates(states: _.Dictionary<RecordState> = displayRecordsDefaultV
                 }
             };
         }
-        case UpdateTabRecordId: {
-            const { oldId, newId } = action.value;
-            const state = states[oldId];
-            if (state) {
-                const newStates = { ...states };
-                Reflect.deleteProperty(newStates, oldId);
-                return { ...newStates, [newId]: { ...state, record: { ...state.record, id: newId } } };
-            }
-            return states;
-        }
         default:
             return states;
     }
@@ -201,6 +200,15 @@ function recordStates(states: _.Dictionary<RecordState> = displayRecordsDefaultV
 function recordWithResState(state: DisplayRecordsState = displayRecordsDefaultValue, action: any): DisplayRecordsState {
     let { recordStates, activeKey, responseState, recordsOrder } = state;
     switch (action.type) {
+        case SaveRecordType: {
+            const { isNew, record, oldId } = action.value;
+            if (!isNew || !oldId) {
+                return state;
+            }
+            const newResState = { ...responseState, [record.id]: state.responseState[oldId] };
+            Reflect.deleteProperty(newResState, oldId);
+            return { ...state, responseState: newResState };
+        }
         case AddTabType: {
             const newRecordState = getNewRecordState();
             return {

@@ -13,8 +13,6 @@ export const UpdateDisplayRecordPropertyType = 'update display record property';
 
 export const ActiveTabType = 'active tab';
 
-export const UpdateTabRecordId = 'update tab record id';
-
 export const SendRequestType = 'send request';
 
 export const SendRequestFulfilledType = 'send request fulfill';

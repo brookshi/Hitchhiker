@@ -62,12 +62,14 @@
     ✔ import postman @done (7/11/2017, 6:38:16 PM)
     ✔ write test case @done (7/11/2017, 6:38:20 PM)
     ☐ add sample collection/project/environment/schedule.. for new user
+    ☐ mail en & write password
     ☐ test
     ☐ build to live
     ☐ unit test
 0.1.1:
+    ☐ clear local cache
     ☐ collection tree follow active tab(expand collection/folder)
-    ☐ header auto complete
+    ☐ request header auto complete
 
 0.2.0:
     ☐ save all tabs, close all tabs, close all but active.

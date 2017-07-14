@@ -13,7 +13,7 @@ export function projectState(state: ProjectState = projectDefaultValue, action: 
         }
         case SaveProjectType: {
             const project = action.value.project;
-            return { ...state, projects: { ...state.projects, [project.id]: project } };
+            return { ...state, projects: { ...state.projects, [project.id]: project }, activeProject: project.id };
         }
         case ActiveProjectType: {
             return { ...state, activeProject: action.value };
@@ -21,7 +21,7 @@ export function projectState(state: ProjectState = projectDefaultValue, action: 
         case QuitProjectType:
         case DisbandProjectType: {
             const projects = { ...state.projects };
-            const activeProject = action.value.id === state.activeProject ? projects[_.keys(projects)[0]].id : state.activeProject;
+            const activeProject = action.value.id === state.activeProject ? (projects[_.keys(projects)[0]].id || '') : state.activeProject;
             Reflect.deleteProperty(projects, action.value.id);
             return { ...state, projects, activeProject };
         }

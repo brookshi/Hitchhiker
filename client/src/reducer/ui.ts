@@ -3,7 +3,7 @@ import { UIState, AppUIState, appUIDefaultValue, ReqResUIState, uiDefaultValue, 
 import { combineReducers } from 'redux';
 import { ResizeLeftPanelType, UpdateLeftPanelType, SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType, SwitchHeadersEditModeType } from '../action/ui';
 import { SyncType, SyncSuccessType, SyncRetryType, ResetSyncMsgType } from '../action/index';
-import { RemoveTabType } from '../action/record';
+import { RemoveTabType, SaveRecordType } from '../action/record';
 
 export function uiState(state: UIState = uiDefaultValue, action: any): UIState {
     return combineReducers<UIState>({
@@ -78,6 +78,15 @@ function reqResUIState(state: _.Dictionary<ReqResUIState> = {}, action: any): _.
         case SwitchHeadersEditModeType: {
             const { mode, recordId } = action.value;
             return { ...state, [recordId]: { ...state[recordId], headersEditMode: mode } };
+        }
+        case SaveRecordType: {
+            const { isNew, record, oldId } = action.value;
+            if (isNew && oldId) {
+                const newState = { ...state, [record.id]: { ...state[oldId] } };
+                Reflect.deleteProperty(newState, oldId);
+                return newState;
+            }
+            return state;
         }
         default:
             return state;
