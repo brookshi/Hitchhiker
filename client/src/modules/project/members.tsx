@@ -51,27 +51,41 @@ class Members extends React.Component<MembersProps, MembersState> {
         };
     }
 
-    private removeUser = (record: Member) => {
+    private removeUser = (member: Member) => {
         confirmDlg(
             'user',
-            () => this.props.removeUser(this.props.activeProject, record.id),
+            () => this.props.removeUser(this.props.activeProject, member.id),
             'remove',
-            record.name
+            member.name
         );
     }
 
     private clickInviteBtn = () => {
-        this.setState({ ...this.state, isInviteDlgOpen: true }, () => this.inviteEmailInput && (ReactDOM.findDOMNode(this.inviteEmailInput).getElementsByTagName('input')[0] as HTMLInputElement).focus());
+        this.setState({ ...this.state, isInviteDlgOpen: true }, () => this.inviteEmailInputDom && this.inviteEmailInputDom.focus());
+    }
+
+    private get inviteEmailInputDom() {
+        if (this.inviteEmailInput) {
+            return ReactDOM.findDOMNode(this.inviteEmailInput).getElementsByTagName('input')[0] as HTMLInputElement;
+        }
+        return undefined;
     }
 
     private inviteMember = () => {
-        const result = StringUtil.checkEmails(this.state.inviteEmails);
-        if (!result.success) {
-            message.warning(result.message, 3);
-            return;
+        const invite = () => {
+            const result = StringUtil.checkEmails(this.state.inviteEmails);
+            if (!result.success) {
+                message.warning(result.message, 3);
+                return;
+            }
+            this.props.invite(this.props.activeProject, this.state.inviteEmails);
+            this.setState({ ...this.state, isInviteDlgOpen: false });
+        };
+        if (this.inviteEmailInputDom && !!this.inviteEmailInputDom.defaultValue) {
+            this.setState({ ...this.state, inviteEmails: [...this.state.inviteEmails, this.inviteEmailInputDom.defaultValue] }, invite);
+        } else {
+            invite();
         }
-        this.props.invite(this.props.activeProject, this.state.inviteEmails);
-        this.setState({ ...this.state, isInviteDlgOpen: false });
     }
 
     private inviteEmailsChanged = (value) => {

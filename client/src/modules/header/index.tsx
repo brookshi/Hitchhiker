@@ -149,7 +149,7 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
                 />
                 <Modal
                     visible={this.state.isImportDlgOpen}
-                    title="Import data from Postman"
+                    title="Import data from Postman V1 JSON"
                     width={500}
                     closable={true}
                     onCancel={() => this.setState({ ...this.state, isImportDlgOpen: false })}
@@ -157,7 +157,7 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
                     <div>Select project for import data:</div>
                     <TreeSelect
                         allowClear={true}
-                        style={{ width: '100%' }}
+                        style={{ marginTop: 8, width: '100%' }}
                         dropdownStyle={{ maxHeight: 500, overflow: 'auto' }}
                         placeholder="Please select project"
                         treeDefaultExpandAll={true}

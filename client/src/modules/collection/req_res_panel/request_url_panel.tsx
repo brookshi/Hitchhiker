@@ -77,7 +77,7 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         const value = (defaultValue || HttpMethod.GET).toUpperCase();
         const { record, changeRecord } = this.props;
         return (
-            <Select defaultValue={value} dropdownMenuStyle={{ maxHeight: 300 }} onChange={e => changeRecord({ ...record, method: e.toString() })} style={{ width: 100 }}>
+            <Select value={value} dropdownMenuStyle={{ maxHeight: 300 }} onChange={e => changeRecord({ ...record, method: e.toString() })} style={{ width: 100 }}>
                 {
                     Object.keys(HttpMethod).map(k =>
                         <Option key={k} value={k}>{k}</Option>)
@@ -136,7 +136,7 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
     private sendRequest = () => {
         const { record, environment, cookies } = this.props;
         const headers = [...record.headers || []];
-        const hostName = new URL(record.url || '').hostname;
+        const hostName = StringUtil.getHostFromUrl(record.url);
         const localCookies = hostName ? cookies[hostName] || [] : [];
         const cookieHeader = headers.find(h => h.isActive && (h.key || '').toLowerCase() === 'cookie');
 

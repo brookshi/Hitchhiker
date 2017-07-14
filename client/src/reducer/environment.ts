@@ -26,8 +26,7 @@ export function environmentState(state: EnvironmentState = environmentDefaultVal
         }
         case DelEnvironmentType: {
             const { projectId, envId } = action.value;
-            const envs = { ...state.environments[projectId] };
-            _.remove(envs, e => e.id === envId);
+            const envs = (state.environments[projectId] || []).filter(e => e.id !== envId);
             return { ...state, environments: { ...state.environments, [projectId]: envs } };
         }
         case SwitchEnvType: {

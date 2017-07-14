@@ -112,4 +112,12 @@ export class StringUtil {
             emails: emailArr.filter(e => StringUtil.checkEmail(e))
         };
     }
+
+    static getHostFromUrl(url: string | undefined): string {
+        try {
+            return new URL(url || '').hostname;
+        } catch (e) {
+            return url || '';
+        }
+    }
 }

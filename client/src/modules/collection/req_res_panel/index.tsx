@@ -66,7 +66,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 
     shouldComponentUpdate(nextProps: ReqResPanelProps, nextState: ReqResPanelState) {
-        return !_.isEqual(this.getUsingProperties(this.props), this.getUsingProperties(nextProps));
+        return !_.isEqual(this.getUsingProperties(this.props), this.getUsingProperties(nextProps)) || !_.isEqual(this.state, nextState);
     }
 
     public componentDidMount() {
