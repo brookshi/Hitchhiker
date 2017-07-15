@@ -11,6 +11,7 @@ import { FetchLocalDataSuccessType } from '../action/local_data';
 import { localDataState } from './local_data';
 import { syncDefaultValue } from '../state/ui';
 import { scheduleState } from './schedule';
+import { ReloadType } from '../action/index';
 
 export const reduceReducers = (...reducers) => {
     return (state, action) =>
@@ -39,6 +40,10 @@ export function rootReducer(state: State, action: any): State {
 
 function multipleStateReducer(state: State, action: any): State {
     switch (action.type) {
+        case ReloadType: {
+            location.reload(true);
+            return state;
+        }
         case UpdateDisplayRecordPropertyType: {
             const { activeKey, recordStates } = state.displayRecordsState;
             return updateStateRecord(state, { ...recordStates[activeKey].record, ...action.value });

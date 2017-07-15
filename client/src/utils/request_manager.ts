@@ -9,6 +9,13 @@ export interface SyncItem {
     url: string;
 
     body?: any;
+
+    successAction?: SyncSuccessAction;
+}
+
+export interface SyncSuccessAction {
+
+    (value?: any): { type: string, value?: any };
 }
 
 const jsonHeaders = { 'Content-Type': 'application/json' };

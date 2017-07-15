@@ -1,7 +1,7 @@
 import { call, put, takeLatest, takeEvery } from 'redux-saga/effects';
 import RequestManager from '../utils/request_manager';
 import { HttpMethod } from '../common/http_method';
-import { syncAction, actionCreator, SessionInvalidType } from './index';
+import { syncAction, actionCreator, SessionInvalidType, ReloadType } from './index';
 
 export const RefreshCollectionType = 'refresh collection';
 
@@ -68,7 +68,7 @@ export function* saveCollection() {
 
 export function* importPostman() {
     yield takeEvery(ImportPostmanDataType, function* (action: any) {
-        const channelAction = syncAction({ type: ImportPostmanDataType, method: HttpMethod.POST, url: `http://localhost:3000/api/collection/postman/${action.value.projectid}`, body: action.value.data });
+        const channelAction = syncAction({ type: ImportPostmanDataType, method: HttpMethod.POST, url: `http://localhost:3000/api/collection/postman/${action.value.projectId}`, body: action.value.data, successAction: () => actionCreator(ReloadType) });
         yield put(channelAction);
     });
 }

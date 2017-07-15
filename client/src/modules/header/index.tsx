@@ -3,7 +3,7 @@ import { connect, Dispatch, MapStateToPropsFactory } from 'react-redux';
 import './style/index.less';
 import { Icon, Badge, notification, Dropdown, Menu, Modal, Upload, TreeSelect, message } from 'antd';
 import { State, RequestState } from '../../state/index';
-import { actionCreator } from '../../action/index';
+import { actionCreator, ResetSyncMsgType } from '../../action/index';
 import { LogoutType, ChangePasswordType } from '../../action/user';
 import ChangePasswordDialog from './change_password_dialog';
 import { Password } from '../../../../api/interfaces/password';
@@ -32,6 +32,8 @@ interface HeaderPanelDispatchProps {
     logout();
 
     importPostman(projectId: string, data: any);
+
+    resetSyncMsg();
 }
 
 type HeaderPanelProps = HeaderPanelStateProps & HeaderPanelDispatchProps;
@@ -63,6 +65,7 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
                 message: 'Warning Message',
                 description: message,
             });
+            this.props.resetSyncMsg();
         }
     }
 
@@ -90,14 +93,15 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
     }
 
     private importPostman = (file: File) => {
-        if (!!this.state.selectedProjectInDlg) {
+        if (!this.state.selectedProjectInDlg) {
             message.warning('Please select a project first.', 3);
             return;
         }
         const fr = new FileReader();
+        const projectId = this.state.selectedProjectInDlg;
         fr.onload = (e) => {
             var data = JSON.parse((e.target as any).result);
-            this.props.importPostman(this.state.selectedProjectInDlg, data);
+            this.props.importPostman(projectId, data);
         };
         fr.readAsText(file);
         this.setState({ ...this.state, isImportDlgOpen: false, selectedProjectInDlg: '' });
@@ -203,7 +207,8 @@ const mapDispatchToProps = (dispatch: Dispatch<HeaderPanelProps>): HeaderPanelDi
     return {
         logout: () => dispatch(actionCreator(LogoutType)),
         onChangePassword: (password) => dispatch(actionCreator(ChangePasswordType, password)),
-        importPostman: (projectId, data) => dispatch(actionCreator(ImportPostmanDataType, { projectId, data }))
+        importPostman: (projectId, data) => dispatch(actionCreator(ImportPostmanDataType, { projectId, data })),
+        resetSyncMsg: () => dispatch(actionCreator(ResetSyncMsgType))
     };
 };
 

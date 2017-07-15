@@ -20,6 +20,8 @@ export const ResetSyncMsgType = 'reset sync message';
 
 export const SessionInvalidType = 'session invalid';
 
+export const ReloadType = 'reload';
+
 export function actionCreator<T>(type: string, value?: T) { return { type, value }; };
 
 export const syncAction = (syncItem: SyncItem) => ({ type: SyncType, syncItem });
@@ -77,8 +79,18 @@ function* handleRequest(syncItem: SyncItem) {
             } else if (res.status >= 400) {
                 throw new Error(res.statusText);
             }
-            // TODO: check result success or failed;
+
+            const body = yield res.json();
+            if (body && body.success === false) {
+                yield put(actionCreator(SyncFailedType, body.message));
+                return;
+            }
+            if (body && body.success && syncItem.successAction) {
+                yield put(syncItem.successAction(body.result));
+            }
+
             yield put(actionCreator(SyncSuccessType, syncItem));
+
             return;
         } catch (e) {
             delayTime *= 2;

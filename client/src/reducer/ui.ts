@@ -2,7 +2,7 @@ import { EditEnvType } from '../action/project';
 import { UIState, AppUIState, appUIDefaultValue, ReqResUIState, uiDefaultValue, SyncState, syncDefaultValue } from '../state/ui';
 import { combineReducers } from 'redux';
 import { ResizeLeftPanelType, UpdateLeftPanelType, SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType, SwitchHeadersEditModeType } from '../action/ui';
-import { SyncType, SyncSuccessType, SyncRetryType, ResetSyncMsgType } from '../action/index';
+import { SyncType, SyncSuccessType, SyncRetryType, ResetSyncMsgType, SyncFailedType } from '../action/index';
 import { RemoveTabType, SaveRecordType } from '../action/record';
 
 export function uiState(state: UIState = uiDefaultValue, action: any): UIState {
@@ -43,6 +43,9 @@ function syncState(state: SyncState = syncDefaultValue, action: any): SyncState 
         case SyncRetryType: {
             const { errMsg, delay, time, syncItem } = action.value;
             return { ...state, message: `${syncItem.type} failed, ${errMsg}, Retry ${time}th time after ${delay}s` };
+        }
+        case SyncFailedType: {
+            return { ...state, syncCount: state.syncCount - 1, message: action.value };
         }
         case ResetSyncMsgType: {
             return { ...state, message: undefined };
