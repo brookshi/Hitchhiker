@@ -9,6 +9,7 @@ import { StringUtil } from '../utils/string_util';
 import { ProjectService } from './project_service';
 import * as _ from 'lodash';
 import { UserProjectService } from './user_project_service';
+import { SampleService } from "./sample_service";
 
 export class UserService {
 
@@ -65,7 +66,9 @@ export class UserService {
             MailService.registerMail(user);
         }
 
-        await ProjectService.createOwnProject(user);
+        const project = await ProjectService.createOwnProject(user);
+
+        await SampleService.createSampleForUser(user, project.id);
 
         return { success: true, message: Message.regSuccess, result: user };
     }

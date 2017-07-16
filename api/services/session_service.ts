@@ -7,14 +7,15 @@ export class SessionService {
 
     static get bypass(): string[] {
         return [
-            'api/user/login',
-            'api/user',
-            'api/user/regconfirm',
-            'api/user/findpwd',
-            'api/project/join',
-            'api/project/reject',
-            '/',
-            '/index.html'
+            'api/user/login$',
+            'api/user$',
+            'api/user/regconfirm$',
+            'api/user/findpwd$',
+            'api/project/join$',
+            'api/project/reject$',
+            '/$',
+            '/api/sample(/.*)?',
+            '/index.html$'
         ];
     }
 
@@ -43,7 +44,7 @@ export class SessionService {
                 (<any>ctx).session.userId = userId;
             }
         }
-        return validUser || !!SessionService.bypass.find(o => ctx.request.url.replace(`?${ctx.request.querystring}`, '').endsWith(o));
+        return validUser || !!SessionService.bypass.find(o => new RegExp(o, 'g').test(ctx.request.url.replace(`?${ctx.request.querystring}`, '')));
     }
 
     static rollDate(ctx: Koa.Context) {

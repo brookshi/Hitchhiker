@@ -44,7 +44,7 @@ export class RecordService {
     }
 
     static toDto(target: Record): DtoRecord {
-        return { ...target, collectionId: target.collection.id };
+        return <DtoRecord>{ ...target, collectionId: target.collection.id };
     }
 
     static formatHeaders(record: Record): { [key: string]: string } {

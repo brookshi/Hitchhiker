@@ -61,9 +61,9 @@
     ✔ invite user / test @done (2017/7/9 下午10:38:42)
     ✔ import postman @done (7/11/2017, 6:38:16 PM)
     ✔ write test case @done (7/11/2017, 6:38:20 PM)
-    ☐ add sample collection/project/environment/schedule.. for new user
+    ✔ add sample collection/project/environment/schedule.. for new user @done (2017/7/16 下午5:57:09)
     ☐ mail en & write password
-    ☐ test
+    ✔ test @done (2017/7/16 下午3:52:34)
     ☐ build to live
     ☐ unit test
 0.1.1:
