@@ -37,7 +37,7 @@ export class CollectionService {
     }
 
     static toDto(collection: Collection): DtoCollection {
-        return { ...collection, projectId: collection.project.id };
+        return <DtoCollection>{ ...collection, projectId: collection.project.id };
     }
 
     static async create(dtoCollection: DtoCollection, userId: string): Promise<ResObject> {

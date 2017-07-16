@@ -183,7 +183,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
             <span>
                 <span className="schedule-item-key">{`${envName}: `}</span>
                 <span className="schedule-success">{failed === 0 ? 'ALL ' : total - failed} {pass}</span>
-                {failed === 0 ? '' : <span>, <span className="schedule-failed">{failed} {fail}; </span></span>}
+                {failed === 0 ? '; ' : <span>, <span className="schedule-failed">{failed} {fail}; </span></span>}
             </span>
         );
     }

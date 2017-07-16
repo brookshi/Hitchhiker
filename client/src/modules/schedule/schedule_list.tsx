@@ -149,6 +149,7 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                                             schedule={t}
                                             collectionName={collections[t.collectionId]}
                                             environmentName={environments[t.environmentId]}
+                                            compareEnvName={environments[t.compareEnvironmentId]}
                                             isOwner={t.ownerId === user.id}
                                             delete={() => deleteSchedule(t.id)}
                                             edit={() => this.editSchedule(t)}

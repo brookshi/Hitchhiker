@@ -7,7 +7,7 @@ import { DateUtil } from '../utils/date_util';
 export class ScheduleRecordService {
 
     static toDto(record: ScheduleRecord): DtoScheduleRecord {
-        return { ...record, scheduleId: record.schedule ? record.schedule.id : '' };
+        return <DtoScheduleRecord>{ ...record, scheduleId: record.schedule ? record.schedule.id : '' };
     }
 
     static async create(record: ScheduleRecord): Promise<ScheduleRecord> {

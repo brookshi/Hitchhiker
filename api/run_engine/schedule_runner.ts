@@ -17,6 +17,7 @@ import { CollectionService } from '../services/collection_service';
 import { ProjectService } from '../services/project_service';
 import { MailService } from '../services/mail_service';
 import { Log } from '../utils/log';
+import { DateUtil } from '../utils/date_util';
 
 export class ScheduleRunner {
 
@@ -49,7 +50,7 @@ export class ScheduleRunner {
         const compareRunResults = needCompare ? await RecordRunner.runRecords(records, schedule.compareEnvironmentId, schedule.needOrder, schedule.recordsOrder, true, trace) : [];
         const record = await this.storeRunResult(originRunResults, compareRunResults, schedule, isScheduleRun);
 
-        schedule.lastRunDate = new Date();
+        schedule.lastRunDate = DateUtil.getUTCDate();
         await ScheduleService.save(schedule);
 
         if (trace) {
@@ -108,7 +109,7 @@ export class ScheduleRunner {
         const scheduleRecord = new ScheduleRecord();
         const totalRunResults = [...originRunResults, ...compareRunResults];
 
-        scheduleRecord.success = totalRunResults.filter(r => this.isSuccess(r)).length === originRunResults.length && this.compare(originRunResults, compareRunResults);
+        scheduleRecord.success = totalRunResults.every(r => this.isSuccess(r)) && this.compare(originRunResults, compareRunResults);
         scheduleRecord.schedule = schedule;
         scheduleRecord.result = { origin: originRunResults, compare: compareRunResults };
         scheduleRecord.isScheduleRun = isScheduleRun;

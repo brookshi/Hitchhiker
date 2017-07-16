@@ -14,14 +14,14 @@ export function scheduleState(state: ScheduleState = scheduleDefaultValue, actio
         }
         case SaveScheduleType: {
             const schedule = action.value.schedule as DtoSchedule;
-            return { ...state, schedules: { ...state.schedules, [schedule.id]: schedule } };
+            return { ...state, schedules: { ...state.schedules, [schedule.id]: schedule }, activeSchedule: schedule.id };
         }
         case ActiveScheduleType: {
             return { ...state, activeSchedule: action.value };
         }
         case DeleteScheduleType: {
             const schedules = { ...state.schedules };
-            Reflect.deleteProperty(schedules, action.value.id);
+            Reflect.deleteProperty(schedules, action.value);
             return { ...state, schedules };
         }
         case RunScheduleType: {

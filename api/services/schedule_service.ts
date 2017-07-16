@@ -8,6 +8,7 @@ import { ResObject } from '../common/res_object';
 import { UserCollectionService } from './user_collection_service';
 import { ObjectLiteral } from 'typeorm/common/ObjectLiteral';
 import { ScheduleRecordService } from './schedule_record_service';
+import { ScheduleRecord } from '../models/schedule_record';
 
 export class ScheduleService {
 
@@ -32,7 +33,7 @@ export class ScheduleService {
     }
 
     static toDto(schedule: Schedule): DtoSchedule {
-        return {
+        return <DtoSchedule>{
             ...schedule,
             scheduleRecords: schedule.scheduleRecords ? schedule.scheduleRecords.map(s => ScheduleRecordService.toDto(s)) : [],
             ownerId: schedule.ownerId
@@ -95,6 +96,16 @@ export class ScheduleService {
 
     static async delete(id: string): Promise<ResObject> {
         const connection = await ConnectionManager.getInstance();
+        await connection.transaction(async manager => {
+            await manager.createQueryBuilder(ScheduleRecord, 'scheduleRecord')
+                .where('scheduleId=:id', { id })
+                .delete()
+                .execute();
+            await manager.createQueryBuilder(Schedule, 'schedule')
+                .where('id=:id', { id })
+                .delete()
+                .execute();
+        });
         await connection.getRepository(Schedule)
             .createQueryBuilder('schedule')
             .where('id=:id', { id })

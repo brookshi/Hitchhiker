@@ -17,6 +17,8 @@ interface ScheduleItemProps {
 
     environmentName: string;
 
+    compareEnvName: string;
+
     isOwner: boolean;
 
     isRunning: boolean;
@@ -85,11 +87,12 @@ class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState>
     }
 
     private get scheduleInfo() {
-        const { period, hour, notification, emails, suspend } = this.props.schedule;
+        const { period, hour, notification, emails, suspend, needCompare } = this.props.schedule;
         return (
             <div>
                 <div><span>Collection: </span>{this.props.collectionName}</div>
                 <div><span>Environment: </span>{this.props.environmentName || noEnvironment}</div>
+                {needCompare ? <div><span>Compare to: </span>{this.props.compareEnvName || noEnvironment}</div> : ''}
                 <div><span>Period: </span>{PeriodStr.convert(period)}</div>
                 <div><span>Hour: </span>{DateUtil.getDisplayHour(hour, true)}</div>
                 <div><span>Notification: </span>{NotificationStr.convert(notification)}</div>

@@ -213,6 +213,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                 ...values,
                 emails: values.emails.join(';'),
                 environmentId: values.environmentId === noEnvironment ? undefined : values.environmentId,
+                notification: Number.parseInt(values.notification),
                 hour: DateUtil.localHourToUTC(Number.parseInt(values.hour)),
                 recordsOrder: this.state.sortedRecords.map(r => r.id).join(';')
             });

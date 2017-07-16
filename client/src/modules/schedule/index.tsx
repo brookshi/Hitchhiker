@@ -147,7 +147,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): ScheduleDispatchProps => {
     return {
         createSchedule: (schedule) => dispatch(actionCreator(SaveScheduleType, { isNew: true, schedule })),
         updateSchedule: (schedule) => dispatch(actionCreator(SaveScheduleType, { isNew: false, schedule })),
-        deleteSchedule: (scheduleId) => dispatch(actionCreator(DeleteScheduleType, scheduleId)),
+        deleteSchedule: (scheduleId) => { dispatch(actionCreator(DeleteScheduleType, scheduleId)); },
         selectSchedule: (scheduleId) => dispatch(actionCreator(ActiveScheduleType, scheduleId)),
         collapsedLeftPanel: (collapsed) => dispatch(actionCreator(UpdateLeftPanelType, collapsed)),
         resizeLeftPanel: (width) => dispatch(actionCreator(ResizeLeftPanelType, width)),

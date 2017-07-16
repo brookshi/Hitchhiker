@@ -5,6 +5,9 @@ import Collection from './modules/collection';
 import Project from './modules/project';
 import Schedule from './modules/schedule';
 import HeaderPanel from './modules/header';
+import StressTest from './modules/stress_test';
+import ApiDocument from './modules/document';
+import ApiMock from './modules/api_mock';
 import './style/perfect-scrollbar.min.css';
 import { State } from './state';
 import { connect, Dispatch } from 'react-redux';
@@ -51,7 +54,7 @@ class App extends React.Component<AppProps, AppState> {
   private onClick = (param: ClickParam) => {
     const { collapsed, activeModule, updateLeftPanelStatus } = this.props;
     if (activeModule === param.key) {
-      updateLeftPanelStatus(!collapsed, collapsed ? activeModule : '');
+      updateLeftPanelStatus(!collapsed, activeModule);
     } else {
       updateLeftPanelStatus(false, param.key);
     }
@@ -65,6 +68,12 @@ class App extends React.Component<AppProps, AppState> {
         return <Project />;
       case 'schedule':
         return <Schedule />;
+      case 'stress_test':
+        return <StressTest />;
+      case 'api_doc':
+        return <ApiDocument />;
+      case 'api_mock':
+        return <ApiMock />;
       default:
         return <Collection />;
     }
@@ -107,6 +116,11 @@ class App extends React.Component<AppProps, AppState> {
                   <Icon type="schedule" />
                 </Tooltip>
               </Menu.Item>
+              <Menu.Item key="stress_test">
+                <Tooltip mouseEnterDelay={1} placement="right" title="Stress test">
+                  <Icon type="code-o" />
+                </Tooltip>
+              </Menu.Item>
               <Menu.Item key="api_doc">
                 <Tooltip mouseEnterDelay={1} placement="right" title="Api document">
                   <Icon type="file-text" />
@@ -115,11 +129,6 @@ class App extends React.Component<AppProps, AppState> {
               <Menu.Item key="api_mock">
                 <Tooltip mouseEnterDelay={1} placement="right" title="Api mock">
                   <Icon type="api" />
-                </Tooltip>
-              </Menu.Item>
-              <Menu.Item key="stress_test">
-                <Tooltip mouseEnterDelay={1} placement="right" title="Stress test">
-                  <Icon type="code-o" />
                 </Tooltip>
               </Menu.Item>
             </Menu>
