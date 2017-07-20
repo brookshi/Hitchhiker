@@ -2,10 +2,17 @@
     "app": {
         "host": "http://localhost:3000/",
         "api": "http://localhost:81/api/",
-        "language": "cn",
+        "language": "en",
         "encryptKey": "hitchhikerapi",
         "autoGeneratorAccount": true,
         "defaultPassword": "123456"
+    },
+    "db": {
+        "host": "localhost",
+        "port": 3306,
+        "username": "root",
+        "password": "hitchhiker888",
+        "database": "hitchhiker"
     },
     "schedule": {
         "duration": 600,
