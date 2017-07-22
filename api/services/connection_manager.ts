@@ -1,17 +1,15 @@
 import { createConnection, Connection, ConnectionOptions, getConnection } from 'typeorm';
 import { Log } from '../utils/log';
+import { Setting } from '../utils/setting';
 
 export class ConnectionManager {
     private static instance: Connection = null;
     private static isInitialize = false;
 
     private static connectionOptions: ConnectionOptions = {
+        ...Setting.instance.db,
+        password: process.env.dbpwd || Setting.instance.db.password,
         type: 'mysql',
-        host: 'localhost',
-        port: 3306,
-        username: 'root',
-        password: 'hitchhiker888',
-        database: 'hitchhiker',
         logging: {
             logger: (level: string, message: any) => Log[!Log[level] ? 'debug' : level](message),
             logQueries: true,

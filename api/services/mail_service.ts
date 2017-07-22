@@ -36,8 +36,10 @@ export class MailService {
     }
 
     static joinProjectMail(inviterEmail: string, userEmail: string, project: string) {
-        const mailReqUrl = `${Setting.instance.mail.host}acceptinvite?target=${inviterEmail}&useremail=${userEmail}}&project=${project}&lang=${Setting.instance.app.language}`;
-        MailService.sendMail(mailReqUrl);
+        const joinProjectMailUrl = `${Setting.instance.mail.host}acceptinvite?target=${inviterEmail}&useremail=${userEmail}}&project=${project}&lang=${Setting.instance.app.language}`;
+        const userInfoMailUrl = `${Setting.instance.mail.host}join?target=${userEmail}&password=${Setting.instance.app.defaultPassword}}&project=${project}&lang=${Setting.instance.app.language}`;
+        MailService.sendMail(joinProjectMailUrl);
+        MailService.sendMail(userInfoMailUrl);
     }
 
     static async findPwdMail(target: string, pwd: string): Promise<{ err: any, body: any }> {

@@ -4,7 +4,6 @@
         "api": "http://localhost:81/api/",
         "language": "en",
         "encryptKey": "hitchhikerapi",
-        "autoGeneratorAccount": true,
         "defaultPassword": "123456"
     },
     "db": {
@@ -22,6 +21,6 @@
         "registerMailConfirm": false
     },
     "mail": {
-        "host": "http://localhost:82/api/mail/"
+        "host": "http://email.hitchhiker-api.com/api/mail/"
     }
 }

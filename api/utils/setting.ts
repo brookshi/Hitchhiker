@@ -23,4 +23,8 @@ export class Setting {
     get schedule() {
         return this._setting.schedule;
     }
+
+    get db() {
+        return this._setting.db;
+    }
 }
