@@ -34,7 +34,10 @@
     "@types/shortid": "^0.0.28",
     "@types/ws": "^3.0.0",
     "gulp": "^3.9.1",
-    "gulp-clean": "^0.3.2"
+    "gulp-clean": "^0.3.2",
+    "gulp-replace": "^0.6.1",
+    "gulp-shell": "^0.6.3",
+    "yargs": "^8.0.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

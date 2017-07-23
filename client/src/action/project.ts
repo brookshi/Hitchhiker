@@ -1,6 +1,7 @@
 import { takeEvery, put } from 'redux-saga/effects';
 import { syncAction } from './index';
 import { HttpMethod } from '../common/http_method';
+import { Urls } from '../utils/urls';
 
 export const QuitProjectType = 'quit project';
 
@@ -26,14 +27,14 @@ export const EditEnvType = 'edit environment';
 
 export function* quitProject() {
     yield takeEvery(QuitProjectType, function* (action: any) {
-        const channelAction = syncAction({ type: QuitProjectType, method: HttpMethod.DELETE, url: `http://localhost:3000/api/project/${action.value.id}/own` });
+        const channelAction = syncAction({ type: QuitProjectType, method: HttpMethod.DELETE, url: Urls.getUrl(`project/${action.value.id}/own`) });
         yield put(channelAction);
     });
 }
 
 export function* disbandProject() {
     yield takeEvery(DisbandProjectType, function* (action: any) {
-        const channelAction = syncAction({ type: DisbandProjectType, method: HttpMethod.DELETE, url: `http://localhost:3000/api/project/${action.value.id}` });
+        const channelAction = syncAction({ type: DisbandProjectType, method: HttpMethod.DELETE, url: Urls.getUrl(`project/${action.value.id}`) });
         yield put(channelAction);
     });
 }
@@ -41,21 +42,21 @@ export function* disbandProject() {
 export function* saveProject() {
     yield takeEvery(SaveProjectType, function* (action: any) {
         const method = action.value.isNew ? HttpMethod.POST : HttpMethod.PUT;
-        const channelAction = syncAction({ type: SaveProjectType, method, url: `http://localhost:3000/api/project`, body: action.value.project });
+        const channelAction = syncAction({ type: SaveProjectType, method, url: Urls.getUrl(`project`), body: action.value.project });
         yield put(channelAction);
     });
 }
 
 export function* inviteMember() {
     yield takeEvery(InviteMemberType, function* (action: any) {
-        const channelAction = syncAction({ type: InviteMemberType, method: HttpMethod.POST, url: `http://localhost:3000/api/project/${action.value.projectId}`, body: { emails: action.value.emails } });
+        const channelAction = syncAction({ type: InviteMemberType, method: HttpMethod.POST, url: Urls.getUrl(`project/${action.value.projectId}`), body: { emails: action.value.emails } });
         yield put(channelAction);
     });
 }
 
 export function* removeUser() {
     yield takeEvery(RemoveUserType, function* (action: any) {
-        const channelAction = syncAction({ type: RemoveUserType, method: HttpMethod.DELETE, url: `http://localhost:3000/api/project/${action.value.projectId}/user/${action.value.userId}` });
+        const channelAction = syncAction({ type: RemoveUserType, method: HttpMethod.DELETE, url: Urls.getUrl(`project/${action.value.projectId}/user/${action.value.userId}`) });
         yield put(channelAction);
     });
 }
@@ -63,14 +64,14 @@ export function* removeUser() {
 export function* saveEnvironment() {
     yield takeEvery(SaveEnvironmentType, function* (action: any) {
         const method = action.value.isNew ? HttpMethod.POST : HttpMethod.PUT;
-        const channelAction = syncAction({ type: SaveEnvironmentType, method: method, url: `http://localhost:3000/api/environment`, body: action.value.env });
+        const channelAction = syncAction({ type: SaveEnvironmentType, method: method, url: Urls.getUrl(`environment`), body: action.value.env });
         yield put(channelAction);
     });
 }
 
 export function* delEnvironment() {
     yield takeEvery(DelEnvironmentType, function* (action: any) {
-        const channelAction = syncAction({ type: DelEnvironmentType, method: HttpMethod.DELETE, url: `http://localhost:3000/api/environment/${action.value.envId}` });
+        const channelAction = syncAction({ type: DelEnvironmentType, method: HttpMethod.DELETE, url: Urls.getUrl(`environment/${action.value.envId}`) });
         yield put(channelAction);
     });
 }

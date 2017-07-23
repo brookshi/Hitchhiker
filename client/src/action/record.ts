@@ -2,6 +2,7 @@ import { takeEvery, call, put } from 'redux-saga/effects';
 import RequestManager from '../utils/request_manager';
 import { HttpMethod } from '../common/http_method';
 import { syncAction, actionCreator, SessionInvalidType } from './index';
+import { Urls } from '../utils/urls';
 
 export const AddTabType = 'add tab';
 
@@ -34,7 +35,7 @@ export function* sendRequest() {
         const value = action.value;
         let runResult: any = {};
         try {
-            const res = yield call(RequestManager.post, 'http://localhost:3000/api/record/run', value);
+            const res = yield call(RequestManager.post, Urls.getUrl(`record/run`), value);
             if (res.status === 403) {
                 yield put(actionCreator(SessionInvalidType));
             }
@@ -59,20 +60,20 @@ export function* saveAsRecord() {
 
 function* pushSaveRecordToChannel(action: any) {
     const method = action.value.isNew ? HttpMethod.POST : HttpMethod.PUT;
-    const channelAction = syncAction({ type: SaveRecordType, method: method, url: 'http://localhost:3000/api/record', body: action.value.record });
+    const channelAction = syncAction({ type: SaveRecordType, method: method, url: Urls.getUrl(`record`), body: action.value.record });
     yield put(channelAction);
 }
 
 export function* deleteRecord() {
     yield takeEvery(DeleteRecordType, function* (action: any) {
-        const channelAction = syncAction({ type: DeleteRecordType, method: HttpMethod.DELETE, url: `http://localhost:3000/api/record/${action.value.id}` });
+        const channelAction = syncAction({ type: DeleteRecordType, method: HttpMethod.DELETE, url: Urls.getUrl(`record/${action.value.id}`) });
         yield put(channelAction);
     });
 }
 
 export function* moveRecord() {
     yield takeEvery(MoveRecordType, function* (action: any) {
-        const channelAction = syncAction({ type: MoveRecordType, method: HttpMethod.PUT, url: 'http://localhost:3000/api/record', body: action.value.record });
+        const channelAction = syncAction({ type: MoveRecordType, method: HttpMethod.PUT, url: Urls.getUrl(`record`), body: action.value.record });
         yield put(channelAction);
     });
 }

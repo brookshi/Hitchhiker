@@ -1,6 +1,7 @@
 import { takeLatest, call, put } from 'redux-saga/effects';
 import RequestManager from '../utils/request_manager';
 import { actionCreator } from './index';
+import { Urls } from '../utils/urls';
 
 export const LoginType = 'login';
 
@@ -50,7 +51,7 @@ export function* login() {
     yield takeLatest(LoginType, function* (action: any) {
         try {
             yield put(actionCreator(LoginPendingType));
-            const res = yield call(RequestManager.post, 'http://localhost:3000/api/user/login', action.value);
+            const res = yield call(RequestManager.post, Urls.getUrl('user/login'), action.value);
             if (res.ok === false) {
                 yield put(actionCreator(LoginFailedType, `${res.status} ${res.statusText}`));
                 return;
@@ -71,7 +72,7 @@ export function* getUserInfo() {
     yield takeLatest(GetUserInfoType, function* (action: any) {
         try {
             yield put(actionCreator(LoginPendingType));
-            const res = yield call(RequestManager.get, 'http://localhost:3000/api/user/me');
+            const res = yield call(RequestManager.get, Urls.getUrl('user/me'));
             if (res.ok === false) {
                 yield put(actionCreator(LoginFailedType, `${res.status} ${res.statusText}`));
                 return;
@@ -92,7 +93,7 @@ export function* register() {
     yield takeLatest(RegisterType, function* (action: any) {
         try {
             yield put(actionCreator(RegisterPendingType));
-            const res = yield call(RequestManager.post, 'http://localhost:3000/api/user', action.value);
+            const res = yield call(RequestManager.post, Urls.getUrl('user'), action.value);
             if (res.ok === false) {
                 yield put(actionCreator(RegisterFailedType, `${res.status} ${res.statusText}`));
                 return;
@@ -112,7 +113,7 @@ export function* register() {
 export function* logout() { // TODO: should logout after all sync task completed.
     yield takeLatest(LogoutType, function* () {
         try {
-            const res = yield call(RequestManager.get, 'http://localhost:3000/api/user/logout');
+            const res = yield call(RequestManager.get, Urls.getUrl('user/logout'));
             const body = yield res.json();
             if (body.success) {
                 location.reload(true);
@@ -129,7 +130,7 @@ export function* findPassword() {
     yield takeLatest(FindPasswordType, function* (action: any) {
         try {
             yield put(actionCreator(FindPasswordPendingType));
-            const res = yield call(RequestManager.get, `http://localhost:3000/api/user/findpwd?email=${action.value}`);
+            const res = yield call(RequestManager.get, Urls.getUrl(`user/findpwd?email=${action.value}`));
             if (res.ok === false) {
                 yield put(actionCreator(LoginFailedType, `${res.status} ${res.statusText}`));
                 return;
@@ -150,7 +151,7 @@ export function* changePassword() {
     yield takeLatest(ChangePasswordType, function* (action: any) {
         try {
             yield put(actionCreator(ChangePasswordPendingType));
-            const res = yield call(RequestManager.put, `http://localhost:3000/api/user/password`, action.value);
+            const res = yield call(RequestManager.put, Urls.getUrl(`user/password`), action.value);
             const body = yield res.json();
             if (body.success) {
                 yield put(actionCreator(ChangePasswordSuccessType, body.message));

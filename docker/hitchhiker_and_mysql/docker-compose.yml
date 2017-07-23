@@ -16,5 +16,3 @@ services:
     volumes:
       - ./hitchhiker.conf:/etc/mysql/conf.d/hitchhiker.conf
       - /my/hitchhiker/sqldata:/var/lib/mysql
-    ports:
-      - "3306:3306"

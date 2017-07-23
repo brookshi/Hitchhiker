@@ -62,16 +62,22 @@
     ✔ import postman @done (7/11/2017, 6:38:16 PM)
     ✔ write test case @done (7/11/2017, 6:38:20 PM)
     ✔ add sample collection/project/environment/schedule.. for new user @done (2017/7/16 下午5:57:09)
-    ☐ mail en & write password
+    ✔ mail en & write password @done (2017/7/23 下午4:54:24)
     ✔ test @done (2017/7/16 下午3:52:34)
     ☐ build to live
     ☐ unit test
 0.1.1:
     ☐ clear local cache
+    ☐ set temp variable in test
     ☐ collection tree follow active tab(expand collection/folder)
     ☐ request header auto complete
-
+0.1.2:
+    ☐ record history
+    ☐ record diff
+    ☐ variable highlight
 0.2.0:
+    stree test
+0.2.1:
     ☐ save all tabs, close all tabs, close all but active.
     ☐ fetch data per 30s
     ☐ project share collection/env
@@ -79,10 +85,11 @@
     ☐ project share collection/env for own
 0.3.0:
     ☐ data mock
-    ☐ project permission
 0.4.0:
     ☐ api document
     ☐ record auth
+0.5.0:
+    ☐ project permission
 
 4a0a4b0cb56b86075a895be24d8eba06
 59ce656014dd6b3b447af812112d5c2618cbed9e

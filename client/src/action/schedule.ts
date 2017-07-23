@@ -2,6 +2,7 @@ import { takeEvery, put, call, take } from 'redux-saga/effects';
 import { syncAction, actionCreator } from './index';
 import { HttpMethod } from '../common/http_method';
 import { eventChannel, END } from 'redux-saga';
+import { Urls } from '../utils/urls';
 
 export const SaveScheduleType = 'save schedule';
 
@@ -17,14 +18,14 @@ export const RunScheduleFulfillType = 'run schedule completely';
 
 export function* saveSchedule() {
     yield takeEvery(SaveScheduleType, function* (action: any) {
-        const channelAction = syncAction({ type: SaveScheduleType, method: action.value.isNew ? HttpMethod.POST : HttpMethod.PUT, url: `http://localhost:3000/api/schedule`, body: action.value.schedule });
+        const channelAction = syncAction({ type: SaveScheduleType, method: action.value.isNew ? HttpMethod.POST : HttpMethod.PUT, url: Urls.getUrl(`schedule`), body: action.value.schedule });
         yield put(channelAction);
     });
 }
 
 export function* deleteSchedule() {
     yield takeEvery(DeleteScheduleType, function* (action: any) {
-        const channelAction = syncAction({ type: DeleteScheduleType, method: HttpMethod.DELETE, url: `http://localhost:3000/api/schedule/${action.value}` });
+        const channelAction = syncAction({ type: DeleteScheduleType, method: HttpMethod.DELETE, url: Urls.getUrl(`schedule/${action.value}`) });
         yield put(channelAction);
     });
 }
@@ -41,7 +42,7 @@ export function* runSchedule() {
 
 function initScheduleWS(id: string) {
     return eventChannel(emitter => {
-        const socket = new WebSocket('ws://localhost:3000/schedule');
+        const socket = new WebSocket(Urls.getWebSocket('schedule'));
         socket.onmessage = (ev: MessageEvent) => {
             const data = JSON.parse(ev.data);
             if (data.isResult) {
