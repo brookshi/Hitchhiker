@@ -8,7 +8,11 @@ export class ConnectionManager {
 
     private static connectionOptions: ConnectionOptions = {
         ...Setting.instance.db,
-        password: process.env.dbpwd || Setting.instance.db.password,
+        host: process.env.HITCHHIKER_DB_HOST || Setting.instance.db.host,
+        port: process.env.HITCHHIKER_DB_PORT || Setting.instance.db.port,
+        username: process.env.HITCHHIKER_DB_USERNAME || Setting.instance.db.username,
+        database: process.env.MYSQL_DATABASE || Setting.instance.db.database,
+        password: process.env.MYSQL_ROOT_PASSWORD || Setting.instance.db.password,
         type: 'mysql',
         logging: {
             logger: (level: string, message: any) => Log[!Log[level] ? 'debug' : level](message),

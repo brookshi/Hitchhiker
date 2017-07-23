@@ -1,0 +1,11 @@
+version: '2'
+services:
+  hitchhiker:
+    image: hitchhiker
+    container_name: hitchhiker
+    environment:
+      - HITCHHIKER_DB_HOST=hitchhiker-mysql
+    ports:
+      - "8080:8080"
+    external_links:
+      - hitchhiker-mysql

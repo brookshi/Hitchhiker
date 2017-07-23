@@ -16,7 +16,7 @@ export class ScheduleRecordService {
     }
 
     static async clearRedundantRecords(scheduleId: string) {
-        const maxCount = Setting.instance.schedule.storeMaxCount;
+        const maxCount = Setting.instance.scheduleMaxCount;
         const connection = await ConnectionManager.getInstance();
 
         const records = await connection.getRepository(ScheduleRecord)

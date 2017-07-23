@@ -1,0 +1,20 @@
+version: '2'
+services:
+  hitchhiker:
+    image: hitchhiker
+    container_name: hitchhiker
+    ports:
+      - "8080:8080"
+    links:
+      - hitchhiker-mysql
+  hitchhiker-mysql:
+    image: mysql:5.7
+    container_name: hitchhiker-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=hitchhiker888
+      - MYSQL_DATABASE=hitchhiker
+    volumes:
+      - ./hitchhiker.conf:/etc/mysql/conf.d/hitchhiker.conf
+      - /my/hitchhiker/sqldata:/var/lib/mysql
+    ports:
+      - "3306:3306"

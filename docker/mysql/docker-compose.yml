@@ -1,0 +1,10 @@
+version: '2'
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: hitchhiker-mysql
+    environment:
+    - MYSQL_ROOT_PASSWORD=hitchhiker888
+    - MYSQL_DATABASE=hitchhiker
+    ports:
+      - "3306:3306"

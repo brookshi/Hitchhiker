@@ -17,7 +17,7 @@ export class TokenService {
     }
 
     static buildRegToken(): string {
-        const info: RegToken = { host: Setting.instance.app.host, date: new Date(), uid: uuid.v1() };
+        const info: RegToken = { host: Setting.instance.appHost, date: new Date(), uid: uuid.v1() };
         const token = TokenService.buildToken(info);
         TokenService.tokens[token] = 1;
 

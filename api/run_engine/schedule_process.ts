@@ -15,5 +15,5 @@ function startSchedules() {
     new ScheduleRunner().run();
     setInterval(() => {
         new ScheduleRunner().run();
-    }, Setting.instance.schedule.duration * 1000);
+    }, Setting.instance.scheduleDuration * 1000);
 }

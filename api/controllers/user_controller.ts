@@ -102,7 +102,7 @@ export default class UserController extends BaseController {
         const json = StringUtil.decrypt(token);
         const info = <RegToken>JSON.parse(json);
 
-        if (!info || info.host !== Setting.instance.app.host) {
+        if (!info || info.host !== Setting.instance.appHost) {
             return Message.regConfirmFailedInvalid;
         }
 
@@ -113,7 +113,7 @@ export default class UserController extends BaseController {
         UserService.active(user.id);
 
         ctx.body = Message.regConfirmSuccess;
-        ctx.redirect(Setting.instance.app.host);
+        ctx.redirect(Setting.instance.appHost);
     }
 
     @GET('/user/invite/:emails')

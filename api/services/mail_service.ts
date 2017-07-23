@@ -8,14 +8,14 @@ import { Log } from '../utils/log';
 export class MailService {
     static registerMail(user: User) {
         const url = `${Setting.instance.app.api}user/regconfirm?id=${user.id}&token=${TokenService.buildRegToken()}`;
-        const mailReqUrl = `${Setting.instance.mail.host}register?target=${user.email}&name=${user.name}&url=${encodeURIComponent(url)}&lang=${Setting.instance.app.language}`;
+        const mailReqUrl = `${Setting.instance.mail.host}register?target=${user.email}&name=${user.name}&url=${encodeURIComponent(url)}&lang=${Setting.instance.appLanguage}`;
 
         MailService.sendMail(mailReqUrl);
     }
 
     static async inviterMail(target: string, inviter: User): Promise<{ err: any, body: any }> {
-        const url = `${Setting.instance.app.host}`;
-        const mailReqUrl = `${Setting.instance.mail.host}invite?target=${target}&inviter=${inviter.name}&inviteremail=${inviter.email}&url=${encodeURIComponent(url)}&lang=${Setting.instance.app.language}`;
+        const url = `${Setting.instance.appHost}`;
+        const mailReqUrl = `${Setting.instance.mail.host}invite?target=${target}&inviter=${inviter.name}&inviteremail=${inviter.email}&url=${encodeURIComponent(url)}&lang=${Setting.instance.appLanguage}`;
 
         return await MailService.sendMail(mailReqUrl);
     }
@@ -25,30 +25,30 @@ export class MailService {
         const acceptUrl = `${Setting.instance.app.api}project/join?token=${token}&projectid=${project.id}`;
         const rejectUrl = `${Setting.instance.app.api}project/reject?token=${token}&projectid=${project.id}`;
 
-        const mailReqUrl = `${Setting.instance.mail.host}inviteToProject?target=${targetEmail}&inviter=${inviter.name}&inviteremail=${inviter.email}&project=${project.name}&accept=${encodeURIComponent(acceptUrl)}&reject=${encodeURIComponent(rejectUrl)}&lang=${Setting.instance.app.language}`;
+        const mailReqUrl = `${Setting.instance.mail.host}inviteToProject?target=${targetEmail}&inviter=${inviter.name}&inviteremail=${inviter.email}&project=${project.name}&accept=${encodeURIComponent(acceptUrl)}&reject=${encodeURIComponent(rejectUrl)}&lang=${Setting.instance.appLanguage}`;
 
         return await MailService.sendMail(mailReqUrl);
     }
 
     static rejectProjectMail(inviterEmail: string, userEmail: string, project: string) {
-        const mailReqUrl = `${Setting.instance.mail.host}rejectinvite?target=${inviterEmail}&useremail=${userEmail}&project=${project}&lang=${Setting.instance.app.language}`;
+        const mailReqUrl = `${Setting.instance.mail.host}rejectinvite?target=${inviterEmail}&useremail=${userEmail}&project=${project}&lang=${Setting.instance.appLanguage}`;
         MailService.sendMail(mailReqUrl);
     }
 
     static joinProjectMail(inviterEmail: string, userEmail: string, project: string) {
-        const joinProjectMailUrl = `${Setting.instance.mail.host}acceptinvite?target=${inviterEmail}&useremail=${userEmail}}&project=${project}&lang=${Setting.instance.app.language}`;
-        const userInfoMailUrl = `${Setting.instance.mail.host}join?target=${userEmail}&password=${Setting.instance.app.defaultPassword}}&project=${project}&lang=${Setting.instance.app.language}`;
+        const joinProjectMailUrl = `${Setting.instance.mail.host}acceptinvite?target=${inviterEmail}&useremail=${userEmail}}&project=${project}&lang=${Setting.instance.appLanguage}`;
+        const userInfoMailUrl = `${Setting.instance.mail.host}join?target=${userEmail}&password=${Setting.instance.app.defaultPassword}}&project=${project}&lang=${Setting.instance.appLanguage}`;
         MailService.sendMail(joinProjectMailUrl);
         MailService.sendMail(userInfoMailUrl);
     }
 
     static async findPwdMail(target: string, pwd: string): Promise<{ err: any, body: any }> {
-        const mailReqUrl = `${Setting.instance.mail.host}findpwd?target=${target}&pwd=${pwd}&lang=${Setting.instance.app.language}`;
+        const mailReqUrl = `${Setting.instance.mail.host}findpwd?target=${target}&pwd=${pwd}&lang=${Setting.instance.appLanguage}`;
         return await MailService.sendMail(mailReqUrl);
     }
 
     static async scheduleMail(targets: string[], body: any) {
-        const mailReqUrl = `${Setting.instance.mail.host}schedule?targets=${targets.join(';')}&lang=${Setting.instance.app.language}`;
+        const mailReqUrl = `${Setting.instance.mail.host}schedule?targets=${targets.join(';')}&lang=${Setting.instance.appLanguage}`;
         return await MailService.postMail(mailReqUrl, body);
     }
 

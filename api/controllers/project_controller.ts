@@ -64,7 +64,7 @@ export default class ProjectController extends BaseController {
 
         MailService.joinProjectMail(data.info.inviterEmail, data.info.userEmail, data.project.name);
 
-        ctx.redirect(Setting.instance.app.host);
+        ctx.redirect(Setting.instance.appHost);
     }
 
     @GET('/project/reject')

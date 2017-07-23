@@ -8,7 +8,7 @@ export default function sessionHandle(): (ctx: any, next: Function) => Promise<v
         if (!isSessionValid) {
             ctx.body = { success: false, message: Message.sessionInvalid };
             ctx.status = 403;
-            // ctx.redirect(Setting.instance.app.host);
+            // ctx.redirect(Setting.instance.host);
             return;
         }
         SessionService.rollDate(ctx);
