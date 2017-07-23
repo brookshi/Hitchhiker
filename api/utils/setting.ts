@@ -21,7 +21,7 @@ export class Setting {
     }
 
     get appApi() {
-        return `${process.env.HITCHHIKER_APP_HOST}/api/` || this.app.api;
+        return `${process.env.HITCHHIKER_APP_HOST}api/` || this.app.api;
     }
 
     get appHost() {
