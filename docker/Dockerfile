@@ -19,7 +19,7 @@ WORKDIR /user_data/1665511877786131/CODE/iwxiaot-hitchhiker
 # gulp build
 RUN gulp release --host localhost --port 8080
 
-WORKDIR /user_data/1665511877786131/CODE/iwxiaot-hitchhiker/bin
+WORKDIR /user_data/1665511877786131/CODE/iwxiaot-hitchhiker/build
 # start mail
 EXPOSE 8080
 CMD ["pm2-docker", "index.js"]
