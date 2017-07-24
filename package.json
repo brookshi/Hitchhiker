@@ -40,6 +40,7 @@
     "yargs": "^8.0.2"
   },
   "scripts": {
+    "postinstall": "cd client && npm install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
