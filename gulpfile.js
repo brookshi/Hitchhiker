@@ -39,7 +39,7 @@ gulp.task('config', ['compilerServer'], function () {
         .pipe(gulp.dest('./'));
 });
 
-gulp.task('compilerServer', ['npmInstallClient'], function (cb) {
+gulp.task('compilerServer', ['npmClientInstall'], function (cb) {
     exec('tsc -p . -w false', function (err, stdout, stderr) {
         console.log(stdout);
         console.log(stderr);
@@ -47,8 +47,8 @@ gulp.task('compilerServer', ['npmInstallClient'], function (cb) {
     });
 });
 
-gulp.task('npmInstallClient', [], function (cb) {
-    exec('cd client & npm install', function (err, stdout, stderr) {
+gulp.task('npmClientInstall', [], function (cb) {
+    exec(`cd client & npm install`, function (err, stdout, stderr) {
         console.log(stdout);
         console.log(stderr);
         cb();
