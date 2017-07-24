@@ -32,7 +32,11 @@ gulp.task('config', ['compilerServer'], function () {
     console.log(`${argv.host}`);
     gulp.src('./client/src/utils/urls.ts')
         .pipe(replace('localhost', argv.host || 'localhost'))
+        .pipe(replace('3000', argv.port || 8080))
         .pipe(gulp.dest('./client/src/utils/'));
+    gulp.src('./appconfig.json')
+        .pipe(replace('localhost:3000', `${argv.host || 'localhost'}:${argv.port || 8080}`))
+        .pipe(gulp.dest('./'));
 });
 
 gulp.task('compilerServer', [], function (cb) {
