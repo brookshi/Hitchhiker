@@ -20,7 +20,7 @@
     "typeorm": "^0.1.0-alpha.31",
     "uuid": "^3.0.1",
     "vm2": "^3.4.6",
-    "webapi-router": "^1.1.3",
+    "webapi-router": "^1.1.4",
     "ws": "^3.0.0"
   },
   "devDependencies": {
@@ -40,7 +40,6 @@
     "yargs": "^8.0.2"
   },
   "scripts": {
-    "postinstall": "cd client && npm install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
