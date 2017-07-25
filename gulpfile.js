@@ -24,7 +24,7 @@ gulp.task('compilerClient', ['config'], function (cb) {
         console.log(stdout);
         console.log(stderr);
         process.chdir('../');
-        cb(err);
+        cb();
     });
 });
 
@@ -39,7 +39,7 @@ gulp.task('config', ['compilerServer'], function () {
         .pipe(gulp.dest('./'));
 });
 
-gulp.task('compilerServer', ['npmClientInstall'], function (cb) {
+gulp.task('compilerServer', [], function (cb) {
     exec('tsc -p . -w false', function (err, stdout, stderr) {
         console.log(stdout);
         console.log(stderr);
@@ -47,10 +47,12 @@ gulp.task('compilerServer', ['npmClientInstall'], function (cb) {
     });
 });
 
-gulp.task('npmClientInstall', [], function (cb) {
-    exec(`cd client & npm install`, function (err, stdout, stderr) {
-        console.log(stdout);
-        console.log(stderr);
-        cb();
-    });
-});
+// gulp.task('npmClientInstall', [], function (cb) {
+//     process.chdir('./client');
+//     exec(`npm install`, function (err, stdout, stderr) {
+//         console.log(stdout);
+//         console.log(stderr);
+//         process.chdir('../');
+//         cb();
+//     });
+// });

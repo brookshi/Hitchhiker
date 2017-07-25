@@ -6,7 +6,7 @@ RUN apt-get update
 # code folder
 RUN mkdir -p /usr/src
 WORKDIR /usr/src
-RUN git clone https://github.com/brookshi/Hitchhiker.git
+RUN git clone -b release https://github.com/brookshi/Hitchhiker.git
 WORKDIR /usr/src/Hitchhiker
 
 # npm install -g
@@ -15,6 +15,8 @@ RUN npm install gulp -D
 
 # npm install
 RUN npm install
+
+RUN cd client && npm install
 
 # gulp build
 RUN gulp release --host localhost --port 8080
