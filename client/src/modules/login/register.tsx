@@ -161,6 +161,6 @@ class RegisterPanel extends React.Component<RegisterProps, RegisterPanelState> {
     }
 }
 
-const WrappedRegisterForm = Form.create()(RegisterPanel);
+const WrappedRegisterForm = Form.create<RegisterPanelProps>()(RegisterPanel);
 
 export default WrappedRegisterForm;

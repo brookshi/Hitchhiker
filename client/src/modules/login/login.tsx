@@ -105,6 +105,6 @@ class LoginPanel extends React.Component<LoginProps, LoginPanelState> {
     }
 }
 
-const WrappedLoginForm = Form.create()(LoginPanel);
+const WrappedLoginForm = Form.create<LoginPanelProps>()(LoginPanel);
 
 export default WrappedLoginForm;

@@ -55,7 +55,7 @@ class RecordSortList extends SortableListComponent<DtoRecord> { }
 
 class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, ScheduleEditDialogState> {
 
-    constructor(props: ScheduleEditDialogProps & { form: any }) {
+    constructor(props: ScheduleEditFormProps) {
         super(props);
         this.initStateFromProps(props);
     }
@@ -375,4 +375,4 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
     }
 }
 
-export default Form.create()(ScheduleEditDialog);
+export default Form.create<ScheduleEditDialogProps>()(ScheduleEditDialog);

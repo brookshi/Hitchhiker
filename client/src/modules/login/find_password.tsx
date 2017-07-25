@@ -79,6 +79,6 @@ class FindPasswordPanel extends React.Component<FindPasswordProps, FindPasswordP
     }
 }
 
-const WrappedFindPasswordForm = Form.create()(FindPasswordPanel);
+const WrappedFindPasswordForm = Form.create<FindPasswordPanelProps>()(FindPasswordPanel);
 
 export default WrappedFindPasswordForm;

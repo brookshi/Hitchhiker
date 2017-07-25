@@ -166,4 +166,4 @@ class ChangePasswordDialog extends React.Component<ChangePasswordDlgFormProps, C
     }
 }
 
-export default Form.create()(ChangePasswordDialog);
+export default Form.create<ChangePasswordDialogProps>()(ChangePasswordDialog);
