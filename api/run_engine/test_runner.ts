@@ -4,11 +4,14 @@ const { VM } = require('vm2');
 
 export class TestRunner {
 
-    static test(res: request.RequestResponse, code: string, elapsed: number): { [key: string]: boolean } {
+    static test(res: request.RequestResponse, code: string, elapsed: number): { tests: _.Dictionary<boolean>, variables: {} } {
+
         let tests: { [key: string]: boolean } = {};
+        let $variables$: any = {};
+
         const vm = new VM({
             timeout: 50000,
-            sandbox: { tests, ...TestRunner.getInitSandbox(res, elapsed) }
+            sandbox: { tests, $variables$, ...TestRunner.getInitSandbox(res, elapsed) }
         });
 
         try {
@@ -16,7 +19,7 @@ export class TestRunner {
         } catch (err) {
             tests = { [err]: false };
         }
-        return tests;
+        return { tests, variables: $variables$ };
     }
 
     static getInitSandbox(res: request.RequestResponse, elapsed: number) {
@@ -31,7 +34,7 @@ export class TestRunner {
             responseCode: { code: res.statusCode, name: res.statusMessage },
             responseObj,
             responseHeaders: res.headers,
-            responseTime: elapsed,
+            responseTime: elapsed
         };
     }
 }
