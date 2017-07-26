@@ -19,7 +19,7 @@ RUN npm install
 RUN cd client && npm install
 
 # gulp build
-RUN gulp release --host localhost --port 8080
+RUN gulp release --prod
 
 WORKDIR /usr/src/Hitchhiker/build
 # start mail
