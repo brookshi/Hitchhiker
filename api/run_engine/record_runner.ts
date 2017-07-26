@@ -11,7 +11,7 @@ export class RecordRunner {
 
     static async runRecords(records: Record[], environmentId: string, needOrder: boolean = false, orderRecordIds: string = '', applyCookies?: boolean, trace?: (msg: string) => void): Promise<RunResult[]> {
         if (needOrder && orderRecordIds) {
-            const cookies: _.Dictionary<_.Dictionary<string>> = {};
+            const cookies: _.Dictionary<string> = {};
             records = _.sortBy(records, 'name');
             const recordDict = _.keyBy(records, 'id');
             const orderRecords = orderRecordIds.split(';').filter(r => recordDict[r]).map(r => recordDict[r]);
@@ -41,35 +41,27 @@ export class RecordRunner {
         }
     }
 
-    static storeCookies(result: RunResult, cookies: _.Dictionary<_.Dictionary<string>>) {
-        if (result.host && result.cookies) {
-            if (!cookies[result.host]) {
-                cookies[result.host] = {};
-            }
+    static storeCookies(result: RunResult, cookies: _.Dictionary<string>) {
+        if (result.cookies) {
             result.cookies.forEach(c => {
                 const keyPair = StringUtil.readCookie(c);
-                cookies[result.host][keyPair.key] = keyPair.value;
+                cookies[keyPair.key] = keyPair.value;
             });
         }
     }
 
-    static applyCookies(record: Record, cookies: _.Dictionary<_.Dictionary<string>>): Record {
+    static applyCookies(record: Record, cookies: _.Dictionary<string>): Record {
         if (_.keys(cookies).length === 0) {
             return record;
         }
         const headers = [...record.headers];
-        const hostName = StringUtil.getHostFromUrl(record.url);
-        const currentCookies = hostName ? cookies[hostName] || {} : {};
-        if (_.keys(currentCookies).length === 0) {
-            return record;
-        }
         const cookieHeader = headers.find(h => h.isActive && (h.key || '').toLowerCase() === 'cookie');
 
         let recordCookies: _.Dictionary<string> = {};
         if (cookieHeader) {
             recordCookies = StringUtil.readCookies(cookieHeader.value || '');
         }
-        const allCookies = { ...currentCookies, ...recordCookies };
+        const allCookies = { ...cookies, ...recordCookies };
         _.remove(headers, h => h.key === 'Cookie');
         return {
             ...record,
