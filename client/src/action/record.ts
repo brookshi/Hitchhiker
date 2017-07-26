@@ -46,7 +46,7 @@ export function* sendRequest() {
         } catch (err) {
             runResult.error = { message: err.message, stack: err.stack };
         }
-        yield put(actionCreator(SendRequestFulfilledType, { id: value.record.id, runResult }));
+        yield put(actionCreator(SendRequestFulfilledType, { id: value.record.id, cid: value.record.collectionId, runResult }));
     });
 }
 

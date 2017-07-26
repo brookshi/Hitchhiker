@@ -18,16 +18,20 @@ export function localDataState(state: LocalDataState = localDataDefaultValue, ac
         }
         case SendRequestFulfilledType: {
             const res = action.value.runResult as RunResult;
-            if (!res.host || !res.cookies) {
+            const cid = action.value.cid;
+            if (!res.cookies) {
                 return state;
             }
 
-            const hostCookies = state.cookies[res.host] ? { ...state.cookies[res.host] } : {};
+            const hostCookies = res.host && state.cookies[res.host] ? { ...state.cookies[res.host] } : {};
+            const collectionCookies = state.cookies[cid] ? { ...state.cookies[cid] } : {};
             res.cookies.forEach(c => {
                 const keyPair = StringUtil.readCookie(c);
                 hostCookies[keyPair.key] = keyPair.value;
+                collectionCookies[keyPair.key] = keyPair.value;
             });
-            return { ...state, cookies: { ...state.cookies, [res.host]: hostCookies } };
+            return res.host ? { ...state, cookies: { ...state.cookies, [res.host]: hostCookies, [cid]: collectionCookies } }
+                : { ...state, cookies: { ...state.cookies, [cid]: collectionCookies } };
         }
         default:
             return state;

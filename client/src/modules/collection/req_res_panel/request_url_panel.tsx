@@ -133,8 +133,9 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
     private sendRequest = () => {
         const { record, environment, cookies } = this.props;
         const headers = [...record.headers || []];
+
         const hostName = StringUtil.getHostFromUrl(record.url);
-        const localCookies = hostName ? cookies[hostName] || [] : [];
+        const localCookies = { ...(record.collectionId ? cookies[record.collectionId] || {} : {}), ...(hostName ? cookies[hostName] || {} : {}) };
         const cookieHeader = headers.find(h => h.isActive && (h.key || '').toLowerCase() === 'cookie');
 
         let recordCookies: _.Dictionary<string> = {};
