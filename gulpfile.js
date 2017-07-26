@@ -11,7 +11,7 @@ gulp.task('copy', ['clean'], function () {
         .pipe(gulp.dest('./build/public'));
 });
 
-gulp.task('clean', argv.host ? ['compilerClient'] : [], function () {
+gulp.task('clean', argv.prod ? ['compilerClient'] : [], function () {
     return gulp.src('./build/public/*.*', {
             read: false
         })
@@ -31,11 +31,10 @@ gulp.task('compilerClient', ['config'], function (cb) {
 gulp.task('config', ['compilerServer'], function () {
     console.log(`${argv.host}`);
     gulp.src('./client/src/utils/urls.ts')
-        .pipe(replace('localhost', argv.host || 'localhost'))
-        .pipe(replace('3000', argv.port || 8080))
+        .pipe(replace('http://localhost:3000/', 'HITCHHIKER_APP_HOST'))
         .pipe(gulp.dest('./client/src/utils/'));
     gulp.src('./appconfig.json')
-        .pipe(replace('localhost:3000', `${argv.host || 'localhost'}:${argv.port || 8080}`))
+        .pipe(replace('localhost:3000', `localhost:${8080}`))
         .pipe(gulp.dest('./'));
 });
 
@@ -46,13 +45,3 @@ gulp.task('compilerServer', [], function (cb) {
         cb();
     });
 });
-
-// gulp.task('npmClientInstall', [], function (cb) {
-//     process.chdir('./client');
-//     exec(`npm install`, function (err, stdout, stderr) {
-//         console.log(stdout);
-//         console.log(stderr);
-//         process.chdir('../');
-//         cb();
-//     });
-// });

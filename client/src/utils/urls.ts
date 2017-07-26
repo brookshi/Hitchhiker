@@ -1,14 +1,12 @@
 export class Urls {
 
-    static host = 'localhost';
-
-    static port = '3000';
+    static host = 'http://localhost:3000/';
 
     static getUrl(action: string): string {
-        return `http://${Urls.host}:${Urls.port}/api/${action}`;
+        return `${Urls.host}api/${action}`;
     }
 
     static getWebSocket(action: string): string {
-        return `ws://${Urls.host}:${Urls.port}/${action}`;
+        return `ws${Urls.host.substr(4)}${action}`;
     }
 }

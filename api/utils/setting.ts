@@ -1,3 +1,6 @@
+import * as fs from 'fs';
+import * as path from 'path';
+
 export class Setting {
 
     private _setting: any;
@@ -6,6 +9,21 @@ export class Setting {
 
     private constructor() {
         this._setting = require('../../appconfig');
+    }
+
+    init() {
+        const frontEndJSFolder = path.join(__dirname, '../public/static/js');
+        if (!fs.existsSync(frontEndJSFolder)) {
+            console.warn(`dir ${frontEndJSFolder} is not a valid path`);
+            return;
+        }
+        const files = fs.readdirSync(frontEndJSFolder).filter(value => value.endsWith('.js') && fs.lstatSync(path.join(frontEndJSFolder, value)).isFile);
+        files.forEach(file => {
+            const filePath = path.join(frontEndJSFolder, file);
+            let content = fs.readFileSync(filePath, 'utf8');
+            content = content.replace('HITCHHIKER_APP_HOST', this.appHost);
+            fs.writeFileSync(filePath, content, { encoding: 'utf8' });
+        });
     }
 
     get needRegisterMailConfirm(): boolean {

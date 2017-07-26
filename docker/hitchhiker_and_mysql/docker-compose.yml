@@ -5,11 +5,11 @@ services:
     container_name: hitchhiker
     environment:
       - HITCHHIKER_DB_HOST=hitchhiker-mysql
-      - HITCHHIKER_APP_HOST=http://localhost:8080/
+      - HITCHHIKER_APP_HOST=http://localhost:8080/ # should change in run time.
     ports:
       - "8080:8080"
     links:
-      - hitchhiker-mysql
+      - hitchhiker-mysql:hitchhiker-mysql
   hitchhiker-mysql:
     image: mysql:5.7
     container_name: hitchhiker-mysql

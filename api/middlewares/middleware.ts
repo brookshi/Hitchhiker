@@ -17,7 +17,7 @@ export default function middleware(context: Koa) {
         [
             asyncInit(),
             errorHandle(),
-            KoaStatic(Path.join(__dirname, '../public')),
+            KoaStatic(Path.join(__dirname, '../public'), { maxage: Number.MAX_SAFE_INTEGER, gzip: true }),
             Session({
                 cookie: {
                     maxAge: SessionService.maxAge
