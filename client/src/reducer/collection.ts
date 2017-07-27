@@ -182,7 +182,7 @@ function recordStates(states: _.Dictionary<RecordState> = displayRecordsDefaultV
         }
         case ActiveRecordType: {
             const { id, name, collectionId, collection } = action.value;
-            return {
+            return !states[id] ? {
                 ...states,
                 [id]: {
                     name: name,
@@ -190,7 +190,7 @@ function recordStates(states: _.Dictionary<RecordState> = displayRecordsDefaultV
                     isChanged: false,
                     isRequesting: false
                 }
-            };
+            } : states;
         }
         default:
             return states;

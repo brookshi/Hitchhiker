@@ -12,6 +12,8 @@ export interface RunResult {
 
     tests: { [key: string]: boolean };
 
+    variables: {};
+
     status: number;
 
     statusMessage: string;

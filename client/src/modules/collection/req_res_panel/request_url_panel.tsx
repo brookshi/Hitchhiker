@@ -11,6 +11,7 @@ import { newRecordFlag } from '../../../common/constants';
 import { StringUtil } from '../../../utils/string_util';
 import { TreeData } from 'antd/lib/tree-select/interface';
 import * as _ from 'lodash';
+import { KeyValuePair } from '../../../common/key_value_pair';
 
 const DButton = Dropdown.Button as any;
 const Option = Select.Option;
@@ -26,6 +27,8 @@ interface RequestUrlPanelStateProps {
     collectionTreeData: TreeData[];
 
     cookies: _.Dictionary<_.Dictionary<string>>;
+
+    variables: any;
 }
 
 interface RequestUrlPanelDispatchProps {
@@ -133,8 +136,9 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
     private sendRequest = () => {
         const { record, environment, cookies } = this.props;
         const headers = [...record.headers || []];
+
         const hostName = StringUtil.getHostFromUrl(record.url);
-        const localCookies = hostName ? cookies[hostName] || [] : [];
+        const localCookies = { ...(record.collectionId ? cookies[record.collectionId] || {} : {}), ...(hostName ? cookies[hostName] || {} : {}) };
         const cookieHeader = headers.find(h => h.isActive && (h.key || '').toLowerCase() === 'cookie');
 
         let recordCookies: _.Dictionary<string> = {};
@@ -144,7 +148,27 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         const allCookies = { ...localCookies, ...recordCookies };
         _.remove(headers, h => h.key === 'Cookie');
 
-        this.props.sendRequest(environment, { ...record, headers: [...headers, { key: 'Cookie', value: _.values(allCookies).join('; '), isActive: true }] });
+        this.props.sendRequest(environment, { ...this.applyLocalVariablesToRecord(record), headers: [...headers, { key: 'Cookie', value: _.values(allCookies).join('; '), isActive: true }] });
+    }
+
+    private applyLocalVariablesToRecord = (record: DtoRecord) => {
+        return {
+            ...record,
+            url: this.applyLocalVariables(record.url),
+            headers: StringUtil.stringToKeyValues(StringUtil.headersToString(record.headers as KeyValuePair[] || [])),
+            body: this.applyLocalVariables(record.body)
+        };
+    }
+
+    private applyLocalVariables = (content?: string) => {
+        if (!this.props.variables || !content) {
+            return content;
+        }
+        let newContent = content;
+        _.keys(this.props.variables).forEach(k => {
+            newContent = newContent.replace(`{{${k}}}`, this.props.variables[k] || '');
+        });
+        return newContent;
     }
 
     private onUrlChanged = (url: string) => {
@@ -219,7 +243,8 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
             environment: getActiveEnvId(state),
             record: getActiveRecord(state),
             collectionTreeData: getTreeData(state),
-            cookies: state.localDataState.cookies
+            cookies: state.localDataState.cookies,
+            variables: state.localDataState.variables
         };
     };
     return mapStateToProps;
