@@ -8,6 +8,8 @@ services:
       - HITCHHIKER_APP_HOST=http://localhost:8080/ # should change in run time.
     ports:
       - "8080:8080"
+    volumes:
+      - /my/hitchhiker/public:/usr/src/Hitchhiker/build/public
     links:
       - hitchhiker-mysql:hitchhiker-mysql
   hitchhiker-mysql:
