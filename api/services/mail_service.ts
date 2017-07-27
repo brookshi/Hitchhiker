@@ -7,7 +7,7 @@ import { Log } from '../utils/log';
 
 export class MailService {
     static registerMail(user: User) {
-        const url = `${Setting.instance.app.api}user/regconfirm?id=${user.id}&token=${TokenService.buildRegToken()}`;
+        const url = `${Setting.instance.appApi}user/regconfirm?id=${user.id}&token=${TokenService.buildRegToken()}`;
         const mailReqUrl = `${Setting.instance.mail.host}register?target=${user.email}&name=${user.name}&url=${encodeURIComponent(url)}&lang=${Setting.instance.appLanguage}`;
 
         MailService.sendMail(mailReqUrl);
@@ -22,8 +22,8 @@ export class MailService {
 
     static async projectInviterMail(targetEmail: string, inviter: User, project: Project): Promise<{ err: any, body: any }> {
         const token = TokenService.buildInviteToProjectToken(targetEmail, project.id, inviter.id, inviter.email);
-        const acceptUrl = `${Setting.instance.app.api}project/join?token=${token}&projectid=${project.id}`;
-        const rejectUrl = `${Setting.instance.app.api}project/reject?token=${token}&projectid=${project.id}`;
+        const acceptUrl = `${Setting.instance.appApi}project/join?token=${token}&projectid=${project.id}`;
+        const rejectUrl = `${Setting.instance.appApi}project/reject?token=${token}&projectid=${project.id}`;
 
         const mailReqUrl = `${Setting.instance.mail.host}inviteToProject?target=${targetEmail}&inviter=${inviter.name}&inviteremail=${inviter.email}&project=${project.name}&accept=${encodeURIComponent(acceptUrl)}&reject=${encodeURIComponent(rejectUrl)}&lang=${Setting.instance.appLanguage}`;
 

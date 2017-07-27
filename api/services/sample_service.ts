@@ -26,7 +26,7 @@ export class SampleService {
 
         await CollectionService.save(collection);
 
-        let apiHost = (<string>Setting.instance.app.api).replace('http://', '').replace('https://', '');
+        let apiHost = (<string>Setting.instance.appApi).replace('http://', '').replace('https://', '');
         apiHost = apiHost.substr(0, apiHost.length - 1);
         const dtoEnv: DtoEnvironment = { id: StringUtil.generateUID(), name: 'Sample Env', project: { id: projectId }, variables: [{ id: StringUtil.generateUID(), key: 'apihost', value: apiHost, isActive: true, sort: 0 }] };
 
