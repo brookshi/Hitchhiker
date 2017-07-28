@@ -112,9 +112,7 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
     private get normalResponsePanel() {
         const { res, selectResTab, activeKey } = this.props;
         let { body, cookies, headers, tests } = res;
-        if (!body) {
-            return <div />;
-        }
+
         cookies = cookies || [];
 
         const value = StringUtil.beautify(body, headers['Content-Type']);
