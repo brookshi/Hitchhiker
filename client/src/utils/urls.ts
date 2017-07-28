@@ -9,4 +9,4 @@ export class Urls {
     static getWebSocket(action: string): string {
         return `ws${Urls.host.substr(4)}${action}`;
     }
-}
+} 

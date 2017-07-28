@@ -11,7 +11,7 @@ gulp.task('copy', ['clean'], function () {
         .pipe(gulp.dest('./build/public'));
 });
 
-gulp.task('clean', argv.prod ? ['compilerClient'] : [], function () {
+gulp.task('clean', ['compilerClient'], function () {
     return gulp.src('./build/public/*.*', {
             read: false
         })
@@ -29,13 +29,20 @@ gulp.task('compilerClient', ['config'], function (cb) {
 });
 
 gulp.task('config', ['compilerServer'], function () {
-    console.log(`${argv.host}`);
     gulp.src('./client/src/utils/urls.ts')
         .pipe(replace('http://localhost:3000/', 'HITCHHIKER_APP_HOST'))
         .pipe(gulp.dest('./client/src/utils/'));
     gulp.src('./appconfig.json')
-        .pipe(replace('localhost:3000', `localhost:${8080}`))
+        .pipe(replace('localhost:3000', `localhost:8080`))
+        .pipe(replace('localhost:81', `localhost:8080`))
+        .pipe(replace('DEV', `PROD`))
         .pipe(gulp.dest('./'));
+    gulp.src('./client/package.json')
+        .pipe(replace('localhost:81', `localhost:8080`))
+        .pipe(gulp.dest('./client/'));
+    gulp.src('./api/index.ts')
+        .pipe(replace('81', `8080`))
+        .pipe(gulp.dest('./api/'));
 });
 
 gulp.task('compilerServer', [], function (cb) {

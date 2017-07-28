@@ -1,7 +1,8 @@
 {
     "app": {
+        "env": "DEV",
         "host": "http://localhost:3000/",
-        "api": "http://localhost:8080/api/",
+        "api": "http://localhost:81/api/",
         "language": "en",
         "encryptKey": "hitchhikerapi",
         "defaultPassword": "123456"

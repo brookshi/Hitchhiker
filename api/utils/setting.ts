@@ -26,6 +26,18 @@ export class Setting {
         });
     }
 
+    get env() {
+        return this.app.env;
+    }
+
+    get isDev() {
+        return this.env === 'DEV';
+    }
+
+    get isProd() {
+        return this.env === 'PROD';
+    }
+
     get needRegisterMailConfirm(): boolean {
         return this._setting.user.registerMailConfirm;
     }
@@ -39,15 +51,15 @@ export class Setting {
     }
 
     get appApi() {
-        return `${process.env.HITCHHIKER_APP_HOST}api/` || this.app.api;
+        return this.isDev ? this.app.api : (`${process.env.HITCHHIKER_APP_HOST}api/` || this.app.api);
     }
 
     get appHost() {
-        return process.env.HITCHHIKER_APP_HOST || this.app.host;
+        return this.isDev ? this.app.host : (process.env.HITCHHIKER_APP_HOST || this.app.host);
     }
 
     get appLanguage() {
-        return process.env.HITCHHIKER_APP_LANG || this.app.language;
+        return this.isDev ? this.app.language : (process.env.HITCHHIKER_APP_LANG || this.app.language);
     }
 
     get schedule() {

@@ -3,13 +3,6 @@
     // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [{
-        "taskName": "gulp",
-        "command": "gulp",
-        "args": [
-            "copy"
-        ],
-        "isShellCommand": true
-    }, {
         "taskName": "build",
         "command": "tsc",
         "isShellCommand": true,

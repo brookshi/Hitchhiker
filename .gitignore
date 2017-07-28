@@ -40,3 +40,4 @@ bin
 typings
 build
 ~$test case.xlsx
+staging
