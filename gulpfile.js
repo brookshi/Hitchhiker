@@ -43,6 +43,7 @@ gulp.task('config', [], function () {
     gulp.src('./appconfig.json')
         .pipe(replace('localhost:3000', `localhost:8080`))
         .pipe(replace('localhost:81', `localhost:8080`))
+        .pipe(replace('"database": "hitchhiker"', '"database": "hitchhiker-prod"'))
         .pipe(replace('DEV', `PROD`))
         .pipe(gulp.dest('./'));
     gulp.src('./client/package.json')
