@@ -18,7 +18,7 @@ gulp.task('clean', ['compilerClient'], function () {
         .pipe(clean());
 });
 
-gulp.task('compilerClient', ['config'], function (cb) {
+gulp.task('compilerClient', ['compilerServer'], function (cb) {
     process.chdir('./client');
     exec('yarn build', function (err, stdout, stderr) {
         console.log(stdout);
@@ -28,7 +28,15 @@ gulp.task('compilerClient', ['config'], function (cb) {
     });
 });
 
-gulp.task('config', ['compilerServer'], function () {
+gulp.task('compilerServer', ['config'], function (cb) {
+    exec('tsc -p . -w false', function (err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        cb();
+    });
+});
+
+gulp.task('config', [], function () {
     gulp.src('./client/src/utils/urls.ts')
         .pipe(replace('http://localhost:3000/', 'HITCHHIKER_APP_HOST'))
         .pipe(gulp.dest('./client/src/utils/'));
@@ -43,12 +51,4 @@ gulp.task('config', ['compilerServer'], function () {
     gulp.src('./api/index.ts')
         .pipe(replace('81', `8080`))
         .pipe(gulp.dest('./api/'));
-});
-
-gulp.task('compilerServer', [], function (cb) {
-    exec('tsc -p . -w false', function (err, stdout, stderr) {
-        console.log(stdout);
-        console.log(stderr);
-        cb();
-    });
 });
