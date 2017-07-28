@@ -116,8 +116,11 @@ export class Beautify {
             });
 
             // beautify json string with delimiters instead of original numbers //
-            text = JSON.stringify(JSON.parse(text), null, step);
-
+            try {
+                text = JSON.stringify(JSON.parse(text), null, step);
+            } catch (e) {
+                console.error(e);
+            }
             // split the string into array//
             arrBody = text.split(delimiter.toString());
 
