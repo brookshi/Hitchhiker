@@ -30,6 +30,8 @@ export class VariableService {
         }
         const variables = EnvironmentService.formatVariables(env);
         record.url = StringUtil.applyTemplate(record.url, variables);
+        record.body = StringUtil.applyTemplate(record.body, variables);
+        record.test = StringUtil.applyTemplate(record.test, variables);
         record.headers.forEach(header => {
             header.key = StringUtil.applyTemplate(header.key, variables);
             header.value = StringUtil.applyTemplate(header.value, variables);

@@ -104,6 +104,7 @@ export class RecordRunner {
             ...record,
             headers,
             url: RecordRunner.applyLocalVariables(variables, record.url),
+            test: RecordRunner.applyLocalVariables(variables, record.test),
             body: RecordRunner.applyLocalVariables(variables, record.body)
         };
     }

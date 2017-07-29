@@ -156,7 +156,8 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
             ...record,
             url: this.applyLocalVariables(record.url),
             headers: StringUtil.stringToKeyValues(StringUtil.headersToString(record.headers as KeyValuePair[] || [])),
-            body: this.applyLocalVariables(record.body)
+            body: this.applyLocalVariables(record.body),
+            test: this.applyLocalVariables(record.test)
         };
     }
 
