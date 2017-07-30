@@ -64,11 +64,14 @@
     ✔ add sample collection/project/environment/schedule.. for new user @done (2017/7/16 下午5:57:09)
     ✔ mail en & write password @done (2017/7/23 下午4:54:24)
     ✔ test @done (2017/7/16 下午3:52:34)
+    ✔ set temp variable in test @done (2017/7/29 下午12:29:12)
     ☐ build to live
     ☐ unit test
 0.1.1:
+    ☐ new record in menu of collection/folder
+    ☐ global headers
+    ☐ schedule record active/inactive
     ☐ clear local cache
-    ☐ set temp variable in test
     ☐ collection tree follow active tab(expand collection/folder)
     ☐ request header auto complete
 0.1.2:
