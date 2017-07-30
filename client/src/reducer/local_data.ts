@@ -21,18 +21,18 @@ export function localDataState(state: LocalDataState = localDataDefaultValue, ac
             const cid = action.value.cid;
             let targetState = state;
             if (res.cookies) {
-                const hostCookies = res.host && state.cookies[res.host] ? { ...state.cookies[res.host] } : {};
-                const collectionCookies = state.cookies[cid] ? { ...state.cookies[cid] } : {};
+                const hostCookies = res.host && targetState.cookies[res.host] ? { ...targetState.cookies[res.host] } : {};
+                const collectionCookies = targetState.cookies[cid] ? { ...targetState.cookies[cid] } : {};
                 res.cookies.forEach(c => {
                     const keyPair = StringUtil.readCookie(c);
                     hostCookies[keyPair.key] = keyPair.value;
                     collectionCookies[keyPair.key] = keyPair.value;
                 });
-                targetState = res.host ? { ...state, cookies: { ...state.cookies, [res.host]: hostCookies, [cid]: collectionCookies } }
-                    : { ...state, cookies: { ...state.cookies, [cid]: collectionCookies } };
+                targetState = res.host ? { ...targetState, cookies: { ...targetState.cookies, [res.host]: hostCookies, [cid]: collectionCookies } }
+                    : { ...targetState, cookies: { ...targetState.cookies, [cid]: collectionCookies } };
             }
             if (res.variables) {
-                targetState = { ...state, variables: { ...state.variables, ...res.variables } };
+                targetState = { ...targetState, variables: { ...targetState.variables, ...res.variables } };
             }
             return targetState;
         }
