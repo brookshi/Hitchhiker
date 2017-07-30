@@ -95,43 +95,16 @@ export class Beautify {
     }
 
     static json(text: string): string {
-
-        let step = 4;
-        let arrBody = Array<string>(),
-            arrNums = Array<string>(),
-            str = '',
-            delimiter = '1.234567890098765',
-            ix;
+        const step = 4;
 
         if (typeof JSON === 'undefined') { return text; }
         if (typeof text === 'object') { return JSON.stringify(text, null, step); }
 
-        if (typeof text === 'string') {
-
-            // save original invalid numbers in array and replace them //
-            // with valid delimiter to let JSON to process the string //
-            text = text.replace(/[0-9]{17,32}/g, (match) => {
-                arrNums.push(match);
-                return delimiter;
-            });
-
-            // beautify json string with delimiters instead of original numbers //
-            try {
-                text = JSON.stringify(JSON.parse(text), null, step);
-            } catch (e) {
-                console.error(e);
-            }
-            // split the string into array//
-            arrBody = text.split(delimiter.toString());
-
-            // restore original numbers//
-            for (ix = 0; ix < arrNums.length; ix++) {
-                str += arrBody[ix] + arrNums[ix];
-            }
-
-            return str + arrBody[ix];
+        try {
+            text = JSON.stringify(JSON.parse(text), null, step);
+        } catch (e) {
+            console.error(e);
         }
-
         return text;
     }
 

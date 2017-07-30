@@ -58,7 +58,7 @@ export class SessionService {
     }
 
     static updateDate(ctx: Koa.Context) {
-        (<any>ctx).session.date = Date.now();
+        (<any>ctx).session.date = new Date();
     }
 
     static getDate(ctx: Koa.Context): Date {
