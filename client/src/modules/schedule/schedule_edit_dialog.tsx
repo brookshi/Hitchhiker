@@ -71,14 +71,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
     private initStateFromProps(props: ScheduleEditFormProps) {
         let sortedRecords = new Array<DtoRecord>();
         if (props.schedule.collectionId) {
-            const recordDict = _.keyBy(props.records.filter(r => r.collectionId === props.schedule.collectionId && r.category === RecordCategory.record), 'id');
-            props.schedule.recordsOrder.split(';').forEach(id => {
-                if (recordDict[id]) {
-                    sortedRecords.push(recordDict[id]);
-                    Reflect.deleteProperty(recordDict, id);
-                }
-            });
-            sortedRecords = [...sortedRecords, ..._.chain(recordDict).values<DtoRecord>().sortBy('name').value()];
+            sortedRecords = this.generateSortRecords(props.schedule.collectionId);
         }
 
         this.state = {
@@ -88,6 +81,25 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
             enableSort: !!props.schedule.collectionId,
             sortedRecords
         };
+    }
+
+    private generateSortRecords = (cid: string) => {
+        let sortedRecords = new Array<DtoRecord>();
+        const allRecordDict = _.keyBy(this.props.records, 'id');
+        const recordDict = _.keyBy(this.props.records.filter(r => r.collectionId === cid).map(r => ({
+            id: r.id,
+            category: r.category,
+            name: `${r.pid ? allRecordDict[r.pid].name + '/' : ''}${r.name}`,
+            collectionId: r.collectionId
+        })).filter(r => r.category === RecordCategory.record), 'id');
+
+        this.props.schedule.recordsOrder.split(';').forEach(id => {
+            if (recordDict[id]) {
+                sortedRecords.push(recordDict[id]);
+                Reflect.deleteProperty(recordDict, id);
+            }
+        });
+        return [...sortedRecords, ..._.chain(recordDict).values<DtoRecord>().sortBy('name').value()];
     }
 
     private generateCollectionSelect = () => {
@@ -177,7 +189,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
 
     private onCollectionChanged = (collectionId: string) => {
         if (collectionId) {
-            const sortedRecords = _.sortBy(this.props.records.filter(r => r.collectionId === collectionId && r.category === RecordCategory.record), 'name');
+            const sortedRecords = this.generateSortRecords(collectionId);
             this.setState({ ...this.state, enableSort: true, sortedRecords });
         } else {
             this.setState({ ...this.state, enableSort: false, needOrder: false, sortedRecords: [] });
