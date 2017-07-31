@@ -57,15 +57,19 @@ export class RecordRunner {
         if (_.keys(cookies).length === 0) {
             return record;
         }
+        let localCookies = cookies;
         const headers = [...record.headers];
         const cookieHeader = headers.find(h => h.isActive && (h.key || '').toLowerCase() === 'cookie');
 
         let recordCookies: _.Dictionary<string> = {};
         if (cookieHeader) {
             recordCookies = StringUtil.readCookies(cookieHeader.value || '');
+            if (_.values(recordCookies).some(c => c === 'nocookie')) {
+                localCookies = {};
+            }
         }
-        const allCookies = { ...cookies, ...recordCookies };
-        _.remove(headers, h => h.key === 'Cookie');
+        const allCookies = { ...localCookies, ...recordCookies };
+        _.remove(headers, h => (h.key || '').toLowerCase() === 'cookie');
         return {
             ...record,
             headers: [
