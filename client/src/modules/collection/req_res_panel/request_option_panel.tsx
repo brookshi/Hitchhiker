@@ -88,7 +88,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                     <KeyValueList
                         mode={headersEditMode}
                         onHeadersChanged={this.onHeadersChanged}
-                        headers={_.cloneDeep(headers)}
+                        headers={_.sortBy(_.cloneDeep(headers) || [], 'sort')}
                     />
                 </TabPane>
                 <TabPane tab={(
