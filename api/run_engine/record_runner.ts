@@ -9,6 +9,8 @@ import { StringUtil } from '../utils/string_util';
 
 export class RecordRunner {
 
+    private static RequestTimeout = 10 * 60 * 1000;
+
     static async runRecords(records: Record[], environmentId: string, needOrder: boolean = false, orderRecordIds: string = '', applyCookies?: boolean, trace?: (msg: string) => void): Promise<RunResult[]> {
         if (needOrder && orderRecordIds) {
             const cookies: _.Dictionary<string> = {};
@@ -134,7 +136,7 @@ export class RecordRunner {
 
     static request(option: request.Options, serverRes?: ServerResponse, needPipe?: boolean): Promise<{ err: any, response: request.RequestResponse, body: any }> {
         return new Promise<{ err: any, response: request.RequestResponse, body: any }>((resolve, reject) => {
-            const req = request(option, (err, res, body) => {
+            const req = request({ ...option, timeout: RecordRunner.RequestTimeout }, (err, res, body) => {
                 resolve({ err: err, response: res, body: body });
             });
             if (needPipe) {
