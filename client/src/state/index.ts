@@ -1,11 +1,11 @@
-import { UIState } from './ui';
-import { ProjectState } from './project';
-import { UserInfoState } from './user';
-import { EnvironmentState } from './environment';
-import { CollectionState, DisplayRecordsState } from './collection';
-import { LocalDataState } from './local_data';
+import { UIState, uiDefaultValue } from './ui';
+import { ProjectState, projectDefaultValue } from './project';
+import { UserInfoState, userInfoDefaultValue } from './user';
+import { EnvironmentState, environmentDefaultValue } from './environment';
+import { CollectionState, DisplayRecordsState, collectionDefaultValue, displayRecordsDefaultValue } from './collection';
+import { LocalDataState, localDataDefaultValue } from './local_data';
 import { RequestStatus } from '../common/request_status';
-import { ScheduleState } from './schedule';
+import { ScheduleState, scheduleDefaultValue } from './schedule';
 
 export interface RequestState {
 
@@ -39,4 +39,23 @@ export interface State {
     // mockState: MockState;
 
     // stressTestState: StressTestState;
+}
+
+export const defaultState: State = {
+
+    localDataState: localDataDefaultValue,
+
+    uiState: uiDefaultValue,
+
+    userState: userInfoDefaultValue,
+
+    projectState: projectDefaultValue,
+
+    collectionState: collectionDefaultValue,
+
+    displayRecordsState: displayRecordsDefaultValue,
+
+    environmentState: environmentDefaultValue,
+
+    scheduleState: scheduleDefaultValue
 }
