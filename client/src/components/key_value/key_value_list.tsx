@@ -125,7 +125,7 @@ class KeyValueListComponent extends React.Component<KeyValueListComponentProps, 
 
     private onValueChange = (type: 'key' | 'value' | 'isActive', index: number, event) => {
         const { headers } = this.state;
-        headers[index][type] = event.target.value;
+        headers[index][type] = type === 'isActive' ? event.target.checked : event.target.value;
         this.onChanged(headers);
     }
 
