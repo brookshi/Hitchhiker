@@ -4,17 +4,7 @@ import { UserInfoState, userInfoDefaultValue } from './user';
 import { EnvironmentState, environmentDefaultValue } from './environment';
 import { CollectionState, DisplayRecordsState, collectionDefaultValue, displayRecordsDefaultValue } from './collection';
 import { LocalDataState, localDataDefaultValue } from './local_data';
-import { RequestStatus } from '../common/request_status';
 import { ScheduleState, scheduleDefaultValue } from './schedule';
-
-export interface RequestState {
-
-    status: RequestStatus;
-
-    message?: string;
-}
-
-export const requestStateDefaultValue = { status: RequestStatus.none, message: '' };
 
 export interface State {
 

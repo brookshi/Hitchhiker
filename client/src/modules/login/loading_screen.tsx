@@ -1,6 +1,6 @@
 import React from 'react';
 import './style/index.less';
-import { RequestState } from '../../state/index';
+import { RequestState } from '../../state/request';
 import { RequestStatus } from '../../common/request_status';
 
 interface LoadingScreenProps {

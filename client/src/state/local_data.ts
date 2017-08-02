@@ -1,4 +1,4 @@
-import { RequestState, requestStateDefaultValue } from './index';
+import { RequestState, requestStateDefaultValue } from './request';
 
 export class LocalDataState {
 

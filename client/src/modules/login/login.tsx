@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input, Button, Icon, message } from 'antd';
-import { RequestState } from '../../state/index';
+import { RequestState } from '../../state/request';
 import { RequestStatus } from '../../common/request_status';
 import './style/index.less';
 import { LoginPageMode } from '../../common/custom_type';

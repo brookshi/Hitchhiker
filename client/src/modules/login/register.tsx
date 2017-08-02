@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input, Button, message } from 'antd';
-import { RequestState } from '../../state/index';
+import { RequestState } from '../../state/request';
 import { RequestStatus } from '../../common/request_status';
 import { StringUtil } from '../../utils/string_util';
 import './style/index.less';

@@ -3,7 +3,7 @@ import { DtoRecord } from '../../../api/interfaces/dto_record';
 import { RunResult } from '../../../api/interfaces/dto_run_result';
 import { StringUtil } from '../utils/string_util';
 import { RecordCategory } from '../common/record_category';
-import { requestStateDefaultValue, RequestState } from './index';
+import { requestStateDefaultValue, RequestState } from './request';
 import { allProject, newRecordFlag, newRequestName } from '../common/constants';
 
 export function getDefaultRecord(isInit: boolean = false): DtoRecord {

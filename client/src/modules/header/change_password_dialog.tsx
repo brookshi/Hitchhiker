@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Modal, Input, Button, message } from 'antd';
 import { StringUtil } from '../../utils/string_util';
-import { RequestState } from '../../state/index';
+import { RequestState } from '../../state/request';
 import { RequestStatus } from '../../common/request_status';
 import './style/index.less';
 
