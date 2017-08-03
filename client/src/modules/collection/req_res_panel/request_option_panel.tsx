@@ -67,6 +67,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
     }
 
     private onHeadersChanged = (data: DtoHeader[]) => {
+        data.forEach((v, i) => v.sort = i);
         this.props.changeRecord({ headers: data });
     }
 

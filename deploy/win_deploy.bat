@@ -1,4 +1,4 @@
-set host=10.86.18.215
+set host=http://10.86.18.215:8080/
 
 git clone -b release https://github.com/brookshi/Hitchhiker.git
 cd hitchhiker
