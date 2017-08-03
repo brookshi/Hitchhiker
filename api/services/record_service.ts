@@ -12,6 +12,7 @@ import { HeaderService } from './header_service';
 import { StringUtil } from '../utils/string_util';
 import { RecordHistory } from '../models/record_history';
 import { EntityManager } from 'typeorm';
+import { User } from "../models/user";
 
 export class RecordService {
     private static _sort: number = 0;
@@ -112,13 +113,13 @@ export class RecordService {
         return await rep.where('record.pid=:pid', { pid: id }).getMany();
     }
 
-    static async create(record: Record): Promise<ResObject> {
+    static async create(record: Record, user: User): Promise<ResObject> {
         record.sort = await RecordService.getMaxSort();
         RecordService.adjustHeaders(record);
-        return await RecordService.save(record);
+        return await RecordService.save(record, user);
     }
 
-    static async update(record: Record): Promise<ResObject> {
+    static async update(record: Record, user: User): Promise<ResObject> {
         const connection = await ConnectionManager.getInstance();
         const recordInDB = await RecordService.getById(record.id, true);
 
@@ -126,7 +127,7 @@ export class RecordService {
             await connection.getRepository(Header).remove(recordInDB.headers);
         }
         RecordService.adjustHeaders(record);
-        return await RecordService.save(record);
+        return await RecordService.save(record, user);
     }
 
     static async deleteFolder(id: string): Promise<ResObject> {
@@ -191,7 +192,7 @@ export class RecordService {
         return { success: true, message: Message.recordSortSuccess };
     }
 
-    private static async save(record: Record): Promise<ResObject> {
+    private static async save(record: Record, user: User): Promise<ResObject> {
         if (!record.name) {
             return { success: false, message: Message.recordCreateFailedOnName };
         }
@@ -202,7 +203,7 @@ export class RecordService {
         await connection.transaction(async manager => {
             await manager.save(record);
             if (record.category === RecordCategory.record) {
-                await manager.save(RecordService.createRecordHistory(record));
+                await manager.save(RecordService.createRecordHistory(record, user));
             }
         });
         return { success: true, message: Message.recordSaveSuccess };
@@ -240,9 +241,10 @@ export class RecordService {
         return result;
     }
 
-    private static createRecordHistory(record: Record): RecordHistory {
+    private static createRecordHistory(record: Record, user: User): RecordHistory {
         const history = new RecordHistory();
         history.target = record;
+        history.user = user;
         history.record = { ...record };
         Reflect.deleteProperty(history.record, 'collection');
         Reflect.deleteProperty(history.record, 'doc');

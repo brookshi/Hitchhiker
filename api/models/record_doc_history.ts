@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
 import { RecordDoc } from './record_doc';
+import { User } from './user';
 
 @Entity()
 export class RecordDocHistory {
@@ -12,6 +13,9 @@ export class RecordDocHistory {
 
     @Column('json')
     doc: RecordDoc;
+
+    @ManyToOne(type => User)
+    user: User;
 
     @CreateDateColumn()
     createDate: Date;

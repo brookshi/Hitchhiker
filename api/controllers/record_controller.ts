@@ -6,17 +6,20 @@ import { RecordRunner } from '../run_engine/record_runner';
 import { DtoRecord } from '../interfaces/dto_record';
 import { DtoRecordRun } from '../interfaces/dto_record_run';
 import { DtoRecordSort } from '../interfaces/dto_record_sort';
+import { SessionService } from '../services/session_service';
 
 export default class RecordController extends BaseController {
 
     @POST('/record')
-    async create( @BodyParam record: DtoRecord): Promise<ResObject> {
-        return await RecordService.create(RecordService.fromDto(record));
+    async create(ctx: Koa.Context, @BodyParam record: DtoRecord): Promise<ResObject> {
+        const user = SessionService.getUser(ctx);
+        return await RecordService.create(RecordService.fromDto(record), user);
     }
 
     @PUT('/record')
-    async update( @BodyParam record: DtoRecord): Promise<ResObject> {
-        return await RecordService.update(RecordService.fromDto(record));
+    async update(ctx: Koa.Context, @BodyParam record: DtoRecord): Promise<ResObject> {
+        const user = SessionService.getUser(ctx);
+        return await RecordService.update(RecordService.fromDto(record), user);
     }
 
     @DELETE('/record/:id')
