@@ -3,20 +3,9 @@ import { ActiveTabType, ActiveRecordType, DeleteRecordType, MoveRecordType, Send
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
 import { RecordCategory } from '../common/record_category';
-import { CollectionState, collectionDefaultValue, RecordState, getDefaultRecord, DisplayRecordsState, displayRecordsDefaultValue } from '../state/collection';
+import { CollectionState, collectionDefaultValue, RecordState, DisplayRecordsState, displayRecordsDefaultValue, getNewRecordState } from '../state/collection';
 import { DtoCollectionWithRecord } from '../../../api/interfaces/dto_collection';
 import { RequestStatus } from '../common/request_status';
-import { newRequestName } from '../common/constants';
-
-const getNewRecordState: () => RecordState = () => {
-    const newRecord = getDefaultRecord();
-    return {
-        name: newRecord.name || newRequestName,
-        record: newRecord,
-        isChanged: false,
-        isRequesting: false
-    };
-};
 
 export function collectionState(state: CollectionState = collectionDefaultValue, action: any): CollectionState {
     switch (action.type) {
@@ -175,7 +164,7 @@ function recordStates(states: _.Dictionary<RecordState> = displayRecordsDefaultV
         }
         case MoveRecordType: {
             const { id, pid, collectionId } = action.value.record;
-            return { ...states, [id]: { ...states[id], record: action.value.record, pid, collectionId } };
+            return states[id] ? { ...states, [id]: { ...states[id], record: action.value.record, pid, collectionId } } : states;
         }
         case CancelRequestType: {
             return { ...states, [action.value]: { ...states[action.value], isRequesting: false } };

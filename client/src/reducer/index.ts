@@ -12,6 +12,10 @@ import { localDataState } from './local_data';
 import { syncDefaultValue } from '../state/ui';
 import { scheduleState } from './schedule';
 import { ReloadType } from '../action/index';
+import { DtoCollection } from '../../../api/interfaces/dto_collection';
+import { DtoRecord } from '../../../api/interfaces/dto_record';
+import { QuitProjectType, DisbandProjectType } from '../action/project';
+import { getNewRecordState, RecordState } from '../state/collection';
 
 export const reduceReducers = (...reducers) => {
     return (state, action) =>
@@ -43,6 +47,33 @@ function multipleStateReducer(state: State, action: any): State {
         case ReloadType: {
             location.reload(true);
             return state;
+        }
+        case QuitProjectType:
+        case DisbandProjectType: {
+            const projectId = action.value.id;
+            const originRecords = state.collectionState.collectionsInfo.records;
+            const collections = _.chain(state.collectionState.collectionsInfo.collections).values<DtoCollection>().filter(c => c.projectId !== projectId).keyBy('id').value();
+            const records = _.pick<_.Dictionary<_.Dictionary<DtoRecord>>, _.Dictionary<_.Dictionary<DtoRecord>>>(originRecords, _.keys(collections));
+            const newRecordState = getNewRecordState();
+            let recordStates = _.chain(state.displayRecordsState.recordStates).values<RecordState>().filter(c => !c.record.collectionId || !!collections[c.record.collectionId]).keyBy('record.id').value();
+            let recordsOrder = state.displayRecordsState.recordsOrder.filter(r => !!recordStates[r]);
+            if (_.keys(recordStates).length === 0) {
+                recordStates = { [newRecordState.record.id]: newRecordState };
+                recordsOrder = [newRecordState.record.id];
+            }
+            const activeKey = recordStates[state.displayRecordsState.activeKey] ? state.displayRecordsState.activeKey : recordStates[_.keys(recordStates)[0]].record.id;
+            return {
+                ...state, collectionState: {
+                    ...state.collectionState, collectionsInfo: {
+                        ...state.collectionState.collectionsInfo, collections, records
+                    }
+                }, displayRecordsState: {
+                    ...state.displayRecordsState,
+                    activeKey,
+                    recordsOrder,
+                    recordStates
+                }
+            };
         }
         case UpdateDisplayRecordPropertyType: {
             const { activeKey, recordStates } = state.displayRecordsState;

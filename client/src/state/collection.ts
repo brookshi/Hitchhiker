@@ -16,6 +16,16 @@ export function getDefaultRecord(isInit: boolean = false): DtoRecord {
     };
 }
 
+export const getNewRecordState: () => RecordState = () => {
+    const newRecord = getDefaultRecord();
+    return {
+        name: newRecord.name || newRequestName,
+        record: newRecord,
+        isChanged: false,
+        isRequesting: false
+    };
+};
+
 export interface CollectionState {
 
     collectionsInfo: DtoCollectionWithRecord;
