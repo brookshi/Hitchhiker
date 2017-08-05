@@ -22,7 +22,8 @@ export function scheduleState(state: ScheduleState = scheduleDefaultValue, actio
         case DeleteScheduleType: {
             const schedules = { ...state.schedules };
             Reflect.deleteProperty(schedules, action.value);
-            return { ...state, schedules };
+            const activeSchedule = state.activeSchedule === action.value ? (_.keys(schedules).length > 0 ? (_.keys(schedules)[0] || '') : '') : state.activeSchedule;
+            return { ...state, schedules, activeSchedule };
         }
         case RunScheduleType: {
             return {
