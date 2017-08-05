@@ -21,8 +21,8 @@ export function projectState(state: ProjectState = projectDefaultValue, action: 
         case QuitProjectType:
         case DisbandProjectType: {
             const projects = { ...state.projects };
-            const activeProject = action.value.id === state.activeProject ? (projects[_.keys(projects)[0]].id || '') : state.activeProject;
             Reflect.deleteProperty(projects, action.value.id);
+            const activeProject = action.value.id === state.activeProject ? (projects[_.keys(projects)[0]].id || '') : state.activeProject;
             return { ...state, projects, activeProject };
         }
         case EditEnvType: {
