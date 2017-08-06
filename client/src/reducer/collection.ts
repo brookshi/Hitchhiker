@@ -107,7 +107,7 @@ export function root(state: DisplayRecordsState = displayRecordsDefaultValue, ac
     return finalState;
 }
 
-function activeKey(state: string = displayRecordsDefaultValue.activeKey, action: any): string {
+export function activeKey(state: string = displayRecordsDefaultValue.activeKey, action: any): string {
     switch (action.type) {
         case ActiveTabType:
             return action.value;
@@ -122,7 +122,7 @@ function activeKey(state: string = displayRecordsDefaultValue.activeKey, action:
     }
 }
 
-function recordsOrder(state: string[] = displayRecordsDefaultValue.recordsOrder, action: any): string[] {
+export function recordsOrder(state: string[] = displayRecordsDefaultValue.recordsOrder, action: any): string[] {
     switch (action.type) {
         case ActiveRecordType: {
             return state.some(v => v === action.value.id) ? state : [...state, action.value.id];
@@ -144,7 +144,7 @@ function recordsOrder(state: string[] = displayRecordsDefaultValue.recordsOrder,
     }
 }
 
-function recordStates(states: _.Dictionary<RecordState> = displayRecordsDefaultValue.recordStates, action: any): _.Dictionary<RecordState> {
+export function recordStates(states: _.Dictionary<RecordState> = displayRecordsDefaultValue.recordStates, action: any): _.Dictionary<RecordState> {
     switch (action.type) {
         case SendRequestType: {
             const id = action.value.record.id;
@@ -186,7 +186,7 @@ function recordStates(states: _.Dictionary<RecordState> = displayRecordsDefaultV
     }
 }
 
-function recordWithResState(state: DisplayRecordsState = displayRecordsDefaultValue, action: any): DisplayRecordsState {
+export function recordWithResState(state: DisplayRecordsState = displayRecordsDefaultValue, action: any): DisplayRecordsState {
     let { recordStates, activeKey, responseState, recordsOrder } = state;
     switch (action.type) {
         case SaveRecordType: {
