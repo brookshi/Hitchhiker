@@ -42,7 +42,7 @@ export function rootReducer(state: State, action: any): State {
     return finalState;
 };
 
-function multipleStateReducer(state: State, action: any): State {
+export function multipleStateReducer(state: State, action: any): State {
     switch (action.type) {
         case ReloadType: {
             location.reload(true);
@@ -89,6 +89,7 @@ function multipleStateReducer(state: State, action: any): State {
             const { displayRecordsState, uiState, collectionState, projectState, environmentState, scheduleState } = action.value as State;
             const onlineRecords = state.collectionState.collectionsInfo.records;
 
+            // TODO: if record's collection is removed, should reset record's id and collection id.
             _.keys(displayRecordsState.recordStates).forEach(key => {
                 const recordState = displayRecordsState.recordStates[key];
                 const { record, isChanged } = recordState;

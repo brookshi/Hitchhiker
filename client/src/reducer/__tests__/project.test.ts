@@ -1,7 +1,7 @@
-import { projectState } from "../project";
-import { projectDefaultValue } from "../../state/project";
-import { LoginSuccessType } from "../../action/user";
-import { SaveProjectType, ActiveProjectType, QuitProjectType, DisbandProjectType, EditEnvType, RemoveUserType } from "../../action/project";
+import { projectState } from '../project';
+import { projectDefaultValue } from '../../state/project';
+import { LoginSuccessType } from '../../action/user';
+import { SaveProjectType, ActiveProjectType, QuitProjectType, DisbandProjectType, EditEnvType, RemoveUserType } from '../../action/project';
 
 const defaultUser = {
     id: 'uid_123',
