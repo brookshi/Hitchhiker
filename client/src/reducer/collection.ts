@@ -154,17 +154,17 @@ export function recordStates(states: _.Dictionary<RecordState> = displayRecordsD
             const { isNew, record, oldId } = action.value;
             const { id, name } = record;
             if (isNew && oldId && states[oldId]) {
-                const newState = { ...states, [id]: { ...states[oldId], record: action.value.record, name, isChanged: false } };
+                const newState = { ...states, [id]: { ...states[oldId], record, name, isChanged: false } };
                 Reflect.deleteProperty(newState, oldId);
                 return newState;
             } else if (states[id]) {
-                return { ...states, [id]: { ...states[id], record: action.value.record, name, isChanged: false } };
+                return { ...states, [id]: { ...states[id], record, name, isChanged: false } };
             }
             return states;
         }
         case MoveRecordType: {
-            const { id, pid, collectionId } = action.value.record;
-            return states[id] ? { ...states, [id]: { ...states[id], record: action.value.record, pid, collectionId } } : states;
+            const { id } = action.value.record;
+            return states[id] ? { ...states, [id]: { ...states[id], record: { ...action.value.record } } } : states;
         }
         case CancelRequestType: {
             return { ...states, [action.value]: { ...states[action.value], isRequesting: false } };
