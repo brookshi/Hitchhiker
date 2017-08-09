@@ -1,5 +1,6 @@
 set host=http://10.86.18.215:8080/
 
+set NODE_ENV=develop
 git clone -b release https://github.com/brookshi/Hitchhiker.git
 cd hitchhiker
 call npm install -g pm2 yarn gulp-cli typescript@2.3.3 pm2-windows-service
@@ -9,6 +10,7 @@ cd client
 call npm install
 cd..
 
+set NODE_ENV=production
 call gulp release --prod
 
 @echo off&setlocal enabledelayedexpansion
