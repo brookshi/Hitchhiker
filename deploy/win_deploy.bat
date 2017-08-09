@@ -1,3 +1,6 @@
+REM ensure mysql is installed with user:'root' password: 'hitchhiker888' and create database 'hitchhiker-prod'
+REM replace myhost with your ip
+
 set host=http://10.86.18.215:8080/
 
 set NODE_ENV=develop

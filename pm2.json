@@ -2,7 +2,7 @@
     "apps": [{
         "name": "hitchhiker",
         "script": "./build/index.js",
-        "watch": true,
+        "watch": false,
         "env": {
             "HITCHHIKER_APP_HOST": "myhost"
         }
