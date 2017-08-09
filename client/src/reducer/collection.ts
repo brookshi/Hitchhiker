@@ -250,12 +250,14 @@ export function recordWithResState(state: DisplayRecordsState = displayRecordsDe
             if (recordStates[id]) {
                 const newStates = { ...recordStates };
                 Reflect.deleteProperty(newStates, id);
-                const newRecordsOrder = _.filter(recordsOrder, s => s !== action.value.id);
+                const newRecordsOrder = _.filter(recordsOrder, s => s !== id);
                 if (newRecordsOrder.length === 0) {
                     const newRecordState = getNewRecordState();
                     activeKey = newRecordState.record.id;
                     newStates[activeKey] = newRecordState;
                     newRecordsOrder.push(activeKey);
+                } else if (activeKey === id) {
+                    activeKey = newRecordsOrder[0];
                 }
                 return { ...state, recordStates: newStates, recordsOrder: newRecordsOrder, activeKey };
             }
@@ -269,8 +271,7 @@ export function recordWithResState(state: DisplayRecordsState = displayRecordsDe
                 activeKey = newRecordState.record.id;
                 restStates[activeKey] = newRecordState;
                 restRecordsOrder.push(activeKey);
-            }
-            if (recordStates[activeKey].record.collectionId === action.value) {
+            } else if (!!recordStates[activeKey]) {
                 activeKey = restStates[_.keys(restStates)[0]].record.id;
             }
             return { ...state, recordStates: restStates, recordsOrder: restRecordsOrder, activeKey };

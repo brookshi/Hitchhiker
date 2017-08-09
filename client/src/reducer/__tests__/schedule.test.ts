@@ -98,5 +98,5 @@ test('run schedule fulfill', () => {
 
     let state = scheduleState(oldState, { type: RunScheduleFulfillType, value: { id: '123', data: { id: 'data1' } } });
 
-    expect(state).toEqual({ ...scheduleDefaultValue, schedules: { ['123']: { ...defaultSchedule, id: '123', scheduleRecords: [{ id: 'data1' }], lastRunDate: new Date() } }, activeSchedule: '123', runState: { ...scheduleDefaultValue.runState, ['123']: { isRunning: false, consoleRunResults: [] } } });
+    expect(state).toEqual({ ...scheduleDefaultValue, schedules: { ['123']: { ...defaultSchedule, id: '123', scheduleRecords: [{ id: 'data1' }], lastRunDate: state.schedules['123'].lastRunDate } }, activeSchedule: '123', runState: { ...scheduleDefaultValue.runState, ['123']: { isRunning: false, consoleRunResults: [] } } });
 });
