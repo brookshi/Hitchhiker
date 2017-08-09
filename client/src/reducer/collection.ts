@@ -107,7 +107,7 @@ export function root(state: DisplayRecordsState = displayRecordsDefaultValue, ac
     return finalState;
 }
 
-function activeKey(state: string = displayRecordsDefaultValue.activeKey, action: any): string {
+export function activeKey(state: string = displayRecordsDefaultValue.activeKey, action: any): string {
     switch (action.type) {
         case ActiveTabType:
             return action.value;
@@ -122,7 +122,7 @@ function activeKey(state: string = displayRecordsDefaultValue.activeKey, action:
     }
 }
 
-function recordsOrder(state: string[] = displayRecordsDefaultValue.recordsOrder, action: any): string[] {
+export function recordsOrder(state: string[] = displayRecordsDefaultValue.recordsOrder, action: any): string[] {
     switch (action.type) {
         case ActiveRecordType: {
             return state.some(v => v === action.value.id) ? state : [...state, action.value.id];
@@ -144,7 +144,7 @@ function recordsOrder(state: string[] = displayRecordsDefaultValue.recordsOrder,
     }
 }
 
-function recordStates(states: _.Dictionary<RecordState> = displayRecordsDefaultValue.recordStates, action: any): _.Dictionary<RecordState> {
+export function recordStates(states: _.Dictionary<RecordState> = displayRecordsDefaultValue.recordStates, action: any): _.Dictionary<RecordState> {
     switch (action.type) {
         case SendRequestType: {
             const id = action.value.record.id;
@@ -154,17 +154,17 @@ function recordStates(states: _.Dictionary<RecordState> = displayRecordsDefaultV
             const { isNew, record, oldId } = action.value;
             const { id, name } = record;
             if (isNew && oldId && states[oldId]) {
-                const newState = { ...states, [id]: { ...states[oldId], record: action.value.record, name, isChanged: false } };
+                const newState = { ...states, [id]: { ...states[oldId], record, name, isChanged: false } };
                 Reflect.deleteProperty(newState, oldId);
                 return newState;
             } else if (states[id]) {
-                return { ...states, [id]: { ...states[id], record: action.value.record, name, isChanged: false } };
+                return { ...states, [id]: { ...states[id], record, name, isChanged: false } };
             }
             return states;
         }
         case MoveRecordType: {
-            const { id, pid, collectionId } = action.value.record;
-            return states[id] ? { ...states, [id]: { ...states[id], record: action.value.record, pid, collectionId } } : states;
+            const { id } = action.value.record;
+            return states[id] ? { ...states, [id]: { ...states[id], record: { ...action.value.record } } } : states;
         }
         case CancelRequestType: {
             return { ...states, [action.value]: { ...states[action.value], isRequesting: false } };
@@ -186,7 +186,7 @@ function recordStates(states: _.Dictionary<RecordState> = displayRecordsDefaultV
     }
 }
 
-function recordWithResState(state: DisplayRecordsState = displayRecordsDefaultValue, action: any): DisplayRecordsState {
+export function recordWithResState(state: DisplayRecordsState = displayRecordsDefaultValue, action: any): DisplayRecordsState {
     let { recordStates, activeKey, responseState, recordsOrder } = state;
     switch (action.type) {
         case SaveRecordType: {
@@ -250,12 +250,14 @@ function recordWithResState(state: DisplayRecordsState = displayRecordsDefaultVa
             if (recordStates[id]) {
                 const newStates = { ...recordStates };
                 Reflect.deleteProperty(newStates, id);
-                const newRecordsOrder = _.filter(recordsOrder, s => s !== action.value.id);
+                const newRecordsOrder = _.filter(recordsOrder, s => s !== id);
                 if (newRecordsOrder.length === 0) {
                     const newRecordState = getNewRecordState();
                     activeKey = newRecordState.record.id;
                     newStates[activeKey] = newRecordState;
                     newRecordsOrder.push(activeKey);
+                } else if (activeKey === id) {
+                    activeKey = newRecordsOrder[0];
                 }
                 return { ...state, recordStates: newStates, recordsOrder: newRecordsOrder, activeKey };
             }
@@ -269,8 +271,7 @@ function recordWithResState(state: DisplayRecordsState = displayRecordsDefaultVa
                 activeKey = newRecordState.record.id;
                 restStates[activeKey] = newRecordState;
                 restRecordsOrder.push(activeKey);
-            }
-            if (recordStates[activeKey].record.collectionId === action.value) {
+            } else if (!!recordStates[activeKey]) {
                 activeKey = restStates[_.keys(restStates)[0]].record.id;
             }
             return { ...state, recordStates: restStates, recordsOrder: restRecordsOrder, activeKey };
