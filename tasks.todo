@@ -69,17 +69,24 @@
     ☐ unit test
 0.1.1:
     ☐ new record in menu of collection/folder
-    ☐ global headers
     ☐ schedule record active/inactive
-    ☐ clear local cache
-    ☐ collection tree follow active tab(expand collection/folder)
-    ☐ request header auto complete
-0.1.2:
+    ☐ content-type miss after duplicate sometimes
     ☐ record history
     ☐ record diff
+    ☐ localhost mapping
+
+0.1.2:
+    ☐ test result detail
+    ☐ test global function
+    ☐ request header auto complete
+    ☐ clear local cache
+    ☐ global headers
     ☐ variable highlight
+
+    
 0.2.0:
-    stree test
+    ☐ collection tree follow active tab(expand collection/folder)
+    ☐ stree test
 0.2.1:
     ☐ save all tabs, close all tabs, close all but active.
     ☐ fetch data per 30s
