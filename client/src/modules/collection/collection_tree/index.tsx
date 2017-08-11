@@ -185,13 +185,21 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         this.setState({ ...this.state, isProjectSelectedDlgOpen: false, newCollectionName, selectedProjectInDlg: undefined });
     }
 
+    private duplicateRecord = (record: DtoRecord) => {
+        let headers = record.headers;
+        if (headers) {
+            headers = headers.map(h => ({ ...h, id: StringUtil.generateUID() }));
+        }
+        this.props.duplicateRecord({ ...record, id: StringUtil.generateUID(), name: `${record.name}.copy`, headers });
+    }
+
     private shareCollection = () => {
         // TODO: share
         console.log('share');
     }
 
     private loopRecords = (data: DtoRecord[], cid: string, inFolder: boolean = false) => {
-        const { openKeys, records, deleteRecord, duplicateRecord } = this.props;
+        const { openKeys, records, deleteRecord } = this.props;
 
         return data.map(r => {
             const recordStyle = { height: '30px', lineHeight: '30px' };
@@ -223,7 +231,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                         inFolder={inFolder}
                         moveRecordToFolder={this.moveRecordToFolder}
                         moveToCollection={this.moveToCollection}
-                        duplicateRecord={() => duplicateRecord(r)}
+                        duplicateRecord={() => this.duplicateRecord(r)}
                         deleteRecord={() => deleteRecord(r.id, records[cid])}
                     />
                 </MenuItem>
@@ -370,7 +378,7 @@ const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps
         updateRecord: (record) => dispatch(actionCreator(SaveRecordType, { isNew: false, record })),
         saveCollection: (collection) => { dispatch(actionCreator(SaveCollectionType, { isNew: true, collection })); },
         updateCollection: (collection) => { dispatch(actionCreator(SaveCollectionType, { isNew: false, collection })); },
-        duplicateRecord: (record) => dispatch(actionCreator(SaveAsRecordType, { isNew: true, record: { ...record, id: StringUtil.generateUID(), name: `${record.name}.copy` } })),
+        duplicateRecord: (record) => dispatch(actionCreator(SaveAsRecordType, { isNew: true, record })),
         createRecord: (record) => dispatch(actionCreator(SaveAsRecordType, { isNew: true, record })),
         moveRecord: record => dispatch(actionCreator(MoveRecordType, { record })),
         openKeysChanged: openKeys => dispatch(actionCreator(CollectionOpenKeysType, openKeys)),

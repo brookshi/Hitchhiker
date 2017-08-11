@@ -69,8 +69,8 @@
     ☐ unit test
 0.1.1:
     ✔ new record in menu of collection/folder @done (2017/8/11 下午11:06:36)
+    ✔ content-type miss after duplicate sometimes @done (2017/8/11 下午11:36:59)
     ☐ record match/unmatch in schedule
-    ☐ content-type miss after duplicate sometimes
     ☐ localhost mapping
     ☐ record history
     ☐ record diff
