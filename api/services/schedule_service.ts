@@ -123,6 +123,6 @@ export class ScheduleService {
         const UTCPeriod = schedule.hour >= 0 ? schedule.period : schedule.period - 1;
         const UTCDay = UTCPeriod === 1 ? 6 : UTCPeriod - 2;
         const isPeriodRight = schedule.period === 1 || UTCDay === now.getUTCDay();
-        return isPeriodRight && schedule.hour === now.getUTCHours();
+        return isPeriodRight && (schedule.hour < 0 ? 24 + schedule.hour : schedule.hour) === now.getUTCHours();
     }
 }
