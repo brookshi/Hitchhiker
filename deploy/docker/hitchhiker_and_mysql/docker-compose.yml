@@ -1,7 +1,7 @@
 version: '2'
 services:
   hitchhiker:
-    image: hitchhiker
+    image: brookshi/hitchhiker:v0.1.0
     container_name: hitchhiker
     environment:
       - HITCHHIKER_DB_HOST=hitchhiker-mysql
@@ -17,7 +17,7 @@ services:
     container_name: hitchhiker-mysql
     environment:
       - MYSQL_ROOT_PASSWORD=hitchhiker888
-      - MYSQL_DATABASE=hitchhiker
+      - MYSQL_DATABASE=hitchhiker-prod
     volumes:
       - ./hitchhiker-mysql.conf:/etc/mysql/conf.d/hitchhiker.conf
       - /my/hitchhiker/sqldata:/var/lib/mysql

@@ -7,7 +7,7 @@ var gulp = require('gulp'),
 gulp.task('release', ['copy']);
 
 gulp.task('copy', ['clean'], function () {
-    return gulp.src('./client/build/**/*.*')
+    gulp.src('./client/build/**/*.*')
         .pipe(gulp.dest('./build/public'));
 });
 

@@ -5,6 +5,4 @@ services:
     container_name: hitchhiker-mysql
     environment:
     - MYSQL_ROOT_PASSWORD=hitchhiker888
-    - MYSQL_DATABASE=hitchhiker
-    ports:
-      - "3306:3306"
+    - MYSQL_DATABASE=hitchhiker-prod
