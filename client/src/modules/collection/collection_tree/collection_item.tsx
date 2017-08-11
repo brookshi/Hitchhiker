@@ -8,6 +8,7 @@ import { StringUtil } from '../../../utils/string_util';
 import { RecordCategory } from '../../../common/record_category';
 import { DtoCollection } from '../../../../../api/interfaces/dto_collection';
 import { newFolderName } from '../../../common/constants';
+import { getDefaultRecord } from '../../../state/collection';
 
 interface CollectionItemProps {
 
@@ -19,7 +20,7 @@ interface CollectionItemProps {
 
     deleteCollection();
 
-    createFolder(record: DtoRecord);
+    createRecord(record: DtoRecord);
 
     moveToCollection(record: DtoRecord, collectionId?: string);
 
@@ -67,6 +68,9 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
                 <Menu.Item key="createFolder">
                     <Icon type="folder" /> Create folder
                 </Menu.Item>
+                <Menu.Item key="createRecord">
+                    <Icon type="file" /> Create request
+                </Menu.Item>
                 {/*<Menu.Item key="share">
                     <Icon type="share-alt" /> Share
                 </Menu.Item>*/}
@@ -91,7 +95,9 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
         }
     }
 
-    createFolder = () => this.props.createFolder(createDefaultFolder(this.props.collection.id));
+    createFolder = () => this.props.createRecord(createDefaultFolder(this.props.collection.id));
+
+    createRecord = () => this.props.createRecord({ ...getDefaultRecord(false), collectionId: this.props.collection.id, id: StringUtil.generateUID() });
 
     private checkTransferFlag = (e, flag) => {
         return e.dataTransfer.types.indexOf(flag) > -1;

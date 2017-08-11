@@ -4,6 +4,8 @@ import ItemWithMenu from '../../../components/item_with_menu';
 import './style/index.less';
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 import { confirmDlg } from '../../../components/confirm_dialog/index';
+import { getDefaultRecord } from '../../../state/collection';
+import { StringUtil } from '../../../utils/string_util';
 
 interface RecordFolderProps {
 
@@ -12,6 +14,8 @@ interface RecordFolderProps {
     isOpen: boolean;
 
     deleteRecord();
+
+    createRecord(record: DtoRecord);
 
     onNameChanged(name: string);
 
@@ -50,6 +54,9 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
                 <Menu.Item key="edit">
                     <Icon type="edit" /> Rename
                 </Menu.Item>
+                <Menu.Item key="createRecord">
+                    <Icon type="file" /> Create request
+                </Menu.Item>
                 <Menu.Item key="delete">
                     <Icon type="delete" /> Delete
                 </Menu.Item>
@@ -62,6 +69,8 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
     }
 
     delete = () => confirmDlg('folder', () => this.props.deleteRecord());
+
+    createRecord = () => this.props.createRecord({ ...getDefaultRecord(false), collectionId: this.props.folder.collectionId, pid: this.props.folder.id, id: StringUtil.generateUID() });
 
     edit = () => {
         if (this.itemWithMenu) {

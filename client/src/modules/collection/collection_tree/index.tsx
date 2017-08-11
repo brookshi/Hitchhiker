@@ -53,7 +53,7 @@ interface CollectionListDispatchProps {
 
     duplicateRecord(record: DtoRecord);
 
-    createFolder(record: DtoRecord);
+    createRecord(record: DtoRecord);
 
     moveRecord(record: DtoRecord);
 
@@ -100,14 +100,29 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         }
     }
 
-    private createFolder = (folder: DtoRecord) => {
-        this.currentNewFolder = folder;
-        if (folder &&
-            folder.collectionId &&
-            this.props.openKeys.indexOf(folder.collectionId) < 0) {
-            this.props.openKeysChanged([...this.props.openKeys, folder.collectionId]);
+    private createRecord = (record: DtoRecord) => {
+        if (!record) {
+            return;
         }
-        this.props.createFolder(folder);
+
+        this.currentNewFolder = record.category === RecordCategory.folder ? record : undefined;
+
+        let openKeys = [...this.props.openKeys];
+        if (record.collectionId && this.props.openKeys.indexOf(record.collectionId) < 0) {
+            openKeys.push(record.collectionId);
+        }
+        if (record.pid && this.props.openKeys.indexOf(record.pid) < 0) {
+            openKeys.push(record.pid);
+        }
+        if (openKeys.length !== this.props.openKeys.length) {
+            this.props.openKeysChanged(openKeys);
+        }
+
+        this.props.createRecord(record);
+
+        if (record && record.category === RecordCategory.record) {
+            this.props.activeRecord(record);
+        }
     }
 
     private changeFolderName = (folder: DtoRecord, name: string) => {
@@ -191,6 +206,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                             folder={{ ...r }}
                             isOpen={isOpen}
                             deleteRecord={() => deleteRecord(r.id, records[cid])}
+                            createRecord={this.createRecord}
                             onNameChanged={(name) => this.changeFolderName(r, name)}
                             moveRecordToFolder={this.moveRecordToFolder}
                             moveToCollection={this.moveToCollection}
@@ -295,7 +311,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                                                     onNameChanged={(name) => this.changeCollectionName(c, name)}
                                                     deleteCollection={() => deleteCollection(c.id)}
                                                     moveToCollection={this.moveToCollection}
-                                                    createFolder={this.createFolder}
+                                                    createRecord={this.createRecord}
                                                     shareCollection={id => this.setState({ ...this.state, isProjectSelectedDlgOpen: true, projectSelectedDlgMode: ProjectSelectedDialogType.share, shareCollectionId: id })}
                                                 />
                                             )}>
@@ -355,7 +371,7 @@ const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps
         saveCollection: (collection) => { dispatch(actionCreator(SaveCollectionType, { isNew: true, collection })); },
         updateCollection: (collection) => { dispatch(actionCreator(SaveCollectionType, { isNew: false, collection })); },
         duplicateRecord: (record) => dispatch(actionCreator(SaveAsRecordType, { isNew: true, record: { ...record, id: StringUtil.generateUID(), name: `${record.name}.copy` } })),
-        createFolder: (record) => dispatch(actionCreator(SaveAsRecordType, { isNew: true, record })),
+        createRecord: (record) => dispatch(actionCreator(SaveAsRecordType, { isNew: true, record })),
         moveRecord: record => dispatch(actionCreator(MoveRecordType, { record })),
         openKeysChanged: openKeys => dispatch(actionCreator(CollectionOpenKeysType, openKeys)),
         selectProject: projectId => dispatch(actionCreator(SelectedProjectChangedType, projectId))

@@ -68,12 +68,12 @@
     ☐ build to live
     ☐ unit test
 0.1.1:
-    ☐ new record in menu of collection/folder
-    ☐ schedule record active/inactive
+    ✔ new record in menu of collection/folder @done (2017/8/11 下午11:06:36)
+    ☐ record match/unmatch in schedule
     ☐ content-type miss after duplicate sometimes
+    ☐ localhost mapping
     ☐ record history
     ☐ record diff
-    ☐ localhost mapping
 
 0.1.2:
     ☐ test result detail
