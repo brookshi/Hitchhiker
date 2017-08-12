@@ -109,7 +109,7 @@ export class ScheduleRunner {
         const scheduleRecord = new ScheduleRecord();
         const totalRunResults = [...originRunResults, ...compareRunResults];
 
-        scheduleRecord.success = totalRunResults.every(r => this.isSuccess(r)) && this.compare(originRunResults, compareRunResults);
+        scheduleRecord.success = totalRunResults.every(r => this.isSuccess(r)) && this.compare(originRunResults, compareRunResults, schedule);
         scheduleRecord.schedule = schedule;
         scheduleRecord.result = { origin: originRunResults, compare: compareRunResults };
         scheduleRecord.isScheduleRun = isScheduleRun;
@@ -121,15 +121,17 @@ export class ScheduleRunner {
         return await ScheduleRecordService.create(scheduleRecord);
     }
 
-    private compare(originRunResults: RunResult[], compareRunResults: RunResult[]) {
+    private compare(originRunResults: RunResult[], compareRunResults: RunResult[], schedule: Schedule) {
         if (compareRunResults.length === 0) {
             return true;
         }
         if (originRunResults.length !== compareRunResults.length) {
             return false;
         }
+
+        const notNeedMatchIds = schedule.recordsOrder ? schedule.recordsOrder.split(';').filter(r => r.endsWith(':0')).map(r => r.substr(0, r.length - 2)) : [];
         for (let i = 0; i < originRunResults.length; i++) {
-            if (originRunResults[i].body !== compareRunResults[i].body) {
+            if (!notNeedMatchIds[originRunResults[i].id] && originRunResults[i].body !== compareRunResults[i].body) {
                 return false;
             }
         }

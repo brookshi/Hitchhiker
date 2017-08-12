@@ -4,16 +4,19 @@ import { DtoScheduleRecord } from '../../../../api/interfaces/dto_schedule_recor
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
 import * as _ from 'lodash';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
-import { noEnvironment, unknownName, successColor, failColor, pass, fail, match, notMatch } from '../../common/constants';
+import { noEnvironment, unknownName, successColor, failColor, pass, fail, match, notMatch, notMatchButIgnore } from '../../common/constants';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { StringUtil } from '../../utils/string_util';
 import Editor from '../../components/editor';
 import ScheduleRunConsole from './schedule_run_console';
 import './style/index.less';
+import { DtoSchedule } from '../../../../api/interfaces/dto_schedule';
 
-type DisplayRunResult = RunResult & { isOrigin: boolean, compareResult: boolean, rowSpan: number };
+type DisplayRunResult = RunResult & { isOrigin: boolean, compareResult: string, rowSpan: number };
 
 interface ScheduleRunHistoryGridProps {
+
+    schedule: DtoSchedule;
 
     scheduleRecords: DtoScheduleRecord[];
 
@@ -42,13 +45,23 @@ class RunResultColumn extends Table.Column<DisplayRunResult> { }
 
 class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps, ScheduleRunHistoryGridState> {
 
-    private expandedTable = (record: DtoScheduleRecord) => {
+    private expandedTable = (record: DtoScheduleRecord, schedule: DtoSchedule) => {
         const displayRunResults = new Array<DisplayRunResult>();
         const compareDict = _.keyBy(record.result.compare, 'id');
 
+        const notNeedMatchIds = this.getNotNeedMatchIds(schedule);
         record.result.origin.forEach(r => {
             const needCompare = !!compareDict[r.id];
-            const compareResult = needCompare && compareDict[r.id].body === r.body;
+            let compareResult = '';
+            if (needCompare) {
+                if (compareDict[r.id].body === r.body) {
+                    compareResult = match;
+                } else if (notNeedMatchIds[r.id]) {
+                    compareResult = notMatchButIgnore;
+                } else {
+                    compareResult = notMatch;
+                }
+            }
             displayRunResults.push({ ...r, isOrigin: true, compareResult, rowSpan: needCompare ? 2 : 1 });
             if (needCompare) {
                 displayRunResults.push({ ...compareDict[r.id], id: r.id + 'c', isOrigin: false, compareResult, rowSpan: 0 });
@@ -82,7 +95,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                 <RunResultColumn
                     title="Environment"
                     dataIndex="envId"
-                    render={(text, runResult) => `${runResult.envId ? (this.props.envNames[runResult.envId] || unknownName) : noEnvironment}`}
+                    render={(text, runResult) => `${!runResult.envId || runResult.envId === noEnvironment ? noEnvironment : (this.props.envNames[runResult.envId] || unknownName)}`}
                 />
                 <RunResultColumn title="Headers" dataIndex="headers" render={this.getHeadersDisplay} />
                 <RunResultColumn title="Body" dataIndex="body" render={this.getBodyDisplay} />
@@ -93,7 +106,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                             title="Compare"
                             dataIndex="compareResult"
                             key="compareResult"
-                            render={(text, runResult) => ({ children: <span className={runResult.compareResult ? 'schedule-success' : 'schedule-failed'}>{runResult.compareResult ? match : notMatch}</span>, props: { rowSpan: runResult.rowSpan } })}
+                            render={(text, runResult) => ({ children: <span className={runResult.compareResult !== notMatch ? 'schedule-success' : 'schedule-failed'}>{runResult.compareResult}</span>, props: { rowSpan: runResult.rowSpan } })}
                         />
                     )
                 }
@@ -165,12 +178,12 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
         return !runResult.error && (testValues.length === 0 || testValues.reduce((p, a) => p && a));
     }
 
-    private getScheduleDescription = (record: DtoScheduleRecord) => {
+    private getScheduleDescription = (record: DtoScheduleRecord, schedule: DtoSchedule) => {
         const { envName, compareEnvName } = this.props;
         const { origin, compare } = record.result;
         const originFailedResults = origin.filter(r => !this.isSuccess(r));
         const compareFailedResults = compare.filter(r => !this.isSuccess(r));
-        const isEqual = this.compare(origin, compare);
+        const isEqual = this.compare(origin, compare, schedule);
 
         const originResultDescription = this.getRunResultDescription(envName, origin.length, originFailedResults.length);
         const compareResultDescription = compare.length === 0 ? '' : this.getRunResultDescription(compareEnvName, compare.length, compareFailedResults.length);
@@ -188,23 +201,29 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
         );
     }
 
-    private compare = (originRunResults: RunResult[], compareRunResults: RunResult[]) => {
+    private compare = (originRunResults: RunResult[], compareRunResults: RunResult[], schedule: DtoSchedule) => {
         if (compareRunResults.length === 0) {
             return true;
         }
         if (originRunResults.length !== compareRunResults.length) {
             return false;
         }
+
+        const notNeedMatchIds = this.getNotNeedMatchIds(schedule);
         for (let i = 0; i < originRunResults.length; i++) {
-            if (originRunResults[i].body !== compareRunResults[i].body) {
+            if (!notNeedMatchIds[originRunResults[i].id] && originRunResults[i].body !== compareRunResults[i].body) {
                 return false;
             }
         }
         return true;
     }
 
+    private getNotNeedMatchIds = (schedule: DtoSchedule) => {
+        return schedule.recordsOrder ? schedule.recordsOrder.split(';').filter(r => r.endsWith(':0')).map(r => r.substr(0, r.length - 2)) : [];
+    }
+
     public render() {
-        const { isRunning, consoleRunResults, records, envNames, scheduleRecords } = this.props;
+        const { isRunning, consoleRunResults, records, envNames, scheduleRecords, schedule } = this.props;
 
         return (
             <div>
@@ -241,7 +260,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                     <ScheduleRecordColumn
                         title="Description"
                         dataIndex="description"
-                        render={(text, record) => this.getScheduleDescription(record)}
+                        render={(text, record) => this.getScheduleDescription(record, schedule)}
                     />
                 </ScheduleRecordTable>
             </div>

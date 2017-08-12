@@ -13,7 +13,7 @@ import { UpdateLeftPanelType, ResizeLeftPanelType } from '../../action/ui';
 import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType, RunScheduleType } from '../../action/schedule';
 import ScheduleInfo from './schedule_info';
 import ScheduleRunHistoryGrid from './schedule_run_history_grid';
-import { noEnvironment } from '../../common/constants';
+import { noEnvironment, unknownName } from '../../common/constants';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { ScheduleRunState } from '../../state/schedule';
 
@@ -67,11 +67,15 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
         return _.chain(this.props.schedules).values<DtoSchedule>().sortBy('name').value();
     }
 
+    private getEnvName = (envId: string) => {
+        return !envId || envId === noEnvironment ? noEnvironment : (this.props.environments[envId] || unknownName);
+    }
+
     public render() {
         const { collapsed, leftPanelWidth, collapsedLeftPanel, createSchedule, selectSchedule, runState, updateSchedule, deleteSchedule, user, activeSchedule, collections, environments, records, schedules, runSchedule } = this.props;
         const schedule = schedules[activeSchedule] || {};
-        const envName = environments[schedule.environmentId] || noEnvironment;
-        const compareEnvName = schedule.compareEnvironmentId ? environments[schedule.compareEnvironmentId] : '';
+        const envName = this.getEnvName(schedule.environmentId);
+        const compareEnvName = this.getEnvName(schedule.compareEnvironmentId);
 
         return (
             <Layout className="main-panel">
@@ -108,6 +112,7 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
                         />
                     ) : ''}
                     <ScheduleRunHistoryGrid
+                        schedule={schedule}
                         scheduleRecords={schedule.scheduleRecords}
                         envName={envName}
                         compareEnvName={compareEnvName}

@@ -9,7 +9,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import ScheduleEditDialog from './schedule_edit_dialog';
 import { Period } from '../../common/period';
 import { NotificationMode } from '../../common/notification_mode';
-import { noEnvironment, newScheduleName } from '../../common/constants';
+import { noEnvironment, newScheduleName, unknownName } from '../../common/constants';
 import { DateUtil } from '../../utils/date_util';
 import * as _ from 'lodash';
 import { ScheduleRunState } from '../../state/schedule';
@@ -118,6 +118,10 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
         });
     }
 
+    private getEnvName = (envId: string) => {
+        return !envId || envId === noEnvironment ? noEnvironment : (this.props.environments[envId] || unknownName);
+    }
+
     public render() {
         const { runState, activeSchedule, schedules, collections, environments, user, deleteSchedule, runSchedule, updateSchedule } = this.props;
         return (
@@ -148,8 +152,8 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                                         <ScheduleItem
                                             schedule={t}
                                             collectionName={collections[t.collectionId]}
-                                            environmentName={environments[t.environmentId]}
-                                            compareEnvName={environments[t.compareEnvironmentId]}
+                                            environmentName={this.getEnvName(t.environmentId)}
+                                            compareEnvName={this.getEnvName(t.compareEnvironmentId)}
                                             isOwner={t.ownerId === user.id}
                                             delete={() => deleteSchedule(t.id)}
                                             edit={() => this.editSchedule(t)}

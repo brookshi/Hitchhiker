@@ -1,5 +1,5 @@
 import React from 'react';
-import { Select, Form, Modal, Input, Row, Col, Checkbox } from 'antd';
+import { Select, Form, Modal, Input, Row, Col, Checkbox, Switch } from 'antd';
 import { DtoSchedule } from '../../../../api/interfaces/dto_schedule';
 import { noEnvironment } from '../../common/constants';
 import { StringUtil } from '../../utils/string_util';
@@ -46,12 +46,14 @@ interface ScheduleEditDialogState {
 
     needOrder: boolean;
 
-    sortedRecords: DtoRecord[];
+    sortedRecords: MatchableRecord[];
 }
+
+type MatchableRecord = DtoRecord & { match: boolean };
 
 type ScheduleEditFormProps = ScheduleEditDialogProps & { form: any };
 
-class RecordSortList extends SortableListComponent<DtoRecord> { }
+class RecordSortList extends SortableListComponent<MatchableRecord> { }
 
 class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, ScheduleEditDialogState> {
 
@@ -69,9 +71,9 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
     }
 
     private initStateFromProps(props: ScheduleEditFormProps) {
-        let sortedRecords = new Array<DtoRecord>();
+        let sortedRecords = new Array<MatchableRecord>();
         if (props.schedule.collectionId) {
-            sortedRecords = this.generateSortRecords(props.schedule.collectionId);
+            sortedRecords = this.generateSortRecords(props, props.schedule.collectionId);
         }
 
         this.state = {
@@ -83,23 +85,24 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
         };
     }
 
-    private generateSortRecords = (cid: string) => {
-        let sortedRecords = new Array<DtoRecord>();
-        const allRecordDict = _.keyBy(this.props.records, 'id');
-        const recordDict = _.keyBy(this.props.records.filter(r => r.collectionId === cid).map(r => ({
+    private generateSortRecords = (props: ScheduleEditFormProps, cId: string) => {
+        const sortedRecords = new Array<MatchableRecord>();
+        const allRecordDict = _.keyBy(props.records, 'id');
+        const recordDict = _.keyBy(props.records.filter(r => r.collectionId === cId).map(r => ({
             id: r.id,
             category: r.category,
             name: `${r.pid ? allRecordDict[r.pid].name + '/' : ''}${r.name}`,
             collectionId: r.collectionId
         })).filter(r => r.category === RecordCategory.record), 'id');
 
-        this.props.schedule.recordsOrder.split(';').forEach(id => {
+        props.schedule.recordsOrder.split(';').forEach(flags => {
+            const [id, match] = flags.split(':');
             if (recordDict[id]) {
-                sortedRecords.push(recordDict[id]);
+                sortedRecords.push({ ...recordDict[id], match: match !== '0' });
                 Reflect.deleteProperty(recordDict, id);
             }
         });
-        return [...sortedRecords, ..._.chain(recordDict).values<DtoRecord>().sortBy('name').value()];
+        return [...sortedRecords, ..._.chain(recordDict).values<DtoRecord>().sortBy('name').value().map(r => ({ ...r, match: true }))];
     }
 
     private generateCollectionSelect = () => {
@@ -189,7 +192,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
 
     private onCollectionChanged = (collectionId: string) => {
         if (collectionId) {
-            const sortedRecords = this.generateSortRecords(collectionId);
+            const sortedRecords = this.generateSortRecords(this.props, collectionId);
             this.setState({ ...this.state, enableSort: true, sortedRecords });
         } else {
             this.setState({ ...this.state, enableSort: false, needOrder: false, sortedRecords: [] });
@@ -198,20 +201,39 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
 
     private generateSortRecordsList = () => {
         return (
-            <RecordSortList
-                items={this.state.sortedRecords}
-                buildListItem={(item, dragHandler) => (
-                    <li className="schedule-dlg-sort-item">
-                        <span className="keyvalue-dragicon">☰</span>
-                        {item.name}
-                    </li>
-                )}
-                onChanged={this.onSort}
-            />
+            <div>
+                <div>
+                    <span style={{ marginLeft: 32 }}>folder & name</span>
+                    {this.state.needCompare ? <span style={{ float: 'right', marginRight: this.state.sortedRecords.length > 6 ? 32 : 16 }}>match</span> : ''}
+                </div>
+                <RecordSortList
+                    items={this.state.sortedRecords}
+                    buildListItem={(item, dragHandler) => (
+                        <li className="schedule-dlg-sort-item">
+                            <span className="keyvalue-dragicon">☰</span>
+                            {item.name}
+                            {
+                                this.state.needCompare ? (
+                                    <span className="keyvalue-match">
+                                        <Switch checked={item.match} size="small" onChange={checked => {
+                                            const sortedRecords = [...this.state.sortedRecords];
+                                            const activeRecord = sortedRecords.find(r => r.id === item.id);
+                                            if (activeRecord) {
+                                                activeRecord.match = checked;
+                                            }
+                                            this.setState({ ...this.state, sortedRecords });
+                                        }} />
+                                    </span>
+                                ) : ''}
+                        </li>
+                    )}
+                    onChanged={this.onSort}
+                />
+            </div>
         );
     }
 
-    private onSort = (data: DtoRecord[]) => {
+    private onSort = (data: MatchableRecord[]) => {
         this.setState({ ...this.state, sortedRecords: data });
     }
 
@@ -227,7 +249,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                 environmentId: values.environmentId === noEnvironment ? undefined : values.environmentId,
                 notification: Number.parseInt(values.notification),
                 hour: DateUtil.localHourToUTC(Number.parseInt(values.hour)),
-                recordsOrder: this.state.sortedRecords.map(r => r.id).join(';')
+                recordsOrder: this.state.sortedRecords.map(r => `${r.id}:${r.match ? 1 : 0}`).join(';')
             });
             this.reset();
         });

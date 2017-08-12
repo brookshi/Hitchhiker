@@ -23,6 +23,8 @@ export const match = 'MATCH';
 
 export const notMatch = 'NOT MATCH';
 
+export const notMatchButIgnore = 'NOT MATCH BUT IGNORE';
+
 export const successColor = '#87d068';
 
 export const failColor = '#f50';
