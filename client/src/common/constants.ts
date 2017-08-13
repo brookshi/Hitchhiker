@@ -39,6 +39,8 @@ export const defaultResTabKey = 'content';
 
 export const defaultModuleKey = 'collection';
 
+export const localhost = 'localhost';
+
 export const defaultLeftPanelWidth = 300;
 
 export const minLeftPanelWidth = 100;

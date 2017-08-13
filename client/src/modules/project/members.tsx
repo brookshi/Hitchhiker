@@ -2,6 +2,7 @@ import React from 'react';
 import { Table, Button, Icon, Modal, Select, message } from 'antd';
 import { confirmDlg } from '../../components/confirm_dialog/index';
 import { StringUtil } from '../../utils/string_util';
+import EditableCell from '../../components/editable_cell';
 import * as ReactDOM from 'react-dom';
 
 interface Member {
@@ -11,6 +12,10 @@ interface Member {
     email: string;
 
     name: string;
+
+    localhostMappingId: string;
+
+    localhost: string;
 
     isOwner: boolean;
 }
@@ -26,6 +31,8 @@ interface MembersProps {
     removeUser(projectId: string, userId: string);
 
     invite(projectId: string, emails: string[]);
+
+    changeLocalhost(id: string, projectId: string, userId: string, ip: string);
 }
 
 interface MembersState {
@@ -92,6 +99,14 @@ class Members extends React.Component<MembersProps, MembersState> {
         this.setState({ ...this.state, inviteEmails: value });
     }
 
+    private changeLocalhost = (id: string, userId: string, oldIp: string, newIp: string) => {
+        if (!!id && newIp === oldIp) {
+            return;
+        }
+        const { changeLocalhost, activeProject } = this.props;
+        changeLocalhost(id, activeProject, userId, newIp);
+    }
+
     public render() {
         return (
             <div>
@@ -124,6 +139,20 @@ class Members extends React.Component<MembersProps, MembersState> {
                         title="Email"
                         dataIndex="email"
                         key="email"
+                    />
+                    <MemberColumn
+                        title="Localhost"
+                        dataIndex="localhost"
+                        key="localhost"
+                        width={170}
+                        render={
+                            (text, record, index) => (
+                                <EditableCell
+                                    content={text}
+                                    onChange={(newText) => this.changeLocalhost(record.localhostMappingId, record.id, text, newText)}
+                                />
+                            )
+                        }
                     />
                     <MemberColumn
                         title="IsOwner"

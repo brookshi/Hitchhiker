@@ -6,6 +6,7 @@ import { TestRunner } from './test_runner';
 import * as _ from 'lodash';
 import { RunResult } from '../interfaces/dto_run_result';
 import { StringUtil } from '../utils/string_util';
+import { ProjectService } from "../services/project_service";
 
 export class RecordRunner {
 
@@ -126,8 +127,8 @@ export class RecordRunner {
         return newContent;
     }
 
-    static async runRecord(envId: string, record: Record, serverRes?: ServerResponse, needPipe?: boolean): Promise<RunResult> {
-        const option = await RequestOptionAdapter.fromRecord(envId, record);
+    static async runRecord(envId: string, record: Record, userId?: string, serverRes?: ServerResponse, needPipe?: boolean): Promise<RunResult> {
+        const option = await RequestOptionAdapter.fromRecord(envId, record, userId);
         const start = process.hrtime();
         const res = await RecordRunner.request(option, serverRes, needPipe);
         const elapsed = process.hrtime(start)[0] * 1000 + _.toInteger(process.hrtime(start)[1] / 1000000);
@@ -158,7 +159,7 @@ export class RecordRunner {
             tests: testRst.tests,
             variables: testRst.variables,
             elapsed: elapsed,
-            headers: pRes.headers,
+            headers: pRes.headers || [],
             cookies: pRes.headers ? pRes.headers['set-cookie'] : [],
             status: pRes.statusCode,
             statusMessage: pRes.statusMessage

@@ -9,11 +9,13 @@ import { DtoProject } from '../../../../api/interfaces/dto_project';
 import { State } from '../../state';
 import { actionCreator } from '../../action';
 import { UpdateLeftPanelType, ResizeLeftPanelType } from '../../action/ui';
-import { EditEnvType, DisbandProjectType, QuitProjectType, SaveProjectType, RemoveUserType, InviteMemberType, SaveEnvironmentType, DelEnvironmentType, ActiveProjectType, EditEnvCompletedType } from '../../action/project';
+import { EditEnvType, DisbandProjectType, QuitProjectType, SaveProjectType, RemoveUserType, InviteMemberType, SaveEnvironmentType, DelEnvironmentType, ActiveProjectType, EditEnvCompletedType, SaveLocalhostMappingType } from '../../action/project';
 import { DtoUser } from '../../../../api/interfaces/dto_user';
 import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
 import * as _ from 'lodash';
 import './style/index.less';
+import { localhost } from '../../common/constants';
+import { StringUtil } from '../../utils/string_util';
 
 const { Content, Sider } = Layout;
 
@@ -65,6 +67,8 @@ interface ProjectDispatchProps {
     editEnvCompleted();
 
     editEnv(projectId: string, envId: string);
+
+    changeLocalhost(id: string, projectId: string, userId: string, ip: string);
 }
 
 type ProjectProps = ProjectStateProps & ProjectDispatchProps;
@@ -91,7 +95,15 @@ class Project extends React.Component<ProjectProps, ProjectState> {
         if (!project || !project.members) {
             return [];
         }
-        return _.sortBy(project.members.map(t => ({ id: t.id, name: t.name, email: t.email, isOwner: t.id === project.owner.id })), m => m.name);
+        const localhostDict = _.keyBy(project.localhosts || [], 'userId');
+        return _.sortBy(project.members.map(t => ({
+            id: t.id,
+            name: t.name,
+            email: t.email,
+            localhostMappingId: localhostDict[t.id] ? localhostDict[t.id].id || '' : '',
+            localhost: localhostDict[t.id] ? localhostDict[t.id].ip || localhost : localhost,
+            isOwner: t.id === project.owner.id
+        })), m => m.name);
     }
 
     getSelectProjectEnvironments = () => {
@@ -101,7 +113,7 @@ class Project extends React.Component<ProjectProps, ProjectState> {
 
     public render() {
         const project = this.getSelectedProject();
-        const { user, collapsed, collapsedLeftPanel, projects, leftPanelWidth, disbandProject, quitProject, selectProject, updateProject, createProject, removeUser, invite, createEnv, updateEnv, delEnv, isEditEnvDlgOpen, editedEnvironment, activeProject, editEnvCompleted, editEnv } = this.props;
+        const { user, collapsed, collapsedLeftPanel, projects, leftPanelWidth, disbandProject, quitProject, selectProject, updateProject, createProject, removeUser, invite, createEnv, updateEnv, delEnv, isEditEnvDlgOpen, editedEnvironment, activeProject, editEnvCompleted, editEnv, changeLocalhost } = this.props;
 
         return (
             <Layout className="main-panel">
@@ -133,6 +145,7 @@ class Project extends React.Component<ProjectProps, ProjectState> {
                                     isOwner={this.isSelectProjectOwn()}
                                     members={this.getSelectProjectMembers()}
                                     removeUser={removeUser}
+                                    changeLocalhost={changeLocalhost}
                                     invite={invite}
                                 />
                                 <div style={{ height: 12 }} />
@@ -188,7 +201,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): ProjectDispatchProps => {
         updateEnv: (env) => { dispatch(actionCreator(SaveEnvironmentType, { isNew: false, env })); },
         delEnv: (envId, projectId) => { dispatch(actionCreator(DelEnvironmentType, { envId, projectId })); },
         editEnvCompleted: () => { dispatch(actionCreator(EditEnvCompletedType)); },
-        editEnv: (projectId, envId) => dispatch(actionCreator(EditEnvType, { projectId, envId }))
+        editEnv: (projectId, envId) => dispatch(actionCreator(EditEnvType, { projectId, envId })),
+        changeLocalhost: (id, projectId, userId, ip) => { dispatch(actionCreator(SaveLocalhostMappingType, { isNew: !id, id: id || StringUtil.generateUID(), projectId, userId, ip })); }
     };
 };
 

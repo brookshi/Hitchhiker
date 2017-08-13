@@ -41,10 +41,20 @@ export default class ProjectController extends BaseController {
     @DELETE('/project/:tid')
     async disbandProject(ctx: Koa.Context, @PathParam('tid') projectId: string): Promise<ResObject> {
         const userId = SessionService.getUserId(ctx);
-        return UserProjectService.disbandProject({ userId, projectId });
+        return await UserProjectService.disbandProject({ userId, projectId });
     }
 
-    // TODO: add relative page to display and redirect to login page is missing session
+    @POST('/project/:pid/localhost/:id/ip/:ip')
+    async addLocalhost(ctx: Koa.Context, @PathParam('id') id: string, @PathParam('pid') projectId: string, @PathParam('ip') ip: string) {
+        const userId = SessionService.getUserId(ctx);
+        return await ProjectService.createLocalhostMapping(id, userId, projectId, ip);
+    }
+
+    @PUT('/project/:pid/localhost/:id/ip/:ip')
+    async updateLocalhost( @PathParam('id') id: string, @PathParam('ip') ip: string) {
+        return await ProjectService.updateLocalhostMapping(id, ip);
+    }
+
     @GET('/project/join')
     async join(ctx: Koa.Context, @QueryParam('projectid') projectId: string, @QueryParam('token') token: string) {
         const validateRst = await this.validateInfo(projectId, token);

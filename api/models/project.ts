@@ -1,5 +1,6 @@
 import { OneToOne, JoinColumn, OneToMany, Entity, PrimaryColumn, Column, ManyToMany, CreateDateColumn, JoinTable } from 'typeorm';
 import { Collection } from './collection';
+import { LocalhostMapping } from './localhost_mapping';
 import { User } from './user';
 import { Environment } from './environment';
 
@@ -15,6 +16,9 @@ export class Project {
     @JoinTable()
     @ManyToMany(type => User, user => user.projects)
     members: User[] = [];
+
+    @OneToMany(type => LocalhostMapping, mapping => mapping.project)
+    localhosts: LocalhostMapping[];
 
     @OneToMany(type => Collection, collection => collection.project)
     collections: Collection[] = [];

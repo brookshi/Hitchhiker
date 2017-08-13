@@ -6,6 +6,8 @@ import { Message } from '../common/message';
 import { StringUtil } from '../utils/string_util';
 import { User } from '../models/user';
 import { UserService } from './user_service';
+import { LocalhostMapping } from "../models/localhost_mapping";
+import { CollectionService } from "./collection_service";
 
 export class ProjectService {
 
@@ -30,7 +32,7 @@ export class ProjectService {
     static async getProject(id: string, needOwner: boolean = true, needCollection: boolean = true, needUser: boolean = false, needEnv: boolean = false): Promise<Project> {
         const connection = await ConnectionManager.getInstance();
 
-        let rep = connection.getRepository(Project).createQueryBuilder('project');
+        let rep = connection.getRepository(Project).createQueryBuilder('project').leftJoinAndSelect('project.localhosts', 'localhost');
         if (needCollection) {
             rep = rep.leftJoinAndSelect('project.collections', 'collection');
         }
@@ -56,7 +58,7 @@ export class ProjectService {
 
         const connection = await ConnectionManager.getInstance();
 
-        let rep = connection.getRepository(Project).createQueryBuilder('project');
+        let rep = connection.getRepository(Project).createQueryBuilder('project').leftJoinAndSelect('project.localhosts', 'localhost');
         if (needCollection) {
             rep = rep.leftJoinAndSelect('project.collections', 'collection');
         }
@@ -97,7 +99,6 @@ export class ProjectService {
         return await connection.getRepository(Project).persist(project);
     }
 
-
     static async updateProject(dtoProject: DtoProject): Promise<ResObject> {
         const connection = await ConnectionManager.getInstance();
 
@@ -124,5 +125,47 @@ export class ProjectService {
             .where('project.id=:id', { id: id })
             .execute();
         return { success: true, message: Message.projectDeleteSuccess };
+    }
+
+    static async createLocalhostMapping(id: string, userId: string, projectId: string, ip: string): Promise<ResObject> {
+        const mapping = new LocalhostMapping();
+        mapping.id = id || StringUtil.generateUID();
+        mapping.ip = ip;
+        mapping.userId = userId;
+        mapping.project = ProjectService.create(projectId);
+
+        const connection = await ConnectionManager.getInstance();
+        await connection.getRepository(LocalhostMapping).persist(mapping);
+
+        return { success: true, message: Message.createLocalhostMappingSuccess };
+    }
+
+    static async updateLocalhostMapping(id: string, ip: string): Promise<ResObject> {
+        const connection = await ConnectionManager.getInstance();
+
+        await connection.getRepository(LocalhostMapping)
+            .createQueryBuilder('localhost')
+            .where('id=:id', { id })
+            .update({ ip })
+            .execute();
+
+        return { success: true, message: Message.updateLocalhostMappingSuccess };
+    }
+
+    static async getLocalhost(userId: string, collectionId: string): Promise<string> {
+        let localhost = 'localhost';
+        const collection = await CollectionService.getById(collectionId);
+        if (collection) {
+            const connection = await ConnectionManager.getInstance();
+
+            const mapping = await connection.getRepository(LocalhostMapping)
+                .createQueryBuilder('localhost')
+                .where('userId=:userId', { userId })
+                .andWhere('projectId=:projectId', { projectId: collection.project.id })
+                .getOne();
+
+            localhost = mapping ? mapping.ip || localhost : localhost;
+        }
+        return localhost;
     }
 }

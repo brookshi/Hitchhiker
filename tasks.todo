@@ -65,13 +65,13 @@
     ✔ mail en & write password @done (2017/7/23 下午4:54:24)
     ✔ test @done (2017/7/16 下午3:52:34)
     ✔ set temp variable in test @done (2017/7/29 下午12:29:12)
-    ☐ build to live
-    ☐ unit test
+    ✔ build to live @done (2017/8/13 上午11:05:46)
+    ✔ unit test @done (2017/8/13 上午11:05:43)
 0.1.1:
     ✔ new record in menu of collection/folder @done (2017/8/11 下午11:06:36)
     ✔ content-type miss after duplicate sometimes @done (2017/8/11 下午11:36:59)
     ✔ record match/unmatch in schedule @done (2017/8/12 下午4:31:44)
-    ☐ localhost mapping
+    ✔ localhost mapping @done (2017/8/13 下午11:06:12)
     ☐ record history
     ☐ record diff
 

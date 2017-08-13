@@ -25,6 +25,8 @@ export const SwitchEnvType = 'switch environment';
 
 export const EditEnvType = 'edit environment';
 
+export const SaveLocalhostMappingType = 'save localhost mapping';
+
 export function* quitProject() {
     yield takeEvery(QuitProjectType, function* (action: any) {
         const channelAction = syncAction({ type: QuitProjectType, method: HttpMethod.DELETE, url: Urls.getUrl(`project/${action.value.id}/own`) });
@@ -72,6 +74,14 @@ export function* saveEnvironment() {
 export function* delEnvironment() {
     yield takeEvery(DelEnvironmentType, function* (action: any) {
         const channelAction = syncAction({ type: DelEnvironmentType, method: HttpMethod.DELETE, url: Urls.getUrl(`environment/${action.value.envId}`) });
+        yield put(channelAction);
+    });
+}
+
+export function* saveLocalhostMapping() {
+    yield takeEvery(SaveLocalhostMappingType, function* (action: any) {
+        const { isNew, id, projectId, ip } = action.value;
+        const channelAction = syncAction({ type: SaveLocalhostMappingType, method: isNew ? HttpMethod.POST : HttpMethod.PUT, url: Urls.getUrl(`/project/${projectId}/localhost/${id}/ip/${ip}`) });
         yield put(channelAction);
     });
 }

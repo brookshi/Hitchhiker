@@ -1,8 +1,8 @@
-import { DtoResProject } from '../../../api/interfaces/dto_res';
+import { DtoProject } from '../../../api/interfaces/dto_project';
 
 export interface ProjectState {
 
-    projects: _.Dictionary<DtoResProject>;
+    projects: _.Dictionary<DtoProject>;
 
     activeProject: string;
 }

@@ -1,5 +1,6 @@
 import { DtoUser } from './dto_user';
 import { DtoEnvironment } from './dto_environment';
+import { LocalhostMapping } from '../models/localhost_mapping';
 
 export interface DtoProject {
 
@@ -10,6 +11,8 @@ export interface DtoProject {
     note?: string;
 
     members?: DtoUser[];
+
+    localhosts?: Partial<LocalhostMapping>[];
 
     environments?: DtoEnvironment[];
 

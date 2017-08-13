@@ -42,6 +42,8 @@ export class Message {
     static alreadyInProject: string = 'already in this project';
     static joinProjectSuccess: string = 'join project success';
     static rejectProjectSuccess: string = 'reject invite success';
+    static updateLocalhostMappingSuccess: string = 'update localhost mapping success';
+    static createLocalhostMappingSuccess: string = 'create localhost mapping success';
 
     static collectionCreateFailed: string = 'create collection failed';
     static collectionCreateSuccess: string = 'create collection success';

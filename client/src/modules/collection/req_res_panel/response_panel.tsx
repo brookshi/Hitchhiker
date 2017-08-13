@@ -114,6 +114,8 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
         let { body, cookies, headers, tests } = res;
 
         cookies = cookies || [];
+        tests = tests || [];
+        headers = headers || [];
 
         const value = StringUtil.beautify(body, headers['Content-Type']);
         const testKeys = Object.keys(tests);
