@@ -16,6 +16,7 @@ import ScheduleRunHistoryGrid from './schedule_run_history_grid';
 import { noEnvironment, unknownName } from '../../common/constants';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { ScheduleRunState } from '../../state/schedule';
+import { DtoCollection } from '../../../../api/interfaces/dto_collection';
 
 const { Content, Sider } = Layout;
 
@@ -31,9 +32,9 @@ interface ScheduleStateProps {
 
     schedules: _.Dictionary<DtoSchedule>;
 
-    collections: _.Dictionary<string>;
+    collections: _.Dictionary<DtoCollection>;
 
-    environments: _.Dictionary<string>;
+    environments: _.Dictionary<DtoEnvironment[]>;
 
     records: _.Dictionary<DtoRecord>;
 
@@ -68,7 +69,13 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
     }
 
     private getEnvName = (envId: string) => {
-        return !envId || envId === noEnvironment ? noEnvironment : (this.props.environments[envId] || unknownName);
+        return !envId || envId === noEnvironment ? noEnvironment : (this.getEnvNames()[envId] || unknownName);
+    }
+
+    private getEnvNames = () => {
+        const environmentNames: _.Dictionary<string> = {};
+        _.chain(this.props.environments).values().flatten<DtoEnvironment>().value().forEach(e => environmentNames[e.id] = e.name);
+        return environmentNames;
     }
 
     public render() {
@@ -108,7 +115,7 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
                             schedule={schedule}
                             environmentName={envName}
                             compareEnvName={compareEnvName}
-                            collectionName={collections[schedule.collectionId]}
+                            collectionName={collections[schedule.collectionId].name}
                         />
                     ) : ''}
                     <ScheduleRunHistoryGrid
@@ -116,7 +123,7 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
                         scheduleRecords={schedule.scheduleRecords}
                         envName={envName}
                         compareEnvName={compareEnvName}
-                        envNames={environments}
+                        envNames={this.getEnvNames()}
                         records={records}
                         isRunning={runState[activeSchedule] ? runState[activeSchedule].isRunning : false}
                         consoleRunResults={runState[activeSchedule] ? runState[activeSchedule].consoleRunResults : []}
@@ -130,18 +137,14 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
 const mapStateToProps = (state: State): ScheduleStateProps => {
     const { leftPanelWidth, collapsed } = state.uiState.appUIState;
     const { schedules, activeSchedule, runState } = state.scheduleState;
-    let collections: _.Dictionary<string> = {};
-    let environments: _.Dictionary<string> = {};
-    _.values(state.collectionState.collectionsInfo.collections).forEach(c => collections[c.id] = c.name);
-    _.chain(state.environmentState.environments).values().flatten<DtoEnvironment>().value().forEach(e => environments[e.id] = e.name);
     const records = _.chain(state.collectionState.collectionsInfo.records).values<_.Dictionary<DtoRecord>>().value();
     return {
         leftPanelWidth,
         collapsed,
         user: state.userState.userInfo,
         activeSchedule,
-        collections,
-        environments,
+        collections: state.collectionState.collectionsInfo.collections,
+        environments: state.environmentState.environments,
         schedules,
         records: records.length === 0 ? {} : records.reduce((p, c) => ({ ...p, ...c })),
         runState
