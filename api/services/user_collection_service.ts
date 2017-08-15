@@ -10,7 +10,7 @@ export class UserCollectionService {
     static async getUserCollections(userId: string): Promise<{ collections: Collection[], recordsList: { [key: string]: Record[] } }> {
         let collections = await UserCollectionService.getUserProjectCollections(userId);
 
-        const recordsList = await RecordService.getByCollectionIds(collections.map(o => o.id));
+        const recordsList = await RecordService.getByCollectionIds(collections.map(o => o.id), false, true);
 
         return { collections, recordsList };
     }

@@ -66,7 +66,7 @@ export class RecordService {
         return target;
     }
 
-    static async getByCollectionIds(collectionIds: string[], excludeFolder?: boolean): Promise<{ [key: string]: Record[] }> {
+    static async getByCollectionIds(collectionIds: string[], excludeFolder?: boolean, needHistory?: boolean): Promise<{ [key: string]: Record[] }> {
         if (!collectionIds || collectionIds.length === 0) {
             return {};
         }
@@ -83,6 +83,10 @@ export class RecordService {
             .innerJoinAndSelect('record.collection', 'collection')
             .leftJoinAndSelect('record.headers', 'header')
             .where(whereStr, parameters);
+
+        if (needHistory) {
+            rep = rep.leftJoinAndSelect('record.history', 'history');
+        }
 
         if (excludeFolder) {
             rep = rep.andWhere('category=:category', { category: RecordCategory.record });

@@ -2,8 +2,9 @@ import React from 'react';
 import HttpMethodIcon from '../../../components/font_icon/http_method_icon';
 import ItemWithMenu from '../../../components/item_with_menu';
 import './style/index.less';
-import { Menu, Icon } from 'antd';
+import { Menu, Icon, Popover } from 'antd';
 import { confirmDlg } from '../../../components/confirm_dialog/index';
+import RecordTimeline from '../../../components/record_timeline';
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 
 interface RecordItemProps {
@@ -46,6 +47,11 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
                 </Menu.Item>
                 <Menu.Item key="delete">
                     <Icon type="delete" /> Delete
+                </Menu.Item>
+                <Menu.Item key="history">
+                    <Popover placement="right" content={<RecordTimeline record={this.props.record} />} overlayStyle={{ width: 600, maxHeight: '100%' }} title="Title">
+                        <div><Icon type="clock-circle-o" /> History</div>
+                    </Popover>
                 </Menu.Item>
             </Menu>
         );
