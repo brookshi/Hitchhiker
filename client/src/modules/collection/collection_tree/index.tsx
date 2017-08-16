@@ -17,6 +17,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import { ProjectSelectedDialogMode, ProjectSelectedDialogType } from '../../../common/custom_type';
 import { getProjectsIdNameStateSelector, getOpenKeysSelector, getDisplayCollectionSelector } from './selector';
 import { newCollectionName, allProject } from '../../../common/constants';
+import RecordTimeline from '../../../components/record_timeline';
 import './style/index.less';
 
 const SubMenu = Menu.SubMenu;
@@ -75,6 +76,10 @@ interface CollectionListState {
     newCollectionName: string;
 
     shareCollectionId: string;
+
+    isTimelineDlgOpen: boolean;
+
+    timelineRecord?: DtoRecord;
 }
 
 class CollectionList extends React.Component<CollectionListProps, CollectionListState> {
@@ -89,7 +94,8 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             projectSelectedDlgMode: ProjectSelectedDialogType.create,
             isProjectSelectedDlgOpen: false,
             newCollectionName: newCollectionName,
-            shareCollectionId: ''
+            shareCollectionId: '',
+            isTimelineDlgOpen: false
         };
     }
 
@@ -233,10 +239,26 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                         moveToCollection={this.moveToCollection}
                         duplicateRecord={() => this.duplicateRecord(r)}
                         deleteRecord={() => deleteRecord(r.id, records[cid])}
+                        showTimeline={record => this.showTimeLineDlg(record)}
                     />
                 </MenuItem>
             );
         });
+    }
+
+    private showTimeLineDlg = (record) => {
+        this.setState({ ...this.state, isTimelineDlgOpen: true, timelineRecord: record });
+    }
+
+    private get timelineDialog() {
+        const { timelineRecord, isTimelineDlgOpen } = this.state;
+        return (
+            <RecordTimeline
+                visible={isTimelineDlgOpen}
+                record={timelineRecord}
+                onClose={() => this.setState({ ...this.state, isTimelineDlgOpen: false })}
+            />
+        );
     }
 
     private get projectSelectedDialog() {
@@ -337,6 +359,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                     </PerfectScrollbar>
                 </div>
                 {this.projectSelectedDialog}
+                {this.timelineDialog}
             </div>
         );
     }

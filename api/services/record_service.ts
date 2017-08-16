@@ -13,6 +13,7 @@ import { StringUtil } from '../utils/string_util';
 import { RecordHistory } from '../models/record_history';
 import { EntityManager } from 'typeorm';
 import { User } from "../models/user";
+import { UserService } from "./user_service";
 
 export class RecordService {
     private static _sort: number = 0;
@@ -93,6 +94,11 @@ export class RecordService {
         }
 
         let records = await rep.orderBy('record.name').getMany();
+
+        if (needHistory) {
+            const userDict = await UserService.getNameByIds(_.chain(records.map(r => r.history.map(h => h.userId))).flatten<string>().filter(r => !!r).uniq().value());
+            records.forEach(r => r.history.forEach(h => h.user = userDict[h.userId]));
+        }
 
         let recordsList = _.groupBy(records, o => o.collection.id);
 
