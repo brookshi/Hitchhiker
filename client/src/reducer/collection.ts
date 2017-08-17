@@ -29,7 +29,9 @@ export function collectionState(state: CollectionState = collectionDefaultValue,
         case SaveAsRecordType:
         case SaveRecordType:
         case MoveRecordType: {
-            const record = action.value.record;
+            const historyRecord = { record: { ...action.value.record, history: [] }, createDate: new Date() };
+            const record = { ...action.value.record, history: [...(action.value.record.history || []), historyRecord] };
+
             const oldRecord = _.values(state.collectionsInfo.records).find(s => !!s[record.id]);
             let records = { ...state.collectionsInfo.records };
             if (action.type === MoveRecordType && oldRecord) {

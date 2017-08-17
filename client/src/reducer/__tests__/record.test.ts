@@ -6,21 +6,7 @@ import { newRecordFlag } from '../../common/constants';
 import { RecordCategory } from '../../common/record_category';
 import * as _ from 'lodash';
 import { DeleteCollectionType } from '../../action/collection';
-
-const defaultRunResult = {
-    id: '123',
-    envId: 'env1',
-    error: { message: 'error', stack: 'throw' },
-    body: 'body1',
-    tests: { ['test result']: true },
-    variables: { isSuccess: true },
-    status: 200,
-    statusMessage: 'OK',
-    elapsed: 100,
-    headers: { ['key1']: 'value1' },
-    cookies: ['ck1=ck2;'],
-    host: 'hitchhiker-api.com'
-};
+import { defaultRunResult } from "./data";
 
 test('key - active tab', () => {
 

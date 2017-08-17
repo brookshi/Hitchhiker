@@ -2,17 +2,7 @@ import { projectState } from '../project';
 import { projectDefaultValue } from '../../state/project';
 import { LoginSuccessType } from '../../action/user';
 import { SaveProjectType, ActiveProjectType, QuitProjectType, DisbandProjectType, EditEnvType, RemoveUserType, SaveLocalhostMappingType } from '../../action/project';
-
-const defaultUser = {
-    id: 'uid_123',
-    name: 'user1',
-    password: 'pwd',
-    email: 'a@a.aa',
-    projects: [],
-    isActive: true,
-    createDate: new Date(),
-    updateDate: new Date(),
-};
+import { defaultUser } from "./data";
 
 test('login success', () => {
 

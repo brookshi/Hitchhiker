@@ -2,27 +2,7 @@ import { scheduleDefaultValue } from '../../state/schedule';
 import { scheduleState } from '../schedule';
 import { LoginSuccessType } from '../../action/user';
 import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType, RunScheduleType, ScheduleChunkDataType, RunScheduleFulfillType } from '../../action/schedule';
-import { Period } from '../../common/period';
-import { NotificationMode } from '../../common/notification_mode';
-
-const defaultSchedule = {
-    id: '123',
-    name: 'schedule1',
-    collectionId: 'cid_123',
-    environmentId: 'eid_123',
-    needCompare: false,
-    compareEnvironmentId: 'eid_456',
-    period: Period.daily,
-    hour: 10,
-    notification: NotificationMode.me,
-    emails: '',
-    needOrder: false,
-    recordsOrder: '',
-    suspend: false,
-    scheduleRecords: [],
-    ownerId: '',
-    lastRunDate: new Date(2017, 8, 5)
-};
+import { defaultSchedule } from "./data";
 
 test('login success', () => {
 
