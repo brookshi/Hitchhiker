@@ -18,6 +18,7 @@ import { ProjectService } from '../services/project_service';
 import { MailService } from '../services/mail_service';
 import { Log } from '../utils/log';
 import { DateUtil } from '../utils/date_util';
+import { RecordCategory } from "../common/record_category";
 
 export class ScheduleRunner {
 
@@ -31,13 +32,13 @@ export class ScheduleRunner {
             return;
         }
         Log.info('get records by collection ids.');
-        const recordDict = await RecordService.getByCollectionIds(_.sortedUniq(schedules.map(s => s.collectionId)), true);
+        const recordDict = await RecordService.getByCollectionIds(_.sortedUniq(schedules.map(s => s.collectionId)));
         await Promise.all(schedules.map(schedule => this.runSchedule(schedule, recordDict[schedule.collectionId], true)));
     }
 
     async runSchedule(schedule: Schedule, records?: Record[], isScheduleRun?: boolean, trace?: (msg: string) => void): Promise<any> {
         if (!records) {
-            const collectionRecords = await RecordService.getByCollectionIds([schedule.collectionId], true);
+            const collectionRecords = await RecordService.getByCollectionIds([schedule.collectionId]);
             records = collectionRecords[schedule.collectionId];
         }
         if (!records || records.length === 0) {
@@ -45,9 +46,10 @@ export class ScheduleRunner {
             return;
         }
         Log.info(`run schedule ${schedule.name}`);
+        const recordsWithoutFolder = records.filter(r => r.category === RecordCategory.record);
         const needCompare = schedule.needCompare && schedule.compareEnvironmentId;
-        const originRunResults = await RecordRunner.runRecords(records, schedule.environmentId, schedule.needOrder, schedule.recordsOrder, true, trace);
-        const compareRunResults = needCompare ? await RecordRunner.runRecords(records, schedule.compareEnvironmentId, schedule.needOrder, schedule.recordsOrder, true, trace) : [];
+        const originRunResults = await RecordRunner.runRecords(recordsWithoutFolder, schedule.environmentId, schedule.needOrder, schedule.recordsOrder, true, trace);
+        const compareRunResults = needCompare ? await RecordRunner.runRecords(recordsWithoutFolder, schedule.compareEnvironmentId, schedule.needOrder, schedule.recordsOrder, true, trace) : [];
         const record = await this.storeRunResult(originRunResults, compareRunResults, schedule, isScheduleRun);
 
         schedule.lastRunDate = DateUtil.getUTCDate();
@@ -100,9 +102,18 @@ export class ScheduleRunner {
     }
 
     private getRunResultForMail(runResults: RunResult[], envId: string, envNames: _.Dictionary<Environment>, recordDict: _.Dictionary<Record>) {
-        const unknownRecord = 'unknown';
         const unknownEnv = 'No Environment';
-        return runResults.map(r => ({ ...r, isSuccess: this.isSuccess(r), envName: envNames[envId] ? envNames[envId].name : unknownEnv, recordName: recordDict[r.id] ? recordDict[r.id].name : unknownRecord, duration: r.elapsed }));
+        return runResults.map(r => ({ ...r, isSuccess: this.isSuccess(r), envName: envNames[envId] ? envNames[envId].name : unknownEnv, recordName: this.getRecordDisplayName(recordDict, r.id), duration: r.elapsed }));
+    }
+
+    private getRecordDisplayName = (recordDict: _.Dictionary<Record>, id: string) => {
+        const unknownRecord = 'unknown';
+        const record = recordDict[id];
+        if (!record) {
+            return unknownRecord;
+        }
+        const folder = record.pid ? recordDict[record.pid] : undefined;
+        return folder ? `${folder.name}/${record.name}` : record.name;
     }
 
     private async storeRunResult(originRunResults: RunResult[], compareRunResults: RunResult[], schedule: Schedule, isScheduleRun?: boolean): Promise<ScheduleRecord> {

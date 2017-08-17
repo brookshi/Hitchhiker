@@ -14,6 +14,8 @@ import { DateUtil } from '../../utils/date_util';
 import * as _ from 'lodash';
 import { ScheduleRunState } from '../../state/schedule';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
+import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
+import { DtoCollection } from '../../../../api/interfaces/dto_collection';
 
 interface ScheduleListProps {
 
@@ -23,9 +25,9 @@ interface ScheduleListProps {
 
     schedules: DtoSchedule[];
 
-    collections: _.Dictionary<string>;
+    collections: _.Dictionary<DtoCollection>;
 
-    environments: _.Dictionary<string>;
+    environments: _.Dictionary<DtoEnvironment[]>;
 
     records: _.Dictionary<DtoRecord>;
 
@@ -119,7 +121,13 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
     }
 
     private getEnvName = (envId: string) => {
-        return !envId || envId === noEnvironment ? noEnvironment : (this.props.environments[envId] || unknownName);
+        return !envId || envId === noEnvironment ? noEnvironment : (this.getEnvNames()[envId] || unknownName);
+    }
+
+    private getEnvNames = () => {
+        const environmentNames: _.Dictionary<string> = {};
+        _.chain(this.props.environments).values().flatten<DtoEnvironment>().value().forEach(e => environmentNames[e.id] = e.name);
+        return environmentNames;
     }
 
     public render() {
@@ -151,7 +159,7 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                                     <Menu.Item key={t.id} data={t}>
                                         <ScheduleItem
                                             schedule={t}
-                                            collectionName={collections[t.collectionId]}
+                                            collectionName={collections[t.collectionId].name}
                                             environmentName={this.getEnvName(t.environmentId)}
                                             compareEnvName={this.getEnvName(t.compareEnvironmentId)}
                                             isOwner={t.ownerId === user.id}

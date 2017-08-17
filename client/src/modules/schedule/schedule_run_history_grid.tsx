@@ -80,7 +80,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                 <RunResultColumn
                     title="Name"
                     dataIndex="id"
-                    render={(text, runResult) => ({ children: this.props.records[runResult.id] ? this.props.records[runResult.id].name : unknownName, props: { rowSpan: runResult.rowSpan } })}
+                    render={(text, runResult) => ({ children: this.getRecordDisplayName(runResult.id), props: { rowSpan: runResult.rowSpan } })}
                 />
                 <RunResultColumn
                     title="Pass"
@@ -112,6 +112,15 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                 }
             </RunResultTable>
         );
+    }
+
+    private getRecordDisplayName = (id: string) => {
+        const record = this.props.records[id];
+        if (!record) {
+            return unknownName;
+        }
+        const folder = record.pid ? this.props.records[record.pid] : undefined;
+        return folder ? `${folder.name}/${record.name}` : record.name;
     }
 
     private getCellDisplay = (value: string) => {

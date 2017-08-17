@@ -19,6 +19,8 @@ interface RecordItemProps {
     moveRecordToFolder(record: DtoRecord, collectionId?: string, folderId?: string);
 
     moveToCollection(record: DtoRecord, collection?: string);
+
+    showTimeline(record: DtoRecord);
 }
 
 interface RecordItemState { }
@@ -47,6 +49,9 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
                 <Menu.Item key="delete">
                     <Icon type="delete" /> Delete
                 </Menu.Item>
+                <Menu.Item key="history">
+                    <Icon type="clock-circle-o" /> History
+                </Menu.Item>
             </Menu>
         );
     }
@@ -58,6 +63,8 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
     delete = () => confirmDlg('record', () => this.props.deleteRecord());
 
     duplicate = () => this.props.duplicateRecord();
+
+    history = () => this.props.showTimeline(this.props.record);
 
     private checkTransferFlag = (e, flag) => {
         return e.dataTransfer.types.indexOf(flag) > -1;

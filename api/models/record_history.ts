@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Record } from './record';
 import { User } from './user';
 
@@ -15,7 +15,11 @@ export class RecordHistory {
     record: Record;
 
     @ManyToOne(type => User)
+    @JoinColumn({ name: 'userId' })
     user: User;
+
+    @Column({ nullable: true })
+    userId: string;
 
     @CreateDateColumn()
     createDate: Date;

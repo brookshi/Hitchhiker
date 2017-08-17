@@ -1,6 +1,7 @@
 import { DtoHeader } from './dto_header';
 import { RecordCategory } from '../common/record_category';
 import { BodyType } from '../common/body_type';
+import { DtoUser } from './dto_user';
 
 export interface DtoRecord {
 
@@ -20,6 +21,8 @@ export interface DtoRecord {
 
     headers?: DtoHeader[];
 
+    history?: DtoRecordHistory[];
+
     body?: string;
 
     bodyType?: BodyType;
@@ -27,4 +30,15 @@ export interface DtoRecord {
     test?: string;
 
     sort?: number;
+}
+
+export interface DtoRecordHistory {
+
+    id: number;
+
+    record: DtoRecord;
+
+    user: DtoUser;
+
+    createDate: Date;
 }

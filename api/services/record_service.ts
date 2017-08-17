@@ -13,6 +13,7 @@ import { StringUtil } from '../utils/string_util';
 import { RecordHistory } from '../models/record_history';
 import { EntityManager } from 'typeorm';
 import { User } from "../models/user";
+import { UserService } from "./user_service";
 
 export class RecordService {
     private static _sort: number = 0;
@@ -66,7 +67,7 @@ export class RecordService {
         return target;
     }
 
-    static async getByCollectionIds(collectionIds: string[], excludeFolder?: boolean): Promise<{ [key: string]: Record[] }> {
+    static async getByCollectionIds(collectionIds: string[], excludeFolder?: boolean, needHistory?: boolean): Promise<{ [key: string]: Record[] }> {
         if (!collectionIds || collectionIds.length === 0) {
             return {};
         }
@@ -84,11 +85,20 @@ export class RecordService {
             .leftJoinAndSelect('record.headers', 'header')
             .where(whereStr, parameters);
 
+        if (needHistory) {
+            rep = rep.leftJoinAndSelect('record.history', 'history');
+        }
+
         if (excludeFolder) {
             rep = rep.andWhere('category=:category', { category: RecordCategory.record });
         }
 
         let records = await rep.orderBy('record.name').getMany();
+
+        if (needHistory) {
+            const userDict = await UserService.getNameByIds(_.chain(records.map(r => r.history.map(h => h.userId))).flatten<string>().filter(r => !!r).uniq().value());
+            records.forEach(r => r.history.forEach(h => h.user = userDict[h.userId]));
+        }
 
         let recordsList = _.groupBy(records, o => o.collection.id);
 

@@ -126,6 +126,19 @@ export class UserService {
         return user;
     }
 
+    static async getNameByIds(ids: string[]): Promise<_.Dictionary<User>> {
+        const connection = await ConnectionManager.getInstance();
+
+        const users = await connection.getRepository(User)
+            .createQueryBuilder('user')
+            .andWhereInIds(ids.map(id => ({ id })))
+            .getMany();
+
+        const userDict: _.Dictionary<User> = {};
+        users.forEach(u => { u.password = ''; userDict[u.id] = u; });
+        return userDict;
+    }
+
     static async active(id: string) {
         const connection = await ConnectionManager.getInstance();
         await connection.getRepository(User)
