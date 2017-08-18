@@ -13,7 +13,7 @@ import { syncDefaultValue } from '../state/ui';
 import { scheduleState } from './schedule';
 import { ReloadType } from '../action/index';
 import { DtoCollection } from '../../../api/interfaces/dto_collection';
-import { DtoRecord, DtoRecordHistory } from '../../../api/interfaces/dto_record';
+import { DtoRecord } from '../../../api/interfaces/dto_record';
 import { QuitProjectType, DisbandProjectType } from '../action/project';
 import { getNewRecordState, RecordState } from '../state/collection';
 

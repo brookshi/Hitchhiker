@@ -20,7 +20,7 @@ interface RecordItemProps {
 
     moveToCollection(record: DtoRecord, collection?: string);
 
-    showTimeline(record: DtoRecord);
+    showTimeline();
 }
 
 interface RecordItemState { }
@@ -64,7 +64,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
 
     duplicate = () => this.props.duplicateRecord();
 
-    history = () => this.props.showTimeline(this.props.record);
+    history = () => this.props.showTimeline();
 
     private checkTransferFlag = (e, flag) => {
         return e.dataTransfer.types.indexOf(flag) > -1;

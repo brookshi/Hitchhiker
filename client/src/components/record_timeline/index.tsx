@@ -6,6 +6,7 @@ import { HttpMethod } from '../../common/http_method';
 import { DtoRecord, DtoRecordHistory } from '../../../../api/interfaces/dto_record';
 import { StringUtil } from '../../utils/string_util';
 import { KeyValuePair } from '../../common/key_value_pair';
+import { unknownName } from '../../common/constants';
 import * as _ from 'lodash';
 
 interface RecordTimelineProps {
@@ -22,14 +23,15 @@ interface RecordTimelineState { }
 class RecordTimeline extends React.Component<RecordTimelineProps, RecordTimelineState> {
 
     private generateTimeLineItem = (item: DtoRecordHistory, next: DtoRecordHistory) => {
-        const { name, method, url, headers, body } = item.record;
+        const { name, method, url, headers, body, test } = item.record;
         return (
             <Timeline.Item key={item.id}>
-                <p>{`${new Date(item.createDate).toLocaleString()} `}</p>
+                <p style={{ fontWeight: 'bold' }}>{`${new Date(item.createDate).toLocaleString()} by ${item.user ? item.user.name : unknownName}`}</p>
                 <p>{name}</p>
                 <p><HttpMethodIcon httpMethod={method || HttpMethod.GET} /> {url}</p>
                 <p> {StringUtil.headersToString(headers as KeyValuePair[])} </p>
-                <p> {StringUtil.beautify(body || '')} </p>
+                <pre> {StringUtil.beautify(body || '')} </pre>
+                <pre> {StringUtil.beautify(test || '')} </pre>
             </Timeline.Item>
         );
     }
@@ -49,7 +51,7 @@ class RecordTimeline extends React.Component<RecordTimelineProps, RecordTimeline
                         >
                             <Timeline>
                                 {
-                                    _.orderBy(record.history, 'createDate', 'desc').map((r, i, arr) => this.generateTimeLineItem(r, arr[i + 1]))
+                                    _.orderBy(record.history, 'id', 'desc').map((r, i, arr) => this.generateTimeLineItem(r, arr[i + 1]))
                                 }
                             </Timeline>
                         </Modal>

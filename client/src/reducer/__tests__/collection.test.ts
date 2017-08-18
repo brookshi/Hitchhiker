@@ -47,7 +47,8 @@ test('save as record', () => {
     let state = collectionState(collectionDefaultValue, actionCreator(SaveAsRecordType, { record: { id: 'rid_1', collectionId: 'cid_1', name: 'r1' } }));
 
     const history = state.collectionsInfo.records['cid_1']['rid_1'].history;
-    expect(state).toEqual({ ...collectionDefaultValue, collectionsInfo: { ...collectionDefaultValue.collectionsInfo, records: { ['cid_1']: { ['rid_1']: { id: 'rid_1', collectionId: 'cid_1', name: 'r1', history: [{ record: { id: 'rid_1', collectionId: 'cid_1', name: 'r1', history: [] }, createDate: history ? history[0].createDate : new Date() }] } } } } });
+    const { createDate, id } = history ? history[0] : { createDate: new Date(), id: 1 };
+    expect(state).toEqual({ ...collectionDefaultValue, collectionsInfo: { ...collectionDefaultValue.collectionsInfo, records: { ['cid_1']: { ['rid_1']: { id: 'rid_1', collectionId: 'cid_1', name: 'r1', history: [{ record: { id: 'rid_1', collectionId: 'cid_1', name: 'r1', history: [] }, createDate, id }] } } } } });
 });
 
 test('save record', () => {
@@ -57,7 +58,7 @@ test('save record', () => {
     let state = collectionState(oldState, actionCreator(SaveRecordType, { record: { id: 'rid_1', collectionId: 'cid_1', name: 'r2', history: [{ id: 0, record: { id: 'rid_1', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record }, createDate: new Date(), user: defaultUser }] } }));
 
     const history = state.collectionsInfo.records['cid_1']['rid_1'].history;
-    expect(state).toEqual({ ...collectionDefaultValue, collectionsInfo: { ...collectionDefaultValue.collectionsInfo, records: { ['cid_1']: { ['rid_1']: { id: 'rid_1', collectionId: 'cid_1', name: 'r2', history: [{ id: 0, record: { id: 'rid_1', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record }, createDate: history ? history[0].createDate : new Date(), user: defaultUser }, { record: { id: 'rid_1', collectionId: 'cid_1', name: 'r2', history: [] }, createDate: history ? history[1].createDate : new Date() }] } } } } });
+    expect(state).toEqual({ ...collectionDefaultValue, collectionsInfo: { ...collectionDefaultValue.collectionsInfo, records: { ['cid_1']: { ['rid_1']: { id: 'rid_1', collectionId: 'cid_1', name: 'r2', history: [{ id: 0, record: { id: 'rid_1', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record }, ...(history ? history[0] : { createDate: new Date(), id: 1 }), user: defaultUser }, { record: { id: 'rid_1', collectionId: 'cid_1', name: 'r2', history: [] }, ...(history ? history[1] : { createDate: new Date(), id: 1 }) }] } } } } });
 });
 
 test('move record', () => {
@@ -67,7 +68,7 @@ test('move record', () => {
     let state = collectionState(oldState, actionCreator(MoveRecordType, { record: { id: 'rid_1', collectionId: 'cid_2', name: 'r1', history: [{ id: 0, record: { id: 'rid_1', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record }, createDate: new Date(), user: defaultUser }] } }));
 
     const history = state.collectionsInfo.records['cid_2']['rid_1'].history;
-    expect(state).toEqual({ ...collectionDefaultValue, collectionsInfo: { ...collectionDefaultValue.collectionsInfo, records: { ['cid_1']: {}, ['cid_2']: { ['rid_1']: { id: 'rid_1', collectionId: 'cid_2', name: 'r1', history: [{ id: 0, record: { id: 'rid_1', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record }, createDate: history ? history[0].createDate : new Date(), user: defaultUser }, { record: { id: 'rid_1', collectionId: 'cid_2', name: 'r1', history: [] }, createDate: history ? history[1].createDate : new Date() }] } } } } });
+    expect(state).toEqual({ ...collectionDefaultValue, collectionsInfo: { ...collectionDefaultValue.collectionsInfo, records: { ['cid_1']: {}, ['cid_2']: { ['rid_1']: { id: 'rid_1', collectionId: 'cid_2', name: 'r1', history: [{ id: 0, record: { id: 'rid_1', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record }, ...(history ? history[0] : { createDate: new Date(), id: 1 }), user: defaultUser }, { record: { id: 'rid_1', collectionId: 'cid_2', name: 'r1', history: [] }, ...(history ? history[1] : { createDate: new Date(), id: 1 }) }] } } } } });
 });
 
 test('save collection', () => {
