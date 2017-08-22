@@ -51,3 +51,18 @@ export class ProjectSelectedDialogType {
 }
 
 export type LoginPageMode = 'login' | 'register' | 'findPassword';
+
+export type DiffMode = 'chars' | 'words' | 'lines' | 'json' | 'none';
+
+export class DiffType {
+
+    static none: DiffMode = 'none';
+
+    static chars: DiffMode = 'chars';
+
+    static words: DiffMode = 'words';
+
+    static lines: DiffMode = 'lines';
+
+    static json: DiffMode = 'json';
+}

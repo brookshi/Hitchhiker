@@ -102,32 +102,32 @@ class App extends React.Component<AppProps, AppState> {
               onClick={this.onClick}
             >
               <Menu.Item key="collection">
-                <Tooltip mouseEnterDelay={1} placement="right" title="Collections">
+                <Tooltip mouseEnterDelay={0} placement="right" title="Collections">
                   <Icon type="wallet" />
                 </Tooltip>
               </Menu.Item>
               <Menu.Item key="project">
-                <Tooltip mouseEnterDelay={1} placement="right" title="Project">
+                <Tooltip mouseEnterDelay={0} placement="right" title="Project">
                   <Icon type="solution" />
                 </Tooltip>
               </Menu.Item>
               <Menu.Item key="schedule">
-                <Tooltip mouseEnterDelay={1} placement="right" title="Scheduler">
+                <Tooltip mouseEnterDelay={0} placement="right" title="Scheduler">
                   <Icon type="schedule" />
                 </Tooltip>
               </Menu.Item>
               <Menu.Item key="stress_test">
-                <Tooltip mouseEnterDelay={1} placement="right" title="Stress test">
+                <Tooltip mouseEnterDelay={0} placement="right" title="Stress test">
                   <Icon type="code-o" />
                 </Tooltip>
               </Menu.Item>
               <Menu.Item key="api_doc">
-                <Tooltip mouseEnterDelay={1} placement="right" title="Api document">
+                <Tooltip mouseEnterDelay={0} placement="right" title="Api document">
                   <Icon type="file-text" />
                 </Tooltip>
               </Menu.Item>
               <Menu.Item key="api_mock">
-                <Tooltip mouseEnterDelay={1} placement="right" title="Api mock">
+                <Tooltip mouseEnterDelay={0} placement="right" title="Api mock">
                   <Icon type="api" />
                 </Tooltip>
               </Menu.Item>

@@ -41,7 +41,7 @@ export class StringUtil {
     }
 
     static headersToString(headers: Array<KeyValuePair>): string {
-        return headers ? headers.map(r => this.headerToString(r)).join('\n') : '';
+        return headers ? headers.map(r => StringUtil.headerToString(r)).join('\n') : '';
     }
 
     static headerToString(header: KeyValuePair): string {
