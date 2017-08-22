@@ -72,11 +72,12 @@
     ✔ content-type miss after duplicate sometimes @done (2017/8/11 下午11:36:59)
     ✔ record match/unmatch in schedule @done (2017/8/12 下午4:31:44)
     ✔ localhost mapping @done (2017/8/13 下午11:06:12)
-    ☐ schedule should only display envs of selected collection
-    ☐ add folder name for schedule result
-    ☐ record history
-    ☐ record diff
-
+    ✔ schedule should only display envs of selected collection @done (2017/8/22 下午9:59:45)
+    ✔ add folder name for schedule result @done (2017/8/22 下午10:01:09)
+    ✔ record history @done (2017/8/22 下午10:01:10)
+    ✔ record diff @done (2017/8/22 下午10:01:11)
+    ✔ temp account login @done (2017/8/23 上午1:15:55)
+    ☐ empty schedule error
 0.1.2:
     ☐ test result detail
     ☐ test global function

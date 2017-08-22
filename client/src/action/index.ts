@@ -4,7 +4,7 @@ import RequestManager, { SyncItem } from '../utils/request_manager';
 import { sendRequest, saveRecord, saveAsRecord, deleteRecord, moveRecord } from './record';
 import { saveProject, quitProject, disbandProject, removeUser, inviteMember, saveEnvironment, delEnvironment, saveLocalhostMapping } from './project';
 import { deleteCollection, saveCollection, refreshCollection, importPostman } from './collection';
-import { login, logout, register, findPassword, getUserInfo, changePassword } from './user';
+import { login, logout, register, findPassword, getUserInfo, changePassword, tempUse } from './user';
 import { storeLocalData, fetchLocalData } from './local_data';
 import { deleteSchedule, saveSchedule, runSchedule } from './schedule';
 
@@ -30,6 +30,7 @@ export function* rootSaga() {
 
     yield [
         spawn(login),
+        spawn(tempUse),
         spawn(getUserInfo),
         spawn(register),
         spawn(logout),

@@ -22,6 +22,9 @@ export class User {
     @Column()
     isActive: boolean;
 
+    @Column({ default: false })
+    isTemp: boolean;
+
     @CreateDateColumn()
     createDate: Date;
 

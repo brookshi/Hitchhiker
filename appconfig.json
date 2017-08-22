@@ -5,7 +5,9 @@
         "api": "http://localhost:81/api/",
         "language": "en",
         "encryptKey": "hitchhikerapi",
-        "defaultPassword": "123456"
+        "defaultPassword": "123456",
+        "tempUser": "test@test.test",
+        "tempDelKey": "test"
     },
     "db": {
         "host": "localhost",

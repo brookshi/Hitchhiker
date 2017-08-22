@@ -22,6 +22,8 @@ interface LoginPanelProps {
     resetLogin();
 
     checkSessionFinish();
+
+    tempUse();
 }
 
 interface LoginPanelState { }
@@ -99,8 +101,10 @@ class LoginPanel extends React.Component<LoginProps, LoginPanelState> {
                         Sign in
                     </Button>
                     New to Hitchhiker? <a onClick={() => this.props.switchPanel('register')}>Create an account.</a>
+                    <br />
+                    Or <a onClick={() => this.props.tempUse()}>try without login.</a>
                 </FormItem>
-            </Form>
+            </Form >
         );
     }
 }

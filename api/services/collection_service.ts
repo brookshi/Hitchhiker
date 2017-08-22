@@ -106,6 +106,10 @@ export class CollectionService {
     }
 
     static async getByIds(ids: string[]): Promise<Collection[]> {
+        if (!ids || ids.length === 0) {
+            return [];
+        }
+
         const connection = await ConnectionManager.getInstance();
 
         return await connection.getRepository(Collection)

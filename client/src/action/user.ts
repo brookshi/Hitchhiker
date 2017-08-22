@@ -5,6 +5,8 @@ import { Urls } from '../utils/urls';
 
 export const LoginType = 'login';
 
+export const TempUseType = 'temp use';
+
 export const LoginPendingType = 'login pending';
 
 export const LoginSuccessType = 'login success';
@@ -52,6 +54,27 @@ export function* login() {
         try {
             yield put(actionCreator(LoginPendingType));
             const res = yield call(RequestManager.post, Urls.getUrl('user/login'), action.value);
+            if (res.ok === false) {
+                yield put(actionCreator(LoginFailedType, `${res.status} ${res.statusText}`));
+                return;
+            }
+            const body = yield res.json();
+            if (body.success) {
+                yield put(actionCreator(LoginSuccessType, body));
+            } else {
+                yield put(actionCreator(LoginFailedType, body.message));
+            }
+        } catch (err) {
+            yield put(actionCreator(LoginFailedType, err.toString()));
+        }
+    });
+}
+
+export function* tempUse() {
+    yield takeLatest(TempUseType, function* (action: any) {
+        try {
+            yield put(actionCreator(LoginPendingType));
+            const res = yield call(RequestManager.post, Urls.getUrl('user/temp'), {});
             if (res.ok === false) {
                 yield put(actionCreator(LoginFailedType, `${res.status} ${res.statusText}`));
                 return;
