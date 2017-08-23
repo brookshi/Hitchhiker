@@ -172,7 +172,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): LoginPageDispatchProps => 
         findPassword: (email) => dispatch(actionCreator(FindPasswordType, email)),
         fetchCollectionData: () => dispatch(actionCreator(RefreshCollectionType)),
         fetchLocalData: (userId) => dispatch(actionCreator(FetchLocalDataType, userId)),
-        tempUse: () => dispatch(dispatch(actionCreator(TempUseType)))
+        tempUse: () => dispatch(actionCreator(TempUseType))
     };
 };
 
