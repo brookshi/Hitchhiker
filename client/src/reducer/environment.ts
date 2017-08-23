@@ -31,7 +31,7 @@ export function environmentState(state: EnvironmentState = environmentDefaultVal
         }
         case SwitchEnvType: {
             const { projectId, envId } = action.value;
-            return { ...state, activeEnv: { [projectId]: envId } };
+            return { ...state, activeEnv: { ...state.activeEnv, [projectId]: envId } };
         }
         case EditEnvType: {
             const isEditEnvDlgOpen = action.value.envId !== noEnvironment;

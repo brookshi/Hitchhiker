@@ -57,6 +57,10 @@ test('switch environment in collection module', () => {
     let state = environmentState(oldState, actionCreator(SwitchEnvType, { projectId: 'project1', envId: '456' }));
 
     expect(state).toEqual({ ...environmentDefaultValue, activeEnv: { ['project1']: '456' } });
+
+    state = environmentState(oldState, actionCreator(SwitchEnvType, { projectId: 'project2', envId: '456' }));
+
+    expect(state).toEqual({ ...environmentDefaultValue, activeEnv: { ['project1']: '123', ['project2']: '456' } });
 });
 
 test('click edit environment button in collection module', () => {
