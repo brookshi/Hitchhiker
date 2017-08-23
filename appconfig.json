@@ -17,7 +17,7 @@
         "database": "hitchhiker"
     },
     "schedule": {
-        "duration": 600,
+        "duration": 1800,
         "storeMaxCount": 10
     },
     "user": {
