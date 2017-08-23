@@ -43,6 +43,7 @@ export class ScheduleRunner {
         }
         if (!records || records.length === 0) {
             Log.info(`record count is 0`);
+            trace(JSON.stringify({ isResult: true }));
             return;
         }
         Log.info(`run schedule ${schedule.name}`);

@@ -77,7 +77,7 @@
     ✔ record history @done (2017/8/22 下午10:01:10)
     ✔ record diff @done (2017/8/22 下午10:01:11)
     ✔ temp account login @done (2017/8/23 上午1:15:55)
-    ☐ empty schedule error
+    ✔ empty schedule error @done (2017/8/23 上午10:20:05)
 0.1.2:
     ☐ test result detail
     ☐ test global function
