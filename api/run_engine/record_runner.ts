@@ -6,17 +6,17 @@ import { TestRunner } from './test_runner';
 import * as _ from 'lodash';
 import { RunResult } from '../interfaces/dto_run_result';
 import { StringUtil } from '../utils/string_util';
-import { ProjectService } from "../services/project_service";
+import { ProjectService } from '../services/project_service';
 
 export class RecordRunner {
 
     private static RequestTimeout = 10 * 60 * 1000;
 
-    static async runRecords(records: Record[], environmentId: string, needOrder: boolean = false, orderRecordIds: string = '', applyCookies?: boolean, trace?: (msg: string) => void): Promise<RunResult[]> {
+    static async runRecords(rs: Record[], environmentId: string, needOrder: boolean = false, orderRecordIds: string = '', applyCookies?: boolean, trace?: (msg: string) => void): Promise<RunResult[]> {
         if (needOrder && orderRecordIds) {
             const cookies: _.Dictionary<string> = {};
             let variables: any = {};
-            records = _.sortBy(records, 'name');
+            let records = _.sortBy(rs, 'name');
             const recordDict = _.keyBy(records, 'id');
             const orderRecords = orderRecordIds.split(';').filter(r => recordDict[r]).map(r => recordDict[r]);
             records = _.unionBy(orderRecords, records, 'id');
@@ -37,7 +37,7 @@ export class RecordRunner {
             }
             return runResults;
         } else {
-            return await Promise.all(records.map(async r => {
+            return await Promise.all(rs.map(async r => {
                 const result = await RecordRunner.runRecord(environmentId, r);
                 if (trace) {
                     trace(JSON.stringify(result));

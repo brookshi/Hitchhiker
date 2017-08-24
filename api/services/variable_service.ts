@@ -23,7 +23,8 @@ export class VariableService {
         return variable;
     }
 
-    static async applyVariableForRecord(envId: string, record: Record): Promise<Record> {
+    static async applyVariableForRecord(envId: string, r: Record): Promise<Record> {
+        const record = { ...r };
         const env = await EnvironmentService.get(envId, true);
         if (!env) {
             return record;
@@ -32,10 +33,11 @@ export class VariableService {
         record.url = StringUtil.applyTemplate(record.url, variables);
         record.body = StringUtil.applyTemplate(record.body, variables);
         record.test = StringUtil.applyTemplate(record.test, variables);
-        record.headers.forEach(header => {
-            header.key = StringUtil.applyTemplate(header.key, variables);
-            header.value = StringUtil.applyTemplate(header.value, variables);
-        });
+        record.headers = r.headers.map(header => ({
+            ...header,
+            key: StringUtil.applyTemplate(header.key, variables),
+            value: StringUtil.applyTemplate(header.value, variables)
+        }));
 
         return record;
     }
