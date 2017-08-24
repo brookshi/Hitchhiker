@@ -86,7 +86,7 @@ class RecordTimeline extends React.Component<RecordTimelineProps, RecordTimeline
         const nextLines = new Array<IDiffResult>();
         const lines = new Array<any>();
         let continousLineCount = 0;
-        diffFuncMap[DiffType.words](lastContent, content).forEach((part: IDiffResult, index: number) => {
+        diffFuncMap[DiffType.lines](lastContent, content).forEach((part: IDiffResult, index: number) => {
             if (part.added || part.removed) {
                 lines.push(_.uniq([...nextLines.map(r => this.getValueWithFlag(r)), ...(continousLineCount > codeLevel * 2 ? [<p>...</p>] : []), ...prevLines.map(r => this.getValueWithFlag(r))]));
                 continousLineCount = 0;
