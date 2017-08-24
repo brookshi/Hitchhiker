@@ -81,7 +81,7 @@ export function* delEnvironment() {
 export function* saveLocalhostMapping() {
     yield takeEvery(SaveLocalhostMappingType, function* (action: any) {
         const { isNew, id, projectId, ip } = action.value;
-        const channelAction = syncAction({ type: SaveLocalhostMappingType, method: isNew ? HttpMethod.POST : HttpMethod.PUT, url: Urls.getUrl(`/project/${projectId}/localhost/${id}/ip/${ip}`) });
+        const channelAction = syncAction({ type: SaveLocalhostMappingType, method: isNew ? HttpMethod.POST : HttpMethod.PUT, url: Urls.getUrl(`project/${projectId}/localhost/${id}/ip/${ip}`) });
         yield put(channelAction);
     });
 }
