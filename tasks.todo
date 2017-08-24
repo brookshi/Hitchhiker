@@ -79,6 +79,7 @@
     ✔ temp account login @done (2017/8/23 上午1:15:55)
     ✔ empty schedule error @done (2017/8/23 上午10:20:05)
     ☐ remove email useless '}'
+    ☐ folder can't expand if filter project
 0.1.2:
     ☐ test result detail
     ☐ test global function

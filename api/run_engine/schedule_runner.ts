@@ -144,7 +144,7 @@ export class ScheduleRunner {
 
         const notNeedMatchIds = schedule.recordsOrder ? schedule.recordsOrder.split(';').filter(r => r.endsWith(':0')).map(r => r.substr(0, r.length - 2)) : [];
         for (let i = 0; i < originRunResults.length; i++) {
-            if (!notNeedMatchIds[originRunResults[i].id] && originRunResults[i].body !== compareRunResults[i].body) {
+            if (!notNeedMatchIds.some(id => id === originRunResults[i].id) && originRunResults[i].body !== compareRunResults[i].body) {
                 return false;
             }
         }
