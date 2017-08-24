@@ -15,7 +15,8 @@ export class SessionService {
             'api/project/reject$',
             '/$',
             '/api/sample(/.*)?',
-            '/index.html$'
+            '/index.html$',
+            'api/user/temp$'
         ];
     }
 

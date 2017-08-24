@@ -6,8 +6,11 @@ import { Message } from '../common/message';
 import { StringUtil } from '../utils/string_util';
 import { User } from '../models/user';
 import { UserService } from './user_service';
-import { LocalhostMapping } from "../models/localhost_mapping";
-import { CollectionService } from "./collection_service";
+import { LocalhostMapping } from '../models/localhost_mapping';
+import { CollectionService } from './collection_service';
+import { RecordService } from './record_service';
+import * as _ from 'lodash';
+import { EnvironmentService } from "./environment_service";
 
 export class ProjectService {
 
@@ -52,7 +55,7 @@ export class ProjectService {
     }
 
     static async getProjects(ids: string[], needOwner: boolean = true, needCollection: boolean = true, needUser: boolean = false, needEnv: boolean = false): Promise<Project[]> {
-        if (ids.length === 0) {
+        if (!ids || ids.length === 0) {
             throw new Error('at least a project');
         }
 
@@ -118,12 +121,22 @@ export class ProjectService {
         return { success: true, message: Message.projectSaveSuccess };
     }
 
-    static async delete(id: string): Promise<ResObject> {
+    static async delete(id: string, delCollection?: boolean, delEnv?: boolean): Promise<ResObject> {
         const connection = await ConnectionManager.getInstance();
-        await connection.getRepository(Project).createQueryBuilder('project')
-            .delete()
-            .where('project.id=:id', { id: id })
-            .execute();
+        const project = await ProjectService.getProject(id, false, delCollection, false, delEnv);
+        await connection.transaction(async manager => {
+            if (delCollection) {
+                const records = await RecordService.getByCollectionIds(project.collections.map(c => c.id));
+                await Promise.all(_.flatten(_.values(records)).map(r => RecordService.delete(r.id)));
+                await manager.remove(project.collections);
+            }
+            if (delEnv) {
+                await Promise.all(project.environments.map(e => EnvironmentService.delete(e.id)));
+            }
+            await manager.remove(project.localhosts);
+            await manager.remove(project);
+        });
+
         return { success: true, message: Message.projectDeleteSuccess };
     }
 

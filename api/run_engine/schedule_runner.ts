@@ -43,17 +43,19 @@ export class ScheduleRunner {
         }
         if (!records || records.length === 0) {
             Log.info(`record count is 0`);
+            trace(JSON.stringify({ isResult: true }));
             return;
         }
         Log.info(`run schedule ${schedule.name}`);
+
+        schedule.lastRunDate = DateUtil.getUTCDate();
+        await ScheduleService.save(schedule);
+
         const recordsWithoutFolder = records.filter(r => r.category === RecordCategory.record);
         const needCompare = schedule.needCompare && schedule.compareEnvironmentId;
         const originRunResults = await RecordRunner.runRecords(recordsWithoutFolder, schedule.environmentId, schedule.needOrder, schedule.recordsOrder, true, trace);
         const compareRunResults = needCompare ? await RecordRunner.runRecords(recordsWithoutFolder, schedule.compareEnvironmentId, schedule.needOrder, schedule.recordsOrder, true, trace) : [];
         const record = await this.storeRunResult(originRunResults, compareRunResults, schedule, isScheduleRun);
-
-        schedule.lastRunDate = DateUtil.getUTCDate();
-        await ScheduleService.save(schedule);
 
         if (trace) {
             trace(JSON.stringify({ isResult: true, ...record }));

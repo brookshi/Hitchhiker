@@ -76,10 +76,10 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
 
     private initStateFromProps(props: ScheduleEditFormProps) {
         let sortedRecords = new Array<MatchableRecord>();
-        let environmentNames = { noEnvironment };
+        let environmentNames = { [noEnvironment]: noEnvironment };
         if (props.schedule.collectionId) {
             sortedRecords = this.generateSortRecords(props, props.schedule.collectionId);
-            environmentNames = { noEnvironment, ...this.getEnvNames(props.schedule.collectionId) };
+            environmentNames = { [noEnvironment]: noEnvironment, ...this.getEnvNames(props.schedule.collectionId) };
         }
 
         this.state = {
@@ -202,13 +202,13 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
             const environmentNames = this.getEnvNames(collectionId);
             this.setState({ ...this.state, enableSort: true, sortedRecords, environmentNames });
         } else {
-            this.setState({ ...this.state, enableSort: false, needOrder: false, sortedRecords: [], environmentNames: { noEnvironment } });
+            this.setState({ ...this.state, enableSort: false, needOrder: false, sortedRecords: [], environmentNames: { [noEnvironment]: noEnvironment } });
         }
         this.props.form.setFieldsValue({ environmentId: noEnvironment });
     }
 
     private getEnvNames = (collectionId: string) => {
-        const environmentNames: _.Dictionary<string> = { noEnvironment };
+        const environmentNames: _.Dictionary<string> = { [noEnvironment]: noEnvironment };
         const envs = this.props.environments[this.props.collections[collectionId].projectId];
         if (envs) {
             envs.forEach(e => environmentNames[e.id] = e.name);

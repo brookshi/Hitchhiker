@@ -1,4 +1,4 @@
-import { GET, POST, PUT, QueryParam, BodyParam, PathParam, BaseController } from 'webapi-router';
+import { GET, POST, PUT, DELETE, QueryParam, BodyParam, PathParam, BaseController } from 'webapi-router';
 import { ResObject } from '../common/res_object';
 import { UserService } from '../services/user_service';
 import * as Koa from 'koa';
@@ -22,6 +22,24 @@ export default class UserController extends BaseController {
         return await UserService.createUser(body.name, body.email, body.password);
     }
 
+    @POST('/user/temp')
+    async tempUse(ctx: Koa.Context): Promise<ResObject> {
+        const name = 'test';
+        const password = Setting.instance.app.defaultPassword;
+        const email = `${StringUtil.generateShortId()}${Setting.instance.app.tempUser}`;
+        await UserService.createUser(name, email, password, true, true);
+        return await this.login(ctx, { id: '', email, password, name })
+    }
+
+    @DELETE('/user/temp')
+    async deleteTempUser( @QueryParam('key') key: string) {
+        if (key !== Setting.instance.app.tempDelKey) {
+            return;
+        }
+
+        await UserService.deleteTempUser();
+    }
+
     @POST()
     async login(ctx: Koa.Context, @BodyParam body: DtoUser): Promise<ResObject> {
         let checkLogin = await UserService.checkUser(body.email, body.password);
@@ -40,7 +58,7 @@ export default class UserController extends BaseController {
     @GET('/user/me')
     async getUserInfo(ctx: Koa.Context): Promise<ResObject> {
         const user = <User>(<any>ctx).session.user;
-        return this.login(ctx, user);
+        return await this.login(ctx, user);
     }
 
     @GET('/user/logout')

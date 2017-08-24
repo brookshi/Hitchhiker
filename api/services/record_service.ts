@@ -251,7 +251,12 @@ export class RecordService {
         return result;
     }
 
-    private static createRecordHistory(record: Record, user: User): RecordHistory {
+    static async saveRecordHistory(history: RecordHistory) {
+        const connection = await ConnectionManager.getInstance();
+        await connection.manager.save(history);
+    }
+
+    static createRecordHistory(record: Record, user: User): RecordHistory {
         const history = new RecordHistory();
         history.target = record;
         history.user = user;

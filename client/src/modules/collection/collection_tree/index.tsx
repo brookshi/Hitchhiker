@@ -239,7 +239,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                         moveToCollection={this.moveToCollection}
                         duplicateRecord={() => this.duplicateRecord(r)}
                         deleteRecord={() => deleteRecord(r.id, records[cid])}
-                        showTimeline={record => this.showTimeLineDlg(record)}
+                        showTimeline={() => this.showTimeLineDlg(r)}
                     />
                 </MenuItem>
             );

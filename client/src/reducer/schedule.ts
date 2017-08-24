@@ -54,18 +54,19 @@ export function scheduleState(state: ScheduleState = scheduleDefaultValue, actio
         }
         case RunScheduleFulfillType: {
             const schedule = state.schedules[action.value.id];
+            const schedules = Object.keys(action.value.data).length > 1 ? {
+                ...state.schedules, [action.value.id]: {
+                    ...schedule,
+                    scheduleRecords: [
+                        action.value.data,
+                        ...schedule.scheduleRecords
+                    ],
+                    lastRunDate: new Date()
+                }
+            } : state.schedules;
             return {
                 ...state,
-                schedules: {
-                    ...state.schedules, [action.value.id]: {
-                        ...schedule,
-                        scheduleRecords: [
-                            action.value.data,
-                            ...schedule.scheduleRecords
-                        ],
-                        lastRunDate: new Date()
-                    }
-                },
+                schedules,
                 runState: {
                     ...state.runState,
                     [action.value.id]: {

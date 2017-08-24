@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { root as displayRecordsState, collectionState } from './collection';
 import { State } from '../state';
-import { UpdateDisplayRecordType, UpdateDisplayRecordPropertyType } from '../action/record';
+import { UpdateDisplayRecordType, UpdateDisplayRecordPropertyType, SaveAsRecordType, SaveRecordType, MoveRecordType } from '../action/record';
 import * as _ from 'lodash';
 import { uiState } from './ui';
 import { userState } from './user';
@@ -44,6 +44,17 @@ export function rootReducer(state: State, action: any): State {
 
 export function multipleStateReducer(state: State, action: any): State {
     switch (action.type) {
+        case SaveAsRecordType:
+        case SaveRecordType:
+        case MoveRecordType: {
+            const record = action.value.record;
+            const history = state.collectionState.collectionsInfo.records[record.collectionId][record.id].history;
+            if (!history) {
+                return state;
+            }
+            _.last(history).user = state.userState.userInfo;
+            return state;
+        }
         case ReloadType: {
             location.reload(true);
             return state;

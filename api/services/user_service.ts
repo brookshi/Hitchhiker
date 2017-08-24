@@ -9,7 +9,7 @@ import { StringUtil } from '../utils/string_util';
 import { ProjectService } from './project_service';
 import * as _ from 'lodash';
 import { UserProjectService } from './user_project_service';
-import { SampleService } from "./sample_service";
+import { SampleService } from './sample_service';
 
 export class UserService {
 
@@ -45,7 +45,7 @@ export class UserService {
         return { success: !!user, message: !!user ? '' : Message.userNotExist, result: user };
     }
 
-    static async createUser(name: string, email: string, pwd: string, isAutoGenerate: boolean = false): Promise<ResObject> {
+    static async createUser(name: string, email: string, pwd: string, isAutoGenerate: boolean = false, isTemp: boolean = false): Promise<ResObject> {
         let checkRst = ValidateUtil.checkEmail(email);
         if (checkRst.success) { checkRst = ValidateUtil.checkPassword(pwd); }
         if (checkRst.success) { checkRst = ValidateUtil.checkUserName(name); }
@@ -60,6 +60,7 @@ export class UserService {
 
         const user = UserService.create(name, email, pwd);
         user.isActive = isAutoGenerate || !Setting.instance.needRegisterMailConfirm;
+        user.isTemp = isTemp;
         await UserService.save(user);
 
         if (!user.isActive) {
@@ -127,10 +128,15 @@ export class UserService {
     }
 
     static async getNameByIds(ids: string[]): Promise<_.Dictionary<User>> {
+        if (!ids || ids.length === 0) {
+            return {};
+        }
+
         const connection = await ConnectionManager.getInstance();
 
         const users = await connection.getRepository(User)
             .createQueryBuilder('user')
+            .where('1=1')
             .andWhereInIds(ids.map(id => ({ id })))
             .getMany();
 
@@ -158,5 +164,24 @@ export class UserService {
             .setParameter('id', id)
             .execute();
         return { success: true, message: Message.userChangePwdSuccess };
+    }
+
+    static async deleteTempUser() {
+        const connection = await ConnectionManager.getInstance();
+        const users = await connection.getRepository(User)
+            .createQueryBuilder('user')
+            .where(`user.isTemp = true`)
+            .leftJoinAndSelect('user.projects', 'project')
+            .getMany();
+
+        if (!users || users.length === 0) {
+            return;
+        }
+
+        const ids = _.flatten(users.map(u => u.projects)).map(p => p.id);
+        for (let i = 0; i < ids.length; i++) {
+            await ProjectService.delete(ids[i], true, true);
+        }
+        await Promise.all(users.map(u => connection.manager.remove(u)));
     }
 }

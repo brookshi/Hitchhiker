@@ -4,7 +4,7 @@ import { Row, Col } from 'antd';
 import './style/index.less';
 import { State } from '../../state/index';
 import { RequestState } from '../../state/request';
-import { LoginType, RegisterType, RegisterResetType, FindPasswordType, GetUserInfoType, LoginResetType } from '../../action/user';
+import { LoginType, RegisterType, RegisterResetType, FindPasswordType, GetUserInfoType, LoginResetType, TempUseType } from '../../action/user';
 import { actionCreator } from '../../action/index';
 import RegisterPanel from './register';
 import LoginPanel from './login';
@@ -49,6 +49,8 @@ interface LoginPageDispatchProps {
     fetchCollectionData();
 
     fetchLocalData(userId: string);
+
+    tempUse();
 }
 
 type LoginPageProps = LoginPageStateProps & LoginPageDispatchProps;
@@ -101,6 +103,7 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
                                     lastLoginName={this.props.lastLoginName}
                                     isCheckingSessionValid={this.state.isCheckingSessionValid}
                                     checkSessionFinish={() => this.setState({ ...this.state, isCheckingSessionValid: false })}
+                                    tempUse={this.props.tempUse}
                                 />
                             ) : (this.state.panelMode === 'register' ?
                                 (
@@ -168,7 +171,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): LoginPageDispatchProps => 
         resetLogin: () => dispatch(actionCreator(LoginResetType)),
         findPassword: (email) => dispatch(actionCreator(FindPasswordType, email)),
         fetchCollectionData: () => dispatch(actionCreator(RefreshCollectionType)),
-        fetchLocalData: (userId) => dispatch(actionCreator(FetchLocalDataType, userId))
+        fetchLocalData: (userId) => dispatch(actionCreator(FetchLocalDataType, userId)),
+        tempUse: () => dispatch(actionCreator(TempUseType))
     };
 };
 

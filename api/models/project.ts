@@ -17,6 +17,7 @@ export class Project {
     @ManyToMany(type => User, user => user.projects)
     members: User[] = [];
 
+    @JoinTable()
     @OneToMany(type => LocalhostMapping, mapping => mapping.project)
     localhosts: LocalhostMapping[];
 

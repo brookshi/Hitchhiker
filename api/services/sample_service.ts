@@ -6,6 +6,7 @@ import { EnvironmentService } from './environment_service';
 import { DtoEnvironment } from '../interfaces/dto_environment';
 import { Setting } from '../utils/setting';
 import { StringUtil } from '../utils/string_util';
+import { RecordService } from './record_service';
 
 export class SampleService {
 
@@ -25,6 +26,8 @@ export class SampleService {
         const collection = await MetadataService.convertPostmanCollectionV1(owner, projectId, SampleService.sampleCollection);
 
         await CollectionService.save(collection);
+
+        await Promise.all(collection.records.map(r => RecordService.saveRecordHistory(RecordService.createRecordHistory(r, owner))));
 
         let apiHost = (<string>Setting.instance.appApi).replace('http://', '').replace('https://', '');
         apiHost = apiHost.substr(0, apiHost.length - 1);

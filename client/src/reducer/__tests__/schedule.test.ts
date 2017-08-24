@@ -2,27 +2,7 @@ import { scheduleDefaultValue } from '../../state/schedule';
 import { scheduleState } from '../schedule';
 import { LoginSuccessType } from '../../action/user';
 import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType, RunScheduleType, ScheduleChunkDataType, RunScheduleFulfillType } from '../../action/schedule';
-import { Period } from '../../common/period';
-import { NotificationMode } from '../../common/notification_mode';
-
-const defaultSchedule = {
-    id: '123',
-    name: 'schedule1',
-    collectionId: 'cid_123',
-    environmentId: 'eid_123',
-    needCompare: false,
-    compareEnvironmentId: 'eid_456',
-    period: Period.daily,
-    hour: 10,
-    notification: NotificationMode.me,
-    emails: '',
-    needOrder: false,
-    recordsOrder: '',
-    suspend: false,
-    scheduleRecords: [],
-    ownerId: '',
-    lastRunDate: new Date(2017, 8, 5)
-};
+import { defaultSchedule } from "./data";
 
 test('login success', () => {
 
@@ -96,7 +76,11 @@ test('run schedule fulfill', () => {
 
     let oldState = { ...scheduleDefaultValue, schedules: { ['123']: { ...defaultSchedule, id: '123' } }, activeSchedule: '123' };
 
-    let state = scheduleState(oldState, { type: RunScheduleFulfillType, value: { id: '123', data: { id: 'data1' } } });
+    let state = scheduleState(oldState, { type: RunScheduleFulfillType, value: { id: '123', data: { isResult: true } } });
 
-    expect(state).toEqual({ ...scheduleDefaultValue, schedules: { ['123']: { ...defaultSchedule, id: '123', scheduleRecords: [{ id: 'data1' }], lastRunDate: state.schedules['123'].lastRunDate } }, activeSchedule: '123', runState: { ...scheduleDefaultValue.runState, ['123']: { isRunning: false, consoleRunResults: [] } } });
+    expect(state).toEqual({ ...scheduleDefaultValue, schedules: { ['123']: { ...defaultSchedule, id: '123', scheduleRecords: [], lastRunDate: state.schedules['123'].lastRunDate } }, activeSchedule: '123', runState: { ...scheduleDefaultValue.runState, ['123']: { isRunning: false, consoleRunResults: [] } } });
+
+    state = scheduleState(oldState, { type: RunScheduleFulfillType, value: { id: '123', data: { isResult: true, id: 'data1' } } });
+
+    expect(state).toEqual({ ...scheduleDefaultValue, schedules: { ['123']: { ...defaultSchedule, id: '123', scheduleRecords: [{ isResult: true, id: 'data1' }], lastRunDate: state.schedules['123'].lastRunDate } }, activeSchedule: '123', runState: { ...scheduleDefaultValue.runState, ['123']: { isRunning: false, consoleRunResults: [] } } });
 });

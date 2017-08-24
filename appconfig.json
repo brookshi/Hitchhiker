@@ -5,7 +5,9 @@
         "api": "http://localhost:81/api/",
         "language": "en",
         "encryptKey": "hitchhikerapi",
-        "defaultPassword": "123456"
+        "defaultPassword": "123456",
+        "tempUser": "test@test.test",
+        "tempDelKey": "test"
     },
     "db": {
         "host": "localhost",
@@ -15,7 +17,7 @@
         "database": "hitchhiker"
     },
     "schedule": {
-        "duration": 600,
+        "duration": 1800,
         "storeMaxCount": 10
     },
     "user": {

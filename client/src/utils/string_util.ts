@@ -41,18 +41,14 @@ export class StringUtil {
     }
 
     static headersToString(headers: Array<KeyValuePair>): string {
-        return headers ? headers.map(r => this.headerToString(r)).join('\n') : '';
+        return headers ? headers.map(r => StringUtil.headerToString(r)).join('\n') : '';
     }
 
     static headerToString(header: KeyValuePair): string {
         const prefix = header.isActive ? '' : '//';
-        const key = StringUtil.undefinedToString(header.key);
-        const value = header.value === undefined ? '' : `:${header.value}`;
+        const key = header.key === undefined || header.key === null ? '' : header.key;
+        const value = header.value === undefined || header.value === null ? '' : `:${header.value}`;
         return `${prefix}${key}${value}`;
-    }
-
-    static undefinedToString(str: string): string {
-        return str === undefined ? '' : str;
     }
 
     static isJson(value: string): boolean {
