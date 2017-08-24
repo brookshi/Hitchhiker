@@ -13,8 +13,6 @@ const getCollections = (state: State) => state.collectionState.collectionsInfo.c
 
 const getUserId = (state: State) => state.userState.userInfo.id;
 
-const getOpenKeys = (state: State) => state.collectionState.openKeys;
-
 export const getProjectsIdNameStateSelector = () => {
     return createSelector(
         [getProjects, getUserId],
@@ -26,19 +24,6 @@ export const getProjectsIdNameStateSelector = () => {
                 .sortBy(t => t.isMe ? 0 : 1)
                 .value()
                 .map(t => ({ id: t.id ? t.id : '', name: t.name ? t.name : '' }));
-        }
-    );
-};
-
-export const getOpenKeysSelector = () => {
-    return createSelector(
-        [getSelectedProject, getOpenKeys, getCollections],
-        (selectedProject, openKeys, collections) => {
-
-            if (selectedProject === allProject) {
-                return openKeys;
-            }
-            return _.filter(openKeys, k => collections[k] && collections[k].projectId === selectedProject);
         }
     );
 };

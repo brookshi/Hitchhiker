@@ -15,7 +15,7 @@ import { DeleteRecordType, SaveRecordType, RemoveTabType, ActiveRecordType, Move
 import { StringUtil } from '../../../utils/string_util';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { ProjectSelectedDialogMode, ProjectSelectedDialogType } from '../../../common/custom_type';
-import { getProjectsIdNameStateSelector, getOpenKeysSelector, getDisplayCollectionSelector } from './selector';
+import { getProjectsIdNameStateSelector, getDisplayCollectionSelector } from './selector';
 import { newCollectionName, allProject } from '../../../common/constants';
 import RecordTimeline from '../../../components/record_timeline';
 import './style/index.less';
@@ -367,7 +367,6 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
 
 const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any, ownProps: any) => {
     const getProjects = getProjectsIdNameStateSelector();
-    const getOpenKeys = getOpenKeysSelector();
     const getCollections = getDisplayCollectionSelector();
 
     const mapStateToProps: (state: State) => CollectionListStateProps = state => {
@@ -378,7 +377,7 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
             records: collectionsInfo.records,
             activeKey: state.displayRecordsState.activeKey,
             projects: getProjects(state),
-            openKeys: getOpenKeys(state),
+            openKeys: state.collectionState.openKeys,
             selectedProject
         };
     };
