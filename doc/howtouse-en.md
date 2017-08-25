@@ -54,17 +54,16 @@ Cookie will be lost if refresh page in browser, you should request cookie again 
 
 ### Variable
 
-`Environment` is essentially a collection of `Variable` 本质是就是一组变量的集合，变量在`Environment`里定义好后就可以在`Request`的`url`, `header`, `body`, `test`里使用，使用方法是用`{{}}`括起来，比如：`{{host}}`，这个`host`就是`Environment`里定义的变量`key`，在请求发送前系统会把`{{key}}`转换成对应的`value`。
+`Environment` is essentially a collection of variables. After set key-value variables in `Environment`, you can use it in your request's `url`, `header`, `body`, `test` with format `{{key}}`，the `key` will replaced by `value`.
 
-有时我们发送的请求是有依赖的，比如依赖前一个请求的返回数据，这时可以用到另一种变量，这个变量是在`test`里定义的，定义格式：`$variables$.r_id = responseObj.recordId;`，也就是把变量定义在`$variables$`下面，这样`r_id`变量就可以给其他请求用了，比如：`http://{{host}}/api/test?id={{r_id}}`。这种变量的生命周期和`Cookie`一样，且是全局的，因此可能会带来一些混乱，解决办法是用好的命名方式隔离开。
+In some cases, Api may depend on the response of another Api, for this case Hitchhiker use another Variable defined in `Test` to handle it, you can set it with format：`$variables$.r_id = responseObj.recordId;`, that is, you can use variable that defined in `$variables$`. eg: `http://{{host}}/api/test?id={{r_id}}`. The life cycle of this variable is as same as `Cookie`, and it's global, all requests can use it.
 
 ### Localhost mapping
 
-一般`Environment`会设置一个`DEV`环境指向`localhost`的，大家都可以用，但由于这个系统是Web的，所以请求时`localhost`指向的服务器，也就是部署的那台机器，这样调试起来会不方便，所以在`Project`的`Members`里有个`localhost mapping`，非服务器的`Member`可以修改自己的`localhost`为本机的`ip`，这样发送请求时系统会自动把`localhost`改成对应的`ip`，当然你的`ip`需要是对服务器可访问的。
+`Environment` may have a `DEV` environment with key `localhost` to debug，but Hitchhiker is a web app, so `localhost` is server's ip, it's not to debug. Don't worry, you can set your ip in the localhost column of project's `Members`, then Hitchhiker will replace localhost with your ip when send request, of course, your ip must be Accessible for server.
 
 ### Schedule
 
-`Schedule`可以选择要跑的`Collection`，`Collection`里的`Request`是否有依赖，有依赖的话需要按顺序跑，没依赖是并行跑的，会比较快；然后选择在哪个环境下跑，以及是否需要与另一个环境做数据对比，对比时因为有时不希望所有数据都做对比，比如请求一个token，结果肯定不一样，对比也没意义，这时可以`unmatch`那个request。
-
-`Schedule`除了可以定时跑外还可以用菜单里的`Run now`，这是随时可以跑的，也可以实时看到跑的过程 (基于WebSocket)。
+Auto run `Collection` in `Schedule`, you need sort requests if there are dependencies between them, and you can select environment and comparing environment.
+By the way, you can use `Run now` in menu to run it at any time, and will receive real-time messages of request (base on WebSocket).
 

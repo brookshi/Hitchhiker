@@ -1,29 +1,32 @@
-# <div style="background:#333; line-height:50px; padding-left: 8px"><img src='client/public/hitchhiker-title.svg' height='20'><div>
+# <img src='https://raw.githubusercontent.com/brookshi/Hitchhiker/master/client/public/hitchhiker-title-dark.png' height='20'/>
 
-Hitchhiker Api 是一款 Restful Api 集成测试工具，你可以在轻松部署到本地，和你的team成员一起管理Api。
+Hitchhiker Api is an Restful Api integrated testing tool. You can deploy it in your local server. It make easier to manage Api with your team.
 
-## 功能
+[中文版 Read Me](README_cn.md)
 
-* Team协作开发Api
-* Api历史修改记录及diff
-* 支持多环境变量及collection级别变量
-* 支持Schedule及批量run
-* 不同环境下的请求数据对比 (eg: stage vs product)
-* 支持导入Postman v1 collections
-* 易部署 (支持 docker, windows, linux), 数据都存在本地，不会丢失
-* 性能测试 (开发中...)
-* Api文档 (计划中...)
+## Feature
+* Api collaboration development with team
+* Api history
+* Multiple environment support
+* Schedule and run batch
+* Api response compare by environments (eg: stage vs product)
+* Support Postman v1 collections
+* Easy to deploy (support docker, windows, linux), keep data in your control, never lose data
+* Performance test (developing)
+* Api Document (in future)
 
-## 展示
+## Image
 
-## 部署
+## Deploy
 
-首推使用 docker 部署，简单快捷，具体操作参考[deploy with docker](doc/howtoinstall-docker-cn.md)
+Recommand use docker，it's easy and quickly，refer to [deploy with docker](doc/howtoinstall-docker-en.md)
 
-如果没有docker环境也可以使用源码部署，也很简单
+Or you can deploy base on source code without docker, it's easy too.
 
-linux 请参考 [deploy to linux](doc/howtoinstall-linux-cn.md)
+linux: [deploy to linux](doc/howtoinstall-linux-en.md)
 
-windows 请参考 [deploy to win](doc/howtoinstall-win-cn.md)
+windows: [deploy to win](doc/howtoinstall-win-en.md)
 
-## 使用
+## How to use
+
+refer to [How to use](doc/howtouse-cn.md)
