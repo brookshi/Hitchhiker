@@ -29,4 +29,4 @@ windows: [deploy to win](doc/howtoinstall-win-en.md)
 
 ## How to use
 
-refer to [How to use](doc/howtouse-cn.md)
+refer to [How to use](doc/howtouse-en.md)
