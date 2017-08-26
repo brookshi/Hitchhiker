@@ -36,8 +36,8 @@ export class MailService {
     }
 
     static joinProjectMail(inviterEmail: string, userEmail: string, project: string) {
-        const joinProjectMailUrl = `${Setting.instance.mail.host}acceptinvite?target=${inviterEmail}&useremail=${userEmail}}&project=${project}&lang=${Setting.instance.appLanguage}`;
-        const userInfoMailUrl = `${Setting.instance.mail.host}join?target=${userEmail}&password=${Setting.instance.app.defaultPassword}}&project=${project}&lang=${Setting.instance.appLanguage}`;
+        const joinProjectMailUrl = `${Setting.instance.mail.host}acceptinvite?target=${inviterEmail}&useremail=${userEmail}&project=${project}&lang=${Setting.instance.appLanguage}`;
+        const userInfoMailUrl = `${Setting.instance.mail.host}join?target=${userEmail}&password=${Setting.instance.app.defaultPassword}&project=${project}&lang=${Setting.instance.appLanguage}`;
         MailService.sendMail(joinProjectMailUrl);
         MailService.sendMail(userInfoMailUrl);
     }
