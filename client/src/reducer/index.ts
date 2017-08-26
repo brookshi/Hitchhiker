@@ -48,11 +48,13 @@ export function multipleStateReducer(state: State, action: any): State {
         case SaveRecordType:
         case MoveRecordType: {
             const record = action.value.record;
-            const history = state.collectionState.collectionsInfo.records[record.collectionId][record.id].history;
-            if (history && history.length > 0) {
-                _.last(history).user = state.userState.userInfo;
+            const recordDict = state.collectionState.collectionsInfo.records[record.collectionId];
+            if (recordDict && recordDict[record.id]) {
+                const history = recordDict[record.id].history;
+                if (history && history.length > 0) {
+                    history[history.length - 1].user = state.userState.userInfo;
+                }
             }
-
             return state;
         }
         case ReloadType: {
