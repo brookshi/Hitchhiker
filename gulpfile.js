@@ -5,8 +5,8 @@ var gulp = require('gulp'),
 
 gulp.task('release', ['copy']);
 
-gulp.task('copy', ['compilerClient'], function () {
-    gulp.src('./client/build/**/*.*')
+gulp.task('copy', [], function () {
+    return gulp.src('./client/build/**/*.*')
         .pipe(gulp.dest('./build/public'));
 });
 
@@ -29,19 +29,25 @@ gulp.task('compilerServer', ['config'], function (cb) {
 });
 
 gulp.task('config', [], function () {
-    gulp.src('./client/src/utils/urls.ts')
+    return gulp.src('./client/src/utils/urls.ts')
         .pipe(replace('http://localhost:3000/', 'HITCHHIKER_APP_HOST'))
-        .pipe(gulp.dest('./client/src/utils/'));
-    gulp.src('./appconfig.json')
-        .pipe(replace('localhost:3000', `localhost:8080`))
-        .pipe(replace('localhost:81', `localhost:8080`))
-        .pipe(replace('"database": "hitchhiker"', '"database": "hitchhiker-prod"'))
-        .pipe(replace('DEV', `PROD`))
-        .pipe(gulp.dest('./'));
-    gulp.src('./client/package.json')
-        .pipe(replace('localhost:81', `localhost:8080`))
-        .pipe(gulp.dest('./client/'));
-    gulp.src('./api/index.ts')
-        .pipe(replace('81', `8080`))
-        .pipe(gulp.dest('./api/'));
+        .pipe(gulp.dest('./client/src/utils/'))
+        .on('end', function () {
+            gulp.src('./appconfig.json')
+                .pipe(replace('localhost:3000', `localhost:8080`))
+                .pipe(replace('localhost:81', `localhost:8080`))
+                .pipe(replace('"database": "hitchhiker"', '"database": "hitchhiker-prod"'))
+                .pipe(replace('DEV', `PROD`))
+                .pipe(gulp.dest('./'))
+                .on('end', function () {
+                    gulp.src('./client/package.json')
+                        .pipe(replace('localhost:81', `localhost:8080`))
+                        .pipe(gulp.dest('./client/'))
+                        .on('end', function () {
+                            gulp.src('./api/index.ts')
+                                .pipe(replace('81', `8080`))
+                                .pipe(gulp.dest('./api/'));
+                        });
+                });
+        });
 });
