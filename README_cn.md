@@ -37,6 +37,11 @@ windows 请参考 [deploy to win](doc/howtoinstall-win-cn.md)
 
 参考 [使用说明](doc/howtouse-cn.md)
 
+## 浏览器
+
+只在Chrome(推荐)和Firefox下测试过，其他的暂不考虑。
+这个工具的用户应该是Developer或QA，没理由没有Chrome和Firefox中的一个。
+
 ## Licence
 
 GPL-2.0 + 禁止商用 

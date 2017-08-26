@@ -4,13 +4,14 @@ It's more easier if you are familiar with Postman.
 
 **`Request`**: include `name`, `url`, `method`, `headers`, `body`, `test`
 
-> All the property you should know except `test`, `test` is used for response verification, you can use these variables as below:
+> All the properties you should know except `test`, `test` is used for response verification, you can use these variables as below:
 > - `responseBody`: the response's body
-> - `responseObj`：json object of this response's body (also you can use JSON.parse to get the it)
+> - `responseObj`：json object of this response's body (also you can use JSON.parse to get it)
 > - `responseHeaders`: response's headers
 > - `responseTime`: request elapse time (ms)
 > - `responseCode.code`: response status
 > - `responseCode.name`: response message
+
 > you can write javascript in `test` to verify response data by using these variables (support ES6)，eg：
 > ```javascript
 > tests["request success"] = responseObj && responseObj.success; 
@@ -28,7 +29,7 @@ It's more easier if you are familiar with Postman.
 
 **`Project`**: use `Project` to work with your team，two things here: `Team Members` and `Environment`: 
 
-> **`Members`**：you can invite people by using `Invite Members`, Enter emails and Hitchhiker will send mails to members. Member could click 'Accept invite' button in the mail to join Project, Hitchhiker will generate account and password for him (email for account and `123456` for default password.
+> **`Members`**：you can invite people by using `Invite Members`, Enter emails and Hitchhiker will send mails to members. Member could click 'Accept invite' button in the mail to join Project, Hitchhiker will generate account and password for him (email for account and `123456` for default password).
 
 > **`Environment`**：In general, there are several environments for coding or testing, eg：QA, Stage, UAT, Prod..., these environments use different domain or headers... Now it's easy to handle this by using `Environment`: set variables in `Environment` and use variables in `Request`, then send request by selecting different `Environment` to get the corresponding response.
 
@@ -40,27 +41,27 @@ After deployed, enter ip:port in chrome/firefox to access Hitchhiker. First you 
 
 ### Request:
 
-You can create a `Request` by clicking `+` displayed on the left of tab bar, alternatively, you can use `Create request` menu of `Collection` or `Folder`. The request created on tab bar doesn't under any `Project`, so there isn't any environment to use before `Save`/`Save as`, usually use it to do a simple test. The other one created under a `Collection`, so you can use environments of its `Collection` for it.
+You can create a `Request` by clicking `+` displayed on the right of tab bar, alternatively, you can use `Create request` in menu of `Collection` or `Folder`. The request created by clicking `+` doesn't under any `Project`, so there isn't any environment to use before `Save`/`Save as`, usually use it to do a simple test. The other one created under a `Collection`, so you can use environments of its `Collection` for it.
 
-There are two useful menu item of `Request`, one is `Duplicate`，use to duplicate a existed `Request` to get a new request quickly, the other one is `History`，use to view diff history of this `Request` like code.
+There are two useful menu item of `Request`, one is `Duplicate`，use to duplicate a existed `Request` to get a new request quickly, the other one is `History`，use to view diff history of this `Request` just like code.
 
-You can drag and drop `Request` other `Collection` or `Folder`.
+You can drag and drop `Request` to other `Collection` or `Folder`.
 
-### Cookie
+### Api Cookie
 
-Some Api need cookie to access server, in Hitchhiker, you need request cookie at first, then cookies in response will be keep in memory, the other requests which under the same `Collection` or same host will auto use these cookies.
+Some Api need cookie to access server, in Hitchhiker, you need a request to get cookie at first, then cookies in response will be keep in memory, the other requests which under the same `Collection` or same host will auto use these cookies.
 
-Cookie will be lost if refresh page in browser, you should request cookie again when you refresh page. So if your request need cookies, in schedule, your need sort requests, drag `cookie-generated` request onto top.
+Cookie will be lost if refresh page in browser, you should request cookie again when you refresh page. In schedule, if your request need cookies, your need sort requests, drag `cookie-generated` request onto top.
 
 ### Variable
 
-`Environment` is essentially a collection of variables. After set key-value variables in `Environment`, you can use it in your request's `url`, `header`, `body`, `test` with format `{{key}}`，the `key` will replaced by `value`.
+`Environment` is essentially a collection of variables. After set key-value variables in `Environment`, you can use it in your request's `url`, `header`, `body`, `test` with format `{{key}}`，the `{{key}}` will be replaced by `value`.
 
-In some cases, Api may depend on the response of another Api, for this case Hitchhiker use another Variable defined in `Test` to handle it, you can set it with format：`$variables$.r_id = responseObj.recordId;`, that is, you can use variable that defined in `$variables$`. eg: `http://{{host}}/api/test?id={{r_id}}`. The life cycle of this variable is as same as `Cookie`, and it's global, all requests can use it.
+In some cases, Api may depend on the response of another Api. for this case Hitchhiker use another runtime variable defined in `Test` to handle it, you can set it with format：`$variables$.r_id = responseObj.recordId;`, that is, you can use the variables that defined in `$variables$` in your other requests. eg: `http://{{host}}/api/test?id={{r_id}}`. The life cycle of this variable is as same as `Cookie`, and it's global, all requests can use it.
 
 ### Localhost mapping
 
-`Environment` may have a `DEV` environment with key `localhost` to debug，but Hitchhiker is a web app, so `localhost` is server's ip, it's not to debug. Don't worry, you can set your ip in the localhost column of project's `Members`, then Hitchhiker will replace localhost with your ip when send request, of course, your ip must be Accessible for server.
+`Environment` always have a `DEV` environment with key: `host` value: `localhost` to debug，but Hitchhiker is a web app, so `localhost` is the server's ip, all members can't use localhost except server. Don't worry, you can set your ip in the localhost column of project's `Members`, then Hitchhiker will replace localhost with your ip while sending request, of course, your ip must be **accessible** for server.
 
 ### Schedule
 

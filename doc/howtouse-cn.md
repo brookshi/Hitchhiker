@@ -11,6 +11,7 @@
 > - `responseTime`: 请求到返回结果的时间间隔
 > - `responseCode.code`: 请求状态码
 > - `responseCode.name`: 请求状态名
+
 > 在`test`里可以写javascript代码来对这些变量做校验(支持ES6)，比如：
 > ```javascript
 > tests["request success"] = responseObj && responseObj.success; 
@@ -46,22 +47,22 @@
 
 `Request`可以拖拽到其他`Collection`或`Folder`。
 
-### Cookie
+### Api Cookie
 
-有的Api不是公共开放的，需要登录Api获取`cookie`后才能使用其他Api，Hitchhiker 里只需要先请求Login的请求，请求得到的`cookie`会保存在内存里，再次请求同一`Collection`或`host`的Api时，会使用这个`cookie`发送请求。
+有的Api不是公共开放的，需要用登录Api获取`cookie`后才能使用其他Api，Hitchhiker 里只需要先发送cookie的请求，请求得到的`cookie`会保存在内存里，再次请求同一`Collection`或`host`的Api时，会自动使用已有的`cookie`。
 
-`cookie`的生命周期在浏览器里只在内存中，刷新或关闭，`cookie`就释放了，下次再访问时需要重新Login。
+`cookie`的生命周期在浏览器里只在内存中，刷新或关闭，`cookie`就释放了，下次再访问时需要重新请求cookie。
 另外`cookie`还存在服务端的`Schedule`中， 这时它的生命周期就是整个`Schedule`, `Schedule`完成了，`cookie`也就释放了。
 
 ### 变量
 
 上面提到的`Environment`本质是就是一组变量的集合，变量在`Environment`里定义好后就可以在`Request`的`url`, `header`, `body`, `test`里使用，使用方法是用`{{}}`括起来，比如：`{{host}}`，这个`host`就是`Environment`里定义的变量`key`，在请求发送前系统会把`{{key}}`转换成对应的`value`。
 
-有时我们发送的请求是有依赖的，比如依赖前一个请求的返回数据，这时可以用到另一种变量，这个变量是在`test`里定义的，定义格式：`$variables$.r_id = responseObj.recordId;`，也就是把变量定义在`$variables$`下面，这样`r_id`变量就可以给其他请求用了，比如：`http://{{host}}/api/test?id={{r_id}}`。这种变量的生命周期和`Cookie`一样，且是全局的，因此可能会带来一些混乱，解决办法是用好的命名方式隔离开。
+有时我们发送的请求是有依赖的，比如依赖前一个请求的返回数据，这时可以用到另一种运行时变量，这个变量是在`test`里定义的，定义格式：`$variables$.r_id = responseObj.recordId;`，也就是把变量定义在`$variables$`下面，这样`r_id`变量就可以给其他请求用了，比如：`http://{{host}}/api/test?id={{r_id}}`。这种变量的生命周期和`Cookie`一样，且是全局的，因此可能会带来一些混乱，解决办法是用好的命名方式隔离开。
 
 ### Localhost mapping
 
-一般`Environment`会设置一个`DEV`环境指向`localhost`的，大家都可以用，但由于这个系统是Web的，所以请求时`localhost`指向的服务器，也就是部署的那台机器，这样调试起来会不方便，所以在`Project`的`Members`里有个`localhost mapping`，非服务器的`Member`可以修改自己的`localhost`为本机的`ip`，这样发送请求时系统会自动把`localhost`改成对应的`ip`，当然你的`ip`需要是对服务器可访问的。
+一般`Environment`会设置一个`DEV`环境，配置`host`指向`localhost`，大家都可以用，但由于这个系统是Web的，所以请求时`localhost`指向的是服务器，也就是部署的那台机器，这样调试起来会不方便，所以在`Project`的`Members`里有个`localhost mapping`，非服务器的`Member`可以修改自己的`localhost`为本机的`ip`，这样发送请求时系统会自动把`localhost`改成对应的`ip`，当然你的`ip`需要是对服务器可访问的。
 
 ### Schedule
 

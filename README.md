@@ -36,6 +36,10 @@ windows: [deploy to win](doc/howtoinstall-win-en.md)
 
 refer to [How to use](doc/howtouse-en.md)
 
+## Browser
+
+Only test in Chrome(Recommend) and Firefox, Don't have any plan to support the others.
+
 ## Licence
 
 GPL-2.0 + Commercial use prohibited 
