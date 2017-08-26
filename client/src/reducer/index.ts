@@ -49,10 +49,10 @@ export function multipleStateReducer(state: State, action: any): State {
         case MoveRecordType: {
             const record = action.value.record;
             const history = state.collectionState.collectionsInfo.records[record.collectionId][record.id].history;
-            if (!history) {
-                return state;
+            if (history && history.length > 0) {
+                _.last(history).user = state.userState.userInfo;
             }
-            _.last(history).user = state.userState.userInfo;
+
             return state;
         }
         case ReloadType: {
