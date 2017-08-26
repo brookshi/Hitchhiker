@@ -1,4 +1,4 @@
-It's more easier if you familiar with Postman.
+It's more easier if you are familiar with Postman.
 
 ### Concept：
 
