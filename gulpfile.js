@@ -1,21 +1,13 @@
 var gulp = require('gulp'),
-    clean = require('gulp-clean'),
     argv = require('yargs').argv,
     replace = require('gulp-replace'),
     exec = require('child_process').exec;
 
 gulp.task('release', ['copy']);
 
-gulp.task('copy', ['clean'], function () {
+gulp.task('copy', ['compilerClient'], function () {
     gulp.src('./client/build/**/*.*')
         .pipe(gulp.dest('./build/public'));
-});
-
-gulp.task('clean', ['compilerClient'], function () {
-    return gulp.src('./build/public/*.*', {
-            read: false
-        })
-        .pipe(clean());
 });
 
 gulp.task('compilerClient', ['compilerServer'], function (cb) {
