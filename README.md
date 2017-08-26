@@ -1,24 +1,24 @@
 # <img src='https://raw.githubusercontent.com/brookshi/Hitchhiker/master/client/public/hitchhiker-title-dark.png' height='20'/>
 
-Hitchhiker Api is an Restful Api integrated testing tool. You can deploy it in your local server. It make easier to manage Api with your team.
+Hitchhiker Api is a Restful Api integrated testing tool. You can deploy it in your local server. It make easier to manage Api with your team.
 
 [中文 Read Me](README_cn.md)
 
 ## Feature
 * Api collaboration development with team
 * Api history
-* Multiple environment support
+* Multiple environments support
 * Schedule and run batch
-* Api response compare by environments (eg: stage vs product)
-* Support Postman v1 collections
+* Make a comparison for Api response between two different environments (eg: stage vs product)
 * Easy to deploy (support docker, windows, linux), keep data in your control, never lose data
 * All changed will be auto saved in local cache even if refresh page
-* Performance test (developing)
+* Support import Postman v1 collections
+* Performance test (progressing)
 * Api Document (in future)
 
 ## Display
 
-<img src='https://github.com/brookshi/Hitchhiker/raw/master/doc/images/collection.png' width='200'/>
+<img src='https://github.com/brookshi/Hitchhiker/raw/master/doc/images/collection.png' width='800'/>
 
 [go for more](https://github.com/brookshi/Hitchhiker/tree/master/doc/images)
 
@@ -38,4 +38,4 @@ refer to [How to use](doc/howtouse-en.md)
 
 ## Licence
 
-GPL-2.0 + 禁止商用 
+GPL-2.0 + Commercial use prohibited 
