@@ -5,7 +5,7 @@ var gulp = require('gulp'),
 
 gulp.task('release', ['copy']);
 
-gulp.task('copy', [], function () {
+gulp.task('copy', ['compilerClient'], function () {
     return gulp.src('./client/build/**/*.*')
         .pipe(gulp.dest('./build/public'));
 });
