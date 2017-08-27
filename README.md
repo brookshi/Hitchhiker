@@ -22,7 +22,7 @@ Go to [http://www.hitchhiker-api.com](http://www.hitchhiker-api.com) for test，
 
 <img src='https://github.com/brookshi/Hitchhiker/raw/master/doc/images/collection.png' width='800'/>
 
-[go for more](https://github.com/brookshi/Hitchhiker/tree/master/doc/images)
+[more images](https://github.com/brookshi/Hitchhiker/tree/master/doc/images)
 
 ## Deploy
 
