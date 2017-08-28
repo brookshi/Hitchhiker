@@ -19,5 +19,5 @@ services:
       - MYSQL_ROOT_PASSWORD=hitchhiker888
       - MYSQL_DATABASE=hitchhiker-prod
     volumes:
-      - ./hitchhiker-mysql.conf:/etc/mysql/conf.d/hitchhiker.conf
+      - ./hitchhiker-mysql.cnf:/etc/mysql/conf.d/hitchhiker.cnf
       - /my/hitchhiker/sqldata:/var/lib/mysql
