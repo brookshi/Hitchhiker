@@ -1,9 +1,10 @@
 import React from 'react';
 import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
-import { Input, Checkbox, Icon } from 'antd';
+import { Input, Checkbox, Icon, AutoComplete } from 'antd';
 import './style/index.less';
 import { StringUtil } from '../../utils/string_util';
 import { DtoHeader } from '../../../../api/interfaces/dto_header';
+import { headerKeys, headerValues } from '../../common/constants';
 
 const generateDefaultHeader: () => DtoHeader = () => ({
 
@@ -19,6 +20,8 @@ interface KeyValueListComponentProps {
     onChanged: (headers: DtoHeader[]) => void;
 
     disableActive?: boolean;
+
+    isAutoComplete?: boolean;
 }
 
 interface KeyValueListComponentState {
@@ -50,24 +53,34 @@ class KeyValueListComponent extends React.Component<KeyValueListComponentProps, 
                         defaultChecked={header.isActive}
                     />
                 </div>
-                <Input
-                    spellCheck={false}
-                    key={`key${header.id}`}
-                    onChange={(e) => this.onValueChange('key', hIndex, e)}
-                    placeholder="key"
-                    value={header.key}
-                />
-                <Input
-                    spellCheck={false}
-                    key={`value${header.id}`}
-                    onChange={(e) => this.onValueChange('value', hIndex, e)}
-                    placeholder="value"
-                    value={header.value}
-                />
+                {this.getInputControl(true, hIndex, header.key)}
+                {this.getInputControl(false, hIndex, header.value)}
+
                 <Icon style={visibility} type="close" onClick={(event) => this.onDelItem(hIndex)} />
             </li>
         );
     });
+
+    private getInputControl = (isKey: boolean, hIndex: number, value?: string) => {
+        const type = isKey ? 'key' : 'value';
+        return this.props.isAutoComplete ? (
+            <AutoComplete
+                className="autoCompleteInput"
+                dataSource={isKey ? headerKeys : headerValues}
+                placeholder={type}
+                onChange={(e) => this.onValueChange(type, hIndex, e)}
+                value={value}
+                filterOption={(inputValue, option) => (option as any).props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
+            />
+        ) : (
+                <Input
+                    spellCheck={false}
+                    onChange={(e) => this.onValueChange(type, hIndex, e)}
+                    placeholder={type}
+                    value={value}
+                />
+            );
+    }
 
     private SortableList = SortableContainer(({ headers }) => {
         return (
@@ -125,7 +138,7 @@ class KeyValueListComponent extends React.Component<KeyValueListComponentProps, 
 
     private onValueChange = (type: 'key' | 'value' | 'isActive', index: number, event) => {
         const { headers } = this.state;
-        headers[index][type] = type === 'isActive' ? event.target.checked : event.target.value;
+        headers[index][type] = type === 'isActive' ? event.target.checked : (typeof event === 'string' ? event : event.target.value);
         this.onChanged(headers);
     }
 

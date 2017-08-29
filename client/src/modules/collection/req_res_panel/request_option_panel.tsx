@@ -89,6 +89,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                     <KeyValueList
                         mode={headersEditMode}
                         onHeadersChanged={this.onHeadersChanged}
+                        isAutoComplete={true}
                         headers={_.sortBy(_.cloneDeep(headers) || [], 'sort')}
                     />
                 </TabPane>

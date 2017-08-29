@@ -13,6 +13,8 @@ interface KeyValueComponentProps {
     mode: KeyValueEditMode;
 
     onHeadersChanged(headers: DtoHeader[]);
+
+    isAutoComplete?: boolean;
 }
 
 interface KeyValueComponentState { }
@@ -44,6 +46,7 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
                 <KeyValueList
                     headers={this.props.headers as DtoHeader[]}
                     onChanged={this.onHeadersChanged}
+                    isAutoComplete={this.props.isAutoComplete}
                 />
             );
     }
