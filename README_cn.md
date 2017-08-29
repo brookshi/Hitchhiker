@@ -6,6 +6,8 @@ Hitchhiker Api 是一款 Restful Api 集成测试工具，你可以在轻松部�
 
 访问 [http://www.hitchhiker-api.com](http://www.hitchhiker-api.com) 测试，可以点击 `try without login`, 另外，为了免备案，服务器在海外的，所以速度上可能会有点慢，请谅解。
 
+[更新日志](change_log.md)
+
 ## 功能
 
 * Team协作开发Api

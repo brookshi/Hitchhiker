@@ -6,6 +6,8 @@ Hitchhiker Api is a Restful Api integrated testing tool. You can deploy it in yo
 
 Go to [http://www.hitchhiker-api.com](http://www.hitchhiker-api.com) for test，use `try without login`.
 
+[Change log](change_log.md)
+
 ## Feature
 * Api collaboration development with team
 * Api history
