@@ -21,6 +21,8 @@ interface HeaderPanelStateProps {
 
     userName: string;
 
+    userId: string;
+
     changePasswordState: RequestState;
 
     projects: { id: string, name: string }[];
@@ -30,7 +32,7 @@ interface HeaderPanelDispatchProps {
 
     onChangePassword(password: Password);
 
-    logout();
+    logout(userId: string, needClearCache: boolean);
 
     importPostman(projectId: string, data: any);
 
@@ -73,10 +75,14 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
     private onUserMenuClick = (e) => {
         switch (e.key) {
             case 'logout': {
-                this.props.logout();
+                this.props.logout(this.props.userId, false);
                 break;
             }
-            case 'key': {
+            case 'logoutAndClear': {
+                this.props.logout(this.props.userId, true);
+                break;
+            }
+            case 'changePwd': {
                 this.setState({ ...this.state, isChangePwdDlgOpen: true });
                 break;
             }
@@ -109,12 +115,15 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
     }
 
     private userMenu = (
-        <Menu onClick={this.onUserMenuClick} style={{ width: 150 }}>
-            <Menu.Item key="key">
+        <Menu onClick={this.onUserMenuClick} style={{ width: 200 }}>
+            <Menu.Item key="changePwd">
                 <Icon type="key" /> Change password
             </Menu.Item>
             <Menu.Item key="logout">
                 <Icon type="logout" /> Logout
+            </Menu.Item>
+            <Menu.Item key="logoutAndClear">
+                <Icon type="close-circle-o" /> Logout & Clear cache
             </Menu.Item>
         </Menu>
     );
@@ -198,6 +207,7 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
             message,
             userName: name,
             changePasswordState: state.userState.changePasswordState,
+            userId: state.userState.userInfo.id,
             projects: getProjects(state),
         };
     };
@@ -206,7 +216,7 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
 
 const mapDispatchToProps = (dispatch: Dispatch<HeaderPanelProps>): HeaderPanelDispatchProps => {
     return {
-        logout: () => dispatch(actionCreator(LogoutType)),
+        logout: (userId, needClearCache) => dispatch(actionCreator(LogoutType, { userId, needClearCache })),
         onChangePassword: (password) => dispatch(actionCreator(ChangePasswordType, password)),
         importPostman: (projectId, data) => dispatch(actionCreator(ImportPostmanDataType, { projectId, data })),
         resetSyncMsg: () => dispatch(actionCreator(ResetSyncMsgType))

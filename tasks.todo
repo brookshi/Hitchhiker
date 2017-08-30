@@ -82,9 +82,9 @@
     ✔ folder can't expand if filter project @done (2017/8/24 下午10:01:45)
 0.1.2:
     ✔ request header auto complete @done (2017/8/29 下午11:09:23)
+    ✔ clear local cache @done (2017/8/30 下午11:27:43)
     ☐ test global function
-    ☐ clear local cache
-    ☐ global headers
+    ☐ headers cache
     ☐ variable highlight
     ☐ use default font for non-edit area
 

@@ -2,6 +2,7 @@ import { takeLatest, call, put } from 'redux-saga/effects';
 import RequestManager from '../utils/request_manager';
 import { actionCreator } from './index';
 import { Urls } from '../utils/urls';
+import LocalStore from '../utils/local_store';
 
 export const LoginType = 'login';
 
@@ -134,12 +135,16 @@ export function* register() {
 }
 
 export function* logout() { // TODO: should logout after all sync task completed.
-    yield takeLatest(LogoutType, function* () {
+    yield takeLatest(LogoutType, function* (action: any) {
         try {
             const res = yield call(RequestManager.get, Urls.getUrl('user/logout'));
             const body = yield res.json();
             if (body.success) {
-                location.reload(true);
+                if (action.value.needClearCache) {
+                    LocalStore.clearState(action.value.userId).then(() => location.reload(true));
+                } else {
+                    location.reload(true);
+                }
             } else {
                 yield put(actionCreator(LogoutFailedType, body.message));
             }

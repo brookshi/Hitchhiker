@@ -12,10 +12,19 @@ export default class LocalStore {
     }
 
     static async setState(userId: string, state: State): Promise<void> {
-        await localForage.setItem(`state-${userId}`, state);
+        await localForage.setItem(LocalStore.getKey(userId), state);
     }
 
     static async getState(userId: string): Promise<State> {
-        return await localForage.getItem(`state-${userId}`) as State;
+        return await localForage.getItem(LocalStore.getKey(userId)) as State;
+    }
+
+    static async clearState(userId: string): Promise<any> {
+        console.log(LocalStore.getKey(userId));
+        return await localForage.removeItem(LocalStore.getKey(userId), err => console.error(err));
+    }
+
+    private static getKey(userId: string): string {
+        return `state-${userId}`;
     }
 }
