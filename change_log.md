@@ -9,7 +9,7 @@
 * Try without login
 
 ## Bugs:
-* Content-type miss sometimes after duplicate Request
+* Miss Headers sometimes after duplicating Request
 * Schedule edit dialog should only display environments of selected Collection
 * Run empty schedule error
 * Folder can't expand if filter project
@@ -20,10 +20,10 @@
 * 在Collection/Folder的菜单里创建Request
 * Schedule可以选择是否要对某个Request做match
 * Schedule的结果在Request前面加上Folder
-* 免登录使用
+* 免登录试用
 
 ## Bugs:
-* 复制Request后源Request的Content-type有时会丢失
+* 复制Request后源Request的headers有时会丢失
 * Schedule编辑对话框应该只能选择当前Collection的环境
 * 跑空Schedule会出错
 * 选择了Project的话Folder不能展开
