@@ -151,6 +151,7 @@ export class MetadataService {
                     key: key,
                     value: keyValue[1].trim(),
                     isActive: isActive,
+                    isFav: false,
                     sort: sort++
                 });
             }

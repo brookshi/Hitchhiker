@@ -14,6 +14,8 @@ import { UpdateDisplayRecordPropertyType } from '../../../action/record';
 import { bodyTypes } from '../../../common/body_type';
 import { defaultBodyType } from '../../../common/constants';
 import { getActiveRecordSelector, getReqActiveTabKeySelector, getHeadersEditModeSelector } from './selector';
+import { DtoRecord } from '../../../../../api/interfaces/dto_record';
+import { RecordState } from '../../../state/collection';
 import { State } from '../../../state/index';
 import * as _ from 'lodash';
 
@@ -34,6 +36,8 @@ interface RequestOptionPanelStateProps {
     bodyType?: string;
 
     headersEditMode: KeyValueEditMode;
+
+    favHeaders: DtoHeader[];
 }
 
 interface RequestOptionPanelDispatchProps {
@@ -75,7 +79,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
 
     public render() {
 
-        const { activeTabKey, headers, body, test, headersEditMode } = this.props;
+        const { activeTabKey, headers, body, test, headersEditMode, favHeaders } = this.props;
 
         return (
             <Tabs
@@ -91,6 +95,8 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                         onHeadersChanged={this.onHeadersChanged}
                         isAutoComplete={true}
                         headers={_.sortBy(_.cloneDeep(headers) || [], 'sort')}
+                        showFav={true}
+                        favHeaders={favHeaders}
                     />
                 </TabPane>
                 <TabPane tab={(
@@ -114,6 +120,22 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
 
 const mapStateToProps = (state: State): RequestOptionPanelStateProps => {
     const record = getActiveRecordSelector()(state);
+    const favHeaders = _.chain(state.collectionState.collectionsInfo.records)
+        .values<_.Dictionary<DtoRecord>>()
+        .map(r => _.values(r))
+        .flatten<DtoRecord>()
+        .map(r => r.headers)
+        .flatten<DtoHeader>()
+        .filter(h => h && h.isFav)
+        .concat(_.chain(state.displayRecordsState.recordStates)
+            .values<RecordState>()
+            .map(r => r.record)
+            .map(r => r.headers)
+            .flatten<DtoHeader>()
+            .filter(h => h && h.isFav)
+            .value())
+        .sortedUniqBy(h => `${h.key}::${h.value}`)
+        .value();
     return {
         activeKey: state.displayRecordsState.activeKey,
         activeTabKey: getReqActiveTabKeySelector()(state),
@@ -121,7 +143,8 @@ const mapStateToProps = (state: State): RequestOptionPanelStateProps => {
         body: record.body,
         test: record.test,
         bodyType: record.bodyType,
-        headersEditMode: getHeadersEditModeSelector()(state)
+        headersEditMode: getHeadersEditModeSelector()(state),
+        favHeaders
     };
 };
 

@@ -83,8 +83,8 @@
 0.1.2:
     ✔ request header auto complete @done (2017/8/29 下午11:09:23)
     ✔ clear local cache @done (2017/8/30 下午11:27:43)
+    ✔ favorites headers @done (2017/9/1 上午12:39:33)
     ☐ test global function
-    ☐ headers cache
     ☐ variable highlight
     ☐ use default font for non-edit area
 

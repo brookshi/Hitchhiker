@@ -9,6 +9,7 @@ export class HeaderService {
         header.key = dtoHeader.key;
         header.value = dtoHeader.value;
         header.isActive = dtoHeader.isActive;
+        header.isFav = dtoHeader.isFav;
         header.sort = dtoHeader.sort;
         header.id = dtoHeader.id || StringUtil.generateUID();
         return header;

@@ -8,5 +8,7 @@ export interface DtoHeader {
 
     isActive: boolean;
 
+    isFav?: boolean;
+
     sort?: number;
 }

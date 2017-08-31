@@ -15,6 +15,10 @@ interface KeyValueComponentProps {
     onHeadersChanged(headers: DtoHeader[]);
 
     isAutoComplete?: boolean;
+
+    showFav?: boolean;
+
+    favHeaders?: DtoHeader[];
 }
 
 interface KeyValueComponentState { }
@@ -47,6 +51,8 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
                     headers={this.props.headers as DtoHeader[]}
                     onChanged={this.onHeadersChanged}
                     isAutoComplete={this.props.isAutoComplete}
+                    showFav={this.props.showFav}
+                    favHeaders={this.props.favHeaders}
                 />
             );
     }
