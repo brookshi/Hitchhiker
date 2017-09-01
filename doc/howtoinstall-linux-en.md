@@ -4,7 +4,7 @@
 2. install `mysql 5.6+` with name `root` password `hitchhiker888` 
 
 3. mysql, create db: `hitchhiker-prod`，change mysql variable `max_allowed_packet=200M`
-> create DB: CREATE DATABASE IF NOT EXISTS `hitchhiker-prod` default charset utf8 COLLATE utf8_general_ci;
+> create DB: CREATE DATABASE IF NOT EXISTS \`hitchhiker-prod\` default charset utf8 COLLATE utf8_general_ci;
 > change variable: add `max_allowed_packet=200M` under [mysqld] section in /my.conf file, refer to：[change max_allowed_packet](https://stackoverflow.com/questions/8062496/how-to-change-max-allowed-packet-size)
 
 4. download linux_deploy.sh [https://raw.githubusercontent.com/brookshi/Hitchhiker/release/deploy/linux_deploy.sh](https://raw.githubusercontent.com/brookshi/Hitchhiker/release/deploy/linux_deploy.sh)
