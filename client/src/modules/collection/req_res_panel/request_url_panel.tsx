@@ -22,6 +22,8 @@ interface RequestUrlPanelStateProps {
 
     isRequesting: boolean;
 
+    isChanged: boolean;
+
     environment: string;
 
     collectionTreeData: TreeData[];
@@ -106,7 +108,7 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
             const { record } = this.props;
             if (record.id.startsWith(newRecordFlag)) {
                 this.setState({ ...this.state, isSaveDlgOpen: true });
-            } else {
+            } else if (this.props.isChanged) {
                 this.props.save(record, false);
             }
         }
@@ -244,6 +246,7 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
         const recordState = getRecordState(state);
         return {
             isRequesting: !!recordState && recordState.isRequesting,
+            isChanged: !!recordState && recordState.isChanged,
             environment: getActiveEnvId(state),
             record: getActiveRecord(state),
             collectionTreeData: getTreeData(state),
