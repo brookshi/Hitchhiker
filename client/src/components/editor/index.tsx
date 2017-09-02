@@ -40,7 +40,7 @@ class Editor extends React.Component<EditorProps, EditorState> {
         const activeHeight = (height || 500) + this.offsetHeight;
 
         let props: any = {
-            className: 'req-editor',
+            className: 'req-editor code-editor',
             mode: type,
             theme: 'eclipse',
             width: width ? width + 'px' : '100%',
