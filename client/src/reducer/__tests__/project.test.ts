@@ -1,7 +1,7 @@
 import { projectState } from '../project';
 import { projectDefaultValue } from '../../state/project';
 import { LoginSuccessType } from '../../action/user';
-import { SaveProjectType, ActiveProjectType, QuitProjectType, DisbandProjectType, EditEnvType, RemoveUserType, SaveLocalhostMappingType } from '../../action/project';
+import { SaveProjectType, ActiveProjectType, QuitProjectType, DisbandProjectType, EditEnvType, RemoveUserType, SaveLocalhostMappingType, SaveGlobalFunctionType } from '../../action/project';
 import { defaultUser } from "./data";
 
 test('login success', () => {
@@ -81,4 +81,17 @@ test('save localhost mapping', () => {
     state = projectState(oldState, { type: SaveLocalhostMappingType, value: { isNew: false, id: 'lid_123', projectId: '123', userId: 'uid_123', ip: '192.168.0.4' } });
 
     expect(state).toEqual({ ...projectDefaultValue, projects: { ['123']: { id: '123', name: 'project1', owner: {}, localhosts: [{ id: 'lid_123', userId: 'uid_123', ip: '192.168.0.4' }] }, ['456']: { id: '456', name: 'project2', owner: {} } } });
+});
+
+test('update global function', () => {
+
+    let oldState = { ...projectDefaultValue, projects: { ['123']: { id: '123', name: 'project1', globalFunction: '', owner: {}, members: [] } } };
+
+    let state = projectState(oldState, { type: SaveGlobalFunctionType, value: { projectId: '123', globalFunc: 'func1' } });
+
+    expect(state).toEqual({ ...projectDefaultValue, projects: { ['123']: { id: '123', name: 'project1', globalFunction: 'func1', owner: {}, members: [] } } });
+
+    state = projectState(oldState, { type: SaveGlobalFunctionType, value: { projectId: '123', globalFunc: 'func2' } });
+
+    expect(state).toEqual({ ...projectDefaultValue, projects: { ['123']: { id: '123', name: 'project1', globalFunction: 'func2', owner: {}, members: [] } } });
 });

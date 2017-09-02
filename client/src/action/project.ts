@@ -27,6 +27,8 @@ export const EditEnvType = 'edit environment';
 
 export const SaveLocalhostMappingType = 'save localhost mapping';
 
+export const SaveGlobalFunctionType = 'save global function';
+
 export function* quitProject() {
     yield takeEvery(QuitProjectType, function* (action: any) {
         const channelAction = syncAction({ type: QuitProjectType, method: HttpMethod.DELETE, url: Urls.getUrl(`project/${action.value.id}/own`) });
@@ -82,6 +84,14 @@ export function* saveLocalhostMapping() {
     yield takeEvery(SaveLocalhostMappingType, function* (action: any) {
         const { isNew, id, projectId, ip } = action.value;
         const channelAction = syncAction({ type: SaveLocalhostMappingType, method: isNew ? HttpMethod.POST : HttpMethod.PUT, url: Urls.getUrl(`project/${projectId}/localhost/${id}/ip/${ip}`) });
+        yield put(channelAction);
+    });
+}
+
+export function* saveGlobalFunction() {
+    yield takeEvery(SaveGlobalFunctionType, function* (action: any) {
+        const { projectId, globalFunc } = action.value;
+        const channelAction = syncAction({ type: SaveGlobalFunctionType, method: HttpMethod.PUT, url: Urls.getUrl(`project/${projectId}/globalfunc`), body: { content: globalFunc } });
         yield put(channelAction);
     });
 }

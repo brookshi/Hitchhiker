@@ -1,4 +1,4 @@
-import { EditEnvType, SaveProjectType, QuitProjectType, DisbandProjectType, ActiveProjectType, RemoveUserType, SaveLocalhostMappingType } from '../action/project';
+import { EditEnvType, SaveProjectType, QuitProjectType, DisbandProjectType, ActiveProjectType, RemoveUserType, SaveLocalhostMappingType, SaveGlobalFunctionType } from '../action/project';
 import { LoginSuccessType } from '../action/user';
 import * as _ from 'lodash';
 import { ProjectState, projectDefaultValue } from '../state/project';
@@ -52,6 +52,18 @@ export function projectState(state: ProjectState = projectDefaultValue, action: 
                     [projectId]: {
                         ...state.projects[projectId],
                         localhosts
+                    }
+                }
+            };
+        }
+        case SaveGlobalFunctionType: {
+            const { projectId, globalFunc } = action.value;
+            return {
+                ...state, projects: {
+                    ...state.projects,
+                    [projectId]: {
+                        ...state.projects[projectId],
+                        globalFunction: globalFunc
                     }
                 }
             };

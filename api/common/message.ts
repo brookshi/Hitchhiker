@@ -44,6 +44,7 @@ export class Message {
     static rejectProjectSuccess: string = 'reject invite success';
     static updateLocalhostMappingSuccess: string = 'update localhost mapping success';
     static createLocalhostMappingSuccess: string = 'create localhost mapping success';
+    static updateGlobalFuncSuccess: string = 'update global function success';
 
     static collectionCreateFailed: string = 'create collection failed';
     static collectionCreateSuccess: string = 'create collection success';

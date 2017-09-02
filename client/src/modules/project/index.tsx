@@ -9,7 +9,7 @@ import { DtoProject } from '../../../../api/interfaces/dto_project';
 import { State } from '../../state';
 import { actionCreator } from '../../action';
 import { UpdateLeftPanelType, ResizeLeftPanelType } from '../../action/ui';
-import { EditEnvType, DisbandProjectType, QuitProjectType, SaveProjectType, RemoveUserType, InviteMemberType, SaveEnvironmentType, DelEnvironmentType, ActiveProjectType, EditEnvCompletedType, SaveLocalhostMappingType } from '../../action/project';
+import { EditEnvType, DisbandProjectType, QuitProjectType, SaveProjectType, RemoveUserType, InviteMemberType, SaveEnvironmentType, DelEnvironmentType, ActiveProjectType, EditEnvCompletedType, SaveLocalhostMappingType, SaveGlobalFunctionType } from '../../action/project';
 import { DtoUser } from '../../../../api/interfaces/dto_user';
 import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
 import * as _ from 'lodash';
@@ -69,6 +69,8 @@ interface ProjectDispatchProps {
     editEnv(projectId: string, envId: string);
 
     changeLocalhost(id: string, projectId: string, userId: string, ip: string);
+
+    saveGlobalFunc(projectId: string, globalFunc: string);
 }
 
 type ProjectProps = ProjectStateProps & ProjectDispatchProps;
@@ -113,7 +115,7 @@ class Project extends React.Component<ProjectProps, ProjectState> {
 
     public render() {
         const project = this.getSelectedProject();
-        const { user, collapsed, collapsedLeftPanel, projects, leftPanelWidth, disbandProject, quitProject, selectProject, updateProject, createProject, removeUser, invite, createEnv, updateEnv, delEnv, isEditEnvDlgOpen, editedEnvironment, activeProject, editEnvCompleted, editEnv, changeLocalhost } = this.props;
+        const { user, collapsed, collapsedLeftPanel, projects, leftPanelWidth, disbandProject, quitProject, selectProject, updateProject, createProject, removeUser, invite, createEnv, updateEnv, delEnv, isEditEnvDlgOpen, editedEnvironment, activeProject, editEnvCompleted, editEnv, changeLocalhost, saveGlobalFunc } = this.props;
 
         return (
             <Layout className="main-panel">
@@ -133,6 +135,7 @@ class Project extends React.Component<ProjectProps, ProjectState> {
                         quitProject={quitProject}
                         updateProject={updateProject}
                         createProject={createProject}
+                        saveGlobalFunc={saveGlobalFunc}
                     />
                 </Sider>
                 <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
@@ -202,7 +205,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): ProjectDispatchProps => {
         delEnv: (envId, projectId) => { dispatch(actionCreator(DelEnvironmentType, { envId, projectId })); },
         editEnvCompleted: () => { dispatch(actionCreator(EditEnvCompletedType)); },
         editEnv: (projectId, envId) => dispatch(actionCreator(EditEnvType, { projectId, envId })),
-        changeLocalhost: (id, projectId, userId, ip) => { dispatch(actionCreator(SaveLocalhostMappingType, { isNew: !id, id: id || StringUtil.generateUID(), projectId, userId, ip })); }
+        changeLocalhost: (id, projectId, userId, ip) => { dispatch(actionCreator(SaveLocalhostMappingType, { isNew: !id, id: id || StringUtil.generateUID(), projectId, userId, ip })); },
+        saveGlobalFunc: (projectId, globalFunc) => { dispatch(actionCreator(SaveGlobalFunctionType, { projectId, globalFunc })); }
     };
 };
 

@@ -16,6 +16,8 @@ export interface DtoProject {
 
     environments?: DtoEnvironment[];
 
+    globalFunction?: string;
+
     isMe?: boolean;
 
     owner: Partial<DtoUser>;

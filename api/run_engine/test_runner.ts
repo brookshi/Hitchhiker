@@ -1,11 +1,11 @@
 import * as request from 'request';
 import * as _ from 'lodash';
+import { ProjectService } from '../services/project_service';
 const { VM } = require('vm2');
 
 export class TestRunner {
 
-    static test(res: request.RequestResponse, code: string, elapsed: number): { tests: _.Dictionary<boolean>, variables: {} } {
-
+    static test(res: request.RequestResponse, globalFunc: string, code: string, elapsed: number): { tests: _.Dictionary<boolean>, variables: {} } {
         let tests: { [key: string]: boolean } = {};
         let $variables$: any = {};
 
@@ -15,7 +15,7 @@ export class TestRunner {
         });
 
         try {
-            vm.run(code);
+            vm.run(globalFunc + code);
         } catch (err) {
             tests = { [err]: false };
         }

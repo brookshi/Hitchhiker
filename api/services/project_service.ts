@@ -10,7 +10,7 @@ import { LocalhostMapping } from '../models/localhost_mapping';
 import { CollectionService } from './collection_service';
 import { RecordService } from './record_service';
 import * as _ from 'lodash';
-import { EnvironmentService } from "./environment_service";
+import { EnvironmentService } from './environment_service';
 
 export class ProjectService {
 
@@ -180,5 +180,26 @@ export class ProjectService {
             localhost = mapping ? mapping.ip || localhost : localhost;
         }
         return localhost;
+    }
+
+    static async updateGlobalFunc(id: string, globalFunction: string): Promise<ResObject> {
+        const connection = await ConnectionManager.getInstance();
+
+        await connection.getRepository(Project)
+            .createQueryBuilder('project')
+            .where('id=:id', { id })
+            .update({ globalFunction })
+            .execute();
+
+        return { success: true, message: Message.updateGlobalFuncSuccess };
+    }
+
+    static async getGlobalFunc(collectionId: string): Promise<string> {
+        const collection = await CollectionService.getById(collectionId);
+        if (collection) {
+            const project = await ProjectService.getProject(collection.project.id, false, false);
+            return project ? project.globalFunction : '';
+        }
+        return '';
     }
 }

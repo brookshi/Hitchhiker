@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Tooltip, Button } from 'antd';
+import { Menu, Tooltip, Button, Modal } from 'antd';
 import { SelectParam } from 'antd/lib/menu';
 import ProjectItem from './project_item';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -7,6 +7,7 @@ import { DtoProject } from '../../../../api/interfaces/dto_project';
 import { StringUtil } from '../../utils/string_util';
 import { DtoUser } from '../../../../api/interfaces/dto_user';
 import { newProjectName } from '../../common/constants';
+import Editor from '../../components/editor';
 
 interface ProjectListProps {
 
@@ -25,9 +26,18 @@ interface ProjectListProps {
     createProject(project: DtoProject);
 
     selectProject(projectId: string);
+
+    saveGlobalFunc(projectId: string, globalFunc: string);
 }
 
-interface ProjectListState { }
+interface ProjectListState {
+
+    isGlobalFuncDlgOpen: boolean;
+
+    currentGlobalFuncProject?: string;
+
+    globalFunc: string;
+}
 
 const createDefaultProject = (user: DtoUser) => {
     return {
@@ -45,6 +55,10 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
 
     constructor(props: ProjectListProps) {
         super(props);
+        this.state = {
+            isGlobalFuncDlgOpen: false,
+            globalFunc: ''
+        };
     }
 
     componentDidUpdate(prevProps: ProjectListProps, prevState: ProjectListState) {
@@ -52,6 +66,15 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
             this.projectRefs[this.currentNewProject.id].edit();
             this.currentNewProject = undefined;
         }
+    }
+
+    private getProject = (id: string) => {
+        return this.props.projects.find(p => p.id === id);
+    }
+
+    private getProjectGlobalFunc = (id: string) => {
+        const project = this.getProject(id);
+        return project ? project.globalFunction || '' : '';
     }
 
     private onSelectChanged = (param: SelectParam) => {
@@ -69,6 +92,34 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
         const newProject = createDefaultProject(this.props.user);
         this.currentNewProject = newProject;
         this.props.createProject(newProject);
+    }
+
+    private saveGlobalFunc = () => {
+        const { currentGlobalFuncProject, globalFunc } = this.state;
+        if (!currentGlobalFuncProject) {
+            return;
+        }
+        this.props.saveGlobalFunc(currentGlobalFuncProject, globalFunc);
+        this.setState({ ...this.state, isGlobalFuncDlgOpen: false, globalFunc: '' });
+    }
+
+    private get globalFuncDialog() {
+        const { isGlobalFuncDlgOpen } = this.state;
+        const project = this.getProject(this.state.currentGlobalFuncProject || '');
+        return (
+            <Modal
+                title={`${project ? project.name + ': ' : ''}Global Function of Tests`}
+                visible={isGlobalFuncDlgOpen}
+                maskClosable={false}
+                okText="Save"
+                width={800}
+                cancelText="Cancel"
+                onOk={this.saveGlobalFunc}
+                onCancel={() => this.setState({ ...this.state, isGlobalFuncDlgOpen: false, globalFunc: '' })}
+            >
+                <Editor type="javascript" height={600} fixHeight={true} value={this.state.globalFunc} onChange={v => this.setState({ ...this.state, globalFunc: v })} />
+            </Modal>
+        );
     }
 
     public render() {
@@ -99,6 +150,12 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
                                             disbandProject={() => this.props.disbandProject(t)}
                                             quitProject={() => this.props.quitProject(t)}
                                             onNameChanged={name => this.changeProjectName(name, t)}
+                                            editGlobalFunc={id => this.setState({
+                                                ...this.state,
+                                                currentGlobalFuncProject: id,
+                                                globalFunc: this.getProjectGlobalFunc(id),
+                                                isGlobalFuncDlgOpen: true
+                                            })}
                                         />
                                     </Menu.Item>
                                 )
@@ -106,6 +163,7 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
                         }
                     </Menu>
                 </PerfectScrollbar>
+                {this.globalFuncDialog}
             </div>
         );
     }

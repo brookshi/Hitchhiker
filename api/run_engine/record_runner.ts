@@ -82,7 +82,8 @@ export class RecordRunner {
                     record,
                     key: 'Cookie',
                     value: _.values(allCookies).join('; '),
-                    isActive: true
+                    isActive: true,
+                    isFav: false
                 }
             ]
         };
@@ -132,7 +133,8 @@ export class RecordRunner {
         const start = process.hrtime();
         const res = await RecordRunner.request(option, serverRes, needPipe);
         const elapsed = process.hrtime(start)[0] * 1000 + _.toInteger(process.hrtime(start)[1] / 1000000);
-        return RecordRunner.handleRes(res.response, res.err, record, envId, elapsed, serverRes, needPipe);
+        const globalFunc = await ProjectService.getGlobalFunc(record.collection.id);
+        return RecordRunner.handleRes(res.response, res.err, record, globalFunc, envId, elapsed, serverRes, needPipe);
     }
 
     static request(option: request.Options, serverRes?: ServerResponse, needPipe?: boolean): Promise<{ err: any, response: request.RequestResponse, body: any }> {
@@ -146,9 +148,8 @@ export class RecordRunner {
         });
     }
 
-    static handleRes(res: request.RequestResponse, err: Error, record: Record, envId: string, elapsed: number, pipeRes?: ServerResponse, needPipe?: boolean): RunResult {
-
-        const testRst = !err && record.test ? TestRunner.test(res, record.test, elapsed) : { tests: {}, variables: {} };
+    static handleRes(res: request.RequestResponse, err: Error, record: Record, globalFunc: string, envId: string, elapsed: number, pipeRes?: ServerResponse, needPipe?: boolean): RunResult {
+        const testRst = !err && record.test ? TestRunner.test(res, globalFunc, record.test, elapsed) : { tests: {}, variables: {} };
         const pRes: Partial<request.RequestResponse> = res || {};
         const finalRes: RunResult = {
             id: record.id,

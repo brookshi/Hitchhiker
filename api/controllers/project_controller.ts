@@ -141,4 +141,9 @@ export default class ProjectController extends BaseController {
 
         return { success: success, message: results.map(rst => rst.err).join(';') };
     }
+
+    @PUT('/project/:projectId/globalfunc')
+    async updateGlobalFunction( @PathParam('projectId') projectId: string, @BodyParam globalFunc: any) {
+        return await ProjectService.updateGlobalFunc(projectId, globalFunc.content);
+    }
 }

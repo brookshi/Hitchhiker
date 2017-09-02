@@ -16,6 +16,8 @@ interface ProjectItemProps {
     quitProject();
 
     onNameChanged(name: string);
+
+    editGlobalFunc(projectId: string);
 }
 
 interface ProjectItemState { }
@@ -38,6 +40,9 @@ class ProjectItem extends React.Component<ProjectItemProps, ProjectItemState> {
                         </Menu.Item>
                     ) : ''
                 }
+                <Menu.Item key="globalFunc">
+                    <Icon type="code-o" /> Global function
+                </Menu.Item>
                 <Menu.Item key="delete">
                     <Icon type="delete" /> {this.props.isOwner ? 'Disband' : 'Quit'}
                 </Menu.Item>
@@ -62,6 +67,10 @@ class ProjectItem extends React.Component<ProjectItemProps, ProjectItemState> {
         if (this.itemWithMenu) {
             this.itemWithMenu.edit();
         }
+    }
+
+    globalFunc = () => {
+        this.props.editGlobalFunc(this.props.project.id);
     }
 
     public render() {

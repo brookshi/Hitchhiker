@@ -27,6 +27,9 @@ export class Project {
     @OneToMany(type => Environment, environment => environment.project)
     environments: Environment[] = [];
 
+    @Column('text', { nullable: true })
+    globalFunction: string;
+
     @Column({ nullable: true })
     note: string;
 
