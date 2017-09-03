@@ -85,22 +85,23 @@
     ✔ clear local cache @done (2017/8/30 下午11:27:43)
     ✔ favorites headers @done (2017/9/1 上午12:39:33)
     ✔ tests global function @done (2017/9/2 下午5:19:33)
-    ☐ save all tabs, close all tabs, close all but active.
-    ☐ use default font for non-edit area
+    ✔ use default font for non-edit area @done (2017/9/2 下午7:02:35)
 0.1.3:
-    ☐ test result detail
     ☐ fetch data per 30s
     
 0.2.0:
-    ☐ collection tree follow active tab(expand collection/folder)
     ☐ stree test
 0.2.1:
+    ☐ collection tree follow active tab(expand collection/folder)
     ☐ project share collection/env
     ☐ body type
     ☐ project share collection/env for own
+0.2.2:
     ☐ variable highlight
+    ☐ save all tabs, close all tabs, close all but active.
 0.3.0:
     ☐ data mock
+    ☐ test result detail
 0.4.0:
     ☐ api document
     ☐ record auth

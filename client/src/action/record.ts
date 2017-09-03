@@ -30,6 +30,14 @@ export const DeleteRecordType = 'delete record';
 
 export const MoveRecordType = 'move record';
 
+export const SaveAllType = 'save all';
+
+export const CloseAllType = 'close all type';
+
+export const CloseOthersType = 'close others';
+
+export const CloseUnmodifiedType = 'close unmodified';
+
 export function* sendRequest() {
     yield takeEvery(SendRequestType, function* (action: any) {
         const value = action.value;
