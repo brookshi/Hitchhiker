@@ -10,7 +10,7 @@ import { ProjectService } from '../services/project_service';
 
 export class RecordRunner {
 
-    private static RequestTimeout = 10 * 60 * 1000;
+    private static RequestTimeout = 30 * 60 * 1000;
 
     static async runRecords(rs: Record[], environmentId: string, needOrder: boolean = false, orderRecordIds: string = '', applyCookies?: boolean, trace?: (msg: string) => void): Promise<RunResult[]> {
         if (needOrder && orderRecordIds) {

@@ -18,4 +18,6 @@ app.use(Middleware(app));
 
 const server = app.listen(81);
 
+server.timeout = 30 * 60 * 1000;
+
 new WebSocketService(server).start();
