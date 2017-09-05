@@ -198,7 +198,7 @@ export class ProjectService {
         const collection = await CollectionService.getById(collectionId);
         if (collection) {
             const project = await ProjectService.getProject(collection.project.id, false, false);
-            return project ? project.globalFunction : '';
+            return project ? project.globalFunction || '' : '';
         }
         return '';
     }
