@@ -1,7 +1,7 @@
 
 1. 安装nodejs 7.10+, 并更新npm到最新`npm install npm -g`
 
-2. 安装`mysql 5.6+` ，设置用户名 `root` 密码 `hitchhiker888` 
+2. 安装`mysql 5.7+` ，设置用户名 `root` 密码 `hitchhiker888` 
 
 3. 进入mysql， 创建db: `hitchhiker-prod`，修改变量`max_allowed_packet=200M`
 > 创建DB: CREATE DATABASE IF NOT EXISTS \`hitchhiker-prod\` default charset utf8 COLLATE utf8_general_ci;
