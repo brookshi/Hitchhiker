@@ -9,7 +9,7 @@
 
 4. 下载 linux_deploy.sh[https://raw.githubusercontent.com/brookshi/Hitchhiker/release/deploy/linux_deploy.sh](https://raw.githubusercontent.com/brookshi/Hitchhiker/release/deploy/linux_deploy.sh)
 
-5. 编辑`linux_deploy.sh`，修改第一行的`myhost`变量值为你的ip加端口，格式：`http://ip:port/`，如果是用BSD/OSX系统，记得把 `sed -i 's/myhost/'$myhost'/g' pm2.json` 替换成 `sed -i '' "s~myhost~$myhost~g" pm2.json`
+5. 编辑`linux_deploy.sh`，修改第一行的`myhost`变量值为你的ip加端口，格式：`http://ip:port/`，如果是用BSD/OSX系统，记得把 `sed -i "s#myhost#$myhost#g" pm2.json` 替换成 `sed -i '' "s#myhost#$myhost#g" pm2.json`
 
 6. 运行命令`source ./linux_deploy.sh`安装
 

@@ -9,7 +9,7 @@
 
 4. download linux_deploy.sh [https://raw.githubusercontent.com/brookshi/Hitchhiker/release/deploy/linux_deploy.sh](https://raw.githubusercontent.com/brookshi/Hitchhiker/release/deploy/linux_deploy.sh)
 
-5. edit `linux_deploy.sh`，change `myhost` value to your ip:port，eg：`http://ip:port/`, if use BSD/OSX, remember use `sed -i '' "s~myhost~$myhost~g" pm2.json` instead of `sed -i 's/myhost/'$myhost'/g' pm2.json`
+5. edit `linux_deploy.sh`，change `myhost` value to your ip:port，eg：`http://ip:port/`, if use BSD/OSX, remember use `sed -i '' "s#myhost#$myhost#g" pm2.json` instead of `sed -i "s#myhost#$myhost#g" pm2.json`
 
 6. exec `source ./linux_deploy.sh`
 
