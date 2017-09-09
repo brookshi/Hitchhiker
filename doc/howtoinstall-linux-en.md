@@ -1,7 +1,7 @@
 
 1. install nodejs 7.10+, update npm to latest`npm install npm -g`
 
-2. install `mysql 5.6+` with name `root` password `hitchhiker888` 
+2. install `mysql 5.7+` with name `root` password `hitchhiker888` 
 
 3. mysql, create db: `hitchhiker-prod`，change mysql variable `max_allowed_packet=200M`
 > create DB: CREATE DATABASE IF NOT EXISTS \`hitchhiker-prod\` default charset utf8 COLLATE utf8_general_ci;
