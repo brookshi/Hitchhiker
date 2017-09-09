@@ -1,3 +1,19 @@
+# 0.1.2 2017-09-09
+
+## Features:
+* could clear local cache
+* request's headers auto complete
+* favorite request's headers
+* global function of tests
+* adjust ui style
+
+## Features:
+* 添加清除本地Cache功能
+* request的header提示及自动完成
+* 可以收藏常用的request header，方便下次使用
+* 可以在Project里定义tests的全局函数，方便其下的Request直接使用
+* 略微调整UI
+
 # 0.1.1 2017-08-26
 
 ## Features:
