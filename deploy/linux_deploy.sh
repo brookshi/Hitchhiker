@@ -18,6 +18,7 @@ export NODE_ENV="production"
 
 gulp release --prod
 
+## for BSD/OSX use : sed -i '' "s~myhost~$myhost~g" pm2.json
 sed -i 's/myhost/'$myhost'/g' pm2.json
 
 sleep 10s
