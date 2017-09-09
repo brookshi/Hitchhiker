@@ -5,8 +5,10 @@ services:
     container_name: hitchhiker
     environment:
       - HITCHHIKER_DB_HOST=hitchhiker-mysql
-      - HITCHHIKER_APP_HOST=http://localhost:8080/ # should change in run time.
+      - HITCHHIKER_APP_HOST=http://localhost:8080/ 
     ports:
       - "8080:8080"
+    #volumes:
+    #  - /my/hitchhiker/public:/usr/src/Hitchhiker/build/public
     external_links:
       - hitchhiker-mysql:hitchhiker-mysql
