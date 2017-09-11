@@ -4,7 +4,7 @@ import { DtoScheduleRecord } from '../../../../api/interfaces/dto_schedule_recor
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
 import * as _ from 'lodash';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
-import { noEnvironment, unknownName, successColor, failColor, pass, fail, match, notMatch, notMatchButIgnore } from '../../common/constants';
+import { noEnvironment, unknownName, successColor, failColor, pass, fail, match, notMatch, notMatchButIgnore, defaultExport } from '../../common/constants';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { StringUtil } from '../../utils/string_util';
 import Editor from '../../components/editor';
@@ -54,7 +54,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
             const needCompare = !!compareDict[r.id];
             let compareResult = '';
             if (needCompare) {
-                if (compareDict[r.id].body === r.body) {
+                if (this.compareExport(compareDict[r.id], r)) {
                     compareResult = match;
                 } else if (notNeedMatchIds.some(id => id === r.id)) {
                     compareResult = notMatchButIgnore;
@@ -112,6 +112,14 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                 }
             </RunResultTable>
         );
+    }
+
+    private compareExport(originRst: RunResult, compareRst: RunResult): boolean {
+        if (originRst.export !== defaultExport &&
+            compareRst.export !== defaultExport) {
+            return _.isEqual(originRst.export, compareRst.export);
+        }
+        return originRst.body === compareRst.body;
     }
 
     private getRecordDisplayName = (id: string) => {
@@ -220,7 +228,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
 
         const notNeedMatchIds = this.getNotNeedMatchIds(schedule);
         for (let i = 0; i < originRunResults.length; i++) {
-            if (!notNeedMatchIds.some(id => id === originRunResults[i].id) && originRunResults[i].body !== compareRunResults[i].body) {
+            if (!notNeedMatchIds.some(id => id === originRunResults[i].id) && !this.compareExport(originRunResults[i], compareRunResults[i])) {
                 return false;
             }
         }

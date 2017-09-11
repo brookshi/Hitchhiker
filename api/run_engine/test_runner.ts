@@ -10,11 +10,12 @@ export class TestRunner {
     static test(res: request.RequestResponse, globalFunc: string, code: string, elapsed: number): { tests: _.Dictionary<boolean>, variables: {}, export: {} } {
         let tests: { [key: string]: boolean } = {};
         let $variables$: any = {};
-        let $export$: any = TestRunner.defaultExport;
+        let $exportObj$ = { content: TestRunner.defaultExport };
+        let $export$ = obj => $exportObj$.content = obj;
 
         const vm = new VM({
             timeout: 50000,
-            sandbox: { tests, $variables$, ...TestRunner.getInitSandbox(res, elapsed) }
+            sandbox: { tests, $variables$, $export$, $exportObj$, ...TestRunner.getInitSandbox(res, elapsed) }
         });
 
         try {
@@ -22,7 +23,7 @@ export class TestRunner {
         } catch (err) {
             tests = { [err]: false };
         }
-        return { tests, variables: $variables$, export: $export$ };
+        return { tests, variables: $variables$, export: $exportObj$.content };
     }
 
     static getInitSandbox(res: request.RequestResponse, elapsed: number) {

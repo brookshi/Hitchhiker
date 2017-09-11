@@ -11,6 +11,8 @@ export const newScheduleName = 'New Schedule';
 
 export const allProject = 'All';
 
+export const defaultExport = 'export:impossiblethis:tropxe';
+
 export const unknownName = 'unknown';
 
 export const newRequestName = 'new request';

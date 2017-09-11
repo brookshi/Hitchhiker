@@ -38,6 +38,7 @@ export const defaultRunResult = {
     body: 'body1',
     tests: { ['test result']: true },
     variables: { isSuccess: true },
+    export: {},
     status: 200,
     statusMessage: 'OK',
     elapsed: 100,
