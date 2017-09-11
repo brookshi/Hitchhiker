@@ -66,7 +66,6 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
     public componentDidUpdate(nextProps: RequestOptionPanelProps, nextState: RequestOptionPanelState) {
         if (this.bodyEditor) {
             this.bodyEditor.forceUpdate();
-
         }
     }
 

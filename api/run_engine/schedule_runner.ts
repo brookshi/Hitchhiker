@@ -19,6 +19,8 @@ import { MailService } from '../services/mail_service';
 import { Log } from '../utils/log';
 import { DateUtil } from '../utils/date_util';
 import { RecordCategory } from "../common/record_category";
+import { TestRunner } from "./test_runner";
+import { StringUtil } from "../utils/string_util";
 
 export class ScheduleRunner {
 
@@ -144,11 +146,19 @@ export class ScheduleRunner {
 
         const notNeedMatchIds = schedule.recordsOrder ? schedule.recordsOrder.split(';').filter(r => r.endsWith(':0')).map(r => r.substr(0, r.length - 2)) : [];
         for (let i = 0; i < originRunResults.length; i++) {
-            if (!notNeedMatchIds.some(id => id === originRunResults[i].id) && originRunResults[i].body !== compareRunResults[i].body) {
+            if (!notNeedMatchIds.some(id => id === originRunResults[i].id) && this.compareExport(originRunResults[i], compareRunResults[i])) {
                 return false;
             }
         }
         return true;
+    }
+
+    private compareExport(originRst: RunResult, compareRst: RunResult): boolean {
+        if (originRst.export !== TestRunner.defaultExport &&
+            compareRst.export !== TestRunner.defaultExport) {
+            return _.isEqual(originRst.export, compareRst.export);
+        }
+        return originRst.body === compareRst.body;
     }
 
     private async getAllSchedules(): Promise<Schedule[]> {

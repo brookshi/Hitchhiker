@@ -149,7 +149,7 @@ export class RecordRunner {
     }
 
     static handleRes(res: request.RequestResponse, err: Error, record: Record, globalFunc: string, envId: string, elapsed: number, pipeRes?: ServerResponse, needPipe?: boolean): RunResult {
-        const testRst = !err && record.test ? TestRunner.test(res, globalFunc, record.test, elapsed) : { tests: {}, variables: {} };
+        const testRst = !err && record.test ? TestRunner.test(res, globalFunc, record.test, elapsed) : { tests: {}, variables: {}, export: {} };
         const pRes: Partial<request.RequestResponse> = res || {};
         const finalRes: RunResult = {
             id: record.id,
@@ -159,6 +159,7 @@ export class RecordRunner {
             body: pRes.body,
             tests: testRst.tests,
             variables: testRst.variables,
+            export: testRst.export,
             elapsed: elapsed,
             headers: pRes.headers || [],
             cookies: pRes.headers ? pRes.headers['set-cookie'] : [],

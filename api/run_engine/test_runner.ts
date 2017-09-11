@@ -5,9 +5,12 @@ const { VM } = require('vm2');
 
 export class TestRunner {
 
-    static test(res: request.RequestResponse, globalFunc: string, code: string, elapsed: number): { tests: _.Dictionary<boolean>, variables: {} } {
+    static defaultExport: any = 'export:impossiblethis:tropxe';
+
+    static test(res: request.RequestResponse, globalFunc: string, code: string, elapsed: number): { tests: _.Dictionary<boolean>, variables: {}, export: {} } {
         let tests: { [key: string]: boolean } = {};
         let $variables$: any = {};
+        let $export$: any = TestRunner.defaultExport;
 
         const vm = new VM({
             timeout: 50000,
@@ -19,7 +22,7 @@ export class TestRunner {
         } catch (err) {
             tests = { [err]: false };
         }
-        return { tests, variables: $variables$ };
+        return { tests, variables: $variables$, export: $export$ };
     }
 
     static getInitSandbox(res: request.RequestResponse, elapsed: number) {

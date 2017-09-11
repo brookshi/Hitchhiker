@@ -14,6 +14,8 @@ export interface RunResult {
 
     variables: {};
 
+    export: {};
+
     status: number;
 
     statusMessage: string;
