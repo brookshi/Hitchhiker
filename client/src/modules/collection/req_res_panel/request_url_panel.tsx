@@ -137,7 +137,7 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
 
     private sendRequest = () => {
         const { record, environment, cookies } = this.props;
-        const headers = [...record.headers || []];
+        let headers = [...record.headers || []];
 
         const hostName = StringUtil.getHostFromUrl(record.url);
         let localCookies = { ...(record.collectionId ? cookies[record.collectionId] || {} : {}), ...(hostName ? cookies[hostName] || {} : {}) };
@@ -153,7 +153,8 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         const allCookies = { ...localCookies, ...recordCookies };
         _.remove(headers, h => (h.key || '').toLowerCase() === 'cookie');
 
-        this.props.sendRequest(environment, { ...this.applyLocalVariablesToRecord(record), headers: [...headers, { key: 'Cookie', value: _.values(allCookies).join('; '), isActive: true }] });
+        headers = Object.keys(allCookies).length > 0 ? [...headers, { key: 'Cookie', value: _.values(allCookies).join('; '), isActive: true }] : headers;
+        this.props.sendRequest(environment, { ...this.applyLocalVariablesToRecord(record), headers });
     }
 
     private applyLocalVariablesToRecord = (record: DtoRecord) => {

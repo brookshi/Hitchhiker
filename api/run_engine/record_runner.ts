@@ -61,7 +61,7 @@ export class RecordRunner {
             return record;
         }
         let localCookies = cookies;
-        const headers = [...record.headers];
+        let headers = [...record.headers || []];
         const cookieHeader = headers.find(h => h.isActive && (h.key || '').toLowerCase() === 'cookie');
 
         let recordCookies: _.Dictionary<string> = {};
@@ -73,20 +73,19 @@ export class RecordRunner {
         }
         const allCookies = { ...localCookies, ...recordCookies };
         _.remove(headers, h => (h.key || '').toLowerCase() === 'cookie');
-        return {
-            ...record,
-            headers: [
-                ...headers, {
-                    id: '',
-                    sort: 0,
-                    record,
-                    key: 'Cookie',
-                    value: _.values(allCookies).join('; '),
-                    isActive: true,
-                    isFav: false
-                }
-            ]
-        };
+
+        headers = Object.keys(allCookies).length > 0 ? [
+            ...headers, {
+                id: '',
+                sort: 0,
+                record,
+                key: 'Cookie',
+                value: _.values(allCookies).join('; '),
+                isActive: true,
+                isFav: false
+            }
+        ] : headers;
+        return { ...record, headers };
     }
 
     static storeVariables(result: RunResult, variables: any): any {
