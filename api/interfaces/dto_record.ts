@@ -2,6 +2,7 @@ import { DtoHeader } from './dto_header';
 import { RecordCategory } from '../common/record_category';
 import { BodyType } from '../common/body_type';
 import { DtoUser } from './dto_user';
+import { ParameterType } from '../common/parameter_type';
 
 export interface DtoRecord {
 
@@ -26,6 +27,10 @@ export interface DtoRecord {
     body?: string;
 
     bodyType?: BodyType;
+
+    parameters?: string;
+
+    parameterType: ParameterType;
 
     test?: string;
 

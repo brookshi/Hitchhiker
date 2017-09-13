@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { Tabs, Badge } from 'antd';
+import { Tabs, Badge, Radio } from 'antd';
 import RequestTabExtra from './request_tab_extra';
 import { normalBadgeStyle } from '../../../style/theme';
 import { DtoHeader } from '../../../../../api/interfaces/dto_header';
@@ -18,8 +18,10 @@ import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 import { RecordState } from '../../../state/collection';
 import { State } from '../../../state/index';
 import * as _ from 'lodash';
+import { ParameterType } from '../../../common/parameter_type';
 
 const TabPane = Tabs.TabPane;
+const RadioGroup = Radio.Group;
 
 interface RequestOptionPanelStateProps {
 
@@ -34,6 +36,10 @@ interface RequestOptionPanelStateProps {
     test?: string;
 
     bodyType?: string;
+
+    parameters?: string;
+
+    parameterType: ParameterType;
 
     headersEditMode: KeyValueEditMode;
 
@@ -76,9 +82,33 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
 
     private currentBodyType = () => this.props.bodyType || defaultBodyType;
 
+    private verifyParameters = () => {
+        const { parameters, parameterType } = this.props;
+        if (parameters !== '' && (!_.isPlainObject(parameters) || !_.values<any>(parameters).every(p => _.isArray(p)))) {
+            return { isVaild: false, msg: 'Parameters must be a plain object and children must be a array.' };
+        }
+        let count = 0;
+        const paramArray = _.values<Array<any>>(parameters);
+        if (parameterType === ParameterType.Zip) {
+            for (let i = 0; i < paramArray.length; i++) {
+                if (i === 0) {
+                    count = paramArray[i].length;
+                }
+                if (paramArray[i].length !== count) {
+                    return { isVaild: false, msg: `The length of Zip parameters' children arrays must be identical.` };
+                }
+            }
+        } else {
+            count = paramArray.map(p => p.length).reduce((p, c) => p * c);
+        }
+
+        return { isVaild: true, msg: `${count} requests` };
+    }
+
     public render() {
 
-        const { activeTabKey, headers, body, test, headersEditMode, favHeaders } = this.props;
+        const { activeTabKey, headers, body, parameters, parameterType, test, headersEditMode, favHeaders } = this.props;
+        const verifyParameterResult = this.verifyParameters();
 
         return (
             <Tabs
@@ -97,6 +127,22 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                         showFav={true}
                         favHeaders={favHeaders}
                     />
+                </TabPane>
+                <TabPane tab={(
+                    <Badge style={normalBadgeStyle} dot={!!parameters && parameters.length > 0} count="" >
+                        Parameters
+                    </Badge>
+                )} key="parameters">
+                    <span>
+                        <RadioGroup onChange={v => this.props.changeRecord({ 'parameterType': v })} value={parameterType}>
+                            <Radio value={ParameterType.All}>{ParameterType[ParameterType.All]}</Radio>
+                            <Radio value={ParameterType.Zip}>{ParameterType[ParameterType.Zip]}</Radio>
+                        </RadioGroup>
+                        <span>
+                            {verifyParameterResult.msg}
+                        </span>
+                    </span>
+                    <Editor type="json" fixHeight={true} height={270} value={parameters} onChange={v => this.props.changeRecord({ 'parameters': v })} />
                 </TabPane>
                 <TabPane tab={(
                     <Badge style={normalBadgeStyle} dot={!!body && body.length > 0} count="" >
@@ -125,13 +171,13 @@ const mapStateToProps = (state: State): RequestOptionPanelStateProps => {
         .flatten<DtoRecord>()
         .map(r => r.headers)
         .flatten<DtoHeader>()
-        .filter(h => h && h.isFav)
+        .filter(h => h && !!h.isFav)
         .concat(_.chain(state.displayRecordsState.recordStates)
             .values<RecordState>()
             .map(r => r.record)
             .map(r => r.headers)
             .flatten<DtoHeader>()
-            .filter(h => h && h.isFav)
+            .filter(h => h && !!h.isFav)
             .value())
         .sortedUniqBy(h => `${h.key}::${h.value}`)
         .value();
@@ -142,6 +188,8 @@ const mapStateToProps = (state: State): RequestOptionPanelStateProps => {
         body: record.body,
         test: record.test,
         bodyType: record.bodyType,
+        parameters: record.parameters,
+        parameterType: record.parameterType,
         headersEditMode: getHeadersEditModeSelector()(state),
         favHeaders
     };

@@ -93,26 +93,34 @@ class RequestTabExtra extends React.Component<RequestTabExtraProps, RequestTabEx
         let { activeTabKey, headersEditMode } = this.props;
         activeTabKey = activeTabKey || defaultReqTabKey;
 
-        return (
-            activeTabKey === reqResUIDefaultValue.activeReqTab ? (
-                <Button className="tab-extra-button" onClick={this.onHeaderModeChanged}>
-                    {KeyValueEditType.getReverseMode(headersEditMode)}
-                </Button>
-            ) : (
-                    activeTabKey === 'body' ? (
-                        <Dropdown overlay={this.getBodyTypeMenu()} trigger={['click']} style={{ width: 200 }}>
-                            <a className="ant-dropdown-link" href="#">
-                                {this.currentBodyType()} <Icon type="down" />
-                            </a>
-                        </Dropdown>
-                    ) : (
-                            <Dropdown overlay={this.snippetsMenu} trigger={['click']}>
-                                <a className="ant-dropdown-link" href="#">
-                                    Snippets <Icon type="down" />
-                                </a>
-                            </Dropdown>
-                        ))
-        );
+        switch (activeTabKey) {
+            case 'body': {
+                return (
+                    <Dropdown overlay={this.getBodyTypeMenu()} trigger={['click']} style={{ width: 200 }}>
+                        <a className="ant-dropdown-link" href="#">
+                            {this.currentBodyType()} <Icon type="down" />
+                        </a>
+                    </Dropdown>
+                );
+            }
+            case 'tests': {
+                return (
+                    <Dropdown overlay={this.snippetsMenu} trigger={['click']}>
+                        <a className="ant-dropdown-link" href="#">
+                            Snippets <Icon type="down" />
+                        </a>
+                    </Dropdown>
+                );
+            }
+            case reqResUIDefaultValue.activeReqTab: {
+                return (
+                    <Button className="tab-extra-button" onClick={this.onHeaderModeChanged}>
+                        {KeyValueEditType.getReverseMode(headersEditMode)}
+                    </Button>
+                );
+            }
+            default: return null;
+        }
     }
 }
 

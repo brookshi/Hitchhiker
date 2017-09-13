@@ -4,6 +4,7 @@ import { Header } from './header';
 import { RecordCategory } from '../common/record_category';
 import { DataMode } from '../common/data_mode';
 import { BodyType } from '../common/body_type';
+import { ParameterType } from '../common/parameter_type';
 import { RecordDoc } from './record_doc';
 import { RecordHistory } from './record_history';
 
@@ -52,6 +53,12 @@ export class Record {
 
     @Column('varchar', { nullable: true, length: 50 })
     bodyType: BodyType;
+
+    @Column('text', { default: '' })
+    parameters: string;
+
+    @Column('int', { default: 0 })
+    parameterType: ParameterType;
 
     @Column({ default: 1, type: 'int' })
     dataMode: DataMode;
