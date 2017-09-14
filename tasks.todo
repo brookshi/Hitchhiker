@@ -92,6 +92,8 @@
     ☐ request parameterization, storage variable
     ☐ form data, text, binary body type
     ✔ should exclude cookie if local cookie is empty @done (9/12/2017, 10:44:54 PM)
+    ☐ handle undefined value of tests
+    ☐ send request with common header like 'accept' etc..
 0.1.4:
     ☐ fetch data per 30s
 0.2.0:

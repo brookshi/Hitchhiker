@@ -19,6 +19,7 @@ import { RecordState } from '../../../state/collection';
 import { State } from '../../../state/index';
 import * as _ from 'lodash';
 import { ParameterType } from '../../../common/parameter_type';
+import { StringUtil } from '../../../utils/string_util';
 
 const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
@@ -108,7 +109,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
     public render() {
 
         const { activeTabKey, headers, body, parameters, parameterType, test, headersEditMode, favHeaders } = this.props;
-        const verifyParameterResult = this.verifyParameters();
+        const verifyParameterResult = StringUtil.verifyParameters(parameters || '', parameterType);
 
         return (
             <Tabs

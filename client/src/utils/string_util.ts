@@ -2,6 +2,8 @@ import * as uuid from 'uuid';
 import { KeyValuePair } from '../common/key_value_pair';
 import { Beautify } from './beautify';
 import * as shortId from 'shortid';
+import { ParameterType } from '../common/parameter_type';
+import * as _ from 'lodash';
 
 export class StringUtil {
     static generateUID(): string {
@@ -115,5 +117,27 @@ export class StringUtil {
         } catch (e) {
             return url || '';
         }
+    }
+
+    static verifyParameters(parameters: string, parameterType: ParameterType): { isValid: boolean, msg: string } {
+        if (parameters !== '' && (!_.isPlainObject(parameters) || !_.values<any>(parameters).every(p => _.isArray(p)))) {
+            return { isValid: false, msg: 'Parameters must be a plain object and children must be a array.' };
+        }
+        let count = 0;
+        const paramArray = _.values<Array<any>>(parameters);
+        if (parameterType === ParameterType.Zip) {
+            for (let i = 0; i < paramArray.length; i++) {
+                if (i === 0) {
+                    count = paramArray[i].length;
+                }
+                if (paramArray[i].length !== count) {
+                    return { isValid: false, msg: `The length of Zip parameters' children arrays must be identical.` };
+                }
+            }
+        } else {
+            count = paramArray.map(p => p.length).reduce((p, c) => p * c);
+        }
+
+        return { isValid: true, msg: `${count} requests` };
     }
 }

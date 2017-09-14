@@ -5,6 +5,7 @@ import { StringUtil } from '../utils/string_util';
 import { RecordCategory } from '../common/record_category';
 import { requestStateDefaultValue, RequestState } from './request';
 import { allProject, newRecordFlag, newRequestName } from '../common/constants';
+import { ParameterType } from '../common/parameter_type';
 
 export function getDefaultRecord(isInit: boolean = false): DtoRecord {
     return {
@@ -12,6 +13,7 @@ export function getDefaultRecord(isInit: boolean = false): DtoRecord {
         category: RecordCategory.record,
         name: newRequestName,
         collectionId: '',
+        parameterType: ParameterType.All,
         headers: []
     };
 }
@@ -31,6 +33,8 @@ export interface CollectionState {
     collectionsInfo: DtoCollectionWithRecord;
 
     openKeys: string[];
+
+    expandParamRequest: string;
 
     selectedProject: string;
 
@@ -67,6 +71,7 @@ export interface ResponseState {
 export const collectionDefaultValue: CollectionState = {
     fetchCollectionState: requestStateDefaultValue,
     openKeys: [],
+    expandParamRequest: '',
     selectedProject: allProject,
     collectionsInfo: {
         collections: {},
