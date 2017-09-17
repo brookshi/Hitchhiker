@@ -1,6 +1,6 @@
 export enum ParameterType {
 
-    All = 0,
+    ManyToMany = 0,
 
-    Zip = 1
+    OneToOne = 1
 }

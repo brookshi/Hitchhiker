@@ -38,6 +38,8 @@ export const CloseOthersType = 'close others';
 
 export const CloseUnmodifiedType = 'close unmodified';
 
+export const ChangeCurrentParamType = 'change current parameter';
+
 export function* sendRequest() {
     yield takeEvery(SendRequestType, function* (action: any) {
         const value = action.value;

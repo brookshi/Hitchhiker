@@ -119,25 +119,67 @@ export class StringUtil {
         }
     }
 
-    static verifyParameters(parameters: string, parameterType: ParameterType): { isValid: boolean, msg: string } {
-        if (parameters !== '' && (!_.isPlainObject(parameters) || !_.values<any>(parameters).every(p => _.isArray(p)))) {
-            return { isValid: false, msg: 'Parameters must be a plain object and children must be a array.' };
-        }
+    static verifyParameters(parameters: string, parameterType: ParameterType): { isValid: boolean, count: number, msg: string } {
+        let paramObj;
         let count = 0;
-        const paramArray = _.values<Array<any>>(parameters);
-        if (parameterType === ParameterType.Zip) {
+        try {
+            paramObj = JSON.parse(parameters);
+        } catch (e) {
+            return { isValid: false, count, msg: e.toString() };
+        }
+        if (parameters !== '' && (!_.isPlainObject(paramObj) || !_.values<any>(paramObj).every(p => _.isArray(p)))) {
+            return { isValid: false, count, msg: 'Parameters must be a plain object and children must be a array.' };
+        }
+        const paramArray = _.values<Array<any>>(paramObj);
+        if (parameterType === ParameterType.OneToOne) {
             for (let i = 0; i < paramArray.length; i++) {
                 if (i === 0) {
                     count = paramArray[i].length;
                 }
                 if (paramArray[i].length !== count) {
-                    return { isValid: false, msg: `The length of Zip parameters' children arrays must be identical.` };
+                    return { isValid: false, count, msg: `The length of OneToOne parameters' children arrays must be identical.` };
                 }
             }
         } else {
-            count = paramArray.map(p => p.length).reduce((p, c) => p * c);
+            count = paramArray.length === 0 ? 0 : paramArray.map(p => p.length).reduce((p, c) => p * c);
         }
 
-        return { isValid: true, msg: `${count} requests` };
+        return { isValid: true, count, msg: `${count} requests: ` };
+    }
+
+    static parseParameters(paramObj: any, parameterType: ParameterType): Array<any> {
+        const paramArr = new Array<any>();
+        if (parameterType === ParameterType.OneToOne) {
+            Object.keys(paramObj).forEach((key, index) => {
+                for (let i = 0; i < paramObj[key].length; i++) {
+                    paramArr[i] = paramArr[i] || {};
+                    paramArr[i][key] = paramObj[key][i];
+                }
+            });
+        } else {
+            Object.keys(paramObj).forEach((key, index) => {
+                let temp = [...paramArr];
+                paramArr.splice(0, paramArr.length);
+                for (let i = 0; i < paramObj[key].length; i++) {
+                    if (temp.length === 0) {
+                        paramArr[i] = paramArr[i] || {};
+                        paramArr[i][key] = paramObj[key][i];
+                    } else {
+                        temp.forEach(t => {
+                            paramArr.push({ ...t, [key]: paramObj[key][i] });
+                        });
+                    }
+                }
+            });
+        }
+        return paramArr;
+    }
+
+    static toString(obj: any): string {
+        if (_.isPlainObject(obj) || _.isArray(obj)) {
+            return JSON.stringify(obj);
+        } else {
+            return obj.toString();
+        }
     }
 }

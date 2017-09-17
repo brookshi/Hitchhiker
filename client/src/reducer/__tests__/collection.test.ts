@@ -5,7 +5,8 @@ import { FetchCollectionSuccessType, FetchCollectionPendingType, FetchCollection
 import { RequestStatus } from '../../common/request_status';
 import { SaveAsRecordType, SaveRecordType, MoveRecordType, DeleteRecordType } from '../../action/record';
 import { RecordCategory } from '../../common/record_category';
-import { defaultUser } from "./data";
+import { defaultUser } from './data';
+import { ParameterType } from '../../common/parameter_type';
 
 test('fetch collection success', () => {
 
@@ -53,9 +54,9 @@ test('save as record', () => {
 
 test('save record', () => {
 
-    let oldState = { ...collectionDefaultValue, collectionsInfo: { ...collectionDefaultValue.collectionsInfo, records: { ['cid_1']: { ['rid_1']: { id: 'rid_1', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record, history: [{ id: 0, record: { id: 'rid_1', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record }, createDate: new Date(), user: defaultUser }] } } } } };
+    let oldState = { ...collectionDefaultValue, collectionsInfo: { ...collectionDefaultValue.collectionsInfo, records: { ['cid_1']: { ['rid_1']: { id: 'rid_1', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record, parameterType: ParameterType.ManyToMany, history: [{ id: 0, record: { id: 'rid_1', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }, createDate: new Date(), user: defaultUser }] } } } } };
 
-    let state = collectionState(oldState, actionCreator(SaveRecordType, { record: { id: 'rid_1', collectionId: 'cid_1', name: 'r2', history: [{ id: 0, record: { id: 'rid_1', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record }, createDate: new Date(), user: defaultUser }] } }));
+    let state = collectionState(oldState, actionCreator(SaveRecordType, { record: { id: 'rid_1', collectionId: 'cid_1', name: 'r2', history: [{ id: 0, record: { id: 'rid_1', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }, createDate: new Date(), user: defaultUser }] } }));
 
     const history = state.collectionsInfo.records['cid_1']['rid_1'].history;
     expect(state).toEqual({ ...collectionDefaultValue, collectionsInfo: { ...collectionDefaultValue.collectionsInfo, records: { ['cid_1']: { ['rid_1']: { id: 'rid_1', collectionId: 'cid_1', name: 'r2', history: [{ id: 0, record: { id: 'rid_1', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record }, ...(history ? history[0] : { createDate: new Date(), id: 1 }), user: defaultUser }, { record: { id: 'rid_1', collectionId: 'cid_1', name: 'r2', history: [] }, ...(history ? history[1] : { createDate: new Date(), id: 1 }) }] } } } } });
@@ -63,9 +64,9 @@ test('save record', () => {
 
 test('move record', () => {
 
-    let oldState = { ...collectionDefaultValue, collectionsInfo: { ...collectionDefaultValue.collectionsInfo, records: { ['cid_1']: { ['rid_1']: { id: 'rid_1', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record, history: [{ id: 0, record: { id: 'rid_1', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record }, createDate: new Date(), user: defaultUser }] } } } } };
+    let oldState = { ...collectionDefaultValue, collectionsInfo: { ...collectionDefaultValue.collectionsInfo, records: { ['cid_1']: { ['rid_1']: { id: 'rid_1', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record, parameterType: ParameterType.ManyToMany, history: [{ id: 0, record: { id: 'rid_1', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }, createDate: new Date(), user: defaultUser }] } } } } };
 
-    let state = collectionState(oldState, actionCreator(MoveRecordType, { record: { id: 'rid_1', collectionId: 'cid_2', name: 'r1', history: [{ id: 0, record: { id: 'rid_1', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record }, createDate: new Date(), user: defaultUser }] } }));
+    let state = collectionState(oldState, actionCreator(MoveRecordType, { record: { id: 'rid_1', collectionId: 'cid_2', name: 'r1', history: [{ id: 0, record: { id: 'rid_1', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }, createDate: new Date(), user: defaultUser }] } }));
 
     const history = state.collectionsInfo.records['cid_2']['rid_1'].history;
     expect(state).toEqual({ ...collectionDefaultValue, collectionsInfo: { ...collectionDefaultValue.collectionsInfo, records: { ['cid_1']: {}, ['cid_2']: { ['rid_1']: { id: 'rid_1', collectionId: 'cid_2', name: 'r1', history: [{ id: 0, record: { id: 'rid_1', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record }, ...(history ? history[0] : { createDate: new Date(), id: 1 }), user: defaultUser }, { record: { id: 'rid_1', collectionId: 'cid_2', name: 'r1', history: [] }, ...(history ? history[1] : { createDate: new Date(), id: 1 }) }] } } } } });
@@ -84,9 +85,9 @@ test('delete record', () => {
         ...collectionDefaultValue, collectionsInfo: {
             ...collectionDefaultValue.collectionsInfo, records: {
                 ['cid_1']: {
-                    ['rid_1']: { id: 'rid_1', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record },
-                    ['rid_2']: { id: 'rid_2', collectionId: 'cid_1', name: 'r2', category: RecordCategory.folder },
-                    ['rid_3']: { id: 'rid_3', pid: 'rid_2', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record }
+                    ['rid_1']: { id: 'rid_1', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record, parameterType: ParameterType.ManyToMany },
+                    ['rid_2']: { id: 'rid_2', collectionId: 'cid_1', name: 'r2', category: RecordCategory.folder, parameterType: ParameterType.ManyToMany },
+                    ['rid_3']: { id: 'rid_3', pid: 'rid_2', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }
                 }
             }
         }
@@ -126,11 +127,11 @@ test('delete collection', () => {
         ...collectionDefaultValue, collectionsInfo: {
             ...collectionDefaultValue.collectionsInfo, collections: { ['cid_1']: { id: 'cid_1', name: 'c1', projectId: 'pid', description: '' }, ['cid_2']: { id: 'cid_2', name: 'c2', projectId: 'pid', description: '' } }, records: {
                 ['cid_1']: {
-                    ['rid_2']: { id: 'rid_2', collectionId: 'cid_1', name: 'r2', category: RecordCategory.folder },
-                    ['rid_3']: { id: 'rid_3', pid: 'rid_2', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record }
+                    ['rid_2']: { id: 'rid_2', collectionId: 'cid_1', name: 'r2', category: RecordCategory.folder, parameterType: ParameterType.ManyToMany },
+                    ['rid_3']: { id: 'rid_3', pid: 'rid_2', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }
                 },
                 ['cid_2']: {
-                    ['rid_1']: { id: 'rid_1', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record }
+                    ['rid_1']: { id: 'rid_1', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }
                 }
             }
         }

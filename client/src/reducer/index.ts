@@ -90,7 +90,7 @@ export function multipleStateReducer(state: State, action: any): State {
         }
         case UpdateDisplayRecordPropertyType: {
             const { activeKey, recordStates } = state.displayRecordsState;
-            return updateStateRecord(state, { ...recordStates[activeKey].record, ...action.value });
+            return updateStateRecord(state, { ...recordStates[activeKey].record, ...action.value }, );
         }
         case UpdateDisplayRecordType: {
             return updateStateRecord(state, action.value);

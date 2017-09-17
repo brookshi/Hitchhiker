@@ -54,7 +54,7 @@ export class Record {
     @Column('varchar', { nullable: true, length: 50 })
     bodyType: BodyType;
 
-    @Column('text', { default: '' })
+    @Column('text', { nullable: true })
     parameters: string;
 
     @Column('int', { default: 0 })

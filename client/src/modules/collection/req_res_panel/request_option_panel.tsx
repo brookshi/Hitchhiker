@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { Tabs, Badge, Radio } from 'antd';
+import { Tabs, Badge, Radio, Select } from 'antd';
 import RequestTabExtra from './request_tab_extra';
 import { normalBadgeStyle } from '../../../style/theme';
 import { DtoHeader } from '../../../../../api/interfaces/dto_header';
@@ -10,10 +10,10 @@ import { KeyValueEditMode } from '../../../common/custom_type';
 import { nameWithTag } from '../../../components/name_with_tag/index';
 import Editor from '../../../components/editor';
 import KeyValueList from '../../../components/key_value';
-import { UpdateDisplayRecordPropertyType } from '../../../action/record';
+import { UpdateDisplayRecordPropertyType, ChangeCurrentParamType } from '../../../action/record';
 import { bodyTypes } from '../../../common/body_type';
-import { defaultBodyType } from '../../../common/constants';
-import { getActiveRecordSelector, getReqActiveTabKeySelector, getHeadersEditModeSelector } from './selector';
+import { defaultBodyType, allParameter } from '../../../common/constants';
+import { getActiveRecordSelector, getReqActiveTabKeySelector, getHeadersEditModeSelector, getActiveRecordStateSelector } from './selector';
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 import { RecordState } from '../../../state/collection';
 import { State } from '../../../state/index';
@@ -23,6 +23,7 @@ import { StringUtil } from '../../../utils/string_util';
 
 const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
+const Option = Select.Option;
 
 interface RequestOptionPanelStateProps {
 
@@ -45,6 +46,8 @@ interface RequestOptionPanelStateProps {
     headersEditMode: KeyValueEditMode;
 
     favHeaders: DtoHeader[];
+
+    currentParam: string;
 }
 
 interface RequestOptionPanelDispatchProps {
@@ -52,6 +55,8 @@ interface RequestOptionPanelDispatchProps {
     selectReqTab(recordId: string, tab: string);
 
     changeRecord(value: { [key: string]: any });
+
+    updateCurrentParam(rid: string, param: string);
 }
 
 type RequestOptionPanelProps = RequestOptionPanelStateProps & RequestOptionPanelDispatchProps;
@@ -83,33 +88,30 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
 
     private currentBodyType = () => this.props.bodyType || defaultBodyType;
 
-    private verifyParameters = () => {
-        const { parameters, parameterType } = this.props;
-        if (parameters !== '' && (!_.isPlainObject(parameters) || !_.values<any>(parameters).every(p => _.isArray(p)))) {
-            return { isVaild: false, msg: 'Parameters must be a plain object and children must be a array.' };
-        }
-        let count = 0;
-        const paramArray = _.values<Array<any>>(parameters);
-        if (parameterType === ParameterType.Zip) {
-            for (let i = 0; i < paramArray.length; i++) {
-                if (i === 0) {
-                    count = paramArray[i].length;
-                }
-                if (paramArray[i].length !== count) {
-                    return { isVaild: false, msg: `The length of Zip parameters' children arrays must be identical.` };
-                }
-            }
-        } else {
-            count = paramArray.map(p => p.length).reduce((p, c) => p * c);
-        }
+    private onCurrentParamChanged = (value) => {
+        this.props.updateCurrentParam(this.props.activeKey, value);
+    }
 
-        return { isVaild: true, msg: `${count} requests` };
+    private currentParam = (arr: any[]) => {
+        const currParam = arr[Number.parseInt(this.props.currentParam)] ? this.props.currentParam : allParameter;
+        return (
+            <Select className="req-res-tabs-param-title-select" value={currParam} onChange={this.onCurrentParamChanged}>
+                <Option key={allParameter} value={allParameter}>allParameter</Option>
+                {
+                    arr.map((e, i) => (
+                        <Option key={i.toString()} value={i.toString()}>{StringUtil.toString(e)}</Option>
+                    ))
+                }
+            </Select>
+        );
     }
 
     public render() {
 
         const { activeTabKey, headers, body, parameters, parameterType, test, headersEditMode, favHeaders } = this.props;
-        const verifyParameterResult = StringUtil.verifyParameters(parameters || '', parameterType);
+        const { isValid, msg } = StringUtil.verifyParameters(parameters || '', parameterType);
+        let paramArr = isValid ? StringUtil.parseParameters(JSON.parse(parameters || ''), parameterType) : [];
+        paramArr = _.uniqWith(paramArr, _.isEqual);
 
         return (
             <Tabs
@@ -134,16 +136,17 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                         Parameters
                     </Badge>
                 )} key="parameters">
-                    <span>
-                        <RadioGroup onChange={v => this.props.changeRecord({ 'parameterType': v })} value={parameterType}>
-                            <Radio value={ParameterType.All}>{ParameterType[ParameterType.All]}</Radio>
-                            <Radio value={ParameterType.Zip}>{ParameterType[ParameterType.Zip]}</Radio>
+                    <span className="req-res-tabs-param-title">
+                        <RadioGroup onChange={v => this.props.changeRecord({ 'parameterType': (v.target as any).value })} value={parameterType}>
+                            <Radio value={ParameterType.ManyToMany}>{ParameterType[ParameterType.ManyToMany]}</Radio>
+                            <Radio value={ParameterType.OneToOne}>{ParameterType[ParameterType.OneToOne]}</Radio>
                         </RadioGroup>
                         <span>
-                            {verifyParameterResult.msg}
+                            {isValid ? `${paramArr.length} requests: ` : msg}
+                            {isValid ? this.currentParam(paramArr) : ''}
                         </span>
                     </span>
-                    <Editor type="json" fixHeight={true} height={270} value={parameters} onChange={v => this.props.changeRecord({ 'parameters': v })} />
+                    <Editor type="json" fixHeight={true} height={258} value={parameters} onChange={v => this.props.changeRecord({ 'parameters': v })} />
                 </TabPane>
                 <TabPane tab={(
                     <Badge style={normalBadgeStyle} dot={!!body && body.length > 0} count="" >
@@ -192,6 +195,7 @@ const mapStateToProps = (state: State): RequestOptionPanelStateProps => {
         parameters: record.parameters,
         parameterType: record.parameterType,
         headersEditMode: getHeadersEditModeSelector()(state),
+        currentParam: getActiveRecordStateSelector()(state).parameter,
         favHeaders
     };
 };
@@ -200,6 +204,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): RequestOptionPanelDispatch
     return {
         selectReqTab: (recordId, tab) => dispatch(actionCreator(SelectReqTabType, { recordId, tab })),
         changeRecord: (value) => dispatch(actionCreator(UpdateDisplayRecordPropertyType, value)),
+        updateCurrentParam: (id, param) => dispatch(actionCreator(ChangeCurrentParamType, { id, param }))
     };
 };
 

@@ -4,7 +4,7 @@ import { RunResult } from '../../../api/interfaces/dto_run_result';
 import { StringUtil } from '../utils/string_util';
 import { RecordCategory } from '../common/record_category';
 import { requestStateDefaultValue, RequestState } from './request';
-import { allProject, newRecordFlag, newRequestName } from '../common/constants';
+import { allProject, newRecordFlag, newRequestName, allParameter } from '../common/constants';
 import { ParameterType } from '../common/parameter_type';
 
 export function getDefaultRecord(isInit: boolean = false): DtoRecord {
@@ -13,7 +13,7 @@ export function getDefaultRecord(isInit: boolean = false): DtoRecord {
         category: RecordCategory.record,
         name: newRequestName,
         collectionId: '',
-        parameterType: ParameterType.All,
+        parameterType: ParameterType.ManyToMany,
         headers: []
     };
 }
@@ -24,7 +24,8 @@ export const getNewRecordState: () => RecordState = () => {
         name: newRecord.name || newRequestName,
         record: newRecord,
         isChanged: false,
-        isRequesting: false
+        isRequesting: false,
+        parameter: allParameter
     };
 };
 
@@ -33,8 +34,6 @@ export interface CollectionState {
     collectionsInfo: DtoCollectionWithRecord;
 
     openKeys: string[];
-
-    expandParamRequest: string;
 
     selectedProject: string;
 
@@ -61,6 +60,8 @@ export interface RecordState {
     isChanged: boolean;
 
     isRequesting: boolean;
+
+    parameter: string;
 }
 
 export interface ResponseState {
@@ -71,7 +72,6 @@ export interface ResponseState {
 export const collectionDefaultValue: CollectionState = {
     fetchCollectionState: requestStateDefaultValue,
     openKeys: [],
-    expandParamRequest: '',
     selectedProject: allProject,
     collectionsInfo: {
         collections: {},
@@ -88,7 +88,8 @@ export const displayRecordsDefaultValue: DisplayRecordsState = {
             name: newRequestName,
             record: getDefaultRecord(true),
             isChanged: false,
-            isRequesting: false
+            isRequesting: false,
+            parameter: allParameter
         }
     },
     responseState: {}

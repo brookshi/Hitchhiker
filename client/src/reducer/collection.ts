@@ -1,5 +1,5 @@
 import { FetchCollectionSuccessType, SaveCollectionType, DeleteCollectionType, SelectedProjectChangedType, CollectionOpenKeysType, FetchCollectionFailedType, FetchCollectionPendingType } from '../action/collection';
-import { ActiveTabType, ActiveRecordType, DeleteRecordType, MoveRecordType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, SaveAsRecordType } from '../action/record';
+import { ActiveTabType, ActiveRecordType, DeleteRecordType, MoveRecordType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, SaveAsRecordType, ChangeCurrentParamType } from '../action/record';
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
 import { RecordCategory } from '../common/record_category';
@@ -182,6 +182,9 @@ export function recordStates(states: _.Dictionary<RecordState> = displayRecordsD
                     isRequesting: false
                 }
             } : states;
+        }
+        case ChangeCurrentParamType: {
+            return { ...states, [action.value.id]: { ...states[action.value.id], parameter: action.value.param } };
         }
         default:
             return states;

@@ -51,6 +51,8 @@ export const maxLeftPanelWidth = 600;
 
 export const toolBarWidth = 50;
 
+export const allParameter = 'All';
+
 export const headerKeys = [
     'Accept', 'Accept-Charset', 'Accept-Encoding', 'Accept-Language', 'Accept-Ranges', 'Authorization', 'Cache-Control', 'Connection', 'Cookie', 'Content-Length', 'Content-Type', 'Date', 'Expect', 'From', 'Host', 'If-Match', 'If-Modified-Since', 'If-None-Match', 'If-Range', 'If-Unmodified-Since', 'Max-Forwards', 'Pragma', 'Proxy-Authorization', 'Range', 'Referer', 'TE', 'Upgrade', 'User-Agent', 'Via', 'Warning', 'X-Requested-With', 'X-Request-ID'
 ];

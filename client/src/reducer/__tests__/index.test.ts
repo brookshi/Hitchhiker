@@ -9,14 +9,16 @@ import { HttpMethod } from '../../common/http_method';
 import { FetchLocalDataSuccessType } from '../../action/local_data';
 import { KeyValueEditType } from '../../common/custom_type';
 import { syncDefaultValue } from '../../state/ui';
+import { ParameterType } from '../../common/parameter_type';
+import { allParameter } from '../../common/constants';
 
-const defaultRecordState = { name: '', isRequesting: false, isChanged: false, record: {} };
+const defaultRecordState = { name: '', isRequesting: false, isChanged: false, record: {}, parameter: allParameter };
 const c1 = { id: 'cid_123', name: 'c1', projectId: 'pid_123', description: '' };
 const c2 = { id: 'cid_456', name: 'c2', projectId: 'pid_123', description: '' };
 const c3 = { id: 'cid_789', name: 'c3', projectId: 'pid_789', description: '' };
-const r1 = { id: 'rid_123', collectionId: 'cid_123', category: RecordCategory.record, name: 'r1', headers: [] };
-const r2 = { id: 'rid_456', collectionId: 'cid_456', category: RecordCategory.record, name: 'r2' };
-const r3 = { id: 'rid_789', collectionId: 'cid_789', category: RecordCategory.record, name: 'r3' };
+const r1 = { id: 'rid_123', collectionId: 'cid_123', category: RecordCategory.record, parameterType: ParameterType.ManyToMany, name: 'r1', headers: [] };
+const r2 = { id: 'rid_456', collectionId: 'cid_456', category: RecordCategory.record, parameterType: ParameterType.ManyToMany, name: 'r2' };
+const r3 = { id: 'rid_789', collectionId: 'cid_789', category: RecordCategory.record, parameterType: ParameterType.ManyToMany, name: 'r3' };
 
 test('quit/disband project', () => {
 

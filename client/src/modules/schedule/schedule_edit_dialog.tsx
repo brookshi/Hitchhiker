@@ -12,6 +12,7 @@ import SortableListComponent from '../../components/sortable_list';
 import { RecordCategory } from '../../common/record_category';
 import { DtoCollection } from '../../../../api/interfaces/dto_collection';
 import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
+import { ParameterType } from '../../common/parameter_type';
 
 const FormItem = Form.Item;
 
@@ -99,7 +100,8 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
             id: r.id,
             category: r.category,
             name: `${r.pid ? allRecordDict[r.pid].name + '/' : ''}${r.name}`,
-            collectionId: r.collectionId
+            collectionId: r.collectionId,
+            parameterType: ParameterType.ManyToMany
         })).filter(r => r.category === RecordCategory.record), 'id');
 
         props.schedule.recordsOrder.split(';').forEach(flags => {

@@ -9,6 +9,7 @@ import { RecordCategory } from '../../../common/record_category';
 import { DtoCollection } from '../../../../../api/interfaces/dto_collection';
 import { newFolderName } from '../../../common/constants';
 import { getDefaultRecord } from '../../../state/collection';
+import { ParameterType } from '../../../common/parameter_type';
 
 interface CollectionItemProps {
 
@@ -37,7 +38,8 @@ const createDefaultFolder: (collectionId: string) => DtoRecord = (cid) => {
         id: StringUtil.generateUID(),
         name: newFolderName,
         category: RecordCategory.folder,
-        collectionId: cid
+        collectionId: cid,
+        parameterType: ParameterType.ManyToMany
     };
 };
 
