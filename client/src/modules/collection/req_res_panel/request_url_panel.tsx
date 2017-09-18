@@ -178,6 +178,18 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         return newContent;
     }
 
+    private applyReqParameter = (content: string | undefined, parameter: string) => {
+        if (!parameter || !content) {
+            return content;
+        }
+        let newContent = content;
+        const paramObj = JSON.parse(parameter);
+        _.keys(paramObj).forEach(k => {
+            newContent = newContent.replace(`{{${k}}}`, paramObj[k] || '');
+        });
+        return newContent;
+    }
+
     private onUrlChanged = (url: string) => {
         this.props.changeRecord({ ...this.props.record, url });
     }

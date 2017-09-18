@@ -62,11 +62,18 @@ export interface RecordState {
     isRequesting: boolean;
 
     parameter: string;
+
+    parameterStatus?: ParameterStatusState;
+}
+
+export interface ParameterStatusState {
+
+    [id: string]: boolean;
 }
 
 export interface ResponseState {
 
-    [id: string]: RunResult;
+    [id: string]: RunResult | ResponseState;
 }
 
 export const collectionDefaultValue: CollectionState = {
