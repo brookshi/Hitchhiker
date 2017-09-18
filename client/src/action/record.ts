@@ -18,6 +18,10 @@ export const SendRequestType = 'send request';
 
 export const SendRequestFulfilledType = 'send request fulfill';
 
+export const SendRequestForParamType = 'send request for param';
+
+export const SendRequestForParamFulfilledType = 'send request for param fulfill';
+
 export const CancelRequestType = 'cancel request';
 
 export const SaveRecordType = 'save record';
@@ -43,20 +47,45 @@ export const ChangeCurrentParamType = 'change current parameter';
 export function* sendRequest() {
     yield takeEvery(SendRequestType, function* (action: any) {
         const value = action.value;
+        const isParamReq = !value.record.id;
+        let runResult: any = {};
+        if (isParamReq) {
+            Object.keys(value).forEach(v => yield put(actionCreator(SendRequestForParamType, { param: k, content: value[k] })));
+        } else {
+            try {
+                const res = yield call(RequestManager.post, Urls.getUrl(`record/run`), value);
+                if (res.status === 403) {
+                    yield put(actionCreator(SessionInvalidType));
+                }
+                if (RequestManager.checkCanceledThenRemove(value.record.id)) {
+                    return;
+                }
+                runResult = yield res.json();
+            } catch (err) {
+                runResult.error = { message: err.message, stack: err.stack };
+            }
+        }
+        yield put(actionCreator(SendRequestFulfilledType, { id: value.record.id, cid: value.record.collectionId, runResult }));
+    });
+}
+
+export function* sendRequestForParam() {
+    yield takeEvery(SendRequestForParamType, function* (action: any) {
+        const value = action.value;
         let runResult: any = {};
         try {
-            const res = yield call(RequestManager.post, Urls.getUrl(`record/run`), value);
+            const res = yield call(RequestManager.post, Urls.getUrl(`record/run`), value.content);
             if (res.status === 403) {
                 yield put(actionCreator(SessionInvalidType));
             }
-            if (RequestManager.checkCanceledThenRemove(value.record.id)) {
+            if (RequestManager.checkCanceledThenRemove(value.content.record.id)) {
                 return;
             }
             runResult = yield res.json();
         } catch (err) {
             runResult.error = { message: err.message, stack: err.stack };
         }
-        yield put(actionCreator(SendRequestFulfilledType, { id: value.record.id, cid: value.record.collectionId, runResult }));
+        yield put(actionCreator(SendRequestForParamFulfilledType, { param: value.param, runResult }));
     });
 }
 

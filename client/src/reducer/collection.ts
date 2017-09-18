@@ -1,5 +1,5 @@
 import { FetchCollectionSuccessType, SaveCollectionType, DeleteCollectionType, SelectedProjectChangedType, CollectionOpenKeysType, FetchCollectionFailedType, FetchCollectionPendingType } from '../action/collection';
-import { ActiveTabType, ActiveRecordType, DeleteRecordType, MoveRecordType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, SaveAsRecordType, ChangeCurrentParamType } from '../action/record';
+import { ActiveTabType, ActiveRecordType, DeleteRecordType, MoveRecordType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, SaveAsRecordType, ChangeCurrentParamType, SendRequestForParamType, SendRequestForParamFulfilledType } from '../action/record';
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
 import { RecordCategory } from '../common/record_category';
@@ -152,6 +152,11 @@ export function recordStates(states: _.Dictionary<RecordState> = displayRecordsD
             const id = action.value.record.id;
             return { ...states, [id]: { ...states[id], isRequesting: true } };
         }
+        case SendRequestForParamType: {
+            const { param, content } = action.value;
+            const id = content.record.id;
+            return { ...states, [id]: { ...states[id], parameterStatus: { ...states[id].parameterStatus || {}, [param]: true } } };
+        }
         case SaveRecordType: {
             const { isNew, record, oldId } = action.value;
             const { id, name } = record;
@@ -247,6 +252,18 @@ export function recordWithResState(state: DisplayRecordsState = displayRecordsDe
                 responseState: {
                     ...state.responseState,
                     [id]: action.value.runResult
+                }
+            };
+        }
+        case SendRequestForParamFulfilledType: {
+            const { param, runResult } = action.value;
+            const id = runResult.id;
+            return {
+                ...state,
+                recordStates: { ...recordStates, [id]: { ...recordStates[id], parameterStatus: { ...recordStates[id].parameterStatus || {}, [param]: false } } },
+                responseState: {
+                    ...state.responseState,
+                    [id]: { ...state.responseState[id], [param]: runResult }
                 }
             };
         }

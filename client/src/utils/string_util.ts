@@ -4,6 +4,7 @@ import { Beautify } from './beautify';
 import * as shortId from 'shortid';
 import { ParameterType } from '../common/parameter_type';
 import * as _ from 'lodash';
+import { allParameter } from '../common/constants';
 
 export class StringUtil {
     static generateUID(): string {
@@ -147,7 +148,7 @@ export class StringUtil {
         return { isValid: true, count, msg: `${count} requests: ` };
     }
 
-    static parseParameters(paramObj: any, parameterType: ParameterType): Array<any> {
+    static getParameterArr(paramObj: any, parameterType: ParameterType): Array<any> {
         const paramArr = new Array<any>();
         if (parameterType === ParameterType.OneToOne) {
             Object.keys(paramObj).forEach((key, index) => {
@@ -173,6 +174,14 @@ export class StringUtil {
             });
         }
         return paramArr;
+    }
+
+    static parseParameters(parameters: string | undefined, parameterType: ParameterType, currentParamIndex: string): { currParam: string, paramArr: Array<any> } {
+        const { isValid } = StringUtil.verifyParameters(parameters || '', parameterType);
+        let paramArr = isValid ? StringUtil.getParameterArr(JSON.parse(parameters || ''), parameterType) : new Array<any>();
+        paramArr = _.uniqWith(paramArr, _.isEqual);
+        const currParam = paramArr[Number.parseInt(currentParamIndex)] || allParameter;
+        return { currParam, paramArr };
     }
 
     static toString(obj: any): string {

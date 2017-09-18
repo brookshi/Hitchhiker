@@ -13,6 +13,7 @@ import ResponseLoadingPanel from './response_loading_panel';
 import ResErrorPanel from '../../../components/res_error_panel';
 import { State } from '../../../state/index';
 import { getActiveRecordSelector, getActiveRecordStateSelector, getResHeightSelector, getResActiveTabKeySelector, getIsResPanelMaximumSelector } from './selector';
+import { ResponseState } from '../../../state/collection';
 
 const TabPane = Tabs.TabPane;
 
@@ -31,7 +32,7 @@ interface ResponsePanelStateProps {
 
     height?: number;
 
-    res: RunResult;
+    res: RunResult | ResponseState;
 
     activeTab: string;
 
@@ -97,6 +98,9 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
 
     private getExtraContent = () => {
         const { res, toggleResPanelMaximize, isResPanelMaximum, activeKey } = this.props;
+        if (!this.isRunResult(res)) {
+            return <div />;
+        }
         let { elapsed, status, statusMessage } = res;
         return (
             <div>
@@ -111,6 +115,9 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
 
     private get normalResponsePanel() {
         const { res, selectResTab, activeKey } = this.props;
+        if (!this.isRunResult(res)) {
+            return <div />;
+        }
         let { body, cookies, headers, tests } = res;
 
         cookies = cookies || [];
@@ -152,17 +159,27 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
         );
     }
 
+    private isRunResult(res: RunResult | ResponseState): res is RunResult {
+        return (res as RunResult).id !== undefined;
+    }
+
     public render() {
 
         const { isRequesting, res, url } = this.props;
 
-        return isRequesting ? (
-            <ResponseLoadingPanel />
-        ) : (
-                res ? (
-                    res.error ? <ResErrorPanel url={url} error={res.error} /> : this.normalResponsePanel
-                ) : ResponseEmptyPanel
-            );
+        if (isRequesting) {
+            return <ResponseLoadingPanel />;
+        }
+
+        if (!res) {
+            return ResponseEmptyPanel;
+        }
+
+        if (this.isRunResult(res)) {
+            return res.error ? <ResErrorPanel url={url} error={res.error} /> : this.normalResponsePanel;
+        }
+
+        return ResponseEmptyPanel;
     }
 }
 
@@ -170,11 +187,12 @@ const mapStateToProps = (state: State): ResponsePanelStateProps => {
     const record = getActiveRecordSelector()(state);
     const recordState = getActiveRecordStateSelector()(state);
     const activeKey = state.displayRecordsState.activeKey;
+    const { currParam, paramArr } = StringUtil.parseParameters(record.parameters, record.parameterType, recordState.parameter);
     return {
         activeKey,
         url: record.url,
         isRequesting: recordState.isRequesting,
-        res: state.displayRecordsState.responseState[activeKey],
+        res: paramArr.length > 0 ? state.displayRecordsState.responseState[activeKey] : state.displayRecordsState.responseState[activeKey][currParam],
         height: getResHeightSelector()(state),
         activeTab: getResActiveTabKeySelector()(state),
         isResPanelMaximum: getIsResPanelMaximumSelector()(state)

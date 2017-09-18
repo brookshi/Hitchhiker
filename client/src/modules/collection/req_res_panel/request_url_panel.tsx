@@ -7,11 +7,11 @@ import { actionCreator } from '../../../action/index';
 import { SaveRecordType, SaveAsRecordType, SendRequestType, UpdateDisplayRecordType } from '../../../action/record';
 import { State } from '../../../state/index';
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
-import { newRecordFlag } from '../../../common/constants';
+import { newRecordFlag, allParameter } from '../../../common/constants';
 import { StringUtil } from '../../../utils/string_util';
 import { TreeData } from 'antd/lib/tree-select/interface';
 import * as _ from 'lodash';
-import { KeyValuePair } from '../../../common/key_value_pair';
+import { DtoHeader } from '../../../../../api/interfaces/dto_header';
 
 const DButton = Dropdown.Button as any;
 const Option = Select.Option;
@@ -31,6 +31,8 @@ interface RequestUrlPanelStateProps {
     cookies: _.Dictionary<_.Dictionary<string>>;
 
     variables: any;
+
+    currentParam: string;
 }
 
 interface RequestUrlPanelDispatchProps {
@@ -41,7 +43,7 @@ interface RequestUrlPanelDispatchProps {
 
     save(record: DtoRecord, isNew: boolean, oldId?: string);
 
-    sendRequest(environment: string, record: DtoRecord);
+    sendRequest(environment: string, record: DtoRecord | _.Dictionary<DtoRecord>);
 }
 
 type RequestUrlPanelProps = RequestUrlPanelStateProps & RequestUrlPanelDispatchProps;
@@ -154,14 +156,37 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         _.remove(headers, h => (h.key || '').toLowerCase() === 'cookie');
 
         headers = Object.keys(allCookies).length > 0 ? [...headers, { key: 'Cookie', value: _.values(allCookies).join('; '), isActive: true }] : headers;
-        this.props.sendRequest(environment, { ...this.applyLocalVariablesToRecord(record), headers });
+        this.props.sendRequest(environment, this.applyAllVariables({ ...record, headers }));
+    }
+
+    private applyAllVariables: (record: DtoRecord) => DtoRecord | _.Dictionary<DtoRecord> = (record: DtoRecord) => {
+        const { parameters, parameterType } = record;
+        const { currParam, paramArr } = StringUtil.parseParameters(parameters, parameterType, this.props.currentParam);
+        if (paramArr.length === 0) {
+            return this.applyLocalVariablesToRecord(record);
+        }
+        const rst: _.Dictionary<DtoRecord> = {};
+        if (currParam === allParameter) {
+            paramArr.forEach(p => rst[p] = this.applyLocalVariablesToRecord(this.applyReqParameterToRecord(record, p)));
+        } else {
+            rst[currParam] = this.applyLocalVariablesToRecord(this.applyReqParameterToRecord(record, currParam));
+        }
+        return rst;
     }
 
     private applyLocalVariablesToRecord = (record: DtoRecord) => {
+        const headers = new Array<DtoHeader>();
+        for (let header of record.headers || []) {
+            headers.push({
+                ...header,
+                key: this.applyLocalVariables(header.key),
+                value: this.applyLocalVariables(header.value)
+            });
+        }
         return {
             ...record,
             url: this.applyLocalVariables(record.url),
-            headers: StringUtil.stringToKeyValues(StringUtil.headersToString(record.headers as KeyValuePair[] || [])),
+            headers,
             body: this.applyLocalVariables(record.body),
             test: this.applyLocalVariables(record.test)
         };
@@ -176,6 +201,24 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
             newContent = newContent.replace(`{{${k}}}`, this.props.variables[k] || '');
         });
         return newContent;
+    }
+
+    private applyReqParameterToRecord = (record: DtoRecord, parameter: string) => {
+        const headers = new Array<DtoHeader>();
+        for (let header of record.headers || []) {
+            headers.push({
+                ...header,
+                key: this.applyReqParameter(header.key, parameter),
+                value: this.applyReqParameter(header.value, parameter)
+            });
+        }
+        return {
+            ...record,
+            url: this.applyReqParameter(record.url, parameter),
+            headers,
+            body: this.applyReqParameter(record.body, parameter),
+            test: this.applyReqParameter(record.test, parameter)
+        };
     }
 
     private applyReqParameter = (content: string | undefined, parameter: string) => {
@@ -264,7 +307,8 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
             record: getActiveRecord(state),
             collectionTreeData: getTreeData(state),
             cookies: state.localDataState.cookies,
-            variables: state.localDataState.variables
+            variables: state.localDataState.variables,
+            currentParam: recordState ? recordState.parameter : allParameter
         };
     };
     return mapStateToProps;
