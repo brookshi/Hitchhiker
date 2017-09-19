@@ -6,7 +6,7 @@ import './style/index.less';
 import { RunResult } from '../../../../../api/interfaces/dto_run_result';
 import { StringUtil } from '../../../utils/string_util';
 import { nameWithTag } from '../../../components/name_with_tag';
-import { successColor, failColor, pass, fail } from '../../../common/constants';
+import { successColor, failColor, pass, fail, allParameter } from '../../../common/constants';
 import { actionCreator } from '../../../action/index';
 import { SelectResTabType, ToggleReqPanelVisibleType } from '../../../action/ui';
 import ResponseLoadingPanel from './response_loading_panel';
@@ -188,11 +188,13 @@ const mapStateToProps = (state: State): ResponsePanelStateProps => {
     const recordState = getActiveRecordStateSelector()(state);
     const activeKey = state.displayRecordsState.activeKey;
     const { currParam, paramArr } = StringUtil.parseParameters(record.parameters, record.parameterType, recordState.parameter);
+    const currParamStr = JSON.stringify(currParam);
+    const res = paramArr.length === 0 || currParam === allParameter ? state.displayRecordsState.responseState[activeKey] : state.displayRecordsState.responseState[activeKey][currParamStr];
     return {
         activeKey,
         url: record.url,
         isRequesting: recordState.isRequesting,
-        res: paramArr.length > 0 ? state.displayRecordsState.responseState[activeKey] : state.displayRecordsState.responseState[activeKey][currParam],
+        res,
         height: getResHeightSelector()(state),
         activeTab: getResActiveTabKeySelector()(state),
         isResPanelMaximum: getIsResPanelMaximumSelector()(state)

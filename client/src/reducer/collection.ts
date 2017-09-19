@@ -149,7 +149,10 @@ export function recordsOrder(state: string[] = displayRecordsDefaultValue.record
 export function recordStates(states: _.Dictionary<RecordState> = displayRecordsDefaultValue.recordStates, action: any): _.Dictionary<RecordState> {
     switch (action.type) {
         case SendRequestType: {
-            const id = action.value.record.id;
+            let id = action.value.record.id;
+            if (!action.value.record.id) {
+                id = _.values<any>(action.value.record)[0].id;
+            }
             return { ...states, [id]: { ...states[id], isRequesting: true } };
         }
         case SendRequestForParamType: {
@@ -246,13 +249,11 @@ export function recordWithResState(state: DisplayRecordsState = displayRecordsDe
         }
         case SendRequestFulfilledType: {
             const id = action.value.id;
+            responseState = action.value.isParamReq ? state.responseState : { ...state.responseState, [id]: action.value.runResult };
             return {
                 ...state,
-                recordStates: { ...recordStates, [id]: { ...recordStates[id], isRequesting: false } },
-                responseState: {
-                    ...state.responseState,
-                    [id]: action.value.runResult
-                }
+                recordStates: { ...recordStates, [id]: { ...recordStates[id], isRequesting: _.values(recordStates[id].parameterStatus).some(s => s) } },
+                responseState
             };
         }
         case SendRequestForParamFulfilledType: {
@@ -260,7 +261,13 @@ export function recordWithResState(state: DisplayRecordsState = displayRecordsDe
             const id = runResult.id;
             return {
                 ...state,
-                recordStates: { ...recordStates, [id]: { ...recordStates[id], parameterStatus: { ...recordStates[id].parameterStatus || {}, [param]: false } } },
+                recordStates: {
+                    ...recordStates, [id]: {
+                        ...recordStates[id],
+                        isRequesting: _.keys(recordStates[id].parameterStatus).filter(k => k !== param).some(k => (recordStates[id].parameterStatus || {})[k]),
+                        parameterStatus: { ...recordStates[id].parameterStatus || {}, [param]: false }
+                    }
+                },
                 responseState: {
                     ...state.responseState,
                     [id]: { ...state.responseState[id], [param]: runResult }

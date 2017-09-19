@@ -167,9 +167,9 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         }
         const rst: _.Dictionary<DtoRecord> = {};
         if (currParam === allParameter) {
-            paramArr.forEach(p => rst[p] = this.applyLocalVariablesToRecord(this.applyReqParameterToRecord(record, p)));
+            paramArr.forEach(p => rst[JSON.stringify(p)] = this.applyLocalVariablesToRecord(this.applyReqParameterToRecord(record, p)));
         } else {
-            rst[currParam] = this.applyLocalVariablesToRecord(this.applyReqParameterToRecord(record, currParam));
+            rst[JSON.stringify(currParam)] = this.applyLocalVariablesToRecord(this.applyReqParameterToRecord(record, currParam));
         }
         return rst;
     }
@@ -203,7 +203,7 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         return newContent;
     }
 
-    private applyReqParameterToRecord = (record: DtoRecord, parameter: string) => {
+    private applyReqParameterToRecord = (record: DtoRecord, parameter: any) => {
         const headers = new Array<DtoHeader>();
         for (let header of record.headers || []) {
             headers.push({
@@ -221,14 +221,13 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         };
     }
 
-    private applyReqParameter = (content: string | undefined, parameter: string) => {
+    private applyReqParameter = (content: string | undefined, parameter: any) => {
         if (!parameter || !content) {
             return content;
         }
         let newContent = content;
-        const paramObj = JSON.parse(parameter);
-        _.keys(paramObj).forEach(k => {
-            newContent = newContent.replace(`{{${k}}}`, paramObj[k] || '');
+        _.keys(parameter).forEach(k => {
+            newContent = newContent.replace(`{{${k}}}`, parameter[k] || '');
         });
         return newContent;
     }

@@ -121,6 +121,9 @@ export class StringUtil {
     }
 
     static verifyParameters(parameters: string, parameterType: ParameterType): { isValid: boolean, count: number, msg: string } {
+        if (parameters === '') {
+            return { isValid: false, count: 0, msg: '' };
+        }
         let paramObj;
         let count = 0;
         try {

@@ -106,11 +106,13 @@ export function multipleStateReducer(state: State, action: any): State {
             _.keys(displayRecordsState.recordStates).forEach(key => {
                 const recordState = displayRecordsState.recordStates[key];
                 const { record, isChanged } = recordState;
-                const onlineRecordDict = onlineRecords[record.collectionId];
-                if (onlineRecordDict && onlineRecordDict[record.id]) {
-                    recordState.name = onlineRecordDict[record.id].name;
-                    if (!isChanged) {
-                        recordState.record = onlineRecordDict[record.id];
+                if (record) {
+                    const onlineRecordDict = onlineRecords[record.collectionId];
+                    if (onlineRecordDict && onlineRecordDict[record.id]) {
+                        recordState.name = onlineRecordDict[record.id].name;
+                        if (!isChanged) {
+                            recordState.record = onlineRecordDict[record.id];
+                        }
                     }
                 }
             });

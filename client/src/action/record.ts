@@ -1,8 +1,9 @@
-import { takeEvery, call, put } from 'redux-saga/effects';
+import { takeEvery, call, put, all } from 'redux-saga/effects';
 import RequestManager from '../utils/request_manager';
 import { HttpMethod } from '../common/http_method';
 import { syncAction, actionCreator, SessionInvalidType } from './index';
 import { Urls } from '../utils/urls';
+import * as _ from 'lodash';
 
 export const AddTabType = 'add tab';
 
@@ -48,16 +49,20 @@ export function* sendRequest() {
     yield takeEvery(SendRequestType, function* (action: any) {
         const value = action.value;
         const isParamReq = !value.record.id;
+        let record = value.record;
+        if (!action.value.record.id) {
+            record = _.values<any>(value.record)[0];
+        }
         let runResult: any = {};
         if (isParamReq) {
-            Object.keys(value).forEach(v => yield put(actionCreator(SendRequestForParamType, { param: k, content: value[k] })));
+            yield all(Object.keys(value.record).map(k => put(actionCreator(SendRequestForParamType, { param: k, content: { environment: action.value.environment, record: value.record[k] } }))));
         } else {
             try {
                 const res = yield call(RequestManager.post, Urls.getUrl(`record/run`), value);
                 if (res.status === 403) {
                     yield put(actionCreator(SessionInvalidType));
                 }
-                if (RequestManager.checkCanceledThenRemove(value.record.id)) {
+                if (RequestManager.checkCanceledThenRemove(record.id)) {
                     return;
                 }
                 runResult = yield res.json();
@@ -65,7 +70,7 @@ export function* sendRequest() {
                 runResult.error = { message: err.message, stack: err.stack };
             }
         }
-        yield put(actionCreator(SendRequestFulfilledType, { id: value.record.id, cid: value.record.collectionId, runResult }));
+        yield put(actionCreator(SendRequestFulfilledType, { id: record.id, cid: record.collectionId, isParamReq, runResult }));
     });
 }
 
