@@ -73,7 +73,7 @@ export interface ParameterStatusState {
 
 export interface ResponseState {
 
-    [id: string]: RunResult | ResponseState;
+    [id: string]: { runResult: RunResult } | ResponseState;
 }
 
 export const collectionDefaultValue: CollectionState = {

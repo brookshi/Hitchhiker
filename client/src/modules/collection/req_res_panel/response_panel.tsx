@@ -14,15 +14,9 @@ import ResErrorPanel from '../../../components/res_error_panel';
 import { State } from '../../../state/index';
 import { getActiveRecordSelector, getActiveRecordStateSelector, getResHeightSelector, getResActiveTabKeySelector, getIsResPanelMaximumSelector } from './selector';
 import { ResponseState } from '../../../state/collection';
+import * as _ from "lodash";
 
 const TabPane = Tabs.TabPane;
-
-/*const contentExtra = (
-    <div>
-        <Icon type="copy" />
-        <Icon type="search" />
-    </div>
-);*/
 
 interface ResponsePanelStateProps {
 
@@ -39,6 +33,8 @@ interface ResponsePanelStateProps {
     isResPanelMaximum: boolean;
 
     isRequesting: boolean;
+
+    paramArr: any[];
 }
 
 interface ResponsePanelDispatchProps {
@@ -159,13 +155,45 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
         );
     }
 
+    private getAllParamPanel = (paramArr: Array<any>, res: ResponseState) => {
+        return (
+            <div>
+                {
+                    paramArr.map(p => {
+                        const currParam = JSON.stringify(p);
+                        const runResult = res[currParam] as any;
+                        if (!!runResult) {
+                            return '';
+                        }
+                        return <div> <span> {currParam} </span>  status: {runResult.status}  tests: {this.getTestsDesc(runResult.tests)} </div>;
+                    })
+                }
+            </div>
+        );
+    }
+
+    private getTestsDesc = (tests: any) => {
+        const totalNum = _.keys(tests).length;
+        if (totalNum === 0) {
+            return '';
+        }
+        const testPassNum = _.values(tests).filter(t => t).length;
+        if (testPassNum === totalNum) {
+            return `ALL ${pass}`;
+        } else if (testPassNum === 0) {
+            return `ALL ${fail}`;
+        } else {
+            return `${testPassNum} ${pass}, ${totalNum - testPassNum} ${fail}`;
+        }
+    }
+
     private isRunResult(res: RunResult | ResponseState): res is RunResult {
         return (res as RunResult).id !== undefined;
     }
 
     public render() {
 
-        const { isRequesting, res, url } = this.props;
+        const { isRequesting, res, url, paramArr } = this.props;
 
         if (isRequesting) {
             return <ResponseLoadingPanel />;
@@ -179,7 +207,7 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
             return res.error ? <ResErrorPanel url={url} error={res.error} /> : this.normalResponsePanel;
         }
 
-        return ResponseEmptyPanel;
+        return this.getAllParamPanel(paramArr, res);
     }
 }
 
@@ -189,7 +217,8 @@ const mapStateToProps = (state: State): ResponsePanelStateProps => {
     const activeKey = state.displayRecordsState.activeKey;
     const { currParam, paramArr } = StringUtil.parseParameters(record.parameters, record.parameterType, recordState.parameter);
     const currParamStr = JSON.stringify(currParam);
-    const res = paramArr.length === 0 || currParam === allParameter ? state.displayRecordsState.responseState[activeKey] : state.displayRecordsState.responseState[activeKey][currParamStr];
+    const resState = state.displayRecordsState.responseState[activeKey];
+    const res = paramArr.length === 0 ? resState['runResult'] : (currParam === allParameter ? resState : resState[currParamStr]);
     return {
         activeKey,
         url: record.url,
@@ -197,7 +226,8 @@ const mapStateToProps = (state: State): ResponsePanelStateProps => {
         res,
         height: getResHeightSelector()(state),
         activeTab: getResActiveTabKeySelector()(state),
-        isResPanelMaximum: getIsResPanelMaximumSelector()(state)
+        isResPanelMaximum: getIsResPanelMaximumSelector()(state),
+        paramArr
     };
 };
 
