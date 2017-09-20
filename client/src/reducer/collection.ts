@@ -1,5 +1,5 @@
 import { FetchCollectionSuccessType, SaveCollectionType, DeleteCollectionType, SelectedProjectChangedType, CollectionOpenKeysType, FetchCollectionFailedType, FetchCollectionPendingType } from '../action/collection';
-import { ActiveTabType, ActiveRecordType, DeleteRecordType, MoveRecordType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, SaveAsRecordType, ChangeCurrentParamType, SendRequestForParamType, SendRequestForParamFulfilledType } from '../action/record';
+import { ActiveTabType, ActiveRecordType, DeleteRecordType, MoveRecordType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, SaveAsRecordType, ChangeCurrentParamType, SendRequestForParamType, SendRequestForParamFulfilledType, UpdateDisplayRecordPropertyType } from '../action/record';
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
 import { RecordCategory } from '../common/record_category';
@@ -249,7 +249,7 @@ export function recordWithResState(state: DisplayRecordsState = displayRecordsDe
         }
         case SendRequestFulfilledType: {
             const id = action.value.id;
-            responseState = action.value.isParamReq ? state.responseState : { ...state.responseState, [id]: action.value.runResult };
+            responseState = action.value.isParamReq ? state.responseState : { ...state.responseState, [id]: { runResult: action.value.runResult } };
             return {
                 ...state,
                 recordStates: { ...recordStates, [id]: { ...recordStates[id], isRequesting: _.values(recordStates[id].parameterStatus).some(s => s) } },
@@ -270,7 +270,20 @@ export function recordWithResState(state: DisplayRecordsState = displayRecordsDe
                 },
                 responseState: {
                     ...state.responseState,
-                    [id]: { ...state.responseState[id], [param]: runResult }
+                    [id]: { ...state.responseState[id], runResult: undefined, [param]: runResult }
+                }
+            };
+        }
+        case UpdateDisplayRecordPropertyType: {
+            if (!action.value['parameters']) {
+                return state;
+            }
+            const resState = { ...state.responseState[state.activeKey] }
+            Reflect.deleteProperty(resState, 'runResult');
+            return {
+                ...state,
+                responseState: {
+                    ...state.responseState, [state.activeKey]: resState
                 }
             };
         }

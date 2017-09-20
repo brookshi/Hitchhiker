@@ -14,7 +14,7 @@ import ResErrorPanel from '../../../components/res_error_panel';
 import { State } from '../../../state/index';
 import { getActiveRecordSelector, getActiveRecordStateSelector, getResHeightSelector, getResActiveTabKeySelector, getIsResPanelMaximumSelector } from './selector';
 import { ResponseState } from '../../../state/collection';
-import * as _ from "lodash";
+import * as _ from 'lodash';
 
 const TabPane = Tabs.TabPane;
 
@@ -100,10 +100,7 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
         let { elapsed, status, statusMessage } = res;
         return (
             <div>
-                <span>Status:</span>
-                <span className="res-status">{status} {statusMessage}</span>
-                <span style={{ marginLeft: '16px' }}>Time:</span>
-                <span className="res-status">{elapsed}ms</span>
+                {this.getStatusDesc(status, statusMessage, elapsed)}
                 <span><Button className="res-toggle-size-btn" icon={isResPanelMaximum ? 'down' : 'up'} onClick={() => toggleResPanelMaximize(activeKey, !isResPanelMaximum)} /></span>
             </div>
         );
@@ -158,18 +155,27 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
     private getAllParamPanel = (paramArr: Array<any>, res: ResponseState) => {
         return (
             <div>
-                {
-                    paramArr.map(p => {
-                        const currParam = JSON.stringify(p);
-                        const runResult = res[currParam] as any;
-                        if (!!runResult) {
-                            return '';
-                        }
-                        return <div> <span> {currParam} </span>  status: {runResult.status}  tests: {this.getTestsDesc(runResult.tests)} </div>;
-                    })
-                }
+                <div className="res-non-header">Response</div>
+                <div className="res-panel-allparam">
+                    {
+                        paramArr.map(p => {
+                            const currParam = JSON.stringify(p);
+                            const runResult = res[currParam] as any;
+                            if (!runResult) {
+                                return '';
+                            }
+                            let { elapsed, status, statusMessage, tests } = runResult;
+                            return <div key={currParam} className="res-panel-allparam-line"><span className="res-panel-allparam-name"> {currParam} </span> - {this.getStatusDesc(status, statusMessage, elapsed)} <span style={{ marginLeft: 16 }}>{this.getTestsDesc(tests)}</span> </div>;
+                        })
+                    }
+                </div>
             </div>
         );
+    }
+
+    private get haveVaildParamResult() {
+        const { res, paramArr } = this.props;
+        return paramArr.some(p => !!res[JSON.stringify(p)]);
     }
 
     private getTestsDesc = (tests: any) => {
@@ -179,12 +185,23 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
         }
         const testPassNum = _.values(tests).filter(t => t).length;
         if (testPassNum === totalNum) {
-            return `ALL ${pass}`;
+            return <span>Tests: <span className="res-panel-pass">{`ALL ${pass}`}</span></span>;
         } else if (testPassNum === 0) {
-            return `ALL ${fail}`;
+            return <span>Tests: <span className="res-panel-fail">{`ALL ${fail}`}</span></span>;
         } else {
-            return `${testPassNum} ${pass}, ${totalNum - testPassNum} ${fail}`;
+            return <span>Tests: <span className="res-panel-pass">{`${testPassNum} ${pass}`}</span>, <span className="res-panel-fail">{`${totalNum - testPassNum} ${fail}`}</span></span>;
         }
+    }
+
+    private getStatusDesc = (status: number, statusMessage: string, elapsed: number) => {
+        return (
+            <span>
+                <span>Status: </span>
+                <span className="res-status">{status} {statusMessage}</span>
+                <span style={{ marginLeft: '16px' }}>Time: </span>
+                <span className="res-status">{elapsed}ms</span>
+            </span>
+        )
     }
 
     private isRunResult(res: RunResult | ResponseState): res is RunResult {
@@ -199,12 +216,16 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
             return <ResponseLoadingPanel />;
         }
 
-        if (!res) {
+        if (!res || paramArr.length === 0) {
             return ResponseEmptyPanel;
         }
 
         if (this.isRunResult(res)) {
             return res.error ? <ResErrorPanel url={url} error={res.error} /> : this.normalResponsePanel;
+        }
+
+        if (!this.haveVaildParamResult) {
+            return ResponseEmptyPanel;
         }
 
         return this.getAllParamPanel(paramArr, res);
@@ -218,7 +239,7 @@ const mapStateToProps = (state: State): ResponsePanelStateProps => {
     const { currParam, paramArr } = StringUtil.parseParameters(record.parameters, record.parameterType, recordState.parameter);
     const currParamStr = JSON.stringify(currParam);
     const resState = state.displayRecordsState.responseState[activeKey];
-    const res = paramArr.length === 0 ? resState['runResult'] : (currParam === allParameter ? resState : resState[currParamStr]);
+    const res = !resState ? undefined : (paramArr.length === 0 ? resState['runResult'] : (currParam === allParameter ? resState : resState[currParamStr]));
     return {
         activeKey,
         url: record.url,

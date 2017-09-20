@@ -89,13 +89,13 @@ test('record state - active record', () => {
 
 test('record with res state - save record', () => {
 
-    let oldState = { ...displayRecordsDefaultValue, responseState: { ['123']: defaultRunResult } };
+    let oldState = { ...displayRecordsDefaultValue, responseState: { ['123']: { runResult: defaultRunResult } } };
 
     expect(recordWithResState(oldState, actionCreator(SaveRecordType, { isNew: false, oldId: '123', record: { id: '456' } }))).toEqual(oldState);
 
     expect(recordWithResState(oldState, actionCreator(SaveRecordType, { isNew: true, oldId: '', record: { id: '456' } }))).toEqual(oldState);
 
-    expect(recordWithResState(oldState, actionCreator(SaveRecordType, { isNew: true, oldId: '123', record: { id: '456' } }))).toEqual({ ...oldState, responseState: { ['456']: defaultRunResult } });
+    expect(recordWithResState(oldState, actionCreator(SaveRecordType, { isNew: true, oldId: '123', record: { id: '456' } }))).toEqual({ ...oldState, responseState: { ['456']: { runResult: defaultRunResult } } });
 });
 
 test('record with res state - add tab', () => {
@@ -113,11 +113,11 @@ test('record with res state - add tab', () => {
 
 test('record with res state - remove tab', () => {
 
-    let oldState = { ...displayRecordsDefaultValue, responseState: { ['123']: defaultRunResult } };
+    let oldState = { ...displayRecordsDefaultValue, responseState: { ['123']: { runResult: defaultRunResult } } };
 
     expect(recordWithResState(oldState, actionCreator(RemoveTabType, '123'))).toEqual(displayRecordsDefaultValue);
 
-    oldState = { ...displayRecordsDefaultValue, recordStates: { ['123']: { record: { id: '123', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }, isRequesting: true, name: 'r1', isChanged: false, parameter: '' } }, responseState: { ['123']: defaultRunResult }, activeKey: '123', recordsOrder: ['123'] };
+    oldState = { ...displayRecordsDefaultValue, recordStates: { ['123']: { record: { id: '123', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }, isRequesting: true, name: 'r1', isChanged: false, parameter: '' } }, responseState: { ['123']: { runResult: defaultRunResult } }, activeKey: '123', recordsOrder: ['123'] };
 
     let state = recordWithResState(oldState, actionCreator(RemoveTabType, '123'));
     expect(_.keys(state.recordStates)[0] !== '123').toBeTruthy();
@@ -130,7 +130,7 @@ test('record with res state - remove tab', () => {
             ['789']: { record: { id: '789', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }, isRequesting: true, name: 'r3', isChanged: false, parameter: '' }
         },
         recordsOrder: ['123', '456', '789'],
-        responseState: { ['123']: defaultRunResult, ['456']: { ...defaultRunResult, id: '456' }, ['789']: { ...defaultRunResult, id: '789' } },
+        responseState: { ['123']: { runResult: defaultRunResult }, ['456']: { runResult: { ...defaultRunResult, id: '456' } }, ['789']: { runResult: { ...defaultRunResult, id: '789' } } },
         activeKey: '123'
     };
 
@@ -139,7 +139,7 @@ test('record with res state - remove tab', () => {
             ['123']: { record: { id: '123', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }, isRequesting: true, name: 'r1', isChanged: false, parameter: '' },
             ['789']: { record: { id: '789', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }, isRequesting: true, name: 'r3', isChanged: false, parameter: '' }
         },
-        responseState: { ['123']: defaultRunResult, ['789']: { ...defaultRunResult, id: '789' } },
+        responseState: { ['123']: { runResult: defaultRunResult }, ['789']: { runResult: { ...defaultRunResult, id: '789' } } },
         recordsOrder: ['123', '789'],
         activeKey: '123'
     });
@@ -149,7 +149,7 @@ test('record with res state - remove tab', () => {
             ['456']: { record: { id: '456', collectionId: 'cid_1', name: 'r2', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }, isRequesting: true, name: 'r2', isChanged: false, parameter: '' },
             ['789']: { record: { id: '789', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }, isRequesting: true, name: 'r3', isChanged: false, parameter: '' }
         },
-        responseState: { ['456']: { ...defaultRunResult, id: '456' }, ['789']: { ...defaultRunResult, id: '789' } },
+        responseState: { ['456']: { runResult: { ...defaultRunResult, id: '456' } }, ['789']: { runResult: { ...defaultRunResult, id: '789' } } },
         recordsOrder: ['456', '789'],
         activeKey: '456'
     });
@@ -159,7 +159,7 @@ test('record with res state - remove tab', () => {
             ['123']: { record: { id: '123', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record }, isRequesting: true, name: 'r1', isChanged: false, parameter: '' },
             ['789']: { record: { id: '789', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record }, isRequesting: true, name: 'r3', isChanged: false, parameter: '' }
         },
-        responseState: { ['123']: defaultRunResult, ['789']: { ...defaultRunResult, id: '789' } },
+        responseState: { ['123']: { runResult: defaultRunResult }, ['789']: { runResult: { ...defaultRunResult, id: '789' } } },
         recordsOrder: ['123', '789'],
         activeKey: '789'
     });
@@ -169,7 +169,7 @@ test('record with res state - remove tab', () => {
             ['123']: { record: { id: '123', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record }, isRequesting: true, name: 'r1', isChanged: false, parameter: '' },
             ['456']: { record: { id: '456', collectionId: 'cid_1', name: 'r2', category: RecordCategory.record }, isRequesting: true, name: 'r2', isChanged: false, parameter: '' }
         },
-        responseState: { ['123']: defaultRunResult, ['456']: { ...defaultRunResult, id: '456' } },
+        responseState: { ['123']: { runResult: defaultRunResult }, ['456']: { runResult: { ...defaultRunResult, id: '456' } } },
         recordsOrder: ['123', '456'],
         activeKey: '456'
     });
@@ -180,7 +180,7 @@ test('record with res state - send request fulfill', () => {
 
     let oldState = { ...displayRecordsDefaultValue, recordStates: { ['123']: { record: { id: '123', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }, isRequesting: true, name: 'r1', isChanged: false, parameter: '' } } };
 
-    expect(recordWithResState(oldState, actionCreator(SendRequestFulfilledType, { id: '123', runResult: defaultRunResult }))).toEqual({ ...displayRecordsDefaultValue, recordStates: { ['123']: { record: { id: '123', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record }, isRequesting: false, name: 'r1', isChanged: false, parameter: '' } }, responseState: { ['123']: defaultRunResult } });
+    expect(recordWithResState(oldState, actionCreator(SendRequestFulfilledType, { id: '123', runResult: { runResult: defaultRunResult } }))).toEqual({ ...displayRecordsDefaultValue, recordStates: { ['123']: { record: { id: '123', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record }, isRequesting: false, name: 'r1', isChanged: false, parameter: '' } }, responseState: { ['123']: { runResult: defaultRunResult } } });
 });
 
 test('record with res state - delete record', () => {

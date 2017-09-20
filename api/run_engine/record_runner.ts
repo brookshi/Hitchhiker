@@ -122,7 +122,7 @@ export class RecordRunner {
         }
         let newContent = content;
         _.keys(variables).forEach(k => {
-            newContent = newContent.replace(`{{${k}}}`, variables[k] || '');
+            newContent = newContent.replace(new RegExp(`{{${k}}}`, 'g'), variables[k] || '');
         });
         return newContent;
     }
