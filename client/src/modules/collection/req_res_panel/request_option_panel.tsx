@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { Tabs, Badge, Radio, Select } from 'antd';
+import { Tabs, Badge, Radio, Select, Icon } from 'antd';
 import RequestTabExtra from './request_tab_extra';
 import { normalBadgeStyle } from '../../../style/theme';
 import { DtoHeader } from '../../../../../api/interfaces/dto_header';
@@ -15,11 +15,12 @@ import { bodyTypes } from '../../../common/body_type';
 import { defaultBodyType, allParameter } from '../../../common/constants';
 import { getActiveRecordSelector, getReqActiveTabKeySelector, getHeadersEditModeSelector, getActiveRecordStateSelector } from './selector';
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
-import { RecordState } from '../../../state/collection';
+import { RecordState, ParameterStatusState } from '../../../state/collection';
 import { State } from '../../../state/index';
 import * as _ from 'lodash';
 import { ParameterType } from '../../../common/parameter_type';
 import { StringUtil } from '../../../utils/string_util';
+import { RequestStatus } from '../../../common/request_status';
 
 const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
@@ -48,6 +49,8 @@ interface RequestOptionPanelStateProps {
     favHeaders: DtoHeader[];
 
     currentParam: string;
+
+    paramReqStatus?: ParameterStatusState;
 }
 
 interface RequestOptionPanelDispatchProps {
@@ -93,17 +96,39 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
     }
 
     private currentParam = (arr: any[]) => {
-        const currParam = arr[Number.parseInt(this.props.currentParam)] ? this.props.currentParam : allParameter;
+        const { currentParam } = this.props;
+        const currParam = arr[Number.parseInt(currentParam)] ? currentParam : allParameter;
         return (
             <Select className="req-res-tabs-param-title-select" value={currParam} onChange={this.onCurrentParamChanged}>
                 <Option key={allParameter} value={allParameter}>allParameter</Option>
                 {
                     arr.map((e, i) => (
-                        <Option key={i.toString()} value={i.toString()}>{StringUtil.toString(e)}</Option>
+                        <Option key={i.toString()} value={i.toString()}>
+                            {this.getParamStatusIcon(StringUtil.toString(e))}
+                            {StringUtil.toString(e)}
+                        </Option>
                     ))
                 }
             </Select>
         );
+    }
+
+    private getParamStatusIcon = (param: string) => {
+        const { paramReqStatus } = this.props;
+        if (!paramReqStatus || !paramReqStatus[param]) {
+            return '';
+        }
+
+        switch (paramReqStatus[param]) {
+            case RequestStatus.pending:
+                return <Icon type="loading" />;
+            case RequestStatus.success:
+                return <Icon className="res-panel-pass" type="check" />;
+            case RequestStatus.failed:
+                return <Icon className="res-panel-fail" type="close" />;
+            default:
+                return '';
+        }
     }
 
     public render() {
@@ -196,7 +221,8 @@ const mapStateToProps = (state: State): RequestOptionPanelStateProps => {
         parameterType: record.parameterType,
         headersEditMode: getHeadersEditModeSelector()(state),
         currentParam: getActiveRecordStateSelector()(state).parameter,
-        favHeaders
+        favHeaders,
+        paramReqStatus: getActiveRecordStateSelector()(state).parameterStatus
     };
 };
 

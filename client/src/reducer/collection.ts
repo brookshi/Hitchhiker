@@ -158,7 +158,7 @@ export function recordStates(states: _.Dictionary<RecordState> = displayRecordsD
         case SendRequestForParamType: {
             const { param, content } = action.value;
             const id = content.record.id;
-            return { ...states, [id]: { ...states[id], parameterStatus: { ...states[id].parameterStatus || {}, [param]: true } } };
+            return { ...states, [id]: { ...states[id], parameterStatus: { ...states[id].parameterStatus || {}, [param]: RequestStatus.pending } } };
         }
         case SaveRecordType: {
             const { isNew, record, oldId } = action.value;
@@ -250,22 +250,27 @@ export function recordWithResState(state: DisplayRecordsState = displayRecordsDe
         case SendRequestFulfilledType: {
             const id = action.value.id;
             responseState = action.value.isParamReq ? state.responseState : { ...state.responseState, [id]: { runResult: action.value.runResult } };
+            const paramStatus = { ...recordStates[id].parameterStatus };
+            Reflect.deleteProperty(paramStatus, 'runResult');
             return {
                 ...state,
-                recordStates: { ...recordStates, [id]: { ...recordStates[id], isRequesting: _.values(recordStates[id].parameterStatus).some(s => s) } },
+                recordStates: { ...recordStates, [id]: { ...recordStates[id], isRequesting: _.values(paramStatus).some(s => s === RequestStatus.pending) } },
                 responseState
             };
         }
         case SendRequestForParamFulfilledType: {
             const { param, runResult } = action.value;
             const id = runResult.id;
+            const isFail = _.values<boolean>(runResult.tests).some(t => !t);
+            const paramStatus = { ...recordStates[id].parameterStatus };
+            Reflect.deleteProperty(paramStatus, 'runResult');
             return {
                 ...state,
                 recordStates: {
                     ...recordStates, [id]: {
                         ...recordStates[id],
-                        isRequesting: _.keys(recordStates[id].parameterStatus).filter(k => k !== param).some(k => (recordStates[id].parameterStatus || {})[k]),
-                        parameterStatus: { ...recordStates[id].parameterStatus || {}, [param]: false }
+                        isRequesting: _.keys(paramStatus).filter(k => k !== param).some(k => paramStatus[k] === RequestStatus.pending),
+                        parameterStatus: { ...recordStates[id].parameterStatus || {}, [param]: isFail ? RequestStatus.failed : RequestStatus.success }
                     }
                 },
                 responseState: {
@@ -278,7 +283,7 @@ export function recordWithResState(state: DisplayRecordsState = displayRecordsDe
             if (!action.value['parameters']) {
                 return state;
             }
-            const resState = { ...state.responseState[state.activeKey] }
+            const resState = { ...state.responseState[state.activeKey] };
             Reflect.deleteProperty(resState, 'runResult');
             return {
                 ...state,

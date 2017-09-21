@@ -6,6 +6,7 @@ import { RecordCategory } from '../common/record_category';
 import { requestStateDefaultValue, RequestState } from './request';
 import { allProject, newRecordFlag, newRequestName, allParameter } from '../common/constants';
 import { ParameterType } from '../common/parameter_type';
+import { RequestStatus } from '../common/request_status';
 
 export function getDefaultRecord(isInit: boolean = false): DtoRecord {
     return {
@@ -68,7 +69,7 @@ export interface RecordState {
 
 export interface ParameterStatusState {
 
-    [id: string]: boolean;
+    [id: string]: RequestStatus;
 }
 
 export interface ResponseState {

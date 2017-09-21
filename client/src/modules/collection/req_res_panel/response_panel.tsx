@@ -173,7 +173,7 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
         );
     }
 
-    private get haveVaildParamResult() {
+    private get haveValidParamResult() {
         const { res, paramArr } = this.props;
         return paramArr.some(p => !!res[JSON.stringify(p)]);
     }
@@ -201,7 +201,7 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
                 <span style={{ marginLeft: '16px' }}>Time: </span>
                 <span className="res-status">{elapsed}ms</span>
             </span>
-        )
+        );
     }
 
     private isRunResult(res: RunResult | ResponseState): res is RunResult {
@@ -216,7 +216,7 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
             return <ResponseLoadingPanel />;
         }
 
-        if (!res || paramArr.length === 0) {
+        if (!res) {
             return ResponseEmptyPanel;
         }
 
@@ -224,7 +224,7 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
             return res.error ? <ResErrorPanel url={url} error={res.error} /> : this.normalResponsePanel;
         }
 
-        if (!this.haveVaildParamResult) {
+        if (paramArr.length === 0 || !this.haveValidParamResult) {
             return ResponseEmptyPanel;
         }
 
