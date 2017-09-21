@@ -47,10 +47,10 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
 
     private expandedTable = (record: DtoScheduleRecord) => {
         const displayRunResults = new Array<DisplayRunResult>();
-        const compareDict = _.keyBy(record.result.compare, 'id');
+        const compareDict = _.keyBy(this.flattenRunResult(record.result.compare), 'id');
 
         const notNeedMatchIds = this.getNotNeedMatchIds(this.props.schedule);
-        record.result.origin.forEach(r => {
+        this.flattenRunResult(record.result.origin).forEach(r => {
             const needCompare = !!compareDict[r.id];
             let compareResult = '';
             if (needCompare) {
@@ -81,6 +81,10 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                     title="Name"
                     dataIndex="id"
                     render={(text, runResult) => ({ children: this.getRecordDisplayName(runResult.id), props: { rowSpan: runResult.rowSpan } })}
+                />
+                <RunResultColumn
+                    title="Param"
+                    dataIndex="param"
                 />
                 <RunResultColumn
                     title="Pass"
@@ -190,16 +194,24 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
         );
     }
 
+    private isRunResult(res: RunResult | _.Dictionary<RunResult>): res is RunResult {
+        return (res as RunResult).id !== undefined;
+    }
+
     private isSuccess = (runResult: RunResult) => {
         const testValues = _.values(runResult.tests);
         return !runResult.error && (testValues.length === 0 || testValues.reduce((p, a) => p && a));
     }
 
+    private flattenRunResult(res: Array<RunResult | _.Dictionary<RunResult>>) {
+        return _.flatten(res.map(r => this.isRunResult(r) ? r : _.values(r)));
+    }
+
     private getScheduleDescription = (record: DtoScheduleRecord, schedule: DtoSchedule) => {
         const { envName, compareEnvName } = this.props;
         const { origin, compare } = record.result;
-        const originFailedResults = origin.filter(r => !this.isSuccess(r));
-        const compareFailedResults = compare.filter(r => !this.isSuccess(r));
+        const originFailedResults = this.flattenRunResult(origin).filter(r => !this.isSuccess(r));
+        const compareFailedResults = this.flattenRunResult(compare).filter(r => !this.isSuccess(r));
         const isEqual = this.compare(origin, compare, schedule);
 
         const originResultDescription = this.getRunResultDescription(envName, origin.length, originFailedResults.length);
@@ -218,7 +230,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
         );
     }
 
-    private compare = (originRunResults: RunResult[], compareRunResults: RunResult[], schedule: DtoSchedule) => {
+    private compare = (originRunResults: Array<RunResult | _.Dictionary<RunResult>>, compareRunResults: Array<RunResult | _.Dictionary<RunResult>>, schedule: DtoSchedule) => {
         if (compareRunResults.length === 0) {
             return true;
         }
@@ -228,8 +240,16 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
 
         const notNeedMatchIds = this.getNotNeedMatchIds(schedule);
         for (let i = 0; i < originRunResults.length; i++) {
-            if (!notNeedMatchIds.some(id => id === originRunResults[i].id) && !this.compareExport(originRunResults[i], compareRunResults[i])) {
-                return false;
+            const originRunResult = originRunResults[i];
+            const compareRunResult = compareRunResults[i];
+            if (this.isRunResult(originRunResult) && this.isRunResult(compareRunResult)) {
+                if (!notNeedMatchIds.some(id => id === originRunResult.id) && !this.compareExport(originRunResult, compareRunResult)) {
+                    return false;
+                }
+            } else {
+                if (!this.compare(_.values<RunResult>(originRunResult), _.values<RunResult>(compareRunResult), schedule)) {
+                    return false;
+                }
             }
         }
         return true;

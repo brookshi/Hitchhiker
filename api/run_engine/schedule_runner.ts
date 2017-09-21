@@ -105,9 +105,14 @@ export class ScheduleRunner {
         };
     }
 
-    private getRunResultForMail(runResults: RunResult[], envId: string, envNames: _.Dictionary<Environment>, recordDict: _.Dictionary<Record>) {
+    private getRunResultForMail(runResults: Array<RunResult | _.Dictionary<RunResult>>, envId: string, envNames: _.Dictionary<Environment>, recordDict: _.Dictionary<Record>) {
         const unknownEnv = 'No Environment';
-        return runResults.map(r => ({ ...r, isSuccess: this.isSuccess(r), envName: envNames[envId] ? envNames[envId].name : unknownEnv, recordName: this.getRecordDisplayName(recordDict, r.id), duration: r.elapsed }));
+        const getMailInfo = (r: RunResult) => ({ ...r, isSuccess: this.isSuccess(r), envName: envNames[envId] ? envNames[envId].name : unknownEnv, recordName: this.getRecordDisplayName(recordDict, r.id), duration: r.elapsed });
+        return _.flatten(runResults.map(r => this.isRunResult(r) ? getMailInfo(r) : _.values(r).map(rst => getMailInfo(rst))));
+    }
+
+    private isRunResult(res: RunResult | _.Dictionary<RunResult>): res is RunResult {
+        return (res as RunResult).id !== undefined;
     }
 
     private getRecordDisplayName = (recordDict: _.Dictionary<Record>, id: string) => {
@@ -120,9 +125,9 @@ export class ScheduleRunner {
         return folder ? `${folder.name}/${record.name}` : record.name;
     }
 
-    private async storeRunResult(originRunResults: RunResult[], compareRunResults: RunResult[], schedule: Schedule, isScheduleRun?: boolean): Promise<ScheduleRecord> {
+    private async storeRunResult(originRunResults: Array<RunResult | _.Dictionary<RunResult>>, compareRunResults: Array<RunResult | _.Dictionary<RunResult>>, schedule: Schedule, isScheduleRun?: boolean): Promise<ScheduleRecord> {
         const scheduleRecord = new ScheduleRecord();
-        const totalRunResults = [...originRunResults, ...compareRunResults];
+        const totalRunResults = _.flatten([...originRunResults, ...compareRunResults].map(r => this.isRunResult(r) ? r : _.values(r)));
 
         scheduleRecord.success = totalRunResults.every(r => this.isSuccess(r)) && this.compare(originRunResults, compareRunResults, schedule);
         scheduleRecord.schedule = schedule;
@@ -136,7 +141,7 @@ export class ScheduleRunner {
         return await ScheduleRecordService.create(scheduleRecord);
     }
 
-    private compare(originRunResults: RunResult[], compareRunResults: RunResult[], schedule: Schedule) {
+    private compare(originRunResults: Array<RunResult | _.Dictionary<RunResult>>, compareRunResults: Array<RunResult | _.Dictionary<RunResult>>, schedule: Schedule) {
         if (compareRunResults.length === 0) {
             return true;
         }
@@ -146,8 +151,16 @@ export class ScheduleRunner {
 
         const notNeedMatchIds = schedule.recordsOrder ? schedule.recordsOrder.split(';').filter(r => r.endsWith(':0')).map(r => r.substr(0, r.length - 2)) : [];
         for (let i = 0; i < originRunResults.length; i++) {
-            if (!notNeedMatchIds.some(id => id === originRunResults[i].id) && !this.compareExport(originRunResults[i], compareRunResults[i])) {
-                return false;
+            const originRunResult = originRunResults[i];
+            const compareRunResult = compareRunResults[i];
+            if (this.isRunResult(originRunResult) && this.isRunResult(compareRunResult)) {
+                if (!notNeedMatchIds.some(id => id === originRunResult.id) && !this.compareExport(originRunResult, compareRunResult)) {
+                    return false;
+                }
+            } else {
+                if (!this.compare(_.values<RunResult>(originRunResult), _.values<RunResult>(compareRunResult), schedule)) {
+                    return false;
+                }
             }
         }
         return true;

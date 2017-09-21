@@ -12,7 +12,8 @@ export class RecordRunner {
 
     private static RequestTimeout = 30 * 60 * 1000;
 
-    static async runRecords(rs: Record[], environmentId: string, needOrder: boolean = false, orderRecordIds: string = '', applyCookies?: boolean, trace?: (msg: string) => void): Promise<RunResult[]> {
+    static async runRecords(rs: Record[], environmentId: string, needOrder: boolean = false, orderRecordIds: string = '', applyCookies?: boolean, trace?: (msg: string) => void): Promise<Array<RunResult | _.Dictionary<RunResult>>> {
+        const runResults: Array<RunResult | _.Dictionary<RunResult>> = [];
         if (needOrder && orderRecordIds) {
             const cookies: _.Dictionary<string> = {};
             let variables: any = {};
@@ -20,31 +21,58 @@ export class RecordRunner {
             const recordDict = _.keyBy(records, 'id');
             const orderRecords = orderRecordIds.split(';').filter(r => recordDict[r]).map(r => recordDict[r]);
             records = _.unionBy(orderRecords, records, 'id');
-            const runResults = new Array<RunResult>();
             for (let record of records) {
-                record = RecordRunner.applyCookies(record, cookies);
-                record = RecordRunner.applyVariables(record, variables);
-
-                const result = await RecordRunner.runRecord(environmentId, record);
-                runResults.push(result);
-
-                variables = RecordRunner.storeVariables(result, variables);
-                RecordRunner.storeCookies(result, cookies);
-
-                if (trace) {
-                    trace(JSON.stringify(result));
+                const paramArr = StringUtil.parseParameters(record.parameters, record.parameterType);
+                if (paramArr.length === 0) {
+                    runResults.push(await RecordRunner.runRecordWithVW(record, environmentId, variables, cookies, trace));
+                } else {
+                    // TODO: sync or async ?
+                    for (let param of paramArr) {
+                        record = RecordRunner.applyReqParameterToRecord(record, param);
+                        const runrResult = await RecordRunner.runRecordWithVW(record, environmentId, variables, cookies, trace);
+                        runrResult.param = StringUtil.toString(param);
+                        runResults.push({ [runrResult.param]: runrResult });
+                    }
                 }
             }
-            return runResults;
         } else {
-            return await Promise.all(rs.map(async r => {
-                const result = await RecordRunner.runRecord(environmentId, r);
+            await Promise.all(rs.map(async r => {
+                const paramArr = StringUtil.parseParameters(r.parameters, r.parameterType);
+                let result;
+                if (paramArr.length === 0) {
+                    result = await RecordRunner.runRecord(environmentId, r);
+                    runResults.push(result);
+                } else {
+                    await Promise.all(paramArr.map(async p => {
+                        const record = RecordRunner.applyReqParameterToRecord(r, p);
+                        result = await RecordRunner.runRecord(environmentId, record);
+                        result.param = StringUtil.toString(p);
+                        runResults.push({ [result.param]: result });
+                    }));
+                }
                 if (trace) {
                     trace(JSON.stringify(result));
                 }
-                return result;
             }));
         }
+        return runResults;
+    }
+
+    static async runRecordWithVW(record: Record, environmentId: string, variables: any, cookies: _.Dictionary<string>, trace?: (msg: string) => void) {
+
+        record = RecordRunner.applyCookies(record, cookies);
+        record = RecordRunner.applyLocalVariables(record, variables);
+
+        const result = await RecordRunner.runRecord(environmentId, record);
+
+        variables = RecordRunner.storeVariables(result, variables);
+        RecordRunner.storeCookies(result, cookies);
+
+        if (trace) {
+            trace(JSON.stringify(result));
+        }
+
+        return result;
     }
 
     static storeCookies(result: RunResult, cookies: _.Dictionary<string>) {
@@ -95,7 +123,7 @@ export class RecordRunner {
         return variables;
     }
 
-    static applyVariables(record: Record, variables: any): Record {
+    static applyLocalVariables(record: Record, variables: any): Record {
         if (_.keys(variables).length === 0) {
             return record;
         }
@@ -103,20 +131,38 @@ export class RecordRunner {
         for (let header of record.headers) {
             headers.push({
                 ...header,
-                key: RecordRunner.applyLocalVariables(variables, header.key),
-                value: RecordRunner.applyLocalVariables(variables, header.value)
+                key: RecordRunner.applyVariables(header.key, variables),
+                value: RecordRunner.applyVariables(header.value, variables)
             });
         }
         return {
             ...record,
             headers,
-            url: RecordRunner.applyLocalVariables(variables, record.url),
-            test: RecordRunner.applyLocalVariables(variables, record.test),
-            body: RecordRunner.applyLocalVariables(variables, record.body)
+            url: RecordRunner.applyVariables(record.url, variables),
+            test: RecordRunner.applyVariables(record.test, variables),
+            body: RecordRunner.applyVariables(record.body, variables)
         };
     }
 
-    static applyLocalVariables = (variables: any, content?: string) => {
+    static applyReqParameterToRecord(record: Record, parameter: any): Record {
+        const headers = [];
+        for (let header of record.headers || []) {
+            headers.push({
+                ...header,
+                key: RecordRunner.applyVariables(header.key, parameter),
+                value: RecordRunner.applyVariables(header.value, parameter)
+            });
+        }
+        return {
+            ...record,
+            url: RecordRunner.applyVariables(record.url, parameter),
+            headers,
+            body: RecordRunner.applyVariables(record.body, parameter),
+            test: RecordRunner.applyVariables(record.test, parameter)
+        };
+    }
+
+    static applyVariables = (content: string | undefined, variables: any) => {
         if (!variables || !content) {
             return content;
         }

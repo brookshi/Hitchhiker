@@ -15,7 +15,7 @@ export class ScheduleRecord {
     duration: number;
 
     @Column('json')
-    result: { origin: RunResult[], compare: RunResult[] };
+    result: { origin: Array<RunResult | _.Dictionary<RunResult>>, compare: Array<RunResult | _.Dictionary<RunResult>> };
 
     @Column()
     success: boolean;

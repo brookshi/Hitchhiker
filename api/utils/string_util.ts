@@ -3,8 +3,13 @@ import { Setting } from './setting';
 import * as uuid from 'uuid';
 import * as shortId from 'shortid';
 import * as URL from 'url';
+import { ParameterType } from '../common/parameter_type';
+import * as _ from 'lodash';
 
 export class StringUtil {
+
+    static allParameter = 'All';
+
     static md5(str: string): string {
         return crypto.createHash('md5').update(str).digest('hex');
     }
@@ -69,5 +74,81 @@ export class StringUtil {
 
     static readCookie(cookie: string): { key: string, value: string } {
         return { key: cookie.substr(0, cookie.indexOf('=') || cookie.length), value: cookie.substr(0, cookie.indexOf(';') || cookie.length) };
+    }
+
+    static verifyParameters(parameters: string, parameterType: ParameterType): { isValid: boolean, count: number, msg: string } {
+        if (parameters === '') {
+            return { isValid: false, count: 0, msg: '' };
+        }
+        let paramObj;
+        let count = 0;
+        try {
+            paramObj = JSON.parse(parameters);
+        } catch (e) {
+            return { isValid: false, count, msg: e.toString() };
+        }
+        if (parameters !== '' && (!_.isPlainObject(paramObj) || !_.values<any>(paramObj).every(p => _.isArray(p)))) {
+            return { isValid: false, count, msg: 'Parameters must be a plain object and children must be a array.' };
+        }
+        const paramArray = _.values<Array<any>>(paramObj);
+        if (parameterType === ParameterType.OneToOne) {
+            for (let i = 0; i < paramArray.length; i++) {
+                if (i === 0) {
+                    count = paramArray[i].length;
+                }
+                if (paramArray[i].length !== count) {
+                    return { isValid: false, count, msg: `The length of OneToOne parameters' children arrays must be identical.` };
+                }
+            }
+        } else {
+            count = paramArray.length === 0 ? 0 : paramArray.map(p => p.length).reduce((p, c) => p * c);
+        }
+
+        return { isValid: true, count, msg: `${count} requests: ` };
+    }
+
+    static getParameterArr(paramObj: any, parameterType: ParameterType): Array<any> {
+        const paramArr = new Array<any>();
+        if (parameterType === ParameterType.OneToOne) {
+            Object.keys(paramObj).forEach((key, index) => {
+                for (let i = 0; i < paramObj[key].length; i++) {
+                    paramArr[i] = paramArr[i] || {};
+                    paramArr[i][key] = paramObj[key][i];
+                }
+            });
+        } else {
+            Object.keys(paramObj).forEach((key, index) => {
+                let temp = [...paramArr];
+                paramArr.splice(0, paramArr.length);
+                for (let i = 0; i < paramObj[key].length; i++) {
+                    if (temp.length === 0) {
+                        paramArr[i] = paramArr[i] || {};
+                        paramArr[i][key] = paramObj[key][i];
+                    } else {
+                        temp.forEach(t => {
+                            paramArr.push({ ...t, [key]: paramObj[key][i] });
+                        });
+                    }
+                }
+            });
+        }
+        return paramArr;
+    }
+
+    static parseParameters(parameters: string | undefined, parameterType: ParameterType): Array<any> {
+        if (!parameters) {
+            return [];
+        }
+        const { isValid } = StringUtil.verifyParameters(parameters, parameterType);
+        let paramArr = isValid ? StringUtil.getParameterArr(JSON.parse(parameters), parameterType) : new Array<any>();
+        return _.uniqWith(paramArr, _.isEqual);
+    }
+
+    static toString(obj: any): string {
+        if (_.isPlainObject(obj) || _.isArray(obj)) {
+            return JSON.stringify(obj);
+        } else {
+            return obj.toString();
+        }
     }
 }

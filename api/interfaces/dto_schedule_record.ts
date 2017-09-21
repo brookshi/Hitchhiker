@@ -8,7 +8,7 @@ export interface DtoScheduleRecord {
 
     duration: number;
 
-    result: { origin: RunResult[], compare: RunResult[] };
+    result: { origin: Array<RunResult | _.Dictionary<RunResult>>, compare: Array<RunResult | _.Dictionary<RunResult>> };
 
     success: boolean;
 

@@ -176,31 +176,21 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
 
     private applyLocalVariablesToRecord = (record: DtoRecord) => {
         const headers = new Array<DtoHeader>();
+        const variables = this.props.variables;
         for (let header of record.headers || []) {
             headers.push({
                 ...header,
-                key: this.applyLocalVariables(header.key),
-                value: this.applyLocalVariables(header.value)
+                key: this.applyVariables(header.key, variables),
+                value: this.applyVariables(header.value, variables)
             });
         }
         return {
             ...record,
-            url: this.applyLocalVariables(record.url),
+            url: this.applyVariables(record.url, variables),
             headers,
-            body: this.applyLocalVariables(record.body),
-            test: this.applyLocalVariables(record.test)
+            body: this.applyVariables(record.body, variables),
+            test: this.applyVariables(record.test, variables)
         };
-    }
-
-    private applyLocalVariables = (content?: string) => {
-        if (!this.props.variables || !content) {
-            return content;
-        }
-        let newContent = content;
-        _.keys(this.props.variables).forEach(k => {
-            newContent = newContent.replace(new RegExp(`{{${k}}}`, 'g'), this.props.variables[k] || '');
-        });
-        return newContent;
     }
 
     private applyReqParameterToRecord = (record: DtoRecord, parameter: any) => {
@@ -208,26 +198,26 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         for (let header of record.headers || []) {
             headers.push({
                 ...header,
-                key: this.applyReqParameter(header.key, parameter),
-                value: this.applyReqParameter(header.value, parameter)
+                key: this.applyVariables(header.key, parameter),
+                value: this.applyVariables(header.value, parameter)
             });
         }
         return {
             ...record,
-            url: this.applyReqParameter(record.url, parameter),
+            url: this.applyVariables(record.url, parameter),
             headers,
-            body: this.applyReqParameter(record.body, parameter),
-            test: this.applyReqParameter(record.test, parameter)
+            body: this.applyVariables(record.body, parameter),
+            test: this.applyVariables(record.test, parameter)
         };
     }
 
-    private applyReqParameter = (content: string | undefined, parameter: any) => {
-        if (!parameter || !content) {
+    private applyVariables = (content: string | undefined, variables: any) => {
+        if (!variables || !content) {
             return content;
         }
         let newContent = content;
-        _.keys(parameter).forEach(k => {
-            newContent = newContent.replace(new RegExp(`{{${k}}}`, 'g'), parameter[k] || '');
+        _.keys(this.props.variables).forEach(k => {
+            newContent = newContent.replace(new RegExp(`{{${k}}}`, 'g'), variables[k] || '');
         });
         return newContent;
     }
