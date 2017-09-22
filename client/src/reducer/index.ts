@@ -107,6 +107,8 @@ export function multipleStateReducer(state: State, action: any): State {
                 const recordState = displayRecordsState.recordStates[key];
                 const { record, isChanged } = recordState;
                 if (record) {
+                    recordState.parameterStatus = {};
+                    recordState.isRequesting = false;
                     const onlineRecordDict = onlineRecords[record.collectionId];
                     if (onlineRecordDict && onlineRecordDict[record.id]) {
                         recordState.name = onlineRecordDict[record.id].name;

@@ -12,7 +12,7 @@ import ScheduleRunConsole from './schedule_run_console';
 import './style/index.less';
 import { DtoSchedule } from '../../../../api/interfaces/dto_schedule';
 
-type DisplayRunResult = RunResult & { isOrigin: boolean, compareResult: string, rowSpan: number };
+type DisplayRunResult = RunResult & { key: string, isOrigin: boolean, compareResult: string, rowSpan: number };
 
 interface ScheduleRunHistoryGridProps {
 
@@ -47,14 +47,15 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
 
     private expandedTable = (record: DtoScheduleRecord) => {
         const displayRunResults = new Array<DisplayRunResult>();
-        const compareDict = _.keyBy(this.flattenRunResult(record.result.compare), 'id');
+        const compareDict = _.keyBy(this.flattenRunResult(record.result.compare), r => `${r.id}${r.param || ''}`);
 
         const notNeedMatchIds = this.getNotNeedMatchIds(this.props.schedule);
         this.flattenRunResult(record.result.origin).forEach(r => {
-            const needCompare = !!compareDict[r.id];
+            const key = `${r.id}${r.param || ''}`;
+            const needCompare = !!compareDict[key];
             let compareResult = '';
             if (needCompare) {
-                if (this.compareExport(compareDict[r.id], r)) {
+                if (this.compareExport(compareDict[key], r)) {
                     compareResult = match;
                 } else if (notNeedMatchIds.some(id => id === r.id)) {
                     compareResult = notMatchButIgnore;
@@ -62,9 +63,9 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                     compareResult = notMatch;
                 }
             }
-            displayRunResults.push({ ...r, isOrigin: true, compareResult, rowSpan: needCompare ? 2 : 1 });
+            displayRunResults.push({ ...r, key, isOrigin: true, compareResult, rowSpan: needCompare ? 2 : 1 });
             if (needCompare) {
-                displayRunResults.push({ ...compareDict[r.id], id: r.id + 'c', isOrigin: false, compareResult, rowSpan: 0 });
+                displayRunResults.push({ ...compareDict[key], key: `${key}c`, isOrigin: false, compareResult, rowSpan: 0 });
             }
         });
 
@@ -73,7 +74,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                 className="schedule-sub-table"
                 bordered={true}
                 size="middle"
-                rowKey="id"
+                rowKey="key"
                 dataSource={displayRunResults}
                 pagination={false}
             >
@@ -239,17 +240,12 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
         }
 
         const notNeedMatchIds = this.getNotNeedMatchIds(schedule);
-        for (let i = 0; i < originRunResults.length; i++) {
-            const originRunResult = originRunResults[i];
-            const compareRunResult = compareRunResults[i];
-            if (this.isRunResult(originRunResult) && this.isRunResult(compareRunResult)) {
-                if (!notNeedMatchIds.some(id => id === originRunResult.id) && !this.compareExport(originRunResult, compareRunResult)) {
-                    return false;
-                }
-            } else {
-                if (!this.compare(_.values<RunResult>(originRunResult), _.values<RunResult>(compareRunResult), schedule)) {
-                    return false;
-                }
+        const compareDict = _.keyBy(this.flattenRunResult(compareRunResults), r => `${r.id}${r.param || ''}`);
+        const originResults = this.flattenRunResult(originRunResults);
+        for (let i = 0; i < originResults.length; i++) {
+            const key = `${originResults[i].id}${originResults[i].param || ''}`;
+            if (!notNeedMatchIds.some(id => id === originResults[i].id) && (!compareDict[key] || !this.compareExport(originResults[i], compareDict[key]))) {
+                return false;
             }
         }
         return true;

@@ -12,8 +12,8 @@ import { HeaderService } from './header_service';
 import { StringUtil } from '../utils/string_util';
 import { RecordHistory } from '../models/record_history';
 import { EntityManager } from 'typeorm';
-import { User } from "../models/user";
-import { UserService } from "./user_service";
+import { User } from '../models/user';
+import { UserService } from './user_service';
 
 export class RecordService {
     private static _sort: number = 0;
@@ -42,11 +42,13 @@ export class RecordService {
         record.name = target.name;
         record.category = target.category;
         record.bodyType = target.bodyType;
+        record.parameters = target.parameters;
+        record.parameterType = target.parameterType;
         return record;
     }
 
     static toDto(target: Record): DtoRecord {
-        return <DtoRecord>{ ...target, collectionId: target.collection.id };
+        return <DtoRecord><any>{ ...target, collectionId: target.collection.id };
     }
 
     static formatHeaders(record: Record): { [key: string]: string } {

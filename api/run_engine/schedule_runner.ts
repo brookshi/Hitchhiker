@@ -141,6 +141,10 @@ export class ScheduleRunner {
         return await ScheduleRecordService.create(scheduleRecord);
     }
 
+    private flattenRunResult(res: Array<RunResult | _.Dictionary<RunResult>>) {
+        return _.flatten(res.map(r => this.isRunResult(r) ? r : _.values(r)));
+    }
+
     private compare(originRunResults: Array<RunResult | _.Dictionary<RunResult>>, compareRunResults: Array<RunResult | _.Dictionary<RunResult>>, schedule: Schedule) {
         if (compareRunResults.length === 0) {
             return true;
@@ -150,19 +154,16 @@ export class ScheduleRunner {
         }
 
         const notNeedMatchIds = schedule.recordsOrder ? schedule.recordsOrder.split(';').filter(r => r.endsWith(':0')).map(r => r.substr(0, r.length - 2)) : [];
-        for (let i = 0; i < originRunResults.length; i++) {
-            const originRunResult = originRunResults[i];
-            const compareRunResult = compareRunResults[i];
-            if (this.isRunResult(originRunResult) && this.isRunResult(compareRunResult)) {
-                if (!notNeedMatchIds.some(id => id === originRunResult.id) && !this.compareExport(originRunResult, compareRunResult)) {
-                    return false;
-                }
-            } else {
-                if (!this.compare(_.values<RunResult>(originRunResult), _.values<RunResult>(compareRunResult), schedule)) {
-                    return false;
-                }
+
+        const compareDict = _.keyBy(this.flattenRunResult(compareRunResults), r => `${r.id}${r.param || ''}`);
+        const originResults = this.flattenRunResult(originRunResults);
+        for (let i = 0; i < originResults.length; i++) {
+            const key = `${originResults[i].id}${originResults[i].param || ''}`;
+            if (!notNeedMatchIds.some(id => id === originResults[i].id) && (!compareDict[key] || !this.compareExport(originResults[i], compareDict[key]))) {
+                return false;
             }
         }
+
         return true;
     }
 
