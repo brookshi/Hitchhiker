@@ -23,6 +23,7 @@ export class TestRunner {
         } catch (err) {
             tests = { [err]: false };
         }
+        _.keys(tests).forEach(k => tests[k] = !!tests[k]);
         return { tests, variables: $variables$, export: $exportObj$.content };
     }
 
