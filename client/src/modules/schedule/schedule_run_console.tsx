@@ -37,7 +37,7 @@ class ScheduleRunConsole extends React.Component<ScheduleConsoleProps, ScheduleC
         const envName = this.props.envNames[runResult.envId] || noEnvironment;
         const isSuccess = !runResult.error && _.values(runResult.tests).every(r => r);
         return (
-            <div key={runResult.id + runResult.envId}>
+            <div key={runResult.id + runResult.envId + (runResult.param || '')}>
                 <span className={`schedule-item-key schedule-${isSuccess ? 'success' : 'failed'}`}>{isSuccess ? pass : fail}</span>
                 <span> {recordName} in {envName}, spend {`${runResult.elapsed / 1000}s`}</span>
             </div>

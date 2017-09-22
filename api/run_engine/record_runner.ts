@@ -24,14 +24,13 @@ export class RecordRunner {
             for (let record of records) {
                 const paramArr = StringUtil.parseParameters(record.parameters, record.parameterType);
                 if (paramArr.length === 0) {
-                    runResults.push(await RecordRunner.runRecordWithVW(record, environmentId, variables, cookies, trace));
+                    runResults.push(await RecordRunner.runRecordWithVW(record, environmentId, variables, cookies, '', trace));
                 } else {
                     // TODO: sync or async ?
                     for (let param of paramArr) {
                         record = RecordRunner.applyReqParameterToRecord(record, param);
-                        const runrResult = await RecordRunner.runRecordWithVW(record, environmentId, variables, cookies, trace);
-                        runrResult.param = StringUtil.toString(param);
-                        runResults.push({ [runrResult.param]: runrResult });
+                        const runResult = await RecordRunner.runRecordWithVW(record, environmentId, variables, cookies, param, trace);
+                        runResults.push({ [runResult.param]: runResult });
                     }
                 }
             }
@@ -58,7 +57,7 @@ export class RecordRunner {
         return runResults;
     }
 
-    static async runRecordWithVW(record: Record, environmentId: string, variables: any, cookies: _.Dictionary<string>, trace?: (msg: string) => void) {
+    static async runRecordWithVW(record: Record, environmentId: string, variables: any, cookies: _.Dictionary<string>, param: any, trace?: (msg: string) => void) {
 
         record = RecordRunner.applyCookies(record, cookies);
         record = RecordRunner.applyLocalVariables(record, variables);
@@ -68,6 +67,7 @@ export class RecordRunner {
         variables = RecordRunner.storeVariables(result, variables);
         RecordRunner.storeCookies(result, cookies);
 
+        result.param = StringUtil.toString(param);
         if (trace) {
             trace(JSON.stringify(result));
         }
