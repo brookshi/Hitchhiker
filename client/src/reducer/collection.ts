@@ -261,7 +261,7 @@ export function recordWithResState(state: DisplayRecordsState = displayRecordsDe
         case SendRequestForParamFulfilledType: {
             const { param, runResult } = action.value;
             const id = runResult.id;
-            const isFail = _.values<boolean>(runResult.tests).some(t => !t);
+            const isFail = _.values<boolean>(runResult.tests).some(t => !t) || runResult.error || runResult.status >= 500;
             const paramStatus = { ...recordStates[id].parameterStatus };
             Reflect.deleteProperty(paramStatus, 'runResult');
             return {

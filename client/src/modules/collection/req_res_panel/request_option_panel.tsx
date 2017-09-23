@@ -171,7 +171,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                             {isValid ? this.currentParam(paramArr) : ''}
                         </span>
                     </span>
-                    <Editor type="json" fixHeight={true} height={258} value={parameters} onChange={v => this.props.changeRecord({ 'parameters': v })} />
+                    <Editor type="json" fixHeight={true} height={258} value={parameters || ''} onChange={v => this.props.changeRecord({ 'parameters': v })} />
                 </TabPane>
                 <TabPane tab={(
                     <Badge style={normalBadgeStyle} dot={!!body && body.length > 0} count="" >
