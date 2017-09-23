@@ -99,8 +99,8 @@ test('delete record', () => {
         ...collectionDefaultValue, collectionsInfo: {
             ...collectionDefaultValue.collectionsInfo, records: {
                 ['cid_1']: {
-                    ['rid_2']: { id: 'rid_2', collectionId: 'cid_1', name: 'r2', category: RecordCategory.folder },
-                    ['rid_3']: { id: 'rid_3', pid: 'rid_2', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record }
+                    ['rid_2']: { id: 'rid_2', collectionId: 'cid_1', name: 'r2', category: RecordCategory.folder, parameterType: ParameterType.ManyToMany },
+                    ['rid_3']: { id: 'rid_3', pid: 'rid_2', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }
                 }
             }
         }
@@ -113,7 +113,7 @@ test('delete record', () => {
         ...collectionDefaultValue, collectionsInfo: {
             ...collectionDefaultValue.collectionsInfo, records: {
                 ['cid_1']: {
-                    ['rid_1']: { id: 'rid_1', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record }
+                    ['rid_1']: { id: 'rid_1', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }
                 }
             }
         }
@@ -145,7 +145,7 @@ test('delete collection', () => {
             collections: { ['cid_2']: { id: 'cid_2', name: 'c2', projectId: 'pid', description: '' } },
             records: {
                 ['cid_2']: {
-                    ['rid_1']: { id: 'rid_1', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record }
+                    ['rid_1']: { id: 'rid_1', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }
                 }
             }
         }

@@ -142,6 +142,17 @@ test('update display record property', () => {
             }
         }
     });
+
+    state = multipleStateReducer(state, { type: UpdateDisplayRecordPropertyType, value: { parameterType: ParameterType.OneToOne } });
+
+    expect(state).toEqual({
+        ...oldState, displayRecordsState: {
+            ...oldState.displayRecordsState,
+            recordStates: {
+                ['rid_123']: { ...oldState.displayRecordsState.recordStates['rid_123'], record: { ...r1, parameterType: ParameterType.OneToOne }, isChanged: true }
+            }
+        }
+    });
 });
 
 test('update display record', () => {
@@ -249,9 +260,9 @@ test('fetch local data success', () => {
         displayRecordsState: {
             ...defaultState.displayRecordsState,
             recordStates: {
-                ['rid_123']: { ...defaultRecordState, name: 'r1', isChanged: true, record: { ...r1, name: 'rrr1' } },
-                ['rid_456']: { ...defaultRecordState, name: 'r2', record: r2 },
-                ['rid_789']: { ...defaultRecordState, record: r3 },
+                ['rid_123']: { ...defaultRecordState, name: 'r1', isChanged: true, record: { ...r1, name: 'rrr1' }, parameterStatus: {} },
+                ['rid_456']: { ...defaultRecordState, name: 'r2', record: r2, parameterStatus: {} },
+                ['rid_789']: { ...defaultRecordState, record: r3, parameterStatus: {} },
             },
             recordsOrder: ['rid_456', 'rid_789', 'rid_123'],
             activeKey: 'rid_789'
