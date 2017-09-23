@@ -165,7 +165,7 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
                                 return '';
                             }
                             if (runResult.error) {
-                                return <div><span className="res-panel-allparam-name"> {currParam} </span><span className="res-panel-fail">error</span></div>;
+                                return <div><span className="res-panel-allparam-name"> {currParam} </span> - <span className="res-panel-fail">error</span></div>;
                             }
                             let { elapsed, status, statusMessage, tests } = runResult;
                             return <div key={currParam} className="res-panel-allparam-line"><span className="res-panel-allparam-name"> {currParam} </span> - {this.getStatusDesc(status, statusMessage, elapsed)} <span style={{ marginLeft: 16 }}>{this.getTestsDesc(tests)}</span> </div>;
