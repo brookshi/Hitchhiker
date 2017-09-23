@@ -201,7 +201,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
 
     private isSuccess = (runResult: RunResult) => {
         const testValues = _.values(runResult.tests);
-        return !runResult.error && (testValues.length === 0 || testValues.reduce((p, a) => p && a));
+        return !runResult.error && (testValues.length === 0 || testValues.reduce((p, a) => p && a)) && runResult.status < 500;
     }
 
     private flattenRunResult(res: Array<RunResult | _.Dictionary<RunResult>>) {

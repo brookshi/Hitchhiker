@@ -183,6 +183,6 @@ export class ScheduleRunner {
 
     private isSuccess(runResult: RunResult): boolean {
         const testValues = _.values(runResult.tests);
-        return !runResult.error && (testValues.length === 0 || testValues.reduce((p, a) => p && a));
+        return !runResult.error && (testValues.length === 0 || testValues.reduce((p, a) => p && a)) && runResult.status < 500;
     }
 }
