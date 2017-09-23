@@ -121,12 +121,17 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         if (!this.state.selectedFolderId) {
             return;
         }
-        const record = this.props.record;
+        let record = this.props.record;
         [record.collectionId, record.pid] = this.state.selectedFolderId.split('::');
 
         const oldRecordId = record.id;
         if (this.state.isSaveAsDlgOpen) {
+            record = _.cloneDeep(record);
             record.id = StringUtil.generateUID();
+            (record.headers || []).forEach(h => {
+                h.id = StringUtil.generateUID();
+                h.isFav = false;
+            });
             this.props.saveAs(record);
             this.setState({ ...this.state, isSaveAsDlgOpen: false });
         } else {

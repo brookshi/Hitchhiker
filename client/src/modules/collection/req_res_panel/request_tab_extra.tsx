@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { reqResUIDefaultValue } from '../../../state/ui';
 import { Button, Dropdown, Icon, Menu } from 'antd';
 import { KeyValueEditType, KeyValueEditMode } from '../../../common/custom_type';
 import { bodyTypes } from '../../../common/body_type';
@@ -103,7 +102,7 @@ class RequestTabExtra extends React.Component<RequestTabExtraProps, RequestTabEx
                     </Dropdown>
                 );
             }
-            case 'tests': {
+            case 'test': {
                 return (
                     <Dropdown overlay={this.snippetsMenu} trigger={['click']}>
                         <a className="ant-dropdown-link" href="#">
@@ -112,7 +111,7 @@ class RequestTabExtra extends React.Component<RequestTabExtraProps, RequestTabEx
                     </Dropdown>
                 );
             }
-            case reqResUIDefaultValue.activeReqTab: {
+            case defaultReqTabKey: {
                 return (
                     <Button className="tab-extra-button" onClick={this.onHeaderModeChanged}>
                         {KeyValueEditType.getReverseMode(headersEditMode)}
