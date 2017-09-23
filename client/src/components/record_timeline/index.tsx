@@ -11,6 +11,7 @@ import xcode from 'react-syntax-highlighter/dist/styles/xcode';
 import { DiffMode, DiffType } from '../../common/custom_type';
 import { IDiffResult } from 'diff';
 import * as JsDiff from 'diff';
+import { ParameterType } from '../../common/parameter_type';
 
 registerLanguage('javascript', js);
 
@@ -57,6 +58,8 @@ class RecordTimeline extends React.Component<RecordTimelineProps, RecordTimeline
                     {this.generateItem('method', this.getDiffChars(record, lastRecord, 'method', DiffType.words), true)}
                     {this.generateItem('url', this.getDiffChars(record, lastRecord, 'url'))}
                     {this.generateItem('headers', this.getDiffCode(record, lastRecord, 'headers', StringUtil.headersToString))}
+                    {this.generateItem('parameterType', this.getDiffCode(record, lastRecord, 'parameterType', t => ParameterType[t]))}
+                    {this.generateItem('parameters', this.getDiffCode(record, lastRecord, 'parameters'))}
                     {this.generateItem('body', this.getDiffCode(record, lastRecord, 'body'))}
                     {this.generateItem('test', this.getDiffCode(record, lastRecord, 'test'))}
                 </div>
@@ -140,7 +143,7 @@ class RecordTimeline extends React.Component<RecordTimelineProps, RecordTimeline
         return (
             isChanged ? (
                 <div>
-                    <span style={{ fontWeight: 'bold', fontSize: 14 }}>{prop.toUpperCase()}</span>
+                    <span style={{ fontWeight: 'bold', fontSize: 12 }}>{prop.toUpperCase()}</span>
                     {inline ? <span className="record-timeline-item-detailitem-inline">{content}</span> : <div className="record-timeline-item-detailitem"> {content} </div>}
                 </div>
             ) : ''
