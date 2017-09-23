@@ -110,7 +110,7 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
                 </Sider>
                 <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
                 <Content className="schedule-content">
-                    {activeSchedule ? (
+                    {activeSchedule && schedule.collectionId ? (
                         <ScheduleInfo
                             schedule={schedule}
                             environmentName={envName}
