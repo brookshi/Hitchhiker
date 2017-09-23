@@ -135,8 +135,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
 
         const { activeTabKey, headers, body, parameters, parameterType, test, headersEditMode, favHeaders } = this.props;
         const { isValid, msg } = StringUtil.verifyParameters(parameters || '', parameterType);
-        let paramArr = isValid ? StringUtil.getParameterArr(JSON.parse(parameters || ''), parameterType) : [];
-        paramArr = _.uniqWith(paramArr, _.isEqual);
+        let paramArr = StringUtil.getUniqParamArr(parameters, parameterType);
 
         return (
             <Tabs

@@ -147,9 +147,10 @@ export class StringUtil {
         if (!parameters) {
             return [];
         }
-        const { isValid } = StringUtil.verifyParameters(parameters, parameterType);
-        let paramArr = isValid ? StringUtil.getParameterArr(JSON.parse(parameters), parameterType) : new Array<any>();
-        return _.uniqWith(paramArr, _.isEqual);
+        const { isValid } = StringUtil.verifyParameters(parameters || '', parameterType);
+        let paramArr = isValid ? StringUtil.getParameterArr(JSON.parse(parameters || ''), parameterType) : new Array<any>();
+        const paramDict = _.keyBy(paramArr, p => StringUtil.toString(p));
+        return _.values(paramDict);
     }
 
     static toString(obj: any): string {

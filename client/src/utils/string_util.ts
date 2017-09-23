@@ -179,10 +179,15 @@ export class StringUtil {
         return paramArr;
     }
 
-    static parseParameters(parameters: string | undefined, parameterType: ParameterType, currentParamIndex: string): { currParam: string, paramArr: Array<any> } {
+    static getUniqParamArr(parameters: string | undefined, parameterType: ParameterType): Array<any> {
         const { isValid } = StringUtil.verifyParameters(parameters || '', parameterType);
         let paramArr = isValid ? StringUtil.getParameterArr(JSON.parse(parameters || ''), parameterType) : new Array<any>();
-        paramArr = _.uniqWith(paramArr, _.isEqual);
+        const paramDict = _.keyBy(paramArr, p => StringUtil.toString(p));
+        return _.values(paramDict);
+    }
+
+    static parseParameters(parameters: string | undefined, parameterType: ParameterType, currentParamIndex: string): { currParam: string, paramArr: Array<any> } {
+        const paramArr = StringUtil.getUniqParamArr(parameters, parameterType);
         const currParam = paramArr[Number.parseInt(currentParamIndex)] || allParameter;
         return { currParam, paramArr };
     }

@@ -100,7 +100,8 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
         let { record, inFolder } = this.props;
         let { method, name } = record;
         method = method || 'GET';
-        let paramReqInfo = StringUtil.verifyParameters(record.parameters || '', record.parameterType);
+        const paramReqInfo = StringUtil.verifyParameters(record.parameters || '', record.parameterType);
+        const reqCount = StringUtil.getUniqParamArr(record.parameters || '', record.parameterType).length;
 
         return (
             <div
@@ -109,7 +110,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
                 onDragOver={this.dragOver}
                 onDrop={this.drop}
             >
-                {paramReqInfo.isValid ? <Badge className="record-item-badge" count={paramReqInfo.count} style={{ backgroundColor: HttpMethodIcon.colorMapping[method.toUpperCase()] }} /> : ''}
+                {paramReqInfo.isValid ? <Badge className="record-item-badge" overflowCount={999} count={reqCount} style={{ backgroundColor: HttpMethodIcon.colorMapping[method.toUpperCase()] }} /> : ''}
                 <ItemWithMenu
                     ref={ele => this.itemWithMenu = ele}
                     className={`record ${inFolder ? 'record-in-folder' : ''}`}
