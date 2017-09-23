@@ -2,9 +2,10 @@ import React from 'react';
 import HttpMethodIcon from '../../../components/font_icon/http_method_icon';
 import ItemWithMenu from '../../../components/item_with_menu';
 import './style/index.less';
-import { Menu, Icon } from 'antd';
+import { Menu, Icon, Badge } from 'antd';
 import { confirmDlg } from '../../../components/confirm_dialog/index';
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
+import { StringUtil } from '../../../utils/string_util';
 
 interface RecordItemProps {
 
@@ -37,6 +38,8 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
         return this.props.record.id !== nextProps.record.id ||
             this.props.record.name !== nextProps.record.name ||
             this.props.record.method !== nextProps.record.method ||
+            this.props.record.parameters !== nextProps.record.parameters ||
+            this.props.record.parameterType !== nextProps.record.parameterType ||
             this.props.inFolder !== nextProps.inFolder;
     }
 
@@ -97,6 +100,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
         let { record, inFolder } = this.props;
         let { method, name } = record;
         method = method || 'GET';
+        let paramReqInfo = StringUtil.verifyParameters(record.parameters || '', record.parameterType);
 
         return (
             <div
@@ -105,6 +109,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
                 onDragOver={this.dragOver}
                 onDrop={this.drop}
             >
+                {paramReqInfo.isValid ? <Badge className="record-item-badge" count={paramReqInfo.count} style={{ backgroundColor: HttpMethodIcon.colorMapping[method.toUpperCase()] }} /> : ''}
                 <ItemWithMenu
                     ref={ele => this.itemWithMenu = ele}
                     className={`record ${inFolder ? 'record-in-folder' : ''}`}
