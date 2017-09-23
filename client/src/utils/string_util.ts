@@ -30,7 +30,7 @@ export class StringUtil {
     }
 
     static stringToKeyValues(str: string): Array<KeyValuePair> {
-        return str.split('\n').map(k => {
+        return (str || '').split('\n').map(k => {
             let [key, ...values] = k.split(':');
             const value: string | undefined = values.length === 0 ? undefined : values.join(':');
             const isActive = !key.startsWith('//');

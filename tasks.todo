@@ -91,8 +91,8 @@
     ✔ process data before comparing @done (9/11/2017, 10:37:27 PM)
     ✔ request parameterization, storage variable @done (9/22/2017, 6:58:40 PM)
     ✔ should exclude cookie if local cookie is empty @done (9/12/2017, 10:44:54 PM)
-    ☐ handle undefined value of tests
-    ☐ send request with common header like 'accept' etc..
+    ✔ handle undefined value of tests @done (9/23/2017, 9:19:47 AM)
+    ✔ send request with common header like 'accept' etc.. @done (9/23/2017, 2:25:58 PM)
 0.2.0:
     ☐ stree test
 0.2.1:

@@ -3,10 +3,14 @@ import { Options } from 'request';
 import { VariableService } from '../services/variable_service';
 import { RecordService } from '../services/record_service';
 import { ProjectService } from '../services/project_service';
+import { StringUtil } from '../utils/string_util';
+import { Setting } from '../utils/setting';
+import { Header } from '../models/header';
+import * as _ from 'lodash';
 
 export class RequestOptionAdapter {
     static async fromRecord(envId: string, record: Record, userId?: string): Promise<Options> {
-        record = await VariableService.applyVariableForRecord(envId, record);
+        record = await VariableService.applyVariableForRecord(envId, RequestOptionAdapter.applyDefaultHeaders(record));
         await RequestOptionAdapter.applyLocalhost(record, userId);
         return {
             url: record.url,
@@ -24,5 +28,13 @@ export class RequestOptionAdapter {
         const localhost = await ProjectService.getLocalhost(userId, record.collection.id);
         record.url = record.url.replace(regex, `$1${localhost}$2`);
         return;
+    }
+
+    static applyDefaultHeaders = (record: Record) => {
+        const defaultHeaders = StringUtil.stringToKeyValues(Setting.instance.defaultHeaders) as Header[];
+        return {
+            ...record,
+            headers: _.unionBy(record.headers || [], defaultHeaders, 'key')
+        };
     }
 }

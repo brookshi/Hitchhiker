@@ -77,4 +77,8 @@ export class Setting {
     get db() {
         return this._setting.db;
     }
+
+    get defaultHeaders() {
+        return this._setting.app.defaultHeaders ? this._setting.app.defaultHeaders.join('\n') : '';
+    }
 }

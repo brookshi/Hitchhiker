@@ -76,6 +76,14 @@ export class StringUtil {
         return { key: cookie.substr(0, cookie.indexOf('=') || cookie.length), value: cookie.substr(0, cookie.indexOf(';') || cookie.length) };
     }
 
+    static stringToKeyValues(str: string): Array<{ key?: string, value?: string }> {
+        return str.split('\n').map(k => {
+            let [key, ...values] = k.split(':');
+            const value: string | undefined = values.length === 0 ? undefined : values.join(':');
+            return { key, value };
+        });
+    }
+
     static verifyParameters(parameters: string, parameterType: ParameterType): { isValid: boolean, count: number, msg: string } {
         if (parameters === '') {
             return { isValid: false, count: 0, msg: '' };
