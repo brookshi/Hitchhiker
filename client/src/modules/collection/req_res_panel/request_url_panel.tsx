@@ -224,7 +224,7 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         }
         let newContent = content;
         _.keys(variables).forEach(k => {
-            newContent = newContent.replace(new RegExp(`{{${k}}}`, 'g'), variables[k] || '');
+            newContent = newContent.replace(new RegExp(`{{${k}}}`, 'g'), variables[k] == null ? '' : variables[k]);
         });
         return newContent;
     }
