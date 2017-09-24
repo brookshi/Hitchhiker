@@ -2,7 +2,6 @@ import { LoginSuccessType, LoginFailedType, RegisterSuccessType, RegisterFailedT
 import { UserInfoState, userInfoDefaultValue } from '../state/user';
 import { RequestStatus } from '../common/request_status';
 import { SessionInvalidType } from '../action/index';
-import { GlobalSetting } from '../utils/global_setting';
 
 export function userState(state: UserInfoState = userInfoDefaultValue, action: any): UserInfoState {
     switch (action.type) {
@@ -10,7 +9,6 @@ export function userState(state: UserInfoState = userInfoDefaultValue, action: a
             return { ...state, lastLoginName: action.value.email };
         }
         case LoginSuccessType: {
-            GlobalSetting.defaultHeaders = action.value.result.defaultHeaders;
             return { ...state, userInfo: action.value.result.user, loginState: { status: RequestStatus.success, message: action.value.message } };
         }
         case LoginFailedType: {

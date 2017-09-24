@@ -12,7 +12,6 @@ import { StringUtil } from '../../../utils/string_util';
 import { TreeData } from 'antd/lib/tree-select/interface';
 import * as _ from 'lodash';
 import { DtoHeader } from '../../../../../api/interfaces/dto_header';
-import { GlobalSetting } from '../../../utils/global_setting';
 
 const DButton = Dropdown.Button as any;
 const Option = Select.Option;
@@ -172,7 +171,7 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
             return this.applyLocalVariablesToRecord(record);
         }
         const rst: _.Dictionary<DtoRecord> = {};
-        const applyVars = p => this.applyLocalVariablesToRecord(this.applyReqParameterToRecord(this.applyDefaultHeaders(record), p));
+        const applyVars = p => this.applyLocalVariablesToRecord(this.applyReqParameterToRecord(record, p));
         if (currParam === allParameter) {
             paramArr.forEach(p => rst[JSON.stringify(p)] = applyVars(p));
         } else {
@@ -227,14 +226,6 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
             newContent = newContent.replace(new RegExp(`{{${k}}}`, 'g'), variables[k] == null ? '' : variables[k]);
         });
         return newContent;
-    }
-
-    private applyDefaultHeaders = (record: DtoRecord) => {
-        const defaultHeaders = StringUtil.stringToKeyValues(GlobalSetting.defaultHeaders) as DtoHeader[];
-        return {
-            ...record,
-            headers: _.unionBy(record.headers || [], defaultHeaders, 'key')
-        };
     }
 
     private onUrlChanged = (url: string) => {

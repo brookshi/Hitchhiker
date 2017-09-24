@@ -32,6 +32,7 @@ export class RequestOptionAdapter {
 
     static applyDefaultHeaders = (record: Record) => {
         const defaultHeaders = StringUtil.stringToKeyValues(Setting.instance.defaultHeaders) as Header[];
+        defaultHeaders.forEach(h => h.isActive = true);
         return {
             ...record,
             headers: _.unionBy(record.headers || [], defaultHeaders, 'key')
