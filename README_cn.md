@@ -12,9 +12,11 @@ Hitchhiker Api 是一款 Restful Api 集成测试工具，你可以在轻松部�
 
 * Team协作开发Api
 * Api历史修改记录及diff
-* 支持多环境变量及collection级别变量
+* 支持多环境变量及运行时变量，可以处理Api依赖问题
+* 参数化请求，把query/body里的变化点提取出来，构建出参数列表，极大减少request的数量
 * 支持Schedule及批量run
 * 不同环境下的请求数据对比 (eg: stage vs product)
+* 支持在数据对比前对数据进行处理
 * 易部署 (支持 docker, windows, linux), 数据都存在自己这里，不会上传及丢失
 * 会记往任何修改，不用怕没保存时session失效或系统重启
 * 支持导入Postman v1 collections
@@ -23,9 +25,9 @@ Hitchhiker Api 是一款 Restful Api 集成测试工具，你可以在轻松部�
 
 ## 展示
 
-<img src='https://github.com/brookshi/Hitchhiker/raw/master/doc/images/collection.png' width='800'/>
+<img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/collection.png' width='800'/>
 
-[go for more](https://github.com/brookshi/Hitchhiker/tree/master/doc/images)
+[go for more](https://github.com/brookshi/images/tree/master/Hitchhiker)
 
 ## 部署
 

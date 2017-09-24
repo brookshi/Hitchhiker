@@ -2,9 +2,23 @@ It's more easier if you are familiar with Postman.
 
 ### Concept：
 
-**`Request`**: include `name`, `url`, `method`, `headers`, `body`, `test`
+**`Request`**: include `name`, `url`, `method`, `headers`, `parameters`, `body`, `test`
 
-> All the properties you should know except `test`, `test` is used for response verification, you can use these variables as below:
+> All the properties you should know except `parameters` and `test`.
+
+> `parameters` is used to build request with parameters, in general, a Api have some variables which have multiple values in query string or body, you must create lots of Request to cover all cases, for example: you have 3 variables in your api, every variable have 3 values, now you must create `3*3*3=27` requests, it's hard, They are basically the same，Now you can use `parameters` to handle this situation, just write the variables in `parameters`, Hitchhiker will auto create requests that you want.
+
+> `parameters` have two option: `Many to Many` and `One to One`. let's, for example: there are two parameter `A` and `B`, `A` has two values: `1` and `2`，`B` has two values：`3` and `4`，you will have 4 request if select `Many to Many`： `13, 14, 23, 24`，and have 2 for `One to One`：`13, 24`。
+
+> `Parameters` is a json object, you must write it using this format as below:
+``` json
+{
+    "A": [1, 2],
+    "B": [3, 4]
+}
+```
+
+> `test` is used for response verification, you can use these variables as below:
 > - `responseBody`: the response's body
 > - `responseObj`：json object of this response's body (also you can use JSON.parse to get it)
 > - `responseHeaders`: response's headers
@@ -68,3 +82,6 @@ In some cases, Api may depend on the response of another Api. for this case Hitc
 Auto run `Collection` in `Schedule`, you need sort requests if there are dependencies between them, and you can select environment and comparing environment.
 By the way, you can use `Run now` in menu to run it at any time, and will receive real-time messages of request (base on WebSocket).
 
+### Compare response 
+
+As above, you can compare responses for different environments in `Schedule`, but sometimes we need handle data before comparing, for example, we have a response which include a date field with value of now, it's to say, every response is different, you can't get PASS in `schedule`. But, you know, it makes no sense to compare a date with value of now, so we could remove it before comparing by using `$export$(data)` in `test`, handle response and then pass data to function `$export$`, Hitchhiker will use this data to compare in schedule.

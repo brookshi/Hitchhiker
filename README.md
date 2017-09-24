@@ -11,20 +11,22 @@ Go to [http://www.hitchhiker-api.com](http://www.hitchhiker-api.com) for test，
 ## Feature
 * Api collaboration development with team
 * Api history
-* Multiple environments support
+* Multiple environments and Runtime variables support, easy to handle api dependence
+* Request parameterization, include ManytoMany and OnetoOne, now you can use a request to handle multple situation like various query string, body
 * Schedule and run batch
 * Make a comparison for Api response between two different environments (eg: stage vs product)
+* Support Handling response before comparing
 * Easy to deploy (support docker, windows, linux), keep data in your control, never lose data
 * All changed will be auto saved in local cache even if refresh page
-* Support import Postman v1 collections
+* Support importing Postman v1 collections
 * Performance test (progressing)
 * Api Document (in future)
 
 ## Display
 
-<img src='https://github.com/brookshi/Hitchhiker/raw/master/doc/images/collection.png' width='800'/>
+<img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/collection.png' width='800'/>
 
-[more images](https://github.com/brookshi/Hitchhiker/tree/master/doc/images)
+[go for more](https://github.com/brookshi/images/tree/master/Hitchhiker)
 
 ## Deploy
 
