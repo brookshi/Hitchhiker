@@ -99,6 +99,7 @@
     ☐ form data, text, binary body type
     ☐ fetch data per 30s
 0.2.2:
+    ☐ improve test for param request (test for each param, copy param to test)
     ☐ collection tree follow active tab(expand collection/folder)
     ☐ project share collection/env
     ☐ body type
