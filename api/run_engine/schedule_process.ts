@@ -7,11 +7,11 @@ Log.init();
 
 process.on('message', (msg) => {
     if (msg === 'start') {
-        startSchedules();
+        startScheduleProcess();
     }
 });
 
-function startSchedules() {
+function startScheduleProcess() {
     new ScheduleRunner().run();
     setInterval(() => {
         new ScheduleRunner().run();
