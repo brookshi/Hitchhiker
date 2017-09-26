@@ -12,19 +12,19 @@ export class ChildProcessManager {
 
     private retryTimes = 0;
 
-    private childModules = [
-        { name: 'schedule', module: `${__dirname}/schedule_process.js` },
-        { name: 'stress', module: `${__dirname}/stress_process.js` }
-    ];
+    private childModules: _.Dictionary<string> = {
+        ['schedule']: `${__dirname}/schedule_process.js`,
+        ['stress']: `${__dirname}/stress_process.js`
+    };
 
     init() {
-        this.childModules.forEach(c => this.createChildProcess(c));
+        _.keys(this.childModules).forEach(c => this.createChildProcess(c));
         process.on('exit', () => _.values(this.childProcesses).forEach(p => p.kill()));
     }
 
-    createChildProcess(childModule: { name: string, module: string }) {
-        const process = childProcess.fork(childModule.module, [], { silent: false, execArgv: [] });
-        this.childProcesses[childModule.name] = process;
+    createChildProcess(moduleName: string) {
+        const process = childProcess.fork(this.childModules[moduleName], [], { silent: false, execArgv: [] });
+        this.childProcesses[moduleName] = process;
 
         process.on('message', msg => {
 
@@ -33,20 +33,25 @@ export class ChildProcessManager {
                     return;
                 } else {
                     this.retryTimes--;
-                    Log.info(`${childModule.name} complete, time: ${this.retryTimes}!`);
+                    Log.info(`${moduleName} complete, time: ${this.retryTimes}!`);
                 }
             }
         });
 
         process.on('exit', () => {
             if (this.retryTimes === this.limit) {
-                Log.error(`${childModule.name} process exit ${this.limit} times, stop it.`);
+                Log.error(`${moduleName} process exit ${this.limit} times, stop it.`);
                 return;
             }
-            Log.warn(`${childModule.name} exit!`);
-            this.createChildProcess(childModule);
+            Log.warn(`${moduleName} exit!`);
+            this.createChildProcess(this.childModules[moduleName]);
         });
 
         process.send('start');
+    }
+
+    sendStressTask(collectionId: string, stressSetting: any) {
+        Log.info('send stress test task.');
+        this.childProcesses.schedule.send('task', stressSetting);
     }
 }
