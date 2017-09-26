@@ -2,7 +2,7 @@ import * as WS from 'ws';
 
 export abstract class WebSocketHandler {
 
-    private socket: WS;
+    protected socket: WS;
 
     handle = (socket: WS) => {
         this.socket = socket;

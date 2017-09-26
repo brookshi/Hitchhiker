@@ -2,19 +2,21 @@ import * as WS from 'ws';
 import * as http from 'http';
 import { ScheduleOnDemandService } from './schedule_on_demand_service';
 import { WebSocketHandler } from './base/web_socket_handler';
+import { StressTestService } from './stress_test_service';
 
 export class WebSocketService {
 
     private wsServer: WS.Server;
 
-    private routes: { [key: string]: { new (): WebSocketHandler } } = {};
+    private routes: { [key: string]: { new(): WebSocketHandler } } = {};
 
     constructor(server: http.Server) {
         this.wsServer = new WS.Server({ server });
         this.use('/schedule', ScheduleOnDemandService);
+        this.use('/stresstest', StressTestService);
     }
 
-    use(path: string, handler: { new (): WebSocketHandler }) {
+    use(path: string, handler: { new(): WebSocketHandler }) {
         this.routes[path] = handler;
     }
 

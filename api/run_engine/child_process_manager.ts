@@ -1,10 +1,14 @@
 import * as childProcess from 'child_process';
 import { Log } from '../utils/log';
 import * as _ from 'lodash';
+import { StressSetting } from '../interfaces/dto_stress_setting';
+import * as WS from 'ws';
 
 export class ChildProcessManager {
 
     static instance = new ChildProcessManager();
+
+    private constructor() { }
 
     private childProcesses: _.Dictionary<childProcess.ChildProcess> = {};
 
@@ -50,8 +54,8 @@ export class ChildProcessManager {
         process.send('start');
     }
 
-    sendStressTask(collectionId: string, stressSetting: any) {
+    sendStressTask(id: string, socket: WS, collectionId: string, stressSetting: StressSetting) {
         Log.info('send stress test task.');
-        this.childProcesses.schedule.send('task', stressSetting);
+        this.childProcesses.stress.send('task', { id, socket, collectionId, stressSetting });
     }
 }
