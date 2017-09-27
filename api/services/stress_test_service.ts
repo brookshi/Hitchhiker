@@ -16,6 +16,10 @@ export class StressTestService extends WebSocketHandler {
         this.id = StringUtil.generateShortId();
     }
 
+    init() {
+        ChildProcessManager.instance.initStressUser(this.id, this.socket);
+    }
+
     onReceive(data: string) {
         Log.info(`Stress Test - receive data: ${data}`);
         let info;
@@ -41,7 +45,7 @@ export class StressTestService extends WebSocketHandler {
         }
 
         if (info.type === 'task') {
-            ChildProcessManager.instance.sendStressTask(this.id, this.socket, info.stressId, info.stressSetting);
+            ChildProcessManager.instance.sendStressTask(this.id, this.socket, info.stressSetting);
         } else if (info.type === 'cancel') {
 
         }

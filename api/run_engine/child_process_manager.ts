@@ -54,8 +54,12 @@ export class ChildProcessManager {
         process.send('start');
     }
 
-    sendStressTask(id: string, socket: WS, collectionId: string, stressSetting: StressSetting) {
+    initStressUser(id: string, socket: WS) {
+        this.childProcesses.stress.send('init', { id, socket });
+    }
+
+    sendStressTask(id: string, socket: WS, stressSetting: StressSetting) {
         Log.info('send stress test task.');
-        this.childProcesses.stress.send('task', { id, socket, collectionId, stressSetting });
+        this.childProcesses.stress.send('task', { id, socket, stressSetting });
     }
 }

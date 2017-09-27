@@ -6,8 +6,13 @@ export abstract class WebSocketHandler {
 
     handle = (socket: WS) => {
         this.socket = socket;
+        this.init();
         socket.on('message', data => this.onReceive(data as string));
         socket.on('close', this.onClose);
+    }
+
+    init() {
+        console.log('ws init');
     }
 
     abstract onReceive(data: string);
