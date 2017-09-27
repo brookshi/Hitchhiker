@@ -1,7 +1,7 @@
 import * as childProcess from 'child_process';
 import { Log } from '../utils/log';
 import * as _ from 'lodash';
-import { StressSetting } from '../interfaces/dto_stress_setting';
+import { StressSetting, StressMessageType } from '../interfaces/dto_stress_setting';
 import * as WS from 'ws';
 
 export class ChildProcessManager {
@@ -55,11 +55,20 @@ export class ChildProcessManager {
     }
 
     initStressUser(id: string, socket: WS) {
-        this.childProcesses.stress.send('init', { id, socket });
+        this.childProcesses.stress.send({ type: StressMessageType.init, id, socket });
+    }
+
+    closeStressUser(id: string) {
+        this.childProcesses.stress.send({ type: StressMessageType.close, id });
     }
 
     sendStressTask(id: string, socket: WS, stressSetting: StressSetting) {
         Log.info('send stress test task.');
-        this.childProcesses.stress.send('task', { id, socket, stressSetting });
+        this.childProcesses.stress.send({ type: StressMessageType.task, id, socket, stressSetting });
+    }
+
+    stopStressTask(id: string) {
+        Log.info('stop stress test task.');
+        this.childProcesses.stress.send({ type: StressMessageType.stop, id });
     }
 }

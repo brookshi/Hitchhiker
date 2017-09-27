@@ -3,7 +3,7 @@ import { ScheduleService } from './schedule_service';
 import { ScheduleRunner } from '../run_engine/schedule_runner';
 import { WebSocketHandler } from './base/web_socket_handler';
 import { Log } from '../utils/log';
-import { StressInfo } from '../interfaces/dto_stress_setting';
+import { StressMessageType, StressRequest } from '../interfaces/dto_stress_setting';
 import { ChildProcessManager } from '../run_engine/child_process_manager';
 import { StringUtil } from '../utils/string_util';
 
@@ -30,24 +30,25 @@ export class StressTestService extends WebSocketHandler {
             return;
         }
 
-        this.pass(info).then(() => this.close());
+        this.pass(info);
     }
 
     onClose() {
         Log.info('Stress Test - client close');
+
         this.close();
     }
 
-    async pass(info: StressInfo): Promise<any> {
+    async pass(info: StressRequest): Promise<any> {
         if (!info) {
             this.close('Stress Test - invalid info');
             return;
         }
 
-        if (info.type === 'task') {
-            ChildProcessManager.instance.sendStressTask(this.id, this.socket, info.stressSetting);
-        } else if (info.type === 'cancel') {
-
+        if (info.type === StressMessageType.task) {
+            ChildProcessManager.instance.sendStressTask(this.id, this.socket, info.setting);
+        } else if (info.type === StressMessageType.stop) {
+            ChildProcessManager.instance.stopStressTask(this.id);
         }
     }
 }
