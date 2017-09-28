@@ -51,11 +51,11 @@ export class ChildProcessManager {
             this.createChildProcess(this.childModules[moduleName]);
         });
 
-        process.send('start');
+        moduleName === 'stress' ? process.send({ type: StressMessageType.start }) : process.send('start');
     }
 
     initStressUser(id: string, socket: WS) {
-        this.childProcesses.stress.send({ type: StressMessageType.init, id, socket });
+        this.childProcesses.stress.send({ type: StressMessageType.init, id }, socket);
     }
 
     closeStressUser(id: string) {
@@ -64,7 +64,7 @@ export class ChildProcessManager {
 
     sendStressTask(id: string, socket: WS, stressSetting: StressSetting) {
         Log.info('send stress test task.');
-        this.childProcesses.stress.send({ type: StressMessageType.task, id, socket, stressSetting });
+        this.childProcesses.stress.send({ type: StressMessageType.task, id, stressSetting });
     }
 
     stopStressTask(id: string) {

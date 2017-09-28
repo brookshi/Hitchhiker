@@ -18,22 +18,30 @@ let currentStressUser: StressRequest;
 
 Log.init();
 
-process.on('message', (msg: StressRequest) => {
+console.log('stress process start');
+
+process.on('message', (msg: StressRequest, data: any) => {
+    console.log(`stress - user message: ${JSON.stringify(msg)}`);
     switch (msg.type) {
         case StressMessageType.init:
-            initUser(msg);
+            console.log('stress - user init');
+            initUser({ ...<StressUser>msg, socket: data });
             break;
         case StressMessageType.start:
+            console.log('stress - user start');
             startStressProcess();
             break;
         case StressMessageType.task:
+            console.log('stress - user task');
             sendMsgToWorkers(msg);
             break;
         case StressMessageType.close:
+            console.log('stress - user close');
             Reflect.deleteProperty(users, msg.id);
             currentStressUser = undefined;
             break;
         case StressMessageType.stop:
+            console.log('stress - user stop');
             sendMsgToWorkers(msg);
             currentStressUser = undefined;
             break;
@@ -48,20 +56,27 @@ function initUser(user: StressUser) {
 }
 
 function addTask(setting: StressRequest) {
-    stressQueue.push(setting);
     tryTriggerStart(setting);
 }
 
-function tryTriggerStart(setting: StressRequest) {
-    setting = setting || stressQueue.shift();
-    if (!setting) {
+function tryTriggerStart(setting?: StressRequest) {
+    console.log(`stress - tryTriggerStart: ${JSON.stringify(setting || '')}`);
+    if (_.values(workers).some(n => n.status !== WorkerStatus.idle)) {
+        console.log('stress - trigger start: not all worker idle');
+        if (!!setting) {
+            setting.socket.send(JSON.stringify({ type: StressMessageType.wait }));
+            console.log('stress - push to queue');
+            stressQueue.push(setting);
+        }
         return;
     }
-    if (_.values(workers).some(n => n.status !== WorkerStatus.idle)) {
-        setting.socket.send(JSON.stringify({ type: StressMessageType.wait }));
+    setting = setting || stressQueue.shift();
+    if (!setting) {
+        console.log('stress - no setting, return');
         return;
     }
     currentStressUser = setting;
+    console.log('stress - send msg to workers');
     sendMsgToWorkers(setting);
 }
 
@@ -70,42 +85,57 @@ function sendMsgToWorkers(setting) {
 }
 
 function sendMsgToUser(user: StressUser, data?: any) {
+    console.log(`stress - send msg to user ${user.id}: ${JSON.stringify(data || '')}`);
     if (!user || !user.socket) {
+        console.log(`stress - user invalid`);
         return;
     }
     const res = { workerInfos: _.values(workers).map(w => w as WorkerInfo), data } as StressResponse;
+    console.log(`stress - send msg to user ${user.id}: ${JSON.stringify(res)}`);
     user.socket.send(JSON.stringify(res));
 }
 
 function broadcastMsgToUsers(data?: any) {
+    console.log(`stress - broadcast msg to user: ${JSON.stringify(data || '')}`);
     _.values(users).forEach(u => sendMsgToUser(u, data));
 }
 
 function startStressProcess() {
+    console.log(`stress - create socket server`);
     net.createServer(socket => {
 
         workers[socket.remoteAddress] = { addr: socket.remoteAddress, socket, status: WorkerStatus.idle, cpuNum: Number.NaN };
-        Log.info(`Connected: ${socket.remoteAddress}`);
+        console.log(`stress - worker connected: ${socket.remoteAddress}`);
 
         socket.on('data', data => {
-            Log.info(data.toString());
+            console.log(`stress - data from ${socket.remoteAddress}: ${data.toString()}`);
             const obj = JSON.parse(data.toString()) as StressMessage;
             switch (obj.code) {
                 case StressMessageType.hardware:
+                    console.log(`stress - hardware`);
                     workers[socket.remoteAddress].cpuNum = obj.cpuNum;
+                    workers[socket.remoteAddress].status = obj.status;
                     broadcastMsgToUsers();
                     break;
                 case StressMessageType.status:
+                    console.log(`stress - status`);
                     workers[socket.remoteAddress].status = obj.status;
                     broadcastMsgToUsers();
                     if (obj.status === WorkerStatus.ready) {
                         if (!_.values(workers).some(w => w.status !== WorkerStatus.ready)) {
+                            console.log(`stress - all workers ready`);
                             sendMsgToWorkers({ code: StressMessageType.start });
+                        }
+                    } else if (obj.status === WorkerStatus.finish) {
+                        if (!_.values(workers).some(w => w.status !== WorkerStatus.finish && w.status !== WorkerStatus.idle)) {
+                            console.log(`stress - all workers finish/idle`);
+                            tryTriggerStart();
                         }
                     }
                     break;
                 case StressMessageType.start:
                     workers[socket.remoteAddress].status = WorkerStatus.working;
+                    console.log(`stress - worker ${socket.remoteAddress} start`);
                     broadcastMsgToUsers();
                     break;
                 default:
@@ -114,18 +144,21 @@ function startStressProcess() {
         });
 
         socket.on('close', hadErr => {
-            Log.info(`Closed: ${socket.remoteAddress}`);
+            console.log(`stress - closed: ${socket.remoteAddress}`);
             Reflect.deleteProperty(workers, socket.remoteAddress);
+            broadcastMsgToUsers();
         });
 
         socket.on('error', err => {
-            Log.info(`Error: ${socket.remoteAddress}`);
+            console.log(`stress - error: ${socket.remoteAddress}`);
             Reflect.deleteProperty(workers, socket.remoteAddress);
+            broadcastMsgToUsers();
         });
 
         socket.on('timeout', () => {
-            Log.info(`Timeout: ${socket.remoteAddress}`);
+            console.log(`stress - timeout: ${socket.remoteAddress}`);
             Reflect.deleteProperty(workers, socket.remoteAddress);
+            broadcastMsgToUsers();
         });
-    });
+    }).listen(Setting.instance.app.stressPort);
 }
