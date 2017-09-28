@@ -10,25 +10,13 @@ export class StressWS {
         this.socket = new WebSocket(Urls.getWebSocket('stresstest'));
         this.socket.onmessage = (ev: MessageEvent) => {
             const data = JSON.parse(ev.data);
-            if (data.isResult) {
-                setTimeout(() => {
-                    //emitter(actionCreator(RunScheduleFulfillType, { id, data }));
-                }, 1000);
-            } else {
-                //emitter(actionCreator(ScheduleChunkDataType, { id, data }));
-            }
-        };
-        this.socket.onopen = (ev: Event) => {
-            //socket.send(id);
+            console.log(data);
         };
         this.socket.onclose = (ev: CloseEvent) => {
-            setTimeout(() => {
-                // emitter(END);
-            }, 2000);
+            console.error('stress test server error');
         };
         this.socket.onerror = (ev: Event) => {
-            console.error(ev);
-            // emitter(END);
+            console.error('stress test server error', ev);
         };
     }
 }

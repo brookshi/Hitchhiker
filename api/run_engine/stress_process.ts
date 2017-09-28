@@ -14,18 +14,18 @@ const stressQueue: Array<StressRequest> = [];
 
 const users: _.Dictionary<StressUser> = {};
 
-let currentStressUser: StressRequest;
+let currentStressRequest: StressRequest;
 
 Log.init();
 
 console.log('stress process start');
 
-process.on('message', (msg: StressRequest, data: any) => {
+process.on('message', (msg: StressRequest) => {
     console.log(`stress - user message: ${JSON.stringify(msg)}`);
     switch (msg.type) {
         case StressMessageType.init:
             console.log('stress - user init');
-            initUser({ ...<StressUser>msg, socket: data });
+            initUser({ ...<StressUser>msg });
             break;
         case StressMessageType.start:
             console.log('stress - user start');
@@ -38,12 +38,12 @@ process.on('message', (msg: StressRequest, data: any) => {
         case StressMessageType.close:
             console.log('stress - user close');
             Reflect.deleteProperty(users, msg.id);
-            currentStressUser = undefined;
+            currentStressRequest = undefined;
             break;
         case StressMessageType.stop:
             console.log('stress - user stop');
             sendMsgToWorkers(msg);
-            currentStressUser = undefined;
+            currentStressRequest = undefined;
             break;
         default:
             break;
@@ -64,7 +64,7 @@ function tryTriggerStart(setting?: StressRequest) {
     if (_.values(workers).some(n => n.status !== WorkerStatus.idle)) {
         console.log('stress - trigger start: not all worker idle');
         if (!!setting) {
-            setting.socket.send(JSON.stringify({ type: StressMessageType.wait }));
+            process.send({ id: setting.id, data: { type: StressMessageType.wait } });
             console.log('stress - push to queue');
             stressQueue.push(setting);
         }
@@ -75,7 +75,7 @@ function tryTriggerStart(setting?: StressRequest) {
         console.log('stress - no setting, return');
         return;
     }
-    currentStressUser = setting;
+    currentStressRequest = setting;
     console.log('stress - send msg to workers');
     sendMsgToWorkers(setting);
 }
@@ -86,13 +86,13 @@ function sendMsgToWorkers(setting) {
 
 function sendMsgToUser(user: StressUser, data?: any) {
     console.log(`stress - send msg to user ${user.id}: ${JSON.stringify(data || '')}`);
-    if (!user || !user.socket) {
+    if (!user) {
         console.log(`stress - user invalid`);
         return;
     }
-    const res = { workerInfos: _.values(workers).map(w => w as WorkerInfo), data } as StressResponse;
+    const res = { type: StressMessageType.status, workerInfos: _.values(workers).map(w => w as WorkerInfo), data } as StressResponse;
     console.log(`stress - send msg to user ${user.id}: ${JSON.stringify(res)}`);
-    user.socket.send(JSON.stringify(res));
+    process.send({ id: user.id, data: res });
 }
 
 function broadcastMsgToUsers(data?: any) {

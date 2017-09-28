@@ -3,7 +3,7 @@ import { ScheduleService } from './schedule_service';
 import { ScheduleRunner } from '../run_engine/schedule_runner';
 import { WebSocketHandler } from './base/web_socket_handler';
 import { Log } from '../utils/log';
-import { StressMessageType, StressRequest } from '../interfaces/dto_stress_setting';
+import { StressMessageType, StressRequest, StressResponse } from '../interfaces/dto_stress_setting';
 import { ChildProcessManager } from '../run_engine/child_process_manager';
 import { StringUtil } from '../utils/string_util';
 
@@ -17,7 +17,7 @@ export class StressTestService extends WebSocketHandler {
     }
 
     init() {
-        ChildProcessManager.instance.initStressUser(this.id, this.socket);
+        ChildProcessManager.instance.initStressUser(this.id, this.handleMsg);
     }
 
     onReceive(data: string) {
@@ -46,9 +46,13 @@ export class StressTestService extends WebSocketHandler {
         }
 
         if (info.type === StressMessageType.task) {
-            ChildProcessManager.instance.sendStressTask(this.id, this.socket, info.setting);
+            ChildProcessManager.instance.sendStressTask(this.id, info.setting);
         } else if (info.type === StressMessageType.stop) {
             ChildProcessManager.instance.stopStressTask(this.id);
         }
+    }
+
+    handleMsg(data: StressResponse) {
+        this.send(JSON.stringify(data));
     }
 }

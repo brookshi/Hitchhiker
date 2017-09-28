@@ -1,7 +1,7 @@
 import * as childProcess from 'child_process';
 import { Log } from '../utils/log';
 import * as _ from 'lodash';
-import { StressSetting, StressMessageType } from '../interfaces/dto_stress_setting';
+import { StressSetting, StressMessageType, StressResponse } from '../interfaces/dto_stress_setting';
 import * as WS from 'ws';
 
 export class ChildProcessManager {
@@ -11,6 +11,8 @@ export class ChildProcessManager {
     private constructor() { }
 
     private childProcesses: _.Dictionary<childProcess.ChildProcess> = {};
+
+    private stressHandlers: _.Dictionary<(data: StressResponse) => void> = {};
 
     private limit = 10;
 
@@ -40,6 +42,12 @@ export class ChildProcessManager {
                     Log.info(`${moduleName} complete, time: ${this.retryTimes}!`);
                 }
             }
+
+            if (moduleName === 'stress') {
+                if (this.stressHandlers[msg.id]) {
+                    this.stressHandlers[msg.id](msg.data);
+                }
+            }
         });
 
         process.on('exit', () => {
@@ -54,15 +62,17 @@ export class ChildProcessManager {
         moduleName === 'stress' ? process.send({ type: StressMessageType.start }) : process.send('start');
     }
 
-    initStressUser(id: string, socket: WS) {
-        this.childProcesses.stress.send({ type: StressMessageType.init, id }, socket);
+    initStressUser(id: string, dataHandler: (data: StressResponse) => void) {
+        this.stressHandlers[id] = dataHandler;
+        this.childProcesses.stress.send({ type: StressMessageType.init, id });
     }
 
     closeStressUser(id: string) {
+        Reflect.deleteProperty(this.stressHandlers, id);
         this.childProcesses.stress.send({ type: StressMessageType.close, id });
     }
 
-    sendStressTask(id: string, socket: WS, stressSetting: StressSetting) {
+    sendStressTask(id: string, stressSetting: StressSetting) {
         Log.info('send stress test task.');
         this.childProcesses.stress.send({ type: StressMessageType.task, id, stressSetting });
     }

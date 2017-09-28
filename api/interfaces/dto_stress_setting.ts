@@ -1,11 +1,8 @@
 import { RunResult } from './dto_run_result';
-import * as WS from 'ws';
 
 export interface StressUser {
 
     id: string;
-
-    socket: WS;
 }
 
 export interface StressRequest extends StressUser {
@@ -27,6 +24,8 @@ export interface WorkerInfo {
 }
 
 export interface StressResponse {
+
+    type: StressMessageType;
 
     workerInfos: WorkerInfo[];
 
