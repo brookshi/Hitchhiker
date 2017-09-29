@@ -94,6 +94,7 @@
     ✔ handle undefined value of tests @done (9/23/2017, 9:19:47 AM)
     ✔ send request with common header like 'accept' etc.. @done (9/23/2017, 2:25:58 PM)
 0.2.0:
+    ✔ run schedule in background with empty request will throw exception @done (9/29/2017, 6:45:10 PM)
     ☐ stree test
 0.2.1:
     ☐ form data, text, binary body type
