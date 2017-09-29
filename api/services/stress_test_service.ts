@@ -17,7 +17,7 @@ export class StressTestService extends WebSocketHandler {
     }
 
     init() {
-        ChildProcessManager.instance.initStressUser(this.id, this.handleMsg);
+        ChildProcessManager.instance.initStressUser(this.id, data => this.handleMsg(data));
     }
 
     onReceive(data: string) {
@@ -35,7 +35,7 @@ export class StressTestService extends WebSocketHandler {
 
     onClose() {
         Log.info('Stress Test - client close');
-
+        ChildProcessManager.instance.closeStressUser(this.id);
         this.close();
     }
 
@@ -52,7 +52,9 @@ export class StressTestService extends WebSocketHandler {
         }
     }
 
-    handleMsg(data: StressResponse) {
-        this.send(JSON.stringify(data));
+    handleMsg = (data: StressResponse) => {
+        if (this.socket.readyState === this.socket.OPEN) {
+            this.send(JSON.stringify(data));
+        }
     }
 }

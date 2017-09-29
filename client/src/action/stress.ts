@@ -19,4 +19,12 @@ export class StressWS {
             console.error('stress test server error', ev);
         };
     }
+
+    start() {
+        if (!this.socket || this.socket.readyState !== this.socket.OPEN) {
+            console.error('socket is closed, please refresh to connect');
+            return;
+        }
+        this.socket.send({ totalCount: 1, concurrencyCount: 1, qps: 0, timeout: 600 });
+    }
 }

@@ -8,7 +8,7 @@ export abstract class WebSocketHandler {
         this.socket = socket;
         this.init();
         socket.on('message', data => this.onReceive(data as string));
-        socket.on('close', this.onClose);
+        socket.on('close', () => this.onClose());
     }
 
     init() {

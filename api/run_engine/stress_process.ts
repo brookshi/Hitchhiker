@@ -90,7 +90,7 @@ function sendMsgToUser(user: StressUser, data?: any) {
         console.log(`stress - user invalid`);
         return;
     }
-    const res = { type: StressMessageType.status, workerInfos: _.values(workers).map(w => w as WorkerInfo), data } as StressResponse;
+    const res = { type: StressMessageType.status, workerInfos: _.values(workers).map(w => ({ ...w, socket: undefined })), data } as StressResponse;
     console.log(`stress - send msg to user ${user.id}: ${JSON.stringify(res)}`);
     process.send({ id: user.id, data: res });
 }
@@ -104,7 +104,7 @@ function startStressProcess() {
     console.log(`stress - create socket server`);
     net.createServer(socket => {
 
-        workers[socket.remoteAddress] = { addr: socket.remoteAddress, socket, status: WorkerStatus.idle, cpuNum: Number.NaN };
+        workers[socket.remoteAddress] = { addr: socket.remoteAddress + "," + socket.remoteFamily, socket, status: WorkerStatus.idle, cpuNum: Number.NaN };
         console.log(`stress - worker connected: ${socket.remoteAddress}`);
 
         socket.on('data', data => {
@@ -150,9 +150,7 @@ function startStressProcess() {
         });
 
         socket.on('error', err => {
-            console.log(`stress - error: ${socket.remoteAddress}`);
-            Reflect.deleteProperty(workers, socket.remoteAddress);
-            broadcastMsgToUsers();
+            console.log(`stress - error ${socket.remoteAddress}: ${err}`);
         });
 
         socket.on('timeout', () => {

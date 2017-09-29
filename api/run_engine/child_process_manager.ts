@@ -56,7 +56,7 @@ export class ChildProcessManager {
                 return;
             }
             Log.warn(`${moduleName} exit!`);
-            this.createChildProcess(this.childModules[moduleName]);
+            this.createChildProcess(moduleName);
         });
 
         moduleName === 'stress' ? process.send({ type: StressMessageType.start }) : process.send('start');
