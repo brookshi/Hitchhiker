@@ -1,4 +1,6 @@
 import { Urls } from '../utils/urls';
+import { StressRequest, StressResponse } from '../../../api/interfaces/dto_stress_setting';
+import { StressMessageType } from '../common/stress_type';
 
 export class StressWS {
 
@@ -9,7 +11,7 @@ export class StressWS {
     initStressWS() {
         this.socket = new WebSocket(Urls.getWebSocket('stresstest'));
         this.socket.onmessage = (ev: MessageEvent) => {
-            const data = JSON.parse(ev.data);
+            const data = JSON.parse(ev.data) as StressResponse;
             console.log(data);
         };
         this.socket.onclose = (ev: CloseEvent) => {
@@ -25,6 +27,6 @@ export class StressWS {
             console.error('socket is closed, please refresh to connect');
             return;
         }
-        this.socket.send({ totalCount: 1, concurrencyCount: 1, qps: 0, timeout: 600 });
+        this.socket.send(JSON.stringify({ type: StressMessageType.task, stressId: '', testCase: { totalCount: 10, concurrencyCount: 1, qps: 0, timeout: 600 } } as StressRequest));
     }
-}
+} 

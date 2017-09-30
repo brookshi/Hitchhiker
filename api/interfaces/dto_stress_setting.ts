@@ -1,4 +1,5 @@
 import { RunResult } from './dto_run_result';
+import { StressMessageType, WorkerStatus } from '../common/stress_type';
 
 export interface StressUser {
 
@@ -11,7 +12,35 @@ export interface StressRequest extends StressUser {
 
     stressId: string;
 
-    setting: StressSetting;
+    testCase: TestCase;
+}
+
+export interface TestCase {
+
+    requestBodyList?: RequestBody[];
+
+    totalCount: number;
+
+    concurrencyCount: number;
+
+    qps: number;
+
+    timeout: number;
+}
+
+export interface RequestBody {
+
+    id: string;
+
+    method: string;
+
+    url: string;
+
+    body?: string;
+
+    headers?: _.Dictionary<string>;
+
+    tests?: string;
 }
 
 export interface WorkerInfo {
@@ -32,58 +61,47 @@ export interface StressResponse {
     data?: any;
 }
 
-export interface StressSetting {
-
-    totalCount: number;
-
-    concurrencyCount: number;
-
-    qps: number;
-
-    timeout: number;
-}
-
-export enum WorkerStatus {
-
-    idle = 0,
-
-    ready = 1,
-
-    working = 2,
-
-    finish = 3,
-
-    down = 4
-}
-
-export enum StressMessageType {
-
-    hardware = 0,
-
-    task = 1,
-
-    start = 2,
-
-    runResult = 3,
-
-    stop = 4,
-
-    status = 5,
-
-    init = 6,
-
-    close = 7,
-
-    wait = 8
-}
-
 export interface StressMessage {
 
     status: WorkerStatus;
 
-    code: StressMessageType;
+    type: StressMessageType;
 
     runResult: RunResult;
 
     cpuNum: number;
+}
+
+export interface StressResTime {
+
+    dns: number;
+
+    connect: number;
+
+    request: number;
+
+    high: number;
+
+    low: number;
+
+    p50: number;
+
+    p75: number;
+
+    p90: number;
+
+    p95: number;
+}
+
+export interface StressResStatus {
+
+    success: number;
+
+    m500: number;
+
+    testFailed: number;
+
+    noRes: number;
+
+    timeout: number;
 }
