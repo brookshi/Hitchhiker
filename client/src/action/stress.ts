@@ -27,6 +27,6 @@ export class StressWS {
             console.error('socket is closed, please refresh to connect');
             return;
         }
-        this.socket.send(JSON.stringify({ type: StressMessageType.task, stressId: '', testCase: { totalCount: 10, concurrencyCount: 1, qps: 0, timeout: 600 } } as StressRequest));
+        this.socket.send(JSON.stringify({ type: StressMessageType.task, stressId: '', testCase: { totalCount: 100, concurrencyCount: 100, qps: 0, timeout: 600 } } as StressRequest));
     }
 } 

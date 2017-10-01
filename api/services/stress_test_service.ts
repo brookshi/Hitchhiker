@@ -7,6 +7,7 @@ import { StressRequest, StressResponse } from '../interfaces/dto_stress_setting'
 import { ChildProcessManager } from '../run_engine/child_process_manager';
 import { StringUtil } from '../utils/string_util';
 import { StressMessageType } from '../common/stress_type';
+import { RecordService } from './record_service';
 
 export class StressTestService extends WebSocketHandler {
 
@@ -48,6 +49,13 @@ export class StressTestService extends WebSocketHandler {
 
         if (info.type === StressMessageType.task) {
             info.id = this.id;
+            const cid = '19c68160-a69f-11e7-85a0-137e5246d553-S1WxNw8AoZ';
+            const records = (await RecordService.getByCollectionIds([cid], true, false))[cid];
+            info.testCase.requestBodyList = records.map(r => {
+                const request = { ...r, param: '', headers: {} };
+                r.headers.forEach(h => request.headers[h.key] = h.value);
+                return request;
+            });
             ChildProcessManager.instance.sendStressTask(info);
         } else if (info.type === StressMessageType.stop) {
             ChildProcessManager.instance.stopStressTask(this.id);

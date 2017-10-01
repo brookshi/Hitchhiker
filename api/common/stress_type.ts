@@ -32,3 +32,14 @@ export enum StressMessageType {
 
     wait = 8
 }
+
+// type StressFaildType = 'noRes' | 'm500' | 'testFailed' | 'timeout';
+
+export class StressFailedType {
+
+    static noRes = 'noRes';
+
+    static m500 = 'm500';
+
+    static testFailed = 'testFailed';
+}

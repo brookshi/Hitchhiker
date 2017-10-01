@@ -32,6 +32,10 @@ export interface RequestBody {
 
     id: string;
 
+    name: string;
+
+    param: string;
+
     method: string;
 
     url: string;
@@ -72,13 +76,31 @@ export interface StressMessage {
     cpuNum: number;
 }
 
-export interface StressResTime {
+export interface Duration {
 
     dns: number;
 
     connect: number;
 
     request: number;
+}
+
+export interface StressReqProgress {
+
+    id: string;
+
+    name: string;
+
+    num: number;
+}
+
+export interface StressResStatisticsTime {
+
+    averageDns: number;
+
+    averageConnect: number;
+
+    averageRequest: number;
 
     high: number;
 
@@ -93,15 +115,26 @@ export interface StressResTime {
     p95: number;
 }
 
-export interface StressResStatus {
+export interface StressResFailedStatus {
 
-    success: number;
+    testFailed: _.Dictionary<RunResult[]>;
 
-    m500: number;
+    noRes: _.Dictionary<RunResult[]>;
 
-    testFailed: number;
+    m500: _.Dictionary<RunResult[]>;
+}
 
-    noRes: number;
+export interface StressRunResult {
 
-    timeout: number;
+    totalCount: number;
+
+    doneCount: number;
+
+    tps: number;
+
+    reqProgress: StressReqProgress[];
+
+    stressReqDuration: _.Dictionary<{ durations: Duration[], statistics?: StressResStatisticsTime }>;
+
+    stressFailedResult: StressResFailedStatus;
 }

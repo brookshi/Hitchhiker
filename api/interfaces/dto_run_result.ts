@@ -1,4 +1,5 @@
 import { DtoError } from './dto_error';
+import { Duration } from './dto_stress_setting';
 
 export interface RunResult {
 
@@ -23,6 +24,8 @@ export interface RunResult {
     statusMessage: string;
 
     elapsed: number;
+
+    duration?: Duration;
 
     headers: { [key: string]: string };
 
