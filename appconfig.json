@@ -12,9 +12,7 @@
             "Accept:*/*",
             "User-Agent:Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36",
             "Cache-Control:no-cache"
-        ],
-        "stressPort": 8081,
-        "stressUpdateInterval": 1000
+        ]
     },
     "db": {
         "host": "localhost",
@@ -26,6 +24,11 @@
     "schedule": {
         "duration": 1800,
         "storeMaxCount": 10
+    },
+    "stress": {
+        "storeMaxCount": 5,
+        "stressPort": 8081,
+        "stressUpdateInterval": 1000
     },
     "user": {
         "registerMailConfirm": false

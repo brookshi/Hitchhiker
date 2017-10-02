@@ -3,7 +3,7 @@ import { Setting } from '../utils/setting';
 import { Log } from '../utils/log';
 import * as net from 'net';
 import * as WS from 'ws';
-import { StressRequest, StressUser, WorkerInfo, StressResponse, TestCase, StressMessage, StressResFailedStatus, Duration, StressResStatisticsTime, StressRunResult } from '../interfaces/dto_stress_setting';
+import { StressRequest, StressUser, WorkerInfo, StressResponse, TestCase, StressMessage, StressResFailedInfo, Duration, StressResStatisticsTime, StressRunResult, StressResFailedStatistics } from '../interfaces/dto_stress_setting';
 import * as _ from 'lodash';
 import { StressMessageType, WorkerStatus, StressFailedType } from '../common/stress_type';
 import { RunResult } from '../interfaces/dto_run_result';
@@ -20,7 +20,7 @@ const users: _.Dictionary<StressUser> = {};
 
 let stressReqDuration: _.Dictionary<{ durations: Duration[], statistics?: StressResStatisticsTime }> = {};
 
-let stressFailedResult: StressResFailedStatus = { m500: {}, testFailed: {}, noRes: {} };
+let stressFailedResult: StressResFailedInfo = { m500: {}, testFailed: {}, noRes: {} };
 
 let currentStressRequest: StressRequest;
 
@@ -31,7 +31,7 @@ Log.init();
 console.log('stress process start');
 
 console.log(`stress - create socket server`);
-const wsServer = new WS.Server({ port: Setting.instance.app.stressPort });
+const wsServer = new WS.Server({ port: Setting.instance.stressPort });
 
 let userUpdateTimer: number;
 
@@ -177,7 +177,7 @@ function workerUpdated(addr: string, status: WorkerStatus) {
             sendMsgToWorkers({ type: StressMessageType.start });
             userUpdateTimer = setInterval(() => {
                 sendDataToUser();
-            }, Setting.instance.app.stressUpdateInterval);
+            }, Setting.instance.stressUpdateInterval);
         }
     } else if (status === WorkerStatus.finish) {
         workers[addr].status = WorkerStatus.idle;
@@ -234,7 +234,7 @@ function sendDataToUser() {
     const tps = doneCount / getPassedTime();
     const reqProgress = getRunProgress();
     buildDurationStatistics();
-    sendMsgToUser(currentStressRequest, <StressRunResult>{ totalCount, doneCount, tps, reqProgress, stressReqDuration, stressFailedResult });
+    sendMsgToUser(currentStressRequest, <StressRunResult>{ totalCount, doneCount, tps, reqProgress, stressReqDuration, stressFailedResult: getFailedResultStatistics() });
 }
 
 function getDoneCount() {
@@ -262,6 +262,15 @@ function buildDurationStatistics() {
     });
 }
 
+function getFailedResultStatistics() {
+    const statistics: StressResFailedStatistics = { m500: {}, noRes: {}, testFailed: {} };
+    const build = (type: string) => _.keys(stressFailedResult[type]).forEach(k => statistics[type][k] = stressFailedResult[type][k].length);
+    build('m500');
+    build('noRes');
+    build('testFailed');
+    return statistics;
+}
+
 function getRunProgress() {
     const requestList = currentStressRequest.testCase.requestBodyList;
     const reqProgresses = requestList.map(r => ({ id: r.id + r.param, name: r.name, num: 0 }));
@@ -273,6 +282,6 @@ function getRunProgress() {
         reqProgresses[i].num = lastFinishCount - currentReqCount;
         lastFinishCount = currentReqCount;
     }
-    reqProgresses.push({ id: 'end', name: 'End', num: lastFinishCount })
+    reqProgresses.push({ id: 'end', name: 'End', num: lastFinishCount });
     return reqProgresses;
 }

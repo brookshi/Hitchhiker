@@ -74,6 +74,18 @@ export class Setting {
         return process.env.HITCHHIKER_SCHEDULE_COUNT || this.schedule.storeMaxCount;
     }
 
+    get stressMaxCount() {
+        return process.env.HITCHHIKER_STRESS_COUNT || this._setting.stress.storeMaxCount;
+    }
+
+    get stressPort() {
+        return process.env.HITCHHIKER_STRESS_PORT || this._setting.stress.stressPort;
+    }
+
+    get stressUpdateInterval() {
+        return process.env.HITCHHIKER_STRESS_UPDATE_INTERVAL || this._setting.stress.stressUpdateInterval;
+    }
+
     get db() {
         return this._setting.db;
     }

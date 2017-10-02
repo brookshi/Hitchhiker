@@ -63,6 +63,11 @@ export class Message {
     static scheduleUpdateSuccess: string = 'update schedule success';
     static scheduleDeleteSuccess: string = 'delete schedule success';
 
+    static stressCreateSuccess: string = 'create stress test success';
+    static stressCreateFailed: string = 'create stress test failed';
+    static stressUpdateSuccess: string = 'update stress test success';
+    static stressDeleteSuccess: string = 'delete stress test success';
+
     static apiNotExist: string = 'this api does not exist';
 
     static sessionInvalid: string = 'session is invalid';

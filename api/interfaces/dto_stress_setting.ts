@@ -115,13 +115,22 @@ export interface StressResStatisticsTime {
     p95: number;
 }
 
-export interface StressResFailedStatus {
+export interface StressResFailedInfo {
 
     testFailed: _.Dictionary<RunResult[]>;
 
     noRes: _.Dictionary<RunResult[]>;
 
     m500: _.Dictionary<RunResult[]>;
+}
+
+export interface StressResFailedStatistics {
+
+    testFailed: _.Dictionary<number>;
+
+    noRes: _.Dictionary<number>;
+
+    m500: _.Dictionary<number>;
 }
 
 export interface StressRunResult {
@@ -136,5 +145,5 @@ export interface StressRunResult {
 
     stressReqDuration: _.Dictionary<{ durations: Duration[], statistics?: StressResStatisticsTime }>;
 
-    stressFailedResult: StressResFailedStatus;
+    stressFailedResult: StressResFailedStatistics;
 }
