@@ -9,7 +9,9 @@ export interface DtoStress {
 
     collectionId: string;
 
-    concurrencyCount: string;
+    environmentId: string;
+
+    concurrencyCount: number;
 
     totalCount: number;
 
@@ -27,5 +29,5 @@ export interface DtoStress {
 
     stressRecords: DtoStressRecord[];
 
-    lastRunDate: Date;
+    lastRunDate?: Date;
 }

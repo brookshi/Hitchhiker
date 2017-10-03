@@ -15,8 +15,11 @@ export class Stress {
     @Column()
     collectionId: string;
 
+    @Column({ nullable: true })
+    environmentId: string;
+
     @Column()
-    concurrencyCount: string;
+    concurrencyCount: number;
 
     @Column()
     totalCount: number;
