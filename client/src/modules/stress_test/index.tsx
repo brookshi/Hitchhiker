@@ -1,42 +1,158 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { Button } from 'antd';
-import { StressWS } from '../../action/stress';
+import StressList from './stress_list';
+import { DtoStress } from '../../../../api/interfaces/dto_stress';
+import { DtoUser } from '../../../../api/interfaces/dto_user';
+import { State } from '../../state/index';
+import * as _ from 'lodash';
+import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
+import { actionCreator } from '../../action/index';
+import { Layout } from 'antd';
+import Splitter from '../../components/splitter';
+import { UpdateLeftPanelType, ResizeLeftPanelType } from '../../action/ui';
+import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType, RunScheduleType } from '../../action/schedule';
+// import ScheduleRunHistoryGrid from './schedule_run_history_grid';
+// import { noEnvironment, unknownName } from '../../common/constants';
+import { DtoRecord } from '../../../../api/interfaces/dto_record';
+import { DtoCollection } from '../../../../api/interfaces/dto_collection';
+import { StressRunResult } from '../../../../api/interfaces/dto_stress_setting';
 
-interface StressTestStateProps { }
+const { Content, Sider } = Layout;
 
-interface StressTestDispatchProps { }
+interface StressStateProps {
 
-type StressTestProps = StressTestStateProps & StressTestDispatchProps;
+    collapsed: boolean;
 
-interface StressTestState { }
+    leftPanelWidth: number;
 
-class StressTest extends React.Component<StressTestProps, StressTestState> {
+    user: DtoUser;
 
-    private start() {
-        StressWS.instance.start();
+    activeStress: string;
+
+    currentRunStress: string;
+
+    stresses: _.Dictionary<DtoStress>;
+
+    collections: _.Dictionary<DtoCollection>;
+
+    environments: _.Dictionary<DtoEnvironment[]>;
+
+    records: _.Dictionary<DtoRecord>;
+
+    runState?: StressRunResult;
+}
+
+interface StressDispatchProps {
+
+    resizeLeftPanel(width: number);
+
+    collapsedLeftPanel(collapsed: boolean);
+
+    createStress(stress: DtoStress);
+
+    selectStress(stressId: string);
+
+    updateStress(stress: DtoStress);
+
+    deleteStress(stressId: string);
+
+    runStress(stressId: string);
+}
+
+type StressProps = StressStateProps & StressDispatchProps;
+
+interface StressState { }
+
+class StressTest extends React.Component<StressProps, StressState> {
+
+    private get stressArr() {
+        return _.chain(this.props.stresses).values<DtoStress>().sortBy('name').value();
     }
 
+    // private getEnvName = (envId: string) => {
+    //     return !envId || envId === noEnvironment ? noEnvironment : (this.getEnvNames()[envId] || unknownName);
+    // }
+
+    // private getEnvNames = () => {
+    //     const environmentNames: _.Dictionary<string> = {};
+    //     _.chain(this.props.environments).values().flatten<DtoEnvironment>().value().forEach(e => environmentNames[e.id] = e.name);
+    //     return environmentNames;
+    // }
+
     public render() {
+        const { collapsed, leftPanelWidth, collapsedLeftPanel, createStress, selectStress, updateStress, deleteStress, user, activeStress, currentRunStress, collections, environments, records, runStress } = this.props;
+        // const stress = stresses[activeStress] || {};
+        // const envName = this.getEnvName(stress.environmentId);
+
         return (
-            <div className="taken-sentence">
-                <Button onClick={this.start}>start</Button>
-                <div>Keep your friends close，but your enemies closer.</div>
-                <div>-- The Godfather</div>
-            </div>
+            <Layout className="main-panel">
+                <Sider
+                    className="main-sider"
+                    style={{ minWidth: collapsed ? 0 : leftPanelWidth }}
+                    collapsible={true}
+                    collapsedWidth="0.1"
+                    collapsed={collapsed}
+                    onCollapse={collapsedLeftPanel}>
+                    <StressList
+                        stresses={this.stressArr}
+                        user={user}
+                        activeStress={activeStress}
+                        currentRunStress={currentRunStress}
+                        collections={collections}
+                        environments={environments}
+                        createStress={createStress}
+                        selectStress={selectStress}
+                        updateStress={updateStress}
+                        deleteStress={deleteStress}
+                        runStress={runStress}
+                        records={records}
+                    />
+                </Sider>
+                <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
+                <Content className="stress-content">
+                    {/* <ScheduleRunHistoryGrid
+                        schedule={stress}
+                        scheduleRecords={stress.scheduleRecords}
+                        envName={envName}
+                        compareEnvName={compareEnvName}
+                        envNames={this.getEnvNames()}
+                        records={records}
+                        isRunning={runState[activeStress] ? runState[activeStress].isRunning : false}
+                        consoleRunResults={runState[activeStress] ? runState[activeStress].consoleRunResults : []}
+                    /> */}
+                </Content>
+            </Layout>
         );
     }
 }
 
-const mapStateToProps = (state: any): StressTestStateProps => {
+const mapStateToProps = (state: State): StressStateProps => {
+    const { leftPanelWidth, collapsed } = state.uiState.appUIState;
+    const { stresses, activeStress, currentRunStress, runState } = state.stressTestState;
+    const records = _.chain(state.collectionState.collectionsInfo.records).values<_.Dictionary<DtoRecord>>().value();
     return {
-        // ...mapStateToProps
+        leftPanelWidth,
+        collapsed,
+        user: state.userState.userInfo,
+        activeStress,
+        currentRunStress,
+        collections: state.collectionState.collectionsInfo.collections,
+        environments: state.environmentState.environments,
+        stresses,
+        records: records.length === 0 ? {} : records.reduce((p, c) => ({ ...p, ...c })),
+        runState
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): StressTestDispatchProps => {
+const mapDispatchToProps = (dispatch: Dispatch<any>): StressDispatchProps => {
     return {
-        // ...mapDispatchToProps
+        createStress: (stress) => dispatch(actionCreator(SaveScheduleType, { isNew: true, stress })),
+        updateStress: (stress) => dispatch(actionCreator(SaveScheduleType, { isNew: false, stress })),
+        deleteStress: (stressId) => { dispatch(actionCreator(DeleteScheduleType, stressId)); },
+        selectStress: (stressId) => dispatch(actionCreator(ActiveScheduleType, stressId)),
+        collapsedLeftPanel: (collapsed) => dispatch(actionCreator(UpdateLeftPanelType, collapsed)),
+        resizeLeftPanel: (width) => dispatch(actionCreator(ResizeLeftPanelType, width)),
+        runStress: (stressId) => dispatch(actionCreator(RunScheduleType, stressId))
     };
 };
 

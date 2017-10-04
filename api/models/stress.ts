@@ -31,7 +31,7 @@ export class Stress {
     timeout: number;
 
     @Column('json')
-    excludeRecords: string[];
+    requests: string[];
 
     @Column('int', { default: 2 })
     notification: NotificationMode;

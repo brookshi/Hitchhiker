@@ -6,6 +6,7 @@ import { rootSaga, actionCreator } from './action';
 import { StoreLocalDataType } from './action/local_data';
 import { State } from './state/index';
 import { RequestStatus } from './common/request_status';
+import { StressWS } from './action/stress';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -22,6 +23,9 @@ function configureStore() {
         )
     );
     sagaMiddleware.run(rootSaga);
+
+    StressWS.instance.initStressWS(store.dispatch);
+
     store.subscribe(() => {
         const state: State = store.getState() as State;
         if (!isStoring && state.localDataState && state.localDataState.fetchLocalDataState.status === RequestStatus.success && !!state.userState.userInfo.id) {

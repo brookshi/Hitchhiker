@@ -5,15 +5,13 @@ import { DtoUser } from '../../../../api/interfaces/dto_user';
 import { StringUtil } from '../../utils/string_util';
 import { Tooltip, Button, Menu } from 'antd';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { Period } from '../../common/period';
 import { NotificationMode } from '../../common/notification_mode';
-import { noEnvironment, newScheduleName, unknownName } from '../../common/constants';
-import { DateUtil } from '../../utils/date_util';
+import { noEnvironment, newScheduleName } from '../../common/constants';
 import * as _ from 'lodash';
-import { ScheduleRunState } from '../../state/schedule';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
 import { DtoCollection } from '../../../../api/interfaces/dto_collection';
+import StressEditDialog from './stress_edit_dialog';
 import StressItem from './stress_item';
 
 interface StressListProps {
@@ -22,7 +20,7 @@ interface StressListProps {
 
     activeStress: string;
 
-    currnetRunStress: string;
+    currentRunStress: string;
 
     stresses: DtoStress[];
 
@@ -65,7 +63,7 @@ const createDefaultStress: (user: DtoUser) => DtoStress = (user: DtoUser) => {
         totalCount: 1,
         qps: 0,
         timeout: 0,
-        excludeRecords: [],
+        requests: [],
         notification: NotificationMode.none,
         emails: '',
         stressRecords: []
@@ -102,10 +100,10 @@ class StressList extends React.Component<StressListProps, StressListState> {
         });
     }
 
-    // private saveStress = (stress) => {
-    //     this.setState({ ...this.state, isEditDlgOpen: false });
-    //     this.state.isCreateNew ? this.props.createStress(stress) : this.props.updateStress(stress);
-    // }
+    private saveStress = (stress) => {
+        this.setState({ ...this.state, isEditDlgOpen: false });
+        this.state.isCreateNew ? this.props.createStress(stress) : this.props.updateStress(stress);
+    }
 
     private editStress = (stress) => {
         this.setState({
@@ -117,18 +115,8 @@ class StressList extends React.Component<StressListProps, StressListState> {
         });
     }
 
-    private getEnvName = (envId: string) => {
-        return !envId || envId === noEnvironment ? noEnvironment : (this.getEnvNames()[envId] || unknownName);
-    }
-
-    private getEnvNames = () => {
-        const environmentNames: _.Dictionary<string> = {};
-        _.chain(this.props.environments).values().flatten<DtoEnvironment>().value().forEach(e => environmentNames[e.id] = e.name);
-        return environmentNames;
-    }
-
     public render() {
-        const { activeStress, currnetRunStress, stresses, collections, environments, user, deleteStress, runStress, updateStress } = this.props;
+        const { activeStress, currentRunStress, stresses, collections, environments, user, deleteStress, runStress } = this.props;
         return (
             <div>
                 <div className="small-toolbar">
@@ -160,7 +148,7 @@ class StressList extends React.Component<StressListProps, StressListState> {
                                             delete={() => deleteStress(t.id)}
                                             edit={() => this.editStress(t)}
                                             run={() => runStress(t.id)}
-                                            isRunning={currnetRunStress === t.id}
+                                            isRunning={currentRunStress === t.id}
                                         />
                                     </Menu.Item>
                                 )
@@ -168,8 +156,8 @@ class StressList extends React.Component<StressListProps, StressListState> {
                         }
                     </Menu>
                 </PerfectScrollbar>
-                {/* <ScheduleEditDialog
-                    schedule={this.state.schedule}
+                <StressEditDialog
+                    stress={this.state.stress}
                     collections={collections}
                     environments={environments}
                     isEditDlgOpen={this.state.isEditDlgOpen}
@@ -177,8 +165,8 @@ class StressList extends React.Component<StressListProps, StressListState> {
                     isRendered={this.state.isEditDlgRendered}
                     render={() => this.setState({ ...this.state, isEditDlgRendered: true })}
                     onCancel={() => this.setState({ ...this.state, isEditDlgOpen: false })}
-                    onOk={schedule => this.saveSchedule(schedule)}
-                /> */}
+                    onOk={stress => this.saveStress(stress)}
+                />
             </div>
         );
     }

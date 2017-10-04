@@ -19,7 +19,7 @@ export interface DtoStress {
 
     timeout: number;
 
-    excludeRecords: string[];
+    requests: string[];
 
     notification: NotificationMode;
 

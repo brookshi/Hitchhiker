@@ -1,7 +1,7 @@
 import { DtoStress } from '../../../api/interfaces/dto_stress';
 import { StressRunResult } from '../../../api/interfaces/dto_stress_setting';
 
-export interface StressState {
+export interface StressTestState {
 
     stresses: _.Dictionary<DtoStress>;
 
@@ -9,5 +9,11 @@ export interface StressState {
 
     currentRunStress: string;
 
-    runState: StressRunResult;
+    runState?: StressRunResult;
 }
+
+export const stressDefaultValue: StressTestState = {
+    stresses: {},
+    activeStress: '',
+    currentRunStress: ''
+};
