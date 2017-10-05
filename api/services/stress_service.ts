@@ -9,12 +9,17 @@ import { ObjectLiteral } from 'typeorm/common/ObjectLiteral';
 import { DtoStress } from '../interfaces/dto_stress';
 import { Stress } from '../models/stress';
 import { StressRecord } from '../models/stress_record';
+import { TestCase, RequestBody } from '../interfaces/dto_stress_setting';
+import { RecordService } from './record_service';
+import * as _ from 'lodash';
+import { RecordRunner } from '../run_engine/record_runner';
 
 export class StressService {
 
     static fromDto(dtoStress: DtoStress): Stress {
         const stress = new Stress();
         stress.collectionId = dtoStress.collectionId;
+        stress.environmentId = dtoStress.environmentId;
         stress.emails = dtoStress.emails;
         stress.id = dtoStress.id || StringUtil.generateUID();
         stress.name = dtoStress.name;
@@ -23,8 +28,7 @@ export class StressService {
         stress.totalCount = dtoStress.totalCount;
         stress.qps = dtoStress.qps;
         stress.timeout = dtoStress.timeout;
-        stress.excludeRecords = dtoStress.excludeRecords;
-        stress.totalCount = dtoStress.totalCount;
+        stress.requests = dtoStress.requests;
         return stress;
     }
 
@@ -103,5 +107,46 @@ export class StressService {
             .delete()
             .execute();
         return { success: true, message: Message.stressDeleteSuccess };
+    }
+
+    static async getTestCase(id: string): Promise<ResObject> {
+        const stress = await StressService.getById(id);
+        if (!stress) {
+            return { success: false, message: Message.stressNotExist };
+        }
+        const collectionRecords = await RecordService.getByCollectionIds([stress.collectionId]);
+        const records = _.keyBy((collectionRecords ? collectionRecords[stress.collectionId] : []).filter(r => stress.requests.some(i => i === r.id)), 'id');
+        if (_.keys(records).length === 0) {
+            return { success: false, message: Message.stressNoRecords };
+        }
+
+        const requestBodyList = new Array<RequestBody>();
+        stress.requests.forEach(i => {
+            let record = records[i];
+            const paramArr = StringUtil.parseParameters(record.parameters, record.parameterType);
+            const headers = {};
+
+            if (paramArr.length === 0) {
+                record.headers.forEach(h => headers[h.key] = h.value);
+                requestBodyList.push(<any>{ ...record, headers });
+            } else {
+                for (let param of paramArr) {
+                    record = RecordRunner.applyReqParameterToRecord(record, param);
+                    record.headers.forEach(h => headers[h.key] = h.value);
+                    requestBodyList.push(<any>{ ...record, headers });
+                }
+            }
+        });
+        return {
+            success: true,
+            message: '',
+            result: <TestCase>{
+                totalCount: stress.totalCount,
+                concurrencyCount: stress.concurrencyCount,
+                qps: stress.qps,
+                timeout: stress.timeout,
+                requestBodyList
+            }
+        };
     }
 }

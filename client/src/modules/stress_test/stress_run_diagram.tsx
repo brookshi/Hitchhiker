@@ -32,8 +32,8 @@ class StressRunDiagram extends React.Component<StressConsoleProps, StressConsole
     public render() {
         const style = { display: this.props.runState ? '' : 'none' };
         return (
-            <div style={style} className="schedule-console">
-                <div className="schedule-console-content">
+            <div style={style} >
+                <div>
                     {
                         JSON.stringify(this.props.runState)
                     }

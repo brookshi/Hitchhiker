@@ -2,7 +2,7 @@ import * as WS from 'ws';
 import * as http from 'http';
 import { ScheduleOnDemandService } from './schedule_on_demand_service';
 import { WebSocketHandler } from './base/web_socket_handler';
-import { StressTestService } from './stress_test_service';
+import { StressTestWSService } from './stress_test_ws_service';
 
 export class WebSocketService {
 
@@ -13,7 +13,7 @@ export class WebSocketService {
     constructor(server: http.Server) {
         this.wsServer = new WS.Server({ server });
         this.use('/schedule', ScheduleOnDemandService);
-        this.use('/stresstest', StressTestService);
+        this.use('/stresstest', StressTestWSService);
     }
 
     use(path: string, handler: { new(): WebSocketHandler }) {

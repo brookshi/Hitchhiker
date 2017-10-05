@@ -7,6 +7,7 @@ import { deleteCollection, saveCollection, refreshCollection, importPostman } fr
 import { login, logout, register, findPassword, getUserInfo, changePassword, tempUse } from './user';
 import { storeLocalData, fetchLocalData } from './local_data';
 import { deleteSchedule, saveSchedule, runSchedule } from './schedule';
+import { saveStress, deleteStress, runStress } from './stress';
 
 export const SyncType = 'sync';
 
@@ -60,6 +61,9 @@ export function* rootSaga() {
         spawn(saveSchedule),
         spawn(deleteSchedule),
         spawn(runSchedule),
+        spawn(saveStress),
+        spawn(deleteStress),
+        spawn(runStress),
         spawn(sync)
     ];
 };

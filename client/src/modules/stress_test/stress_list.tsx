@@ -6,7 +6,7 @@ import { StringUtil } from '../../utils/string_util';
 import { Tooltip, Button, Menu } from 'antd';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { NotificationMode } from '../../common/notification_mode';
-import { noEnvironment, newScheduleName } from '../../common/constants';
+import { noEnvironment, newStressName } from '../../common/constants';
 import * as _ from 'lodash';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
@@ -55,7 +55,7 @@ interface StressListState {
 const createDefaultStress: (user: DtoUser) => DtoStress = (user: DtoUser) => {
     return {
         id: StringUtil.generateUID(),
-        name: newScheduleName,
+        name: newStressName,
         ownerId: user.id,
         collectionId: '',
         environmentId: noEnvironment,
@@ -121,7 +121,7 @@ class StressList extends React.Component<StressListProps, StressListState> {
             <div>
                 <div className="small-toolbar">
                     <span>Stresses</span>
-                    <Tooltip mouseEnterDelay={1} placement="bottom" title="create stress">
+                    <Tooltip mouseEnterDelay={1} placement="bottom" title="create stress test">
                         <Button
                             className="icon-btn stress-add-btn"
                             type="primary"

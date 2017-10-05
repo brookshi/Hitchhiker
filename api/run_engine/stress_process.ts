@@ -146,6 +146,7 @@ function startStressProcess() {
         socket.on('close', hadErr => {
             console.log(`stress - closed: ${addr}`);
             Reflect.deleteProperty(workers, addr);
+            reset();
             broadcastMsgToUsers();
         });
 
@@ -198,14 +199,14 @@ function workerUpdated(addr: string, status: WorkerStatus) {
 }
 
 function workerTrace(runResult: RunResult) {
-    const id = runResult.id;
+    const id = runResult.id + (runResult.param || '');
     stressReqDuration[id] = stressReqDuration[id] || { durations: [] };
     stressReqDuration[id].durations.push(runResult.duration);
 
     const failedType = getFaildType(runResult);
     if (failedType) {
-        stressFailedResult[failedType][runResult.id] = stressFailedResult[failedType][runResult.id] || [];
-        stressFailedResult[failedType][runResult.id].push(runResult);
+        stressFailedResult[failedType][id] = stressFailedResult[failedType][id] || [];
+        stressFailedResult[failedType][id].push(runResult);
     }
 }
 
@@ -273,12 +274,13 @@ function getFailedResultStatistics() {
 
 function getRunProgress() {
     const requestList = currentStressRequest.testCase.requestBodyList;
-    const reqProgresses = requestList.map(r => ({ id: r.id + r.param, name: r.name, num: 0 }));
+    const reqProgresses = requestList.map(r => ({ id: r.id + (r.param || ''), name: r.name, num: 0 }));
     let lastFinishCount = currentStressRequest.testCase.totalCount;
     let id;
     for (let i = 0; i < requestList.length; i++) {
-        id = requestList[i].id + requestList[i].param;
+        id = requestList[i].id + (requestList[i].param || '');
         const currentReqCount = stressReqDuration[id] ? stressReqDuration[id].durations.length : 0;
+        console.warn(`current req count: ${currentReqCount}`);
         reqProgresses[i].num = lastFinishCount - currentReqCount;
         lastFinishCount = currentReqCount;
     }

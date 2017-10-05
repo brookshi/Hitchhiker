@@ -11,8 +11,6 @@ interface StressRunHistoryGridProps {
 
     stressRecords: DtoStressRecord[];
 
-    envName: string;
-
     envNames: _.Dictionary<string>;
 
     records: _.Dictionary<DtoRecord>;
@@ -43,7 +41,6 @@ class StressRunHistoryGrid extends React.Component<StressRunHistoryGridProps, St
                     envNames={envNames}
                 />
                 <StressRecordTable
-                    className="schedule-table"
                     bordered={true}
                     size="middle"
                     rowKey="id"

@@ -10,12 +10,11 @@ import { actionCreator } from '../../action/index';
 import { Layout } from 'antd';
 import Splitter from '../../components/splitter';
 import { UpdateLeftPanelType, ResizeLeftPanelType } from '../../action/ui';
-import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType, RunScheduleType } from '../../action/schedule';
-// import ScheduleRunHistoryGrid from './schedule_run_history_grid';
-// import { noEnvironment, unknownName } from '../../common/constants';
+import StressRunHistoryGrid from './stress_run_history_grid';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { DtoCollection } from '../../../../api/interfaces/dto_collection';
 import { StressRunResult } from '../../../../api/interfaces/dto_stress_setting';
+import { SaveStressType, DeleteStressType, ActiveStressType, RunStressType } from '../../action/stress';
 
 const { Content, Sider } = Layout;
 
@@ -69,20 +68,15 @@ class StressTest extends React.Component<StressProps, StressState> {
         return _.chain(this.props.stresses).values<DtoStress>().sortBy('name').value();
     }
 
-    // private getEnvName = (envId: string) => {
-    //     return !envId || envId === noEnvironment ? noEnvironment : (this.getEnvNames()[envId] || unknownName);
-    // }
-
-    // private getEnvNames = () => {
-    //     const environmentNames: _.Dictionary<string> = {};
-    //     _.chain(this.props.environments).values().flatten<DtoEnvironment>().value().forEach(e => environmentNames[e.id] = e.name);
-    //     return environmentNames;
-    // }
+    private getEnvNames = () => {
+        const environmentNames: _.Dictionary<string> = {};
+        _.chain(this.props.environments).values().flatten<DtoEnvironment>().value().forEach(e => environmentNames[e.id] = e.name);
+        return environmentNames;
+    }
 
     public render() {
-        const { collapsed, leftPanelWidth, collapsedLeftPanel, createStress, selectStress, updateStress, deleteStress, user, activeStress, currentRunStress, collections, environments, records, runStress } = this.props;
-        // const stress = stresses[activeStress] || {};
-        // const envName = this.getEnvName(stress.environmentId);
+        const { collapsed, leftPanelWidth, collapsedLeftPanel, createStress, selectStress, updateStress, deleteStress, user, activeStress, currentRunStress, collections, environments, records, stresses, runStress, runState } = this.props;
+        const stress = stresses[activeStress] || {};
 
         return (
             <Layout className="main-panel">
@@ -109,17 +103,13 @@ class StressTest extends React.Component<StressProps, StressState> {
                     />
                 </Sider>
                 <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
-                <Content className="stress-content">
-                    {/* <ScheduleRunHistoryGrid
-                        schedule={stress}
-                        scheduleRecords={stress.scheduleRecords}
-                        envName={envName}
-                        compareEnvName={compareEnvName}
+                <Content>
+                    <StressRunHistoryGrid
+                        stressRecords={stress.stressRecords}
                         envNames={this.getEnvNames()}
                         records={records}
-                        isRunning={runState[activeStress] ? runState[activeStress].isRunning : false}
-                        consoleRunResults={runState[activeStress] ? runState[activeStress].consoleRunResults : []}
-                    /> */}
+                        runState={runState}
+                    />
                 </Content>
             </Layout>
         );
@@ -146,13 +136,13 @@ const mapStateToProps = (state: State): StressStateProps => {
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): StressDispatchProps => {
     return {
-        createStress: (stress) => dispatch(actionCreator(SaveScheduleType, { isNew: true, stress })),
-        updateStress: (stress) => dispatch(actionCreator(SaveScheduleType, { isNew: false, stress })),
-        deleteStress: (stressId) => { dispatch(actionCreator(DeleteScheduleType, stressId)); },
-        selectStress: (stressId) => dispatch(actionCreator(ActiveScheduleType, stressId)),
+        createStress: (stress) => dispatch(actionCreator(SaveStressType, { isNew: true, stress })),
+        updateStress: (stress) => dispatch(actionCreator(SaveStressType, { isNew: false, stress })),
+        deleteStress: (stressId) => { dispatch(actionCreator(DeleteStressType, stressId)); },
+        selectStress: (stressId) => dispatch(actionCreator(ActiveStressType, stressId)),
         collapsedLeftPanel: (collapsed) => dispatch(actionCreator(UpdateLeftPanelType, collapsed)),
         resizeLeftPanel: (width) => dispatch(actionCreator(ResizeLeftPanelType, width)),
-        runStress: (stressId) => dispatch(actionCreator(RunScheduleType, stressId))
+        runStress: (stressId) => dispatch(actionCreator(RunStressType, stressId))
     };
 };
 

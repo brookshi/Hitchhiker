@@ -67,6 +67,8 @@ export class Message {
     static stressCreateFailed: string = 'create stress test failed';
     static stressUpdateSuccess: string = 'update stress test success';
     static stressDeleteSuccess: string = 'delete stress test success';
+    static stressNotExist: string = 'stress test case does not exist';
+    static stressNoRecords: string = 'stress test case does not have any valid request';
 
     static apiNotExist: string = 'this api does not exist';
 

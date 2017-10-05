@@ -16,6 +16,7 @@ import { DtoCollection } from '../../../api/interfaces/dto_collection';
 import { DtoRecord } from '../../../api/interfaces/dto_record';
 import { QuitProjectType, DisbandProjectType } from '../action/project';
 import { getNewRecordState, RecordState } from '../state/collection';
+import { stressTestState } from './stress';
 
 export const reduceReducers = (...reducers) => {
     return (state, action) =>
@@ -34,7 +35,8 @@ export function rootReducer(state: State, action: any): State {
         userState,
         projectState,
         environmentState,
-        scheduleState
+        scheduleState,
+        stressTestState
     })(state, action);
 
     const finalState = multipleStateReducer(intermediateState, action);

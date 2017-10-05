@@ -9,6 +9,8 @@ export const newProjectName = 'New Project';
 
 export const newScheduleName = 'New Schedule';
 
+export const newStressName = 'New Stress Test';
+
 export const allProject = 'All';
 
 export const defaultExport = 'export:impossiblethis:tropxe';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Select, Form, Modal, Input, Checkbox } from 'antd';
+import { Select, Form, Modal, Input, Checkbox, Row, Col, InputNumber } from 'antd';
 import { DtoStress } from '../../../../api/interfaces/dto_stress';
 import { noEnvironment } from '../../common/constants';
 import { StringUtil } from '../../utils/string_util';
@@ -249,8 +249,11 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
         const { isEditDlgOpen, stress } = this.props;
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
-            labelCol: { span: 5 },
-            wrapperCol: { span: 17 },
+            labelCol: { span: 3 },
+            wrapperCol: { span: 19 },
+        };
+        const stressColStyle = {
+            textAlign: 'right'
         };
         return (
             <Modal
@@ -258,7 +261,7 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                 title="Stress Test"
                 okText="Save"
                 cancelText="Cancel"
-                width={770}
+                width={960}
                 onCancel={this.onCancel}
                 onOk={this.onOk}
             >
@@ -290,6 +293,50 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                                 {this.generateSortRecordsList()}
                             </div>
                             )}
+                    </FormItem>
+                    <FormItem {...formItemLayout} label="Repeat">
+                        <Row gutter={8}>
+                            <Col span={4}>
+                                <FormItem>
+                                    {getFieldDecorator('totalCount', {
+                                        initialValue: stress.totalCount,
+                                    })(
+                                        <InputNumber className="stress-dlg-input-number" min={1} />
+                                        )}
+                                </FormItem>
+                            </Col>
+                            <Col span={3} style={stressColStyle}>Concurrency: </Col>
+                            <Col span={4}>
+                                <FormItem>
+                                    {getFieldDecorator('concurrencyCount', {
+                                        initialValue: stress.concurrencyCount,
+                                    })(
+                                        <InputNumber className="stress-dlg-input-number" min={1} />
+                                        )}
+                                </FormItem>
+                            </Col>
+                            <Col span={2} style={stressColStyle}>QPS: </Col>
+                            <Col span={4}>
+                                <FormItem>
+                                    {getFieldDecorator('qps', {
+                                        initialValue: stress.qps,
+                                    })(
+                                        <InputNumber className="stress-dlg-input-number" min={0} />
+                                        )}
+                                </FormItem>
+                            </Col>
+                            <Col span={2} style={stressColStyle}>Timeout: </Col>
+                            <Col span={4}>
+                                <FormItem>
+                                    {getFieldDecorator('timeout', {
+                                        initialValue: stress.timeout,
+                                    })(
+                                        <InputNumber className="stress-dlg-input-number" min={0} />
+                                        )}
+                                </FormItem>
+                            </Col>
+                            <Col span={1} />
+                        </Row>
                     </FormItem>
                     <FormItem {...formItemLayout} label="Environment">
                         {getFieldDecorator('environmentId', {

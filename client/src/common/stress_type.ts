@@ -30,5 +30,7 @@ export enum StressMessageType {
 
     close = 7,
 
-    wait = 8
+    wait = 8,
+
+    error = 9
 }
