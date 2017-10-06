@@ -1,3 +1,4 @@
+export const noEnvironment = 'No environment';
 
 export enum WorkerStatus {
 

@@ -19,6 +19,8 @@ export interface TestCase {
 
     requestBodyList?: RequestBody[];
 
+    envVariables: _.Dictionary<string>;
+
     totalCount: number;
 
     concurrencyCount: number;
@@ -44,7 +46,7 @@ export interface RequestBody {
 
     headers?: _.Dictionary<string>;
 
-    tests?: string;
+    test?: string;
 }
 
 export interface WorkerInfo {

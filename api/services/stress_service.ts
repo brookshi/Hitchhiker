@@ -13,6 +13,9 @@ import { TestCase, RequestBody } from '../interfaces/dto_stress_setting';
 import { RecordService } from './record_service';
 import * as _ from 'lodash';
 import { RecordRunner } from '../run_engine/record_runner';
+import { ProjectService } from "./project_service";
+import { EnvironmentService } from "./environment_service";
+import { noEnvironment } from "../common/stress_type";
 
 export class StressService {
 
@@ -119,7 +122,18 @@ export class StressService {
         if (_.keys(records).length === 0) {
             return { success: false, message: Message.stressNoRecords };
         }
-
+        const envVariables = {};
+        if (stress.environmentId && stress.environmentId !== noEnvironment) {
+            const env = await EnvironmentService.get(stress.environmentId);
+            if (env) {
+                env.variables.forEach(v => {
+                    if (v.isActive) {
+                        envVariables[v.key] = v.value;
+                    }
+                });
+            }
+        }
+        const globalFunc = await ProjectService.getGlobalFunc(stress.collectionId);
         const requestBodyList = new Array<RequestBody>();
         stress.requests.forEach(i => {
             let record = records[i];
@@ -127,13 +141,13 @@ export class StressService {
             const headers = {};
 
             if (paramArr.length === 0) {
-                record.headers.forEach(h => headers[h.key] = h.value);
-                requestBodyList.push(<any>{ ...record, headers });
+                record.headers.forEach(h => { if (h.isActive) { headers[h.key] = h.value; } });
+                requestBodyList.push(<any>{ ...record, headers, test: globalFunc + record.test });
             } else {
                 for (let param of paramArr) {
-                    record = RecordRunner.applyReqParameterToRecord(record, param);
-                    record.headers.forEach(h => headers[h.key] = h.value);
-                    requestBodyList.push(<any>{ ...record, headers });
+                    let newRecord = RecordRunner.applyReqParameterToRecord(record, param);
+                    newRecord.headers.forEach(h => { if (h.isActive) { headers[h.key] = h.value; } });
+                    requestBodyList.push(<any>{ ...newRecord, headers, test: globalFunc + record.test });
                 }
             }
         });
@@ -145,7 +159,8 @@ export class StressService {
                 concurrencyCount: stress.concurrencyCount,
                 qps: stress.qps,
                 timeout: stress.timeout,
-                requestBodyList
+                requestBodyList,
+                envVariables
             }
         };
     }

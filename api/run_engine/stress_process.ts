@@ -203,14 +203,14 @@ function workerTrace(runResult: RunResult) {
     stressReqDuration[id] = stressReqDuration[id] || { durations: [] };
     stressReqDuration[id].durations.push(runResult.duration);
 
-    const failedType = getFaildType(runResult);
+    const failedType = getFailedType(runResult);
     if (failedType) {
         stressFailedResult[failedType][id] = stressFailedResult[failedType][id] || [];
         stressFailedResult[failedType][id].push(runResult);
     }
 }
 
-function getFaildType(runResult: RunResult) {
+function getFailedType(runResult: RunResult) {
     if (runResult.status >= 500) {
         return StressFailedType.m500;
     } else if (runResult.error.message) {
