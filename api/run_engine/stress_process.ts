@@ -67,7 +67,7 @@ process.on('message', (msg: StressRequest) => {
 
 function initUser(user: StressUser) {
     users[user.id] = user;
-    sendMsgToUser(user);
+    sendMsgToUser(StressMessageType.init, user);
 }
 
 function getCurrentRequestTotalCount() {
@@ -100,20 +100,20 @@ function sendMsgToWorkers(request: Partial<StressRequest>) {
     _.values(workers).forEach(n => n.socket.send(JSON.stringify(request)));
 }
 
-function sendMsgToUser(user: StressUser, data?: any) {
+function sendMsgToUser(type: StressMessageType, user: StressUser, data?: any) {
     console.log(`stress - send msg to user ${user.id}: ${JSON.stringify(data || '')}`);
     if (!user) {
         console.log(`stress - user invalid`);
         return;
     }
-    const res = { type: StressMessageType.status, workerInfos: _.values(workers).map(w => ({ ...w, socket: undefined })), data } as StressResponse;
+    const res = { type, workerInfos: _.values(workers).map(w => ({ ...w, socket: undefined })), data, tasks: stressQueue.map(s => s.stressName), currentTask: currentStressRequest ? currentStressRequest.stressName : '' } as StressResponse;
     console.log(`stress - send msg to user ${user.id}: ${JSON.stringify(res)}`);
     process.send({ id: user.id, data: res });
 }
 
-function broadcastMsgToUsers(data?: any) {
+function broadcastMsgToUsers(type: StressMessageType, data?: any) {
     console.log(`stress - broadcast msg to user: ${JSON.stringify(data || '')}`);
-    _.values(users).forEach(u => sendMsgToUser(u, data));
+    _.values(users).forEach(u => sendMsgToUser(type, u, data));
 }
 
 function startStressProcess() {
@@ -147,7 +147,7 @@ function startStressProcess() {
             console.log(`stress - closed: ${addr}`);
             Reflect.deleteProperty(workers, addr);
             reset();
-            broadcastMsgToUsers();
+            broadcastMsgToUsers(StressMessageType.status);
         });
 
         socket.on('error', err => {
@@ -160,13 +160,13 @@ function workerInited(addr: string, cpu: number, status: WorkerStatus) {
     console.log(`stress - hardware`);
     workers[addr].cpuNum = cpu;
     workers[addr].status = status;
-    broadcastMsgToUsers();
+    broadcastMsgToUsers(StressMessageType.status);
 }
 
 function workerStarted(addr: string) {
     workers[addr].status = WorkerStatus.working;
     console.log(`stress - worker ${addr} start`);
-    broadcastMsgToUsers();
+    broadcastMsgToUsers(StressMessageType.status);
 }
 
 function workerUpdated(addr: string, status: WorkerStatus) {
@@ -177,14 +177,14 @@ function workerUpdated(addr: string, status: WorkerStatus) {
             console.log(`stress - all workers ready`);
             sendMsgToWorkers({ type: StressMessageType.start });
             userUpdateTimer = setInterval(() => {
-                sendDataToUser();
+                sendDataToUser(StressMessageType.runResult);
             }, Setting.instance.stressUpdateInterval);
         }
     } else if (status === WorkerStatus.finish) {
         workers[addr].status = WorkerStatus.idle;
         if (!_.values(workers).some(w => w.status !== WorkerStatus.finish && w.status !== WorkerStatus.idle)) {
             console.log(`stress - all workers finish/idle`);
-            sendDataToUser();
+            sendDataToUser(StressMessageType.finish);
             reset();
             tryTriggerStart();
         }
@@ -195,7 +195,7 @@ function workerUpdated(addr: string, status: WorkerStatus) {
     } else {
         console.error('miss condition');
     }
-    broadcastMsgToUsers();
+    broadcastMsgToUsers(StressMessageType.status);
 }
 
 function workerTrace(runResult: RunResult) {
@@ -224,18 +224,19 @@ function getFailedType(runResult: RunResult) {
 
 function reset() {
     startTime = undefined;
+    currentStressRequest = undefined;
     stressReqDuration = {};
     stressFailedResult = { m500: {}, testFailed: {}, noRes: {} };
     clearInterval(userUpdateTimer);
 }
 
-function sendDataToUser() {
+function sendDataToUser(type: StressMessageType) {
     const totalCount = getCurrentRequestTotalCount();
     const doneCount = getDoneCount();
     const tps = doneCount / getPassedTime();
     const reqProgress = getRunProgress();
     buildDurationStatistics();
-    sendMsgToUser(currentStressRequest, <StressRunResult>{ totalCount, doneCount, tps, reqProgress, stressReqDuration, stressFailedResult: getFailedResultStatistics() });
+    sendMsgToUser(type, currentStressRequest, <StressRunResult>{ totalCount, doneCount, tps, reqProgress, stressReqDuration, stressFailedResult: getFailedResultStatistics() });
 }
 
 function getDoneCount() {

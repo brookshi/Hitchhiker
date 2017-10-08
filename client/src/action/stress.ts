@@ -2,7 +2,7 @@ import { Urls } from '../utils/urls';
 import { StressResponse } from '../../../api/interfaces/dto_stress_setting';
 import { StressMessageType } from '../common/stress_type';
 import { takeEvery, put } from 'redux-saga/effects';
-import { syncAction } from './index';
+import { syncAction, actionCreator } from './index';
 import { HttpMethod } from '../common/http_method';
 import { Dispatch } from 'react-redux';
 import { message } from 'antd';
@@ -16,6 +16,8 @@ export const ActiveStressType = 'active stress test';
 export const RunStressType = 'run stress test';
 
 export const StressChunkDataType = 'stress test chunk data';
+
+export const StresStatusType = 'stress test status';
 
 export const RunStressFulfillType = 'run stress test completely';
 
@@ -32,11 +34,16 @@ export class StressWS {
         this.socket = new WebSocket(Urls.getWebSocket('stresstest'));
         this.socket.onmessage = (ev: MessageEvent) => {
             const data = JSON.parse(ev.data) as StressResponse;
+            console.log(data);
             if (data.type === StressMessageType.error) {
-                message.error(data.data);
+                message.error(data);
                 return;
             }
-            console.log(data);
+            if (data.type === StressMessageType.runResult || data.type === StressMessageType.finish) {
+                dispatch(actionCreator(StressChunkDataType, data));
+            } else {
+                dispatch(actionCreator(StresStatusType, data));
+            }
         };
         this.socket.onclose = (ev: CloseEvent) => {
             console.error('stress test server error');

@@ -2,7 +2,7 @@ import { LoginSuccessType } from '../action/user';
 import * as _ from 'lodash';
 import { StressTestState, stressDefaultValue } from '../state/stress';
 import { DtoStress } from '../../../api/interfaces/dto_stress';
-import { SaveStressType, ActiveStressType, DeleteStressType, RunStressFulfillType, StressChunkDataType } from '../action/stress';
+import { SaveStressType, ActiveStressType, DeleteStressType, RunStressFulfillType, StressChunkDataType, StresStatusType } from '../action/stress';
 
 export function stressTestState(state: StressTestState = stressDefaultValue, action: any): StressTestState {
     switch (action.type) {
@@ -25,10 +25,22 @@ export function stressTestState(state: StressTestState = stressDefaultValue, act
             const activeStress = state.activeStress === action.value ? (_.keys(stresses).length > 0 ? (_.keys(stresses)[0] || '') : '') : state.activeStress;
             return { ...state, stresses, activeStress };
         }
+        case StresStatusType: {
+            const { workerInfos, tasks, currentTask } = action.value;
+            if (currentTask) {
+                tasks.unshift(currentTask);
+            }
+            return {
+                ...state,
+                workerInfos: workerInfos,
+                tasks: tasks,
+                currentRunStress: currentTask
+            };
+        }
         case StressChunkDataType: {
             return {
                 ...state,
-                runState: action.value
+                runState: action.value.data
             };
         }
         case RunStressFulfillType: {

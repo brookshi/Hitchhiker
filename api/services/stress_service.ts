@@ -112,7 +112,7 @@ export class StressService {
         return { success: true, message: Message.stressDeleteSuccess };
     }
 
-    static async getTestCase(id: string): Promise<ResObject> {
+    static async getStressInfo(id: string): Promise<ResObject> {
         const stress = await StressService.getById(id);
         if (!stress) {
             return { success: false, message: Message.stressNotExist };
@@ -124,7 +124,7 @@ export class StressService {
         }
         const envVariables = {};
         if (stress.environmentId && stress.environmentId !== noEnvironment) {
-            const env = await EnvironmentService.get(stress.environmentId);
+            const env = await EnvironmentService.get(stress.environmentId, true);
             if (env) {
                 env.variables.forEach(v => {
                     if (v.isActive) {
@@ -154,13 +154,16 @@ export class StressService {
         return {
             success: true,
             message: '',
-            result: <TestCase>{
-                totalCount: stress.totalCount,
-                concurrencyCount: stress.concurrencyCount,
-                qps: stress.qps,
-                timeout: stress.timeout,
-                requestBodyList,
-                envVariables
+            result: {
+                testCase: <TestCase>{
+                    totalCount: stress.totalCount,
+                    concurrencyCount: stress.concurrencyCount,
+                    qps: stress.qps,
+                    timeout: stress.timeout,
+                    requestBodyList,
+                    envVariables
+                },
+                name: stress.name
             }
         };
     }

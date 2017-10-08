@@ -44,6 +44,10 @@ interface StressEditDialogState {
     sortedRecords: StressableRecord[];
 
     environmentNames: _.Dictionary<string>;
+
+    includeSome: boolean;
+
+    includeAll: boolean;
 }
 
 type StressableRecord = DtoRecord & { include: boolean };
@@ -78,7 +82,9 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
         this.state = {
             showEmails: props.stress.notification === NotificationMode.custom,
             sortedRecords,
-            environmentNames
+            environmentNames,
+            includeSome: sortedRecords.some(r => r.include),
+            includeAll: sortedRecords.every(r => r.include),
         };
     }
 
@@ -164,11 +170,17 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
         }
     }
 
+    private includeAllRequest = (event) => {
+        const sortedRecords = [...this.state.sortedRecords];
+        sortedRecords.forEach(r => r.include = (event.target as any).checked);
+        this.setState({ ...this.state, sortedRecords, includeSome: false, includeAll: (event.target as any).checked });
+    }
+
     private onCollectionChanged = (collectionId: string) => {
         if (collectionId) {
             const sortedRecords = this.generateIncludedRecords(this.props, collectionId);
             const environmentNames = this.getEnvNames(collectionId);
-            this.setState({ ...this.state, sortedRecords, environmentNames });
+            this.setState({ ...this.state, sortedRecords, environmentNames, includeAll: false, includeSome: false });
         } else {
             this.setState({ ...this.state, sortedRecords: [], environmentNames: { [noEnvironment]: noEnvironment } });
         }
@@ -188,8 +200,16 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
         return (
             <div>
                 <div>
-                    <span style={{ marginLeft: 32 }}>folder & name</span>
-                    <span style={{ float: 'right', marginRight: this.state.sortedRecords.length > 6 ? 32 : 16 }}>included</span>
+                    <span style={{ marginLeft: 32 }}>Folder/Request</span>
+                    <span style={{ float: 'right', marginRight: this.state.sortedRecords.length > 6 ? 32 : 16 }}>
+                        {`Include `}
+                        <Checkbox
+                            indeterminate={this.state.includeSome}
+                            checked={this.state.includeAll}
+                            onChange={this.includeAllRequest}
+                        />
+                    </span>
+
                 </div>
                 <RecordSortList
                     items={this.state.sortedRecords}
@@ -204,7 +224,7 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                                     if (activeRecord) {
                                         activeRecord.include = (event.target as any).checked;
                                     }
-                                    this.setState({ ...this.state, sortedRecords });
+                                    this.setState({ ...this.state, sortedRecords, includeSome: sortedRecords.some(r => r.include), includeAll: sortedRecords.every(r => r.include) });
                                 }} />
                             </span>
                         </li>

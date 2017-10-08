@@ -1,0 +1,31 @@
+@import '../../../style/colors.less';
+
+@keyframes blink {
+    from {
+        background: @primary-color;
+    }
+    to { 
+        background: transparent;
+    } 
+} 
+
+.indicator-blink { 
+    animation-name: blink;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in;
+    animation-direction:alternate;
+}
+
+.indicator-round {
+    height: 12px;
+    width: 12px;
+    display: inline-block;
+    border-radius: 6px;
+    margin-bottom: -2px;
+}
+
+.indicator-name{
+    font-weight: bold;
+    margin-left: 4px;
+}

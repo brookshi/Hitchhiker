@@ -12,6 +12,8 @@ export interface StressRequest extends StressUser {
 
     stressId: string;
 
+    stressName: string;
+
     testCase: TestCase;
 }
 
@@ -63,6 +65,10 @@ export interface StressResponse {
     type: StressMessageType;
 
     workerInfos: WorkerInfo[];
+
+    tasks: string[];
+
+    currentTask?: string;
 
     data?: any;
 }

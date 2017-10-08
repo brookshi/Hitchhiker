@@ -15,6 +15,7 @@ import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { DtoCollection } from '../../../../api/interfaces/dto_collection';
 import { StressRunResult } from '../../../../api/interfaces/dto_stress_setting';
 import { SaveStressType, DeleteStressType, ActiveStressType, RunStressType } from '../../action/stress';
+import StressWorkerStatus from './stress_worker_status';
 
 const { Content, Sider } = Layout;
 
@@ -104,6 +105,7 @@ class StressTest extends React.Component<StressProps, StressState> {
                 </Sider>
                 <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
                 <Content>
+                    <StressWorkerStatus />
                     <StressRunHistoryGrid
                         stressRecords={stress.stressRecords}
                         envNames={this.getEnvNames()}

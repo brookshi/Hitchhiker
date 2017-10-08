@@ -50,12 +50,13 @@ export class StressTestWSService extends WebSocketHandler {
 
         if (info.type === StressMessageType.task) {
             info.id = this.id;
-            const data = await StressService.getTestCase(info.stressId);
+            const data = await StressService.getStressInfo(info.stressId);
             if (!data.success) {
                 this.send(JSON.stringify({ type: StressMessageType.error, data: data.message }));
                 return;
             }
-            info.testCase = data.result;
+            info.testCase = data.result.testCase;
+            info.stressName = data.result.name;
             ChildProcessManager.instance.sendStressTask(info);
         } else if (info.type === StressMessageType.stop) {
             ChildProcessManager.instance.stopStressTask(this.id);
