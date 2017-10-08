@@ -71,8 +71,8 @@ function initUser(user: StressUser) {
 }
 
 function getCurrentRequestTotalCount() {
-    const { totalCount, requestBodyList } = currentStressRequest.testCase;
-    return totalCount * requestBodyList.length;
+    const { repeat, concurrencyCount, requestBodyList } = currentStressRequest.testCase;
+    return repeat * requestBodyList.length * concurrencyCount;
 }
 
 function tryTriggerStart(request?: StressRequest) {
@@ -97,7 +97,43 @@ function tryTriggerStart(request?: StressRequest) {
 }
 
 function sendMsgToWorkers(request: Partial<StressRequest>) {
-    _.values(workers).forEach(n => n.socket.send(JSON.stringify(request)));
+    if (request.type === StressMessageType.task) {
+        const allocableRequests = getAllocableRequest(request);
+        _.keys(allocableRequests).forEach(k => workers[k].socket.send(JSON.stringify(allocableRequests[k])));
+    } else {
+        _.values(workers).forEach(w => w.socket.send(JSON.stringify(request)));
+    }
+}
+
+function getAllocableRequest(request: Partial<StressRequest>) {
+    const orderWorkers = _.orderBy(_.values(workers), 'cpuNum', 'desc');
+    const totalCpuNum = _.sumBy(orderWorkers, 'cpuNum');
+    const concurrencyPerCpu = request.testCase.concurrencyCount / totalCpuNum;
+    const workerTaskCount = {};
+    orderWorkers.forEach(w => {
+        workerTaskCount[w.addr] = Math.floor(w.cpuNum * concurrencyPerCpu);
+    });
+    let leftConcurrencyCount = request.testCase.concurrencyCount - _.sum(_.values(workerTaskCount));
+    orderWorkers.forEach(w => {
+        if (workerTaskCount[w.addr] === 0 && leftConcurrencyCount > 0) {
+            workerTaskCount[w.addr] = 1;
+            leftConcurrencyCount--;
+        }
+    });
+    orderWorkers.forEach(w => {
+        if (leftConcurrencyCount > 0) {
+            workerTaskCount[w.addr] = 1;
+            leftConcurrencyCount--;
+        }
+    });
+    const allocableRequestWorker = {};
+    _.keys(workerTaskCount).forEach(k => {
+        if (workerTaskCount[k] > 0) {
+            console.log(`allocate ${k} task num: ${workerTaskCount[k]}`);
+            allocableRequestWorker[k] = { ...request, testCase: { ...request.testCase, concurrencyCount: workerTaskCount[k] } };
+        }
+    });
+    return allocableRequestWorker;
 }
 
 function sendMsgToUser(type: StressMessageType, user: StressUser, data?: any) {
@@ -173,7 +209,7 @@ function workerUpdated(addr: string, status: WorkerStatus) {
     console.log(`stress - status`);
     workers[addr].status = status;
     if (status === WorkerStatus.ready) {
-        if (!_.values(workers).some(w => w.status !== WorkerStatus.ready)) {
+        if (_.values(workers).every(w => w.status === WorkerStatus.ready)) {
             console.log(`stress - all workers ready`);
             sendMsgToWorkers({ type: StressMessageType.start });
             userUpdateTimer = setInterval(() => {
@@ -276,7 +312,7 @@ function getFailedResultStatistics() {
 function getRunProgress() {
     const requestList = currentStressRequest.testCase.requestBodyList;
     const reqProgresses = requestList.map(r => ({ id: r.id + (r.param || ''), name: r.name, num: 0 }));
-    let lastFinishCount = currentStressRequest.testCase.totalCount;
+    let lastFinishCount = currentStressRequest.testCase.repeat;
     let id;
     for (let i = 0; i < requestList.length; i++) {
         id = requestList[i].id + (requestList[i].param || '');

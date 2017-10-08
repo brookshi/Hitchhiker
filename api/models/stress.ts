@@ -22,7 +22,7 @@ export class Stress {
     concurrencyCount: number;
 
     @Column()
-    totalCount: number;
+    repeat: number;
 
     @Column()
     qps: number;

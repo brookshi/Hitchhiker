@@ -13,9 +13,9 @@ import { TestCase, RequestBody } from '../interfaces/dto_stress_setting';
 import { RecordService } from './record_service';
 import * as _ from 'lodash';
 import { RecordRunner } from '../run_engine/record_runner';
-import { ProjectService } from "./project_service";
-import { EnvironmentService } from "./environment_service";
-import { noEnvironment } from "../common/stress_type";
+import { ProjectService } from './project_service';
+import { EnvironmentService } from './environment_service';
+import { noEnvironment } from '../common/stress_type';
 
 export class StressService {
 
@@ -28,7 +28,7 @@ export class StressService {
         stress.name = dtoStress.name;
         stress.notification = dtoStress.notification;
         stress.concurrencyCount = dtoStress.concurrencyCount;
-        stress.totalCount = dtoStress.totalCount;
+        stress.repeat = dtoStress.repeat;
         stress.qps = dtoStress.qps;
         stress.timeout = dtoStress.timeout;
         stress.requests = dtoStress.requests;
@@ -156,7 +156,7 @@ export class StressService {
             message: '',
             result: {
                 testCase: <TestCase>{
-                    totalCount: stress.totalCount,
+                    repeat: stress.repeat,
                     concurrencyCount: stress.concurrencyCount,
                     qps: stress.qps,
                     timeout: stress.timeout,

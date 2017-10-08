@@ -318,8 +318,8 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                         <Row gutter={8}>
                             <Col span={4}>
                                 <FormItem>
-                                    {getFieldDecorator('totalCount', {
-                                        initialValue: stress.totalCount,
+                                    {getFieldDecorator('repeat', {
+                                        initialValue: stress.repeat,
                                     })(
                                         <InputNumber className="stress-dlg-input-number" min={1} />
                                         )}

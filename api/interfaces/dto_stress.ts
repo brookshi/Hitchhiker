@@ -13,7 +13,7 @@ export interface DtoStress {
 
     concurrencyCount: number;
 
-    totalCount: number;
+    repeat: number;
 
     qps: number;
 

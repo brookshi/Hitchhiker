@@ -60,7 +60,7 @@ const createDefaultStress: (user: DtoUser) => DtoStress = (user: DtoUser) => {
         collectionId: '',
         environmentId: noEnvironment,
         concurrencyCount: 1,
-        totalCount: 1,
+        repeat: 1,
         qps: 0,
         timeout: 0,
         requests: [],

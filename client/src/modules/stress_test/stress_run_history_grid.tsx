@@ -54,8 +54,8 @@ class StressRunHistoryGrid extends React.Component<StressRunHistoryGridProps, St
                         render={(text, record) => new Date(record.createDate).toLocaleString()}
                     />
                     <StressRecordColumn
-                        title="Requests Count"
-                        dataIndex="totalCount"
+                        title="Repeat"
+                        dataIndex="repeat"
                     />
                     <StressRecordColumn
                         title="TPS"

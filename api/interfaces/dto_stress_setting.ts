@@ -23,7 +23,7 @@ export interface TestCase {
 
     envVariables: _.Dictionary<string>;
 
-    totalCount: number;
+    repeat: number;
 
     concurrencyCount: number;
 
