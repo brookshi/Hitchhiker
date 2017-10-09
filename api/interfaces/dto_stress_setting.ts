@@ -70,6 +70,8 @@ export interface StressResponse {
 
     currentTask?: string;
 
+    currentStressId?: string;
+
     data?: any;
 }
 

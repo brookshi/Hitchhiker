@@ -17,18 +17,18 @@ import 'echarts/lib/component/title';
 import 'echarts/lib/component/legend';
 import { unknownName } from '../../common/constants';
 
-interface StressConsoleProps {
+interface StressRunDiagramProps {
 
     runState?: StressRunResult;
 
     records: _.Dictionary<DtoRecord>;
 
-    envNames: _.Dictionary<string>;
+    needProgress: boolean;
 }
 
-interface StressConsoleState { }
+interface StressRunDiagramState { }
 
-class StressRunDiagram extends React.Component<StressConsoleProps, StressConsoleState> {
+class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunDiagramState> {
 
     private commonBarOption = {
         grid: {
@@ -187,11 +187,11 @@ class StressRunDiagram extends React.Component<StressConsoleProps, StressConsole
             }, {
                 name: 'pie',
                 type: 'pie',
-                center: ['85%', '30%'],
-                radius: '30%',
-                avoidLabelOverlap: true,
+                center: ['80%', '20%'],
+                radius: '20%',
                 label: {
                     normal: {
+                        fontSize: 10,
                         formatter: param => {
                             return `${param.name}: ${param.percent} (${param.percent}%)`;
                         }
@@ -208,12 +208,12 @@ class StressRunDiagram extends React.Component<StressConsoleProps, StressConsole
     }
 
     public render() {
-        const { runState } = this.props;
+        const { runState, needProgress } = this.props;
 
         if (runState) {
             return (
                 <div >
-                    <ReactEchartsCore echarts={echarts} style={{ height: 130 }} option={this.getProgressOption(runState.reqProgress, runState.totalCount, runState.doneCount, runState.tps)} />
+                    {needProgress ? <ReactEchartsCore echarts={echarts} style={{ height: 130 }} option={this.getProgressOption(runState.reqProgress, runState.totalCount, runState.doneCount, runState.tps)} /> : ''}
                     <ReactEchartsCore echarts={echarts} style={{ height: 350 }} option={this.getDurationOption(runState.stressReqDuration)} />
                     <ReactEchartsCore echarts={echarts} style={{ height: 400 }} option={this.getFailedOption(runState.stressFailedResult, runState.totalCount)} />
                 </div>

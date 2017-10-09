@@ -8,6 +8,7 @@ import * as _ from 'lodash';
 import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
 import { actionCreator } from '../../action/index';
 import { Layout } from 'antd';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 import Splitter from '../../components/splitter';
 import { UpdateLeftPanelType, ResizeLeftPanelType } from '../../action/ui';
 import StressRunHistoryGrid from './stress_run_history_grid';
@@ -29,7 +30,7 @@ interface StressStateProps {
 
     activeStress: string;
 
-    currentRunStress: string;
+    currentRunStressId: string;
 
     stresses: _.Dictionary<DtoStress>;
 
@@ -68,15 +69,8 @@ class StressTest extends React.Component<StressProps, StressState> {
     private get stressArr() {
         return _.chain(this.props.stresses).values<DtoStress>().sortBy('name').value();
     }
-
-    private getEnvNames = () => {
-        const environmentNames: _.Dictionary<string> = {};
-        _.chain(this.props.environments).values().flatten<DtoEnvironment>().value().forEach(e => environmentNames[e.id] = e.name);
-        return environmentNames;
-    }
-
     public render() {
-        const { collapsed, leftPanelWidth, collapsedLeftPanel, createStress, selectStress, updateStress, deleteStress, user, activeStress, currentRunStress, collections, environments, records, stresses, runStress, runState } = this.props;
+        const { collapsed, leftPanelWidth, collapsedLeftPanel, createStress, selectStress, updateStress, deleteStress, user, activeStress, currentRunStressId, collections, environments, records, stresses, runStress, runState } = this.props;
         const stress = stresses[activeStress] || {};
 
         return (
@@ -92,7 +86,7 @@ class StressTest extends React.Component<StressProps, StressState> {
                         stresses={this.stressArr}
                         user={user}
                         activeStress={activeStress}
-                        currentRunStress={currentRunStress}
+                        currentRunStress={currentRunStressId}
                         collections={collections}
                         environments={environments}
                         createStress={createStress}
@@ -105,13 +99,15 @@ class StressTest extends React.Component<StressProps, StressState> {
                 </Sider>
                 <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
                 <Content>
-                    <StressWorkerStatus />
-                    <StressRunHistoryGrid
-                        stressRecords={stress.stressRecords}
-                        envNames={this.getEnvNames()}
-                        records={records}
-                        runState={runState}
-                    />
+                    <PerfectScrollbar>
+                        <StressWorkerStatus />
+                        <StressRunHistoryGrid
+                            stressRecords={stress.stressRecords}
+                            records={records}
+                            runState={runState}
+                            stress={stress}
+                        />
+                    </PerfectScrollbar>
                 </Content>
             </Layout>
         );
@@ -120,14 +116,14 @@ class StressTest extends React.Component<StressProps, StressState> {
 
 const mapStateToProps = (state: State): StressStateProps => {
     const { leftPanelWidth, collapsed } = state.uiState.appUIState;
-    const { stresses, activeStress, currentRunStress, runState } = state.stressTestState;
+    const { stresses, activeStress, currentRunStressId, runState } = state.stressTestState;
     const records = _.chain(state.collectionState.collectionsInfo.records).values<_.Dictionary<DtoRecord>>().value();
     return {
         leftPanelWidth,
         collapsed,
         user: state.userState.userInfo,
         activeStress,
-        currentRunStress,
+        currentRunStressId,
         collections: state.collectionState.collectionsInfo.collections,
         environments: state.environmentState.environments,
         stresses,

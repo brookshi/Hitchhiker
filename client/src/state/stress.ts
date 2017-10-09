@@ -7,7 +7,9 @@ export interface StressTestState {
 
     activeStress: string;
 
-    currentRunStress: string;
+    currentRunStressName: string;
+
+    currentRunStressId: string;
 
     workerInfos: WorkerInfo[];
 
@@ -19,7 +21,8 @@ export interface StressTestState {
 export const stressDefaultValue: StressTestState = {
     stresses: {},
     activeStress: '',
-    currentRunStress: '',
+    currentRunStressId: '',
+    currentRunStressName: '',
     workerInfos: [],
     tasks: []
 };

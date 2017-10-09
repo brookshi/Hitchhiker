@@ -7,6 +7,10 @@ import { StressRequest, StressUser, WorkerInfo, StressResponse, TestCase, Stress
 import * as _ from 'lodash';
 import { StressMessageType, WorkerStatus, StressFailedType } from '../common/stress_type';
 import { RunResult } from '../interfaces/dto_run_result';
+import { StressRecordService } from '../services/stress_record_service';
+import { StressRecord } from '../models/stress_record';
+import { Stress } from '../models/stress';
+import { StressFailedInfo } from '../models/stress_failed_info';
 
 type WorkerInfoEx = WorkerInfo & { socket: WS };
 
@@ -137,18 +141,18 @@ function getAllocableRequest(request: Partial<StressRequest>) {
 }
 
 function sendMsgToUser(type: StressMessageType, user: StressUser, data?: any) {
-    console.log(`stress - send msg to user ${user.id}: ${JSON.stringify(data || '')}`);
+    console.log(`stress ${type} - send msg to user ${user.id}`);
     if (!user) {
         console.log(`stress - user invalid`);
         return;
     }
-    const res = { type, workerInfos: _.values(workers).map(w => ({ ...w, socket: undefined })), data, tasks: stressQueue.map(s => s.stressName), currentTask: currentStressRequest ? currentStressRequest.stressName : '' } as StressResponse;
-    console.log(`stress - send msg to user ${user.id}: ${JSON.stringify(res)}`);
+    const res = { type, workerInfos: _.values(workers).map(w => ({ ...w, socket: undefined })), data, tasks: stressQueue.map(s => s.stressName), currentTask: currentStressRequest ? currentStressRequest.stressName : '', currentStressId: currentStressRequest ? currentStressRequest.stressId : '' } as StressResponse;
+    console.log(`stress ${type} - send msg to user ${user.id}`);
     process.send({ id: user.id, data: res });
 }
 
 function broadcastMsgToUsers(type: StressMessageType, data?: any) {
-    console.log(`stress - broadcast msg to user: ${JSON.stringify(data || '')}`);
+    console.log(`stress ${type} - broadcast msg to user`);
     _.values(users).forEach(u => sendMsgToUser(type, u, data));
 }
 
@@ -182,7 +186,6 @@ function startStressProcess() {
         socket.on('close', hadErr => {
             console.log(`stress - closed: ${addr}`);
             Reflect.deleteProperty(workers, addr);
-            reset();
             broadcastMsgToUsers(StressMessageType.status);
         });
 
@@ -213,16 +216,19 @@ function workerUpdated(addr: string, status: WorkerStatus) {
             console.log(`stress - all workers ready`);
             sendMsgToWorkers({ type: StressMessageType.start });
             userUpdateTimer = setInterval(() => {
-                sendDataToUser(StressMessageType.runResult);
+                sendMsgToUser(StressMessageType.runResult, currentStressRequest, buildStressRunResult());
             }, Setting.instance.stressUpdateInterval);
         }
     } else if (status === WorkerStatus.finish) {
         workers[addr].status = WorkerStatus.idle;
         if (!_.values(workers).some(w => w.status !== WorkerStatus.finish && w.status !== WorkerStatus.idle)) {
             console.log(`stress - all workers finish/idle`);
-            sendDataToUser(StressMessageType.finish);
-            reset();
-            tryTriggerStart();
+            const runResult = buildStressRunResult();
+            sendMsgToUser(StressMessageType.finish, currentStressRequest, runResult);
+            storeStressRecord(runResult, () => {
+                reset();
+                tryTriggerStart();
+            });
         }
     } else if (status === WorkerStatus.working) {
         if (!startTime) {
@@ -232,6 +238,30 @@ function workerUpdated(addr: string, status: WorkerStatus) {
         console.error('miss condition');
     }
     broadcastMsgToUsers(StressMessageType.status);
+}
+
+function storeStressRecord(runResult: StressRunResult, cb: () => void) {
+    if (!currentStressRequest) {
+        console.warn('invalid stress id');
+        return;
+    }
+    console.log('clear stress redundant records');
+    StressRecordService.clearRedundantRecords(currentStressRequest.stressId).then(() => {
+        console.log('create new stress record');
+        const stressRecord = new StressRecord();
+        stressRecord.stress = new Stress();
+        stressRecord.stress.id = currentStressRequest.stressId;
+        stressRecord.result = runResult;
+        const stressFailedInfo = new StressFailedInfo();
+        stressFailedInfo.info = JSON.stringify(stressFailedResult);
+        StressRecordService.create(stressRecord, stressFailedInfo).then(() => {
+            console.log('store stress record success');
+            cb();
+        });
+    }).catch(reason => {
+        console.error(`store stress record failed: ${reason}`);
+        cb();
+    });
 }
 
 function workerTrace(runResult: RunResult) {
@@ -266,13 +296,13 @@ function reset() {
     clearInterval(userUpdateTimer);
 }
 
-function sendDataToUser(type: StressMessageType) {
+function buildStressRunResult() {
     const totalCount = getCurrentRequestTotalCount();
     const doneCount = getDoneCount();
     const tps = doneCount / getPassedTime();
     const reqProgress = getRunProgress();
     buildDurationStatistics();
-    sendMsgToUser(type, currentStressRequest, <StressRunResult>{ totalCount, doneCount, tps, reqProgress, stressReqDuration, stressFailedResult: getFailedResultStatistics() });
+    return { totalCount, doneCount, tps, reqProgress, stressReqDuration, stressFailedResult: getFailedResultStatistics() };
 }
 
 function getDoneCount() {
@@ -312,7 +342,7 @@ function getFailedResultStatistics() {
 function getRunProgress() {
     const requestList = currentStressRequest.testCase.requestBodyList;
     const reqProgresses = requestList.map(r => ({ id: r.id + (r.param || ''), name: r.name, num: 0 }));
-    let lastFinishCount = currentStressRequest.testCase.repeat;
+    let lastFinishCount = currentStressRequest.testCase.repeat * currentStressRequest.testCase.concurrencyCount;
     let id;
     for (let i = 0; i < requestList.length; i++) {
         id = requestList[i].id + (requestList[i].param || '');

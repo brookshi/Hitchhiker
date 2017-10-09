@@ -17,7 +17,7 @@ export const RunStressType = 'run stress test';
 
 export const StressChunkDataType = 'stress test chunk data';
 
-export const StresStatusType = 'stress test status';
+export const StressStatusType = 'stress test status';
 
 export const RunStressFulfillType = 'run stress test completely';
 
@@ -41,8 +41,11 @@ export class StressWS {
             }
             if (data.type === StressMessageType.runResult || data.type === StressMessageType.finish) {
                 dispatch(actionCreator(StressChunkDataType, data));
+                if (data.type === StressMessageType.finish) {
+                    setTimeout(() => dispatch(actionCreator(RunStressFulfillType, data)), 2000);
+                }
             } else {
-                dispatch(actionCreator(StresStatusType, data));
+                dispatch(actionCreator(StressStatusType, data));
             }
         };
         this.socket.onclose = (ev: CloseEvent) => {
@@ -64,7 +67,9 @@ export class StressWS {
 
 export function* saveStress() {
     yield takeEvery(SaveStressType, function* (action: any) {
-        const channelAction = syncAction({ type: SaveStressType, method: action.value.isNew ? HttpMethod.POST : HttpMethod.PUT, url: Urls.getUrl(`stress`), body: action.value.stress });
+        const stress = { ...action.value.stress };
+        Reflect.deleteProperty(stress, 'stressRecords');
+        const channelAction = syncAction({ type: SaveStressType, method: action.value.isNew ? HttpMethod.POST : HttpMethod.PUT, url: Urls.getUrl(`stress`), body: stress });
         yield put(channelAction);
     });
 }

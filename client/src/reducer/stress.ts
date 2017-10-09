@@ -2,7 +2,7 @@ import { LoginSuccessType } from '../action/user';
 import * as _ from 'lodash';
 import { StressTestState, stressDefaultValue } from '../state/stress';
 import { DtoStress } from '../../../api/interfaces/dto_stress';
-import { SaveStressType, ActiveStressType, DeleteStressType, RunStressFulfillType, StressChunkDataType, StresStatusType } from '../action/stress';
+import { SaveStressType, ActiveStressType, DeleteStressType, RunStressFulfillType, StressChunkDataType, StressStatusType } from '../action/stress';
 
 export function stressTestState(state: StressTestState = stressDefaultValue, action: any): StressTestState {
     switch (action.type) {
@@ -25,8 +25,8 @@ export function stressTestState(state: StressTestState = stressDefaultValue, act
             const activeStress = state.activeStress === action.value ? (_.keys(stresses).length > 0 ? (_.keys(stresses)[0] || '') : '') : state.activeStress;
             return { ...state, stresses, activeStress };
         }
-        case StresStatusType: {
-            const { workerInfos, tasks, currentTask } = action.value;
+        case StressStatusType: {
+            const { workerInfos, tasks, currentTask, currentStressId } = action.value;
             if (currentTask) {
                 tasks.unshift(currentTask);
             }
@@ -34,7 +34,8 @@ export function stressTestState(state: StressTestState = stressDefaultValue, act
                 ...state,
                 workerInfos: workerInfos,
                 tasks: tasks,
-                currentRunStress: currentTask
+                currentRunStressName: currentTask,
+                currentRunStressId: currentStressId
             };
         }
         case StressChunkDataType: {
@@ -44,21 +45,32 @@ export function stressTestState(state: StressTestState = stressDefaultValue, act
             };
         }
         case RunStressFulfillType: {
-            const stress = state.stresses[action.value.id];
-            const stresses = Object.keys(action.value.data).length > 1 ? {
-                ...state.stresses, [action.value.id]: {
+            const stressId = action.value.currentStressId;
+            const stress = state.stresses[stressId];
+            if (!stress) {
+                return state;
+            }
+            const stresses = {
+                ...state.stresses, [stressId]: {
                     ...stress,
                     stressRecords: [
-                        action.value.data,
+                        {
+                            stressId,
+                            result: action.value.data,
+                            createDate: new Date()
+                        },
                         ...stress.stressRecords
                     ],
                     lastRunDate: new Date()
                 }
-            } : state.stresses;
+            };
             return {
                 ...state,
                 stresses,
-                runState: undefined
+                runState: undefined,
+                tasks: action.value.tasks,
+                currentRunStressName: '',
+                currentRunStressId: ''
             };
         }
         default:

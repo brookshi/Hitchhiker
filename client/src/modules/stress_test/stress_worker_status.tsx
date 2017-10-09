@@ -33,7 +33,7 @@ class StressWorkerStatus extends React.Component<StressWorkerProps, StressWorker
     }
 
     private localhostConverter = (addr: string) => {
-        if (addr === '::1') {
+        if (addr === '::1' || addr.endsWith('127.0.0.1')) {
             return 'localhost';
         }
         return addr;
@@ -44,7 +44,7 @@ const mapStateToProps = (state: State): StressWorkerStatusProps => {
     return {
         workerInfos: state.stressTestState.workerInfos,
         taskCount: state.stressTestState.tasks.length,
-        currentTask: state.stressTestState.currentRunStress
+        currentTask: state.stressTestState.currentRunStressName
     };
 };
 
