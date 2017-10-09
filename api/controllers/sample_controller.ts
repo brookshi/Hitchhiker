@@ -5,7 +5,8 @@ import * as Koa from 'koa';
 export default class SampleController extends BaseController {
 
     @GET('/sample/:id')
-    getById( @PathParam('id') id: any): ResObject {
+    async getById( @PathParam('id') id: any): Promise<ResObject> {
+        await new Promise(r => setTimeout(() => { r(); }, 2000));
         return {
             success: true,
             message: '',

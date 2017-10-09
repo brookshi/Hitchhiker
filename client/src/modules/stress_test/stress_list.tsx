@@ -63,6 +63,7 @@ const createDefaultStress: (user: DtoUser) => DtoStress = (user: DtoUser) => {
         repeat: 1,
         qps: 0,
         timeout: 0,
+        keepAlive: true,
         requests: [],
         notification: NotificationMode.none,
         emails: '',

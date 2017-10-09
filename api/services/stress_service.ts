@@ -31,6 +31,7 @@ export class StressService {
         stress.repeat = dtoStress.repeat;
         stress.qps = dtoStress.qps;
         stress.timeout = dtoStress.timeout;
+        stress.keepAlive = dtoStress.keepAlive;
         stress.requests = dtoStress.requests;
         return stress;
     }
@@ -160,6 +161,7 @@ export class StressService {
                     concurrencyCount: stress.concurrencyCount,
                     qps: stress.qps,
                     timeout: stress.timeout,
+                    keepAlive: stress.keepAlive,
                     requestBodyList,
                     envVariables
                 },

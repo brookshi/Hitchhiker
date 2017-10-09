@@ -19,6 +19,8 @@ export interface DtoStress {
 
     timeout: number;
 
+    keepAlive: boolean;
+
     requests: string[];
 
     notification: NotificationMode;

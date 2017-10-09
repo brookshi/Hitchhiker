@@ -30,6 +30,8 @@ export interface TestCase {
     qps: number;
 
     timeout: number;
+
+    keepAlive: boolean;
 }
 
 export interface RequestBody {

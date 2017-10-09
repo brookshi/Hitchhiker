@@ -316,7 +316,7 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                     </FormItem>
                     <FormItem {...formItemLayout} label="Repeat">
                         <Row gutter={8}>
-                            <Col span={4}>
+                            <Col span={3}>
                                 <FormItem>
                                     {getFieldDecorator('repeat', {
                                         initialValue: stress.repeat,
@@ -326,7 +326,7 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                                 </FormItem>
                             </Col>
                             <Col span={3} style={stressColStyle}>Concurrency: </Col>
-                            <Col span={4}>
+                            <Col span={3}>
                                 <FormItem>
                                     {getFieldDecorator('concurrencyCount', {
                                         initialValue: stress.concurrencyCount,
@@ -336,7 +336,7 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                                 </FormItem>
                             </Col>
                             <Col span={2} style={stressColStyle}>QPS: </Col>
-                            <Col span={4}>
+                            <Col span={3}>
                                 <FormItem>
                                     {getFieldDecorator('qps', {
                                         initialValue: stress.qps,
@@ -345,8 +345,8 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                                         )}
                                 </FormItem>
                             </Col>
-                            <Col span={2} style={stressColStyle}>Timeout: </Col>
-                            <Col span={4}>
+                            <Col span={3} style={stressColStyle}>Timeout(s): </Col>
+                            <Col span={3}>
                                 <FormItem>
                                     {getFieldDecorator('timeout', {
                                         initialValue: stress.timeout,
@@ -355,7 +355,17 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                                         )}
                                 </FormItem>
                             </Col>
-                            <Col span={1} />
+                            <Col span={1} style={stressColStyle} />
+                            <Col span={3}>
+                                <FormItem>
+                                    {getFieldDecorator('keepAlive', {
+                                        valuePropName: 'checked',
+                                        initialValue: stress.keepAlive,
+                                    })(
+                                        <Checkbox>KeepAlive</Checkbox>
+                                        )}
+                                </FormItem>
+                            </Col>
                         </Row>
                     </FormItem>
                     <FormItem {...formItemLayout} label="Environment">

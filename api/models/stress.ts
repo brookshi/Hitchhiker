@@ -30,6 +30,9 @@ export class Stress {
     @Column()
     timeout: number;
 
+    @Column()
+    keepAlive: boolean;
+
     @Column('json')
     requests: string[];
 
