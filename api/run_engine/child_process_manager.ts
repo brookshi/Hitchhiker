@@ -35,15 +35,6 @@ export class ChildProcessManager {
 
         process.on('message', msg => {
 
-            if (msg.complete) {
-                if (this.retryTimes === 0) {
-                    return;
-                } else {
-                    this.retryTimes--;
-                    Log.info(`${moduleName} complete, time: ${this.retryTimes}!`);
-                }
-            }
-
             if (moduleName === 'stress') {
                 if (this.stressHandlers[msg.id]) {
                     this.stressHandlers[msg.id](msg.data);
@@ -57,6 +48,7 @@ export class ChildProcessManager {
                 return;
             }
             Log.warn(`${moduleName} exit!`);
+            this.retryTimes++;
             this.createChildProcess(moduleName);
         });
 

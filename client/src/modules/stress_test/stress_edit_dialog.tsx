@@ -248,7 +248,7 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                 ...this.props.stress,
                 ...values,
                 emails: values.emails.join(';'),
-                environmentId: values.environmentId === noEnvironment ? undefined : values.environmentId,
+                environmentId: values.environmentId,
                 notification: Number.parseInt(values.notification),
                 requests: this.state.sortedRecords.filter(r => r.include).map(r => r.id)
             });
@@ -365,7 +365,7 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                             this.generateEnvSelect()
                             )}
                     </FormItem>
-                    <FormItem {...formItemLayout} label="Notification">
+                    <FormItem {...formItemLayout} label="Notification" style={{ display: 'none' }}>
                         {getFieldDecorator('notification', {
                             initialValue: stress.notification.toString(),
                         })(

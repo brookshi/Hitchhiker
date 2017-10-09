@@ -102,7 +102,7 @@ class StressRunHistoryGrid extends React.Component<StressRunHistoryGridProps, St
     }
 
     private getFailedDisplay = (text: any, record: StressRecordDisplay) => {
-        const failedArr = _.keys(record.failed).map(k => `${this.formatFailedKey(k)}: ${_.chain(record.failed[k]).flatten().sum().value()}`);
+        const failedArr = _.keys(record.failed).map(k => `${this.formatFailedKey(k)}: ${_.chain(record.failed[k]).values().flatten().sum().value()}`);
         return (
             <span>
                 <Tooltip overlayClassName="stress-table-tooltip" placement="top" title={<pre>{failedArr.join('\n')}</pre>}>

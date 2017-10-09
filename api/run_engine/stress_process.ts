@@ -11,6 +11,7 @@ import { StressRecordService } from '../services/stress_record_service';
 import { StressRecord } from '../models/stress_record';
 import { Stress } from '../models/stress';
 import { StressFailedInfo } from '../models/stress_failed_info';
+import { StressService } from '../services/stress_service';
 
 type WorkerInfoEx = WorkerInfo & { socket: WS };
 
@@ -84,9 +85,9 @@ function tryTriggerStart(request?: StressRequest) {
     if (_.values(workers).some(n => n.status !== WorkerStatus.idle)) {
         console.log('stress - trigger start: not all worker idle');
         if (!!request) {
-            process.send({ id: request.id, data: { type: StressMessageType.wait } });
             console.log('stress - push to queue');
             stressQueue.push(request);
+            broadcastMsgToUsers(StressMessageType.status);
         }
         return;
     }
@@ -163,7 +164,7 @@ function startStressProcess() {
         console.log(`stress - worker connected: ${addr}`);
 
         socket.on('message', data => {
-            console.log(`stress - data from ${addr}: ${data.toString()}`);
+            console.log(`stress - data from ${addr}`);
             const obj = JSON.parse(data.toString()) as StressMessage;
             switch (obj.type) {
                 case StressMessageType.hardware:
@@ -240,13 +241,17 @@ function workerUpdated(addr: string, status: WorkerStatus) {
     broadcastMsgToUsers(StressMessageType.status);
 }
 
-function storeStressRecord(runResult: StressRunResult, cb: () => void) {
+async function storeStressRecord(runResult: StressRunResult, cb: () => void): Promise<void> {
     if (!currentStressRequest) {
         console.warn('invalid stress id');
         return;
     }
-    console.log('clear stress redundant records');
-    StressRecordService.clearRedundantRecords(currentStressRequest.stressId).then(() => {
+    try {
+        const stress = await StressService.getById(currentStressRequest.stressId);
+        stress.lastRunDate = new Date();
+        await StressService.save(stress);
+        console.log('clear stress redundant records');
+        await StressRecordService.clearRedundantRecords(currentStressRequest.stressId);
         console.log('create new stress record');
         const stressRecord = new StressRecord();
         stressRecord.stress = new Stress();
@@ -254,14 +259,13 @@ function storeStressRecord(runResult: StressRunResult, cb: () => void) {
         stressRecord.result = runResult;
         const stressFailedInfo = new StressFailedInfo();
         stressFailedInfo.info = JSON.stringify(stressFailedResult);
-        StressRecordService.create(stressRecord, stressFailedInfo).then(() => {
-            console.log('store stress record success');
-            cb();
-        });
-    }).catch(reason => {
+        await StressRecordService.create(stressRecord, stressFailedInfo);
+        console.log('store stress record success');
+        cb();
+    } catch (reason) {
         console.error(`store stress record failed: ${reason}`);
         cb();
-    });
+    }
 }
 
 function workerTrace(runResult: RunResult) {
@@ -347,7 +351,6 @@ function getRunProgress() {
     for (let i = 0; i < requestList.length; i++) {
         id = requestList[i].id + (requestList[i].param || '');
         const currentReqCount = stressReqDuration[id] ? stressReqDuration[id].durations.length : 0;
-        console.warn(`current req count: ${currentReqCount}`);
         reqProgresses[i].num = lastFinishCount - currentReqCount;
         lastFinishCount = currentReqCount;
     }
