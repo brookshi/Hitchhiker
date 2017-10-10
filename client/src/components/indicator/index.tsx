@@ -8,6 +8,8 @@ interface IndicatorProps {
     status: WorkerStatus;
 
     name: string;
+
+    left?: number;
 }
 
 interface IndicatorState { }
@@ -25,9 +27,9 @@ class Indicator extends React.Component<IndicatorProps, IndicatorState> {
     }
 
     public render() {
-        const { status, name } = this.props;
+        const { status, name, left } = this.props;
         const color = this.getColorByStatus();
-        const style = { background: color };
+        const style = { background: color, marginLeft: left || 0 };
         return (
             <span>
                 <span className={`${status === WorkerStatus.working ? 'indicator-blink' : ''} indicator-round`} style={style} />

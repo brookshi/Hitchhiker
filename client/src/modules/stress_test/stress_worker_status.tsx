@@ -25,7 +25,7 @@ class StressWorkerStatus extends React.Component<StressWorkerProps, StressWorker
         const { workerInfos, taskCount, currentTask } = this.props;
         return (
             <div className="stress-worker-status">
-                {workerInfos.map(w => <Indicator key={w.addr} status={w.status} name={`${this.localhostConverter(w.addr)} (${w.cpuNum} Cores)`} />)}
+                {workerInfos.map((w, i) => <Indicator key={w.addr} left={i > 0 ? 8 : 0} status={w.status} name={`${this.localhostConverter(w.addr)} (${w.cpuNum} Cores)`} />)}
                 <span className="stress-worker-gap" />
                 <span className="stress-task">Task Count: {taskCount} {currentTask ? `, Current Task: ${currentTask}` : ''}</span>
             </div>
@@ -35,6 +35,8 @@ class StressWorkerStatus extends React.Component<StressWorkerProps, StressWorker
     private localhostConverter = (addr: string) => {
         if (addr === '::1' || addr.endsWith('127.0.0.1')) {
             return 'localhost';
+        } else if (addr.startsWith('::ffff:')) {
+            return addr.substr(7);
         }
         return addr;
     }

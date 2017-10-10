@@ -229,6 +229,7 @@ function workerUpdated(addr: string, status: WorkerStatus) {
             storeStressRecord(runResult, () => {
                 reset();
                 tryTriggerStart();
+                broadcastMsgToUsers(StressMessageType.status);
             });
         }
     } else if (status === WorkerStatus.working) {

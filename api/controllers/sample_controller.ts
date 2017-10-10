@@ -6,7 +6,6 @@ export default class SampleController extends BaseController {
 
     @GET('/sample/:id')
     async getById( @PathParam('id') id: any): Promise<ResObject> {
-        await new Promise(r => setTimeout(() => { r(); }, 2000));
         return {
             success: true,
             message: '',
