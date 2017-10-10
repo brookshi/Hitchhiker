@@ -85,3 +85,18 @@ By the way, you can use `Run now` in menu to run it at any time, and will receiv
 ### Compare response 
 
 As above, you can compare responses for different environments in `Schedule`, but sometimes we need handle data before comparing, for example, we have a response which include a date field with value of now, it's to say, every response is different, you can't get PASS in `schedule`. But, you know, it makes no sense to compare a date with value of now, so we could remove it before comparing by using `$export$(data)` in `test`, handle response and then pass data to function `$export$`, Hitchhiker will use this data to compare in schedule.
+
+### Stress Test
+
+Hitchhiker include a distributed stress test system, must deploy [Hitchhiker-Node](https://github.com/brookshi/Hitchhiker-Node) to one or more PC before using it.
+Create stress test task by including some `Request` of `Collection`, there are some options for stress test：
+> - Repeat: repeat times
+> - Concurrency: concurrency  
+> - QPS: query per second for a worker, default is 0 (no limit)
+> - Timeout: timeout second，default is 0 (worker nevel timeout)
+> - Keeplive: set Keeplive for each request
+
+Hitchhiker will display real-time state of stress test task, include workers, request progress, duration and failed status. There are three diagram:
+1. Run progress, include done count and TPS
+2. Duration of each request, include DNS, Connect, Request, Min, Max
+3. request failed status, include No Response, Server Error(500), Test Failed.

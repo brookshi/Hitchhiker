@@ -95,7 +95,7 @@
     ✔ send request with common header like 'accept' etc.. @done (9/23/2017, 2:25:58 PM)
 0.2.0:
     ✔ run schedule in background with empty request will throw exception @done (9/29/2017, 6:45:10 PM)
-    ☐ stree test
+    ✔ stree test @done (10/10/2017, 10:08:28 PM)
 0.2.1:
     ☐ form data, text, binary body type
     ☐ fetch data per 30s
@@ -107,6 +107,7 @@
     ☐ project share collection/env
     ☐ body type
     ☐ project share collection/env for own
+    ☐ stop running stress test
 0.2.3:
     ☐ variable highlight
     ☐ save all tabs, close all tabs, close all but active.

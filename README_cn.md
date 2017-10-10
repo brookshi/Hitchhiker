@@ -20,12 +20,17 @@ Hitchhiker Api 是一款 Restful Api 集成测试工具，你可以在轻松部�
 * 易部署 (支持 docker, windows, linux), 数据都存在自己这里，不会上传及丢失
 * 会记往任何修改，不用怕没保存时session失效或系统重启
 * 支持导入Postman v1 collections
-* 性能测试 (开发中...)
+* 分布式压力测试
 * Api文档 (计划中...)
 
 ## 展示
 
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/collection.png' width='800'/>
+<img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/header.gif' width='800'/>
+<img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/history.png' width='800'/>
+<img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/parameters.gif' width='800'/>
+<img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/schedule.png' width='800'/>
+<img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/stresstest.gif' width='800'/>
 
 [go for more](https://github.com/brookshi/images/tree/master/Hitchhiker)
 

@@ -19,14 +19,17 @@ Go to [http://www.hitchhiker-api.com](http://www.hitchhiker-api.com) for test，
 * Easy to deploy (support docker, windows, linux), keep data in your control, never lose data
 * All changed will be auto saved in local cache even if refresh page
 * Support importing Postman v1 collections
-* Performance test (progressing)
+* Distributed stress test
 * Api Document (in future)
 
 ## Display
 
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/collection.png' width='800'/>
-
-[go for more](https://github.com/brookshi/images/tree/master/Hitchhiker)
+<img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/header.gif' width='800'/>
+<img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/history.png' width='800'/>
+<img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/parameters.gif' width='800'/>
+<img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/schedule.png' width='800'/>
+<img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/stresstest.gif' width='800'/>
 
 ## Deploy
 
