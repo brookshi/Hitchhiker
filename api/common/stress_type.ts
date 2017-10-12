@@ -35,7 +35,9 @@ export enum StressMessageType {
 
     error = 9,
 
-    finish = 10
+    finish = 10,
+
+    noWorker = 11
 }
 
 // type StressFaildType = 'noRes' | 'm500' | 'testFailed' | 'timeout';

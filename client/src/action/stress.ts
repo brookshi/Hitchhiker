@@ -39,6 +39,10 @@ export class StressWS {
                 message.error(data);
                 return;
             }
+            if (data.type === StressMessageType.noWorker) {
+                message.warning(data.data);
+                return;
+            }
             if (data.type === StressMessageType.runResult || data.type === StressMessageType.finish) {
                 dispatch(actionCreator(StressChunkDataType, data));
                 if (data.type === StressMessageType.finish) {
