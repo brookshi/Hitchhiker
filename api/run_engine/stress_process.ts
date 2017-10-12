@@ -33,35 +33,35 @@ let startTime: [number, number];
 
 Log.init();
 
-console.log('stress process start');
+Log.info('stress process start');
 
-console.log(`stress - create socket server`);
+Log.info(`stress - create socket server`);
 const wsServer = new WS.Server({ port: Setting.instance.stressPort });
 
 let userUpdateTimer: number;
 
 process.on('message', (msg: StressRequest) => {
-    console.log(`stress - user message: ${JSON.stringify(msg)}`);
+    Log.info(`stress - user message: ${JSON.stringify(msg)}`);
     switch (msg.type) {
         case StressMessageType.init:
-            console.log('stress - user init');
+            Log.info('stress - user init');
             initUser({ ...<StressUser>msg });
             break;
         case StressMessageType.start:
-            console.log('stress - user start');
+            Log.info('stress - user start');
             startStressProcess();
             break;
         case StressMessageType.task:
-            console.log('stress - user task');
+            Log.info('stress - user task');
             tryTriggerStart(msg);
             break;
         case StressMessageType.close:
-            console.log('stress - user close');
+            Log.info('stress - user close');
             Reflect.deleteProperty(users, msg.id);
             currentStressRequest = undefined;
             break;
         case StressMessageType.stop:
-            console.log('stress - user stop');
+            Log.info('stress - user stop');
             sendMsgToWorkers(msg);
             currentStressRequest = undefined;
             break;
@@ -81,16 +81,16 @@ function getCurrentRequestTotalCount() {
 }
 
 function tryTriggerStart(request?: StressRequest) {
-    console.log(`stress - tryTriggerStart: ${JSON.stringify(request || '')}`);
+    Log.info(`stress - tryTriggerStart: ${JSON.stringify(request || '')}`);
     if (_.keys(workers).length === 0) {
-        console.log('no worker, drop task');
+        Log.info('no worker, drop task');
         sendMsgToUser(StressMessageType.noWorker, request, 'There is no valid Hitchhiker-Node, please run a Hitchhiker-Node first.');
         return;
     }
     if (_.values(workers).some(n => n.status !== WorkerStatus.idle)) {
-        console.log('stress - trigger start: not all worker idle');
+        Log.info('stress - trigger start: not all worker idle');
         if (request) {
-            console.log('stress - push to queue');
+            Log.info('stress - push to queue');
             stressQueue.push(request);
             broadcastMsgToUsers(StressMessageType.status);
         }
@@ -98,11 +98,11 @@ function tryTriggerStart(request?: StressRequest) {
     }
     request = request || stressQueue.shift();
     if (!request) {
-        console.log('stress - no request, return');
+        Log.info('stress - no request, return');
         return;
     }
     currentStressRequest = request;
-    console.log('stress - send msg to workers');
+    Log.info('stress - send msg to workers');
     sendMsgToWorkers(request);
 }
 
@@ -139,7 +139,7 @@ function getAllocableRequest(request: Partial<StressRequest>) {
     const allocableRequestWorker = {};
     _.keys(workerTaskCount).forEach(k => {
         if (workerTaskCount[k] > 0) {
-            console.log(`allocate ${k} task num: ${workerTaskCount[k]}`);
+            Log.info(`allocate ${k} task num: ${workerTaskCount[k]}`);
             allocableRequestWorker[k] = { ...request, testCase: { ...request.testCase, concurrencyCount: workerTaskCount[k] } };
         }
     });
@@ -148,17 +148,17 @@ function getAllocableRequest(request: Partial<StressRequest>) {
 
 function sendMsgToUser(type: StressMessageType, user: StressUser, data?: any) {
     if (!user) {
-        console.log(`stress - user invalid`);
+        Log.info(`stress - user invalid`);
         return;
     }
-    console.log(`stress ${type} - send msg to user ${user.id}`);
+    Log.info(`stress ${type} - send msg to user ${user.id}`);
     const res = { type, workerInfos: _.values(workers).map(w => ({ ...w, socket: undefined })), data, tasks: stressQueue.map(s => s.stressName), currentTask: currentStressRequest ? currentStressRequest.stressName : '', currentStressId: currentStressRequest ? currentStressRequest.stressId : '' } as StressResponse;
-    console.log(`stress ${type} - send msg to user ${user.id}`);
+    Log.info(`stress ${type} - send msg to user ${user.id}`);
     process.send({ id: user.id, data: res });
 }
 
 function broadcastMsgToUsers(type: StressMessageType, data?: any) {
-    console.log(`stress ${type} - broadcast msg to user`);
+    Log.info(`stress ${type} - broadcast msg to user`);
     _.values(users).forEach(u => sendMsgToUser(type, u, data));
 }
 
@@ -166,10 +166,10 @@ function startStressProcess() {
     wsServer.on('connection', (socket, req) => {
         const addr = req.connection.remoteAddress;
         workers[addr] = { addr: addr, socket, status: WorkerStatus.idle, cpuNum: Number.NaN };
-        console.log(`stress - worker connected: ${addr}`);
+        Log.info(`stress - worker connected: ${addr}`);
 
         socket.on('message', data => {
-            console.log(`stress - data from ${addr}`);
+            Log.info(`stress - data from ${addr}`);
             const obj = JSON.parse(data.toString()) as StressMessage;
             switch (obj.type) {
                 case StressMessageType.hardware:
@@ -190,19 +190,19 @@ function startStressProcess() {
         });
 
         socket.on('close', hadErr => {
-            console.log(`stress - closed: ${addr}`);
+            Log.info(`stress - closed: ${addr}`);
             Reflect.deleteProperty(workers, addr);
             broadcastMsgToUsers(StressMessageType.status);
         });
 
         socket.on('error', err => {
-            console.log(`stress - error ${addr}: ${err}`);
+            Log.info(`stress - error ${addr}: ${err}`);
         });
     });
 }
 
 function workerInited(addr: string, cpu: number, status: WorkerStatus) {
-    console.log(`stress - hardware`);
+    Log.info(`stress - hardware`);
     workers[addr].cpuNum = cpu;
     workers[addr].status = status;
     broadcastMsgToUsers(StressMessageType.status);
@@ -210,16 +210,16 @@ function workerInited(addr: string, cpu: number, status: WorkerStatus) {
 
 function workerStarted(addr: string) {
     workers[addr].status = WorkerStatus.working;
-    console.log(`stress - worker ${addr} start`);
+    Log.info(`stress - worker ${addr} start`);
     broadcastMsgToUsers(StressMessageType.status);
 }
 
 function workerUpdated(addr: string, status: WorkerStatus) {
-    console.log(`stress - status`);
+    Log.info(`stress - status`);
     workers[addr].status = status;
     if (status === WorkerStatus.ready) {
         if (_.values(workers).every(w => w.status === WorkerStatus.ready)) {
-            console.log(`stress - all workers ready`);
+            Log.info(`stress - all workers ready`);
             sendMsgToWorkers({ type: StressMessageType.start });
             userUpdateTimer = setInterval(() => {
                 sendMsgToUser(StressMessageType.runResult, currentStressRequest, buildStressRunResult());
@@ -228,7 +228,7 @@ function workerUpdated(addr: string, status: WorkerStatus) {
     } else if (status === WorkerStatus.finish) {
         workers[addr].status = WorkerStatus.idle;
         if (!_.values(workers).some(w => w.status !== WorkerStatus.finish && w.status !== WorkerStatus.idle)) {
-            console.log(`stress - all workers finish/idle`);
+            Log.info(`stress - all workers finish/idle`);
             const runResult = buildStressRunResult();
             storeStressRecord(runResult).then((v) => {
                 clearInterval(userUpdateTimer);
@@ -236,14 +236,14 @@ function workerUpdated(addr: string, status: WorkerStatus) {
                 reset();
                 tryTriggerStart();
                 broadcastMsgToUsers(StressMessageType.status);
-            }).catch((reason) => console.error(`store stress record failed: ${reason}`));
+            }).catch((reason) => Log.error(`store stress record failed: ${reason}`));
         }
     } else if (status === WorkerStatus.working) {
         if (!startTime) {
             startTime = process.hrtime();
         }
     } else {
-        console.error('miss condition');
+        Log.error('miss condition');
     }
     broadcastMsgToUsers(StressMessageType.status);
 }
@@ -252,9 +252,9 @@ async function storeStressRecord(runResult: StressRunResult): Promise<void> {
     const stress = await StressService.getById(currentStressRequest.stressId);
     stress.lastRunDate = new Date();
     await StressService.save(stress);
-    console.log('clear stress redundant records');
+    Log.info('clear stress redundant records');
     await StressRecordService.clearRedundantRecords(currentStressRequest.stressId);
-    console.log('create new stress record');
+    Log.info('create new stress record');
     const stressRecord = new StressRecord();
     stressRecord.stress = new Stress();
     stressRecord.stress.id = currentStressRequest.stressId;
@@ -262,7 +262,7 @@ async function storeStressRecord(runResult: StressRunResult): Promise<void> {
     const stressFailedInfo = new StressFailedInfo();
     stressFailedInfo.info = JSON.stringify(stressFailedResult);
     await StressRecordService.create(stressRecord, stressFailedInfo);
-    console.log('store stress record success');
+    Log.info('store stress record success');
 }
 
 function workerTrace(runResult: RunResult) {

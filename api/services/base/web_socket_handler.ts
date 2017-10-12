@@ -1,4 +1,5 @@
 import * as WS from 'ws';
+import { Log } from '../../utils/log';
 
 export abstract class WebSocketHandler {
 
@@ -12,7 +13,7 @@ export abstract class WebSocketHandler {
     }
 
     init() {
-        console.log('ws init');
+        Log.info('ws init');
     }
 
     abstract onReceive(data: string);

@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { Log } from './log';
 
 export class Setting {
 
@@ -14,7 +15,7 @@ export class Setting {
     init() {
         const frontEndJSFolder = path.join(__dirname, '../public/static/js');
         if (!fs.existsSync(frontEndJSFolder)) {
-            console.warn(`dir ${frontEndJSFolder} is not a valid path`);
+            Log.warn(`dir ${frontEndJSFolder} is not a valid path`);
             return;
         }
         const files = fs.readdirSync(frontEndJSFolder).filter(value => value.endsWith('.js') && fs.lstatSync(path.join(frontEndJSFolder, value)).isFile);
