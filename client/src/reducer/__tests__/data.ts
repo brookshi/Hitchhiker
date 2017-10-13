@@ -34,7 +34,7 @@ export const defaultUser = {
 export const defaultRunResult = {
     id: '123',
     envId: 'env1',
-    error: { message: 'error', stack: 'throw' },
+    error: undefined,
     body: 'body1',
     tests: { ['test result']: true },
     variables: { isSuccess: true },
@@ -46,5 +46,31 @@ export const defaultRunResult = {
     cookies: ['ck1=ck2;'],
     host: 'hitchhiker-api.com'
 };
+
+export const defaultStress = {
+    id: '123',
+    name: 'stress1',
+    collectionId: 'c1',
+    environmentId: 'env1',
+    concurrencyCount: 2,
+    repeat: 2,
+    qps: 100,
+    timeout: 10,
+    keepAlive: false,
+    requests: ['r1', 'r2'],
+    notification: NotificationMode.me,
+    emails: 'a@a.aa',
+    ownerId: 'u1',
+    stressRecords: []
+};
+
+export const defaultStressRunResult = {
+    totalCount: 1000,
+    doneCount: 900,
+    tps: 200.18,
+    reqProgress: [],
+    stressReqDuration: {},
+    stressFailedResult: {}
+}
 
 test('move record');

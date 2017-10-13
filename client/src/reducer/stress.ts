@@ -28,7 +28,7 @@ export function stressTestState(state: StressTestState = stressDefaultValue, act
         case StressStatusType: {
             const { workerInfos, tasks, currentTask, currentStressId } = action.value;
             if (currentTask) {
-                tasks.unshift(currentTask);
+                tasks.unshift(currentStressId);
             }
             return {
                 ...state,

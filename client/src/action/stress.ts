@@ -5,7 +5,7 @@ import { takeEvery, put } from 'redux-saga/effects';
 import { syncAction, actionCreator } from './index';
 import { HttpMethod } from '../common/http_method';
 import { Dispatch } from 'react-redux';
-import { message } from 'antd';
+import message from 'antd/lib/message';
 
 export const SaveStressType = 'save stress test';
 
