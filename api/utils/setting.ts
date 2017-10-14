@@ -64,7 +64,7 @@ export class Setting {
     }
 
     get appPort() {
-        return this.isDev ? 81 : this.appHost.substr(this.appHost.indexOf(':') + 1).replace('/', '');
+        return this.isDev ? 81 : this.appHost.substr(this.appHost.lastIndexOf(':') + 1).replace('/', '');
     }
 
     get schedule() {
