@@ -63,6 +63,10 @@ export class Setting {
         return this.isDev ? this.app.language : (process.env.HITCHHIKER_APP_LANG || this.app.language);
     }
 
+    get appPort() {
+        return this.isDev ? 81 : this.appHost.substr(this.appHost.indexOf(':') + 1).replace('/', '');
+    }
+
     get schedule() {
         return this._setting.schedule;
     }

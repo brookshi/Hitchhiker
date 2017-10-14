@@ -42,12 +42,7 @@ gulp.task('config', [], function () {
                 .on('end', function () {
                     gulp.src('./client/package.json')
                         .pipe(replace('localhost:81', `localhost:8080`))
-                        .pipe(gulp.dest('./client/'))
-                        .on('end', function () {
-                            gulp.src('./api/index.ts')
-                                .pipe(replace('81', `8080`))
-                                .pipe(gulp.dest('./api/'));
-                        });
+                        .pipe(gulp.dest('./client/'));
                 });
         });
 });

@@ -16,7 +16,7 @@ ChildProcessManager.instance.init();
 
 app.use(Middleware(app));
 
-const server = app.listen(81);
+const server = app.listen(Setting.instance.appPort);
 
 server.timeout = 30 * 60 * 1000;
 

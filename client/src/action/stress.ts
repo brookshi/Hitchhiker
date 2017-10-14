@@ -53,7 +53,7 @@ export class StressWS {
             }
         };
         this.socket.onclose = (ev: CloseEvent) => {
-            console.error('stress test server error');
+            console.error('socket closed, stress test server error');
         };
         this.socket.onerror = (ev: Event) => {
             console.error('stress test server error', ev);

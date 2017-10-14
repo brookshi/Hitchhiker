@@ -27,7 +27,7 @@
     },
     "stress": {
         "storeMaxCount": 5,
-        "stressPort": 8081,
+        "stressPort": 11010,
         "stressUpdateInterval": 1000
     },
     "user": {
