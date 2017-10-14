@@ -106,6 +106,7 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
 
     private getDurationOption = (names: string[], data: _.Dictionary<{ durations: Duration[], statistics?: StressResStatisticsTime }>) => {
         _.pull(names, 'End');
+        names = names.map((n, i) => `${i + 1}: ${n}`);
         const baseBarOption = {
             type: 'bar'
         };
@@ -151,9 +152,14 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
         };
     }
 
-    private getFailedOption = (nameDict: _.Dictionary<string>, data: StressResFailedStatistics, totalCount: number) => {
+    private getFailedOption = (sortedIds: string[], nameDict: _.Dictionary<string>, data: StressResFailedStatistics, totalCount: number) => {
         const ids = _.union(_.keys(data.m500), _.keys(data.noRes), _.keys(data.testFailed));
-        const names = ids.map((id, i) => `${i + 1}: ${nameDict[id] || unknownName}`);
+        const names = new Array<string>();
+        sortedIds.forEach((id, i) => {
+            if (ids.indexOf(id) > -1) {
+                names.push(`${i + 1}: ${nameDict[id] || unknownName}`);
+            }
+        });
         const pieData = [
             { name: 'Test Failed', value: _.round(_.values(data.testFailed).reduce((p, c) => p + c, 0), 2) },
             { name: 'No Response', value: _.round(_.values(data.noRes).reduce((p, c) => p + c, 0), 2) },
@@ -215,7 +221,7 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
                 <div >
                     {needProgress ? <ReactEchartsCore echarts={echarts} style={{ height: 130 }} option={this.getProgressOption(runState.names, runState.reqProgress, runState.totalCount, runState.doneCount, runState.tps)} /> : ''}
                     <ReactEchartsCore echarts={echarts} style={{ height: 350 }} option={this.getDurationOption(runState.reqProgress.map(r => (runState.names[r.id] || r.id)), runState.stressReqDuration)} />
-                    <ReactEchartsCore echarts={echarts} style={{ height: 400 }} option={this.getFailedOption(runState.names, runState.stressFailedResult, runState.totalCount)} />
+                    <ReactEchartsCore echarts={echarts} style={{ height: 400 }} option={this.getFailedOption(runState.reqProgress.map(r => r.id), runState.names, runState.stressFailedResult, runState.totalCount)} />
                 </div>
             );
         } else {
