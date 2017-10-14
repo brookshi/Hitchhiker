@@ -65,7 +65,7 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
         }]
     };
 
-    private getProgressOption = (data: StressReqProgress[], totalCount: number, doneCount: number, tps: number) => {
+    private getProgressOption = (names: _.Dictionary<string>, data: StressReqProgress[], totalCount: number, doneCount: number, tps: number) => {
         return {
             title: {
                 text: `Total: ${totalCount}    Done: ${doneCount}    TPS: ${_.round(tps, 2)}`,
@@ -79,7 +79,7 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
                 right: 100,
                 type: 'category',
                 boundaryGap: false,
-                data: data.map((r, i) => `${i === data.length - 1 ? '' : (i + 1) + ':'} ${r.name}`),
+                data: data.map((r, i) => `${i === data.length - 1 ? '' : (i + 1) + ':'} ${names[r.id] || r.id}`),
                 top: 10,
                 height: 80
             }],
@@ -104,8 +104,8 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
         };
     }
 
-    private getDurationOption = (data: _.Dictionary<{ durations: Duration[], statistics?: StressResStatisticsTime }>) => {
-        const names = _.keys(data).map((d, i) => `${i + 1}: ${this.props.records[d] ? this.props.records[d].name : unknownName}`);
+    private getDurationOption = (names: string[], data: _.Dictionary<{ durations: Duration[], statistics?: StressResStatisticsTime }>) => {
+        _.pull(names, 'End');
         const baseBarOption = {
             type: 'bar'
         };
@@ -151,9 +151,9 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
         };
     }
 
-    private getFailedOption = (data: StressResFailedStatistics, totalCount: number) => {
+    private getFailedOption = (nameDict: _.Dictionary<string>, data: StressResFailedStatistics, totalCount: number) => {
         const ids = _.union(_.keys(data.m500), _.keys(data.noRes), _.keys(data.testFailed));
-        const names = ids.map((id, i) => `${i + 1}: ${this.props.records[id] ? this.props.records[id].name : unknownName}`);
+        const names = ids.map((id, i) => `${i + 1}: ${nameDict[id] || unknownName}`);
         const pieData = [
             { name: 'Test Failed', value: _.round(_.values(data.testFailed).reduce((p, c) => p + c, 0), 2) },
             { name: 'No Response', value: _.round(_.values(data.noRes).reduce((p, c) => p + c, 0), 2) },
@@ -213,9 +213,9 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
         if (runState) {
             return (
                 <div >
-                    {needProgress ? <ReactEchartsCore echarts={echarts} style={{ height: 130 }} option={this.getProgressOption(runState.reqProgress, runState.totalCount, runState.doneCount, runState.tps)} /> : ''}
-                    <ReactEchartsCore echarts={echarts} style={{ height: 350 }} option={this.getDurationOption(runState.stressReqDuration)} />
-                    <ReactEchartsCore echarts={echarts} style={{ height: 400 }} option={this.getFailedOption(runState.stressFailedResult, runState.totalCount)} />
+                    {needProgress ? <ReactEchartsCore echarts={echarts} style={{ height: 130 }} option={this.getProgressOption(runState.names, runState.reqProgress, runState.totalCount, runState.doneCount, runState.tps)} /> : ''}
+                    <ReactEchartsCore echarts={echarts} style={{ height: 350 }} option={this.getDurationOption(runState.reqProgress.map(r => (runState.names[r.id] || r.id)), runState.stressReqDuration)} />
+                    <ReactEchartsCore echarts={echarts} style={{ height: 400 }} option={this.getFailedOption(runState.names, runState.stressFailedResult, runState.totalCount)} />
                 </div>
             );
         } else {

@@ -101,8 +101,6 @@ export interface StressReqProgress {
 
     id: string;
 
-    name: string;
-
     num: number;
 }
 
@@ -146,6 +144,8 @@ export interface StressResFailedStatistics {
 }
 
 export interface StressRunResult {
+
+    names: _.Dictionary<string>;
 
     totalCount: number;
 

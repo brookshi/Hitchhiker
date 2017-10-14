@@ -145,10 +145,11 @@ export class StressService {
                 record.headers.forEach(h => { if (h.isActive) { headers[h.key] = h.value; } });
                 requestBodyList.push(<any>{ ...record, headers, test: globalFunc + record.test });
             } else {
-                for (let param of paramArr) {
-                    let newRecord = RecordRunner.applyReqParameterToRecord(record, param);
+                for (let p of paramArr) {
+                    let newRecord = RecordRunner.applyReqParameterToRecord(record, p);
                     newRecord.headers.forEach(h => { if (h.isActive) { headers[h.key] = h.value; } });
-                    requestBodyList.push(<any>{ ...newRecord, headers, test: globalFunc + record.test });
+                    const param = StringUtil.toString(p);
+                    requestBodyList.push(<any>{ ...newRecord, param, id: `${record.id}${param}`, name: `${newRecord.name}\n${param}`, headers, test: globalFunc + newRecord.test });
                 }
             }
         });

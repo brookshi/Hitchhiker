@@ -266,7 +266,7 @@ async function storeStressRecord(runResult: StressRunResult): Promise<void> {
 }
 
 function workerTrace(runResult: RunResult) {
-    const id = runResult.id + (runResult.param || '');
+    const id = runResult.id;
     stressReqDuration[id] = stressReqDuration[id] || { durations: [] };
     stressReqDuration[id].durations.push(runResult.duration);
 
@@ -298,12 +298,14 @@ function reset() {
 }
 
 function buildStressRunResult() {
+    const names = {};
+    currentStressRequest.testCase.requestBodyList.forEach(r => names[r.id] = r.name);
     const totalCount = getCurrentRequestTotalCount();
     const doneCount = getDoneCount();
     const tps = doneCount / getPassedTime();
     const reqProgress = getRunProgress();
     buildDurationStatistics();
-    return { totalCount, doneCount, tps, reqProgress, stressReqDuration, stressFailedResult: getFailedResultStatistics() };
+    return { names, totalCount, doneCount, tps, reqProgress, stressReqDuration, stressFailedResult: getFailedResultStatistics() };
 }
 
 function getDoneCount() {
@@ -342,15 +344,15 @@ function getFailedResultStatistics() {
 
 function getRunProgress() {
     const requestList = currentStressRequest.testCase.requestBodyList;
-    const reqProgresses = requestList.map(r => ({ id: r.id + (r.param || ''), name: r.name, num: 0 }));
+    const reqProgresses = requestList.map(r => ({ id: r.id, num: 0 }));
     let lastFinishCount = currentStressRequest.testCase.repeat * currentStressRequest.testCase.concurrencyCount;
     let id;
     for (let i = 0; i < requestList.length; i++) {
-        id = requestList[i].id + (requestList[i].param || '');
+        id = requestList[i].id;
         const currentReqCount = stressReqDuration[id] ? stressReqDuration[id].durations.length : 0;
         reqProgresses[i].num = lastFinishCount - currentReqCount;
         lastFinishCount = currentReqCount;
     }
-    reqProgresses.push({ id: 'end', name: 'End', num: lastFinishCount });
+    reqProgresses.push({ id: 'End', num: lastFinishCount });
     return reqProgresses;
 }
