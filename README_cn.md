@@ -4,7 +4,7 @@ Hitchhiker 是一款开源的 Restful Api 集成测试工具，支持Schedule, �
 
 [English Read Me](README_en.md)
 
-访问 [http://www.hitchhiker-api.com](http://www.hitchhiker-api.com) 测试，可以点击 `try without login`, 另外，为了免备案，服务器在海外的，所以速度上可能会有点慢，请谅解。
+访问 [http://www.hitchhiker-api.com](http://www.hitchhiker-api.com) 测试，可以点击 `try without login`, 另外，为了免备案，服务器在海外的，所以速度上可能会有点慢，请谅解。(在线演示不支持压力测试)
 
 [更新日志](change_log.md)
 
