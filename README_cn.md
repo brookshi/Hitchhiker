@@ -1,6 +1,6 @@
 # <img src='https://raw.githubusercontent.com/brookshi/Hitchhiker/master/client/public/hitchhiker-title-dark.png' height='20'/>
 
-Hitchhiker Api 是一款 Restful Api 集成测试工具，你可以在轻松部署到本地，和你的team成员一起管理Api。
+Hitchhiker 是一款开源的 Restful Api 集成测试工具，支持Schedule, 数据对比，压力测试，可以轻松部署到本地，和你的team成员一起管理Api。
 
 [English Read Me](README_en.md)
 
@@ -22,6 +22,10 @@ Hitchhiker Api 是一款 Restful Api 集成测试工具，你可以在轻松部�
 * 支持导入Postman v1 collections
 * 分布式压力测试
 * Api文档 (计划中...)
+
+## 压力测试
+
+[Hitchhiker-Node](https://github.com/brookshi/Hitchhiker-Node)
 
 ## 展示
 

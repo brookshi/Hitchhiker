@@ -1,6 +1,6 @@
 # <img src='https://raw.githubusercontent.com/brookshi/Hitchhiker/master/client/public/hitchhiker-title-dark.png' height='20'/>
 
-Hitchhiker Api is a Restful Api integrated testing tool. You can deploy it in your local server. It make easier to manage Api with your team.
+Hitchhiker Api is a Restful Api integrated testing tool that support Schedule, Response comparsion, Stress Test etc. You can deploy it in your local server. It make easier to manage Api with your team.
 
 [中文 Read Me](README_cn.md)
 
@@ -21,6 +21,10 @@ Go to [http://www.hitchhiker-api.com](http://www.hitchhiker-api.com) for test，
 * Support importing Postman v1 collections
 * Distributed stress test
 * Api Document (in future)
+
+## Stress Test
+
+[Hitchhiker-Node](https://github.com/brookshi/Hitchhiker-Node)
 
 ## Display
 

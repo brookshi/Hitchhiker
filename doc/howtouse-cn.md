@@ -89,7 +89,10 @@
 
 ### 压力测试
 
-压力测试是分布式的，产生压力的节点项目是基于golang的 [Hitchhiker-Node](https://github.com/brookshi/Hitchhiker-Node)，把这个项目的文件部署到本机或其他机器上运行即可。
+这是一个基于Golang的分布式压力节点，单独的一个项目：[Hitchhiker-Node](https://github.com/brookshi/Hitchhiker-Node)。得益于Golang的交叉编译，轻松跨平台生成文件，所以只有一个可执行文件和一个配置文件，不没有环境依赖，直接执行。
+
+使用时在[release页面](https://github.com/brookshi/Hitchhiker-Node/releases/tag/v0.1)先选择对应平台的zip文件下载下来，解压后会有两个文件，一个可执行文件和一个配置文件config.json，打开配置文件，把`Address`的值从localhost改为部署Hitchhiker机器的ip，然后再执行Hitchhiker-Node文件，这样就弄好了一个压力点，如果想压出很大的请求就可以考虑部署到多台机器上，一般情况下直接部署到Hitchhiker同一台机器就可以了。
+
 压力测试用的也是`Collection`的`Request`，可以选择性的挑出合适的`Request`用来做Case，压力测试的参数有：
 > - Repeat: 运行整套请求的次数
 > - Concurrency: 并发个数
