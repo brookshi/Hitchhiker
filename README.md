@@ -4,7 +4,7 @@ Hitchhiker Api is a Restful Api integrated testing tool that support Schedule, R
 
 [中文 Read Me](README_cn.md)
 
-Go to [http://www.hitchhiker-api.com](http://www.hitchhiker-api.com) for test，use `try without login`.
+Go to [http://www.hitchhiker-api.com](http://www.hitchhiker-api.com) for test，use `try without login`. (Demo doesn't support stress test)
 
 [Change log](change_log.md)
 
