@@ -64,7 +64,11 @@ export class Setting {
     }
 
     get appPort() {
-        return this.isDev ? 81 : this.appHost.substr(this.appHost.lastIndexOf(':') + 1).replace('/', '');
+        let port = this.appHost.substr(this.appHost.lastIndexOf(':') + 1).replace('/', '');
+        if (!(/^[0-9]$/.test(port))) {
+            port = '8080';
+        }
+        return this.isDev ? 81 : port;
     }
 
     get schedule() {
