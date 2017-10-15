@@ -1,3 +1,22 @@
+# 0.2 2017-10-15
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/stresstest.gif)
+
+## Features:
+* support Stress Test.
+
+* Support change port while using source code to deploy.
+
+# Bugs:
+* Schedule run empty collection exception.
+
+## Features:
+* 支持压力测试
+
+* 支持在源码部署时改端口
+
+# Bugs:
+* 修正Schedule跑空Collection时的异常
+
 # 0.1.3 2017-09-24
 
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/parameters.gif)

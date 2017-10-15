@@ -104,3 +104,5 @@
 1. 当前的运行进度，包括完成的数量及TPS
 2. 各个`Request`的请求消耗时间，包括 DNS, Connect, Request, Min, Max 这五个
 3. 请求失败的状态，包括 No Response, Server Error(500), Test失败 这三种情况
+
+**压力测试只支持在test中使用ES5语法**

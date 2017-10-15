@@ -100,3 +100,5 @@ Hitchhiker will display real-time state of stress test task, include workers, re
 1. Run progress, include done count and TPS
 2. Duration of each request, include DNS, Connect, Request, Min, Max
 3. request failed status, include No Response, Server Error(500), Test Failed.
+
+**Stress Test Only support using ES5 in test**
