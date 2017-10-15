@@ -66,7 +66,7 @@ export class Setting {
     get appPort() {
         let port = this.appHost.substr(this.appHost.lastIndexOf(':') + 1).replace('/', '');
         if (!(/^[0-9]$/.test(port))) {
-            port = '8080';
+            port = 8080;
         }
         return this.isDev ? 81 : port;
     }
