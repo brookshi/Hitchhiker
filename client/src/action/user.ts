@@ -3,6 +3,7 @@ import RequestManager from '../utils/request_manager';
 import { actionCreator } from './index';
 import { Urls } from '../utils/urls';
 import LocalStore from '../utils/local_store';
+import message from 'antd/lib/message';
 
 export const LoginType = 'login';
 
@@ -49,6 +50,8 @@ export const ChangePasswordSuccessType = 'change password success';
 export const ChangePasswordFailedType = 'change password failed';
 
 export const GetUserInfoType = 'get user info';
+
+export const SyncUserDataSuccessType = 'sync user data success';
 
 export function* login() {
     yield takeLatest(LoginType, function* (action: any) {
@@ -185,6 +188,31 @@ export function* changePassword() {
                 yield put(actionCreator(ChangePasswordSuccessType, body.message));
             } else {
                 yield put(actionCreator(ChangePasswordFailedType, body.message));
+            }
+        } catch (err) {
+            yield put(actionCreator(ChangePasswordFailedType, err.toString()));
+        }
+    });
+}
+
+export function* syncUserData() {
+    let syncStart = false;
+    yield takeLatest(LoginSuccessType, function* (action: any) {
+        if (syncStart) {
+            return;
+        }
+        syncStart = true;
+        try {
+            const res = yield call(RequestManager.get, Urls.getUrl('user/me'));
+            if (res.ok === false) {
+                message.warning(`sync user data failed, ${res.status} ${res.statusText}`);
+                return;
+            }
+            const body = yield res.json();
+            if (body.success) {
+                yield put(actionCreator(SyncUserDataSuccessType, body));
+            } else {
+                message.warning(`sync user data failed, ${body.message}`);
             }
         } catch (err) {
             yield put(actionCreator(ChangePasswordFailedType, err.toString()));

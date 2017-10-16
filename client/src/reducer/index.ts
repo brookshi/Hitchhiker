@@ -17,6 +17,7 @@ import { DtoRecord } from '../../../api/interfaces/dto_record';
 import { QuitProjectType, DisbandProjectType } from '../action/project';
 import { getNewRecordState, RecordState } from '../state/collection';
 import { stressTestState } from './stress';
+import { SyncUserDataSuccessType } from '../action/user';
 
 export const reduceReducers = (...reducers) => {
     return (state, action) =>
@@ -143,6 +144,9 @@ export function multipleStateReducer(state: State, action: any): State {
                     activeSchedule: scheduleState.activeSchedule
                 }
             };
+        }
+        case SyncUserDataSuccessType: {
+
         }
         default: return state;
     }
