@@ -13,7 +13,7 @@ export class RequestOptionAdapter {
         record = await VariableService.applyVariableForRecord(envId, RequestOptionAdapter.applyDefaultHeaders(record));
         await RequestOptionAdapter.applyLocalhost(record, userId);
         return {
-            url: record.url,
+            url: StringUtil.fixedEncodeURI(record.url),
             method: record.method,
             headers: RecordService.formatHeaders(record),
             body: record.body

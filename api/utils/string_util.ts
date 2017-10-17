@@ -84,6 +84,10 @@ export class StringUtil {
         });
     }
 
+    static fixedEncodeURI(str) {
+        return encodeURI(str).replace(/%5B/g, '[').replace(/%5D/g, ']');
+    }
+
     static verifyParameters(parameters: string, parameterType: ParameterType): { isValid: boolean, count: number, msg: string } {
         if (parameters === '') {
             return { isValid: false, count: 0, msg: '' };

@@ -88,7 +88,7 @@ export class Setting {
     }
 
     get stressPort() {
-        return process.env.HITCHHIKER_STRESS_PORT || this._setting.stress.stressPort;
+        return this.isDev ? 11011 : (process.env.HITCHHIKER_STRESS_PORT || this._setting.stress.stressPort);
     }
 
     get stressUpdateInterval() {
