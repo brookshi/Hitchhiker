@@ -7,6 +7,7 @@ import { requestStateDefaultValue, RequestState } from './request';
 import { allProject, newRecordFlag, newRequestName, allParameter } from '../common/constants';
 import { ParameterType } from '../common/parameter_type';
 import { RequestStatus } from '../common/request_status';
+import { ConflictType } from '../common/conflict_type';
 
 export function getDefaultRecord(isInit: boolean = false): DtoRecord {
     return {
@@ -26,7 +27,8 @@ export const getNewRecordState: () => RecordState = () => {
         record: newRecord,
         isChanged: false,
         isRequesting: false,
-        parameter: allParameter
+        parameter: allParameter,
+        conflictType: ConflictType.none
     };
 };
 
@@ -65,6 +67,8 @@ export interface RecordState {
     parameter: string;
 
     parameterStatus?: ParameterStatusState;
+
+    conflictType: ConflictType;
 }
 
 export interface ParameterStatusState {
@@ -97,7 +101,8 @@ export const displayRecordsDefaultValue: DisplayRecordsState = {
             record: getDefaultRecord(true),
             isChanged: false,
             isRequesting: false,
-            parameter: allParameter
+            parameter: allParameter,
+            conflictType: ConflictType.none
         }
     },
     responseState: {}
