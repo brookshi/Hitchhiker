@@ -1,4 +1,4 @@
-import { LoginSuccessType } from '../action/user';
+import { LoginSuccessType, SyncUserDataSuccessType } from '../action/user';
 import { SwitchEnvType, EditEnvType, QuitProjectType, DisbandProjectType, SaveEnvironmentType, DelEnvironmentType, EditEnvCompletedType } from '../action/project';
 import * as _ from 'lodash';
 import { EnvironmentState, environmentDefaultValue } from '../state/environment';
@@ -6,7 +6,8 @@ import { noEnvironment } from '../common/constants';
 
 export function environmentState(state: EnvironmentState = environmentDefaultValue, action: any): EnvironmentState {
     switch (action.type) {
-        case LoginSuccessType: {
+        case LoginSuccessType:
+        case SyncUserDataSuccessType: {
             return { ...state, environments: action.value.result.environments };
         }
         case SaveEnvironmentType: {

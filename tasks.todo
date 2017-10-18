@@ -101,6 +101,7 @@
     ☐ fetch data per 30s
     ☐ import postman env
     ☐ convert variable function while importing postman collection
+    ☐ url encode
 0.2.2:
     ☐ improve test for param request (test for each param, copy param to test)
     ☐ collection tree follow active tab(expand collection/folder)

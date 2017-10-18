@@ -95,6 +95,10 @@ export class Setting {
         return process.env.HITCHHIKER_STRESS_UPDATE_INTERVAL || this._setting.stress.stressUpdateInterval;
     }
 
+    get syncInterval() {
+        return process.env.HITCHHIKER_SYNC_INTERVAL || this.app.syncInterval;
+    }
+
     get db() {
         return this._setting.db;
     }

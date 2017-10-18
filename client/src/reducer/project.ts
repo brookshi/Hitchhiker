@@ -1,14 +1,15 @@
 import { EditEnvType, SaveProjectType, QuitProjectType, DisbandProjectType, ActiveProjectType, RemoveUserType, SaveLocalhostMappingType, SaveGlobalFunctionType } from '../action/project';
-import { LoginSuccessType } from '../action/user';
+import { LoginSuccessType, SyncUserDataSuccessType } from '../action/user';
 import * as _ from 'lodash';
 import { ProjectState, projectDefaultValue } from '../state/project';
 
 export function projectState(state: ProjectState = projectDefaultValue, action: any): ProjectState {
     switch (action.type) {
-        case LoginSuccessType: {
+        case LoginSuccessType:
+        case SyncUserDataSuccessType: {
             const projects = action.value.result.projects;
             const projectIds = _.keys(projects);
-            const activeProject = projectIds.length > 0 ? (projectIds[0] || '') : '';
+            const activeProject = state.activeProject || (projectIds.length > 0 ? (projectIds[0] || '') : '');
             return { ...state, projects, activeProject };
         }
         case SaveProjectType: {

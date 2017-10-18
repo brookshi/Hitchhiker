@@ -146,7 +146,47 @@ export function multipleStateReducer(state: State, action: any): State {
             };
         }
         case SyncUserDataSuccessType: {
+            const {collectionInfo} = action.value.result;
+            const displayRecordsState = state.displayRecordsState;
 
+            _.keys(displayRecordsState.recordStates).forEach(key => {
+                const recordState = displayRecordsState.recordStates[key];
+                const { record, isChanged } = recordState;
+                if (record) {
+                    recordState.parameterStatus = {};
+                    recordState.isRequesting = false;
+                    const onlineRecordDict = onlineRecords[record.collectionId];
+                    if (onlineRecordDict && onlineRecordDict[record.id]) {
+                        recordState.name = onlineRecordDict[record.id].name;
+                        if (!isChanged) {
+                            recordState.record = onlineRecordDict[record.id];
+                        }
+                    }
+                }
+            });
+            // TODO: should give some tip for the diff between online data and local data.
+            return {
+                ...state,
+                displayRecordsState,
+                uiState: { ...uiState, syncState: syncDefaultValue },
+                collectionState: {
+                    ...state.collectionState,
+                    selectedProject: collectionState.selectedProject,
+                    openKeys: collectionState.openKeys.length > 0 ? collectionState.openKeys : state.collectionState.openKeys
+                },
+                projectState: {
+                    ...state.projectState,
+                    activeProject: projectState.activeProject
+                },
+                environmentState: {
+                    ...state.environmentState,
+                    activeEnv: environmentState.activeEnv
+                },
+                scheduleState: {
+                    ...state.scheduleState,
+                    activeSchedule: scheduleState.activeSchedule
+                }
+            };
         }
         default: return state;
     }

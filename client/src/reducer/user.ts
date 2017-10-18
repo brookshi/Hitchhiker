@@ -1,4 +1,4 @@
-import { LoginSuccessType, LoginFailedType, RegisterSuccessType, RegisterFailedType, LoginPendingType, RegisterPendingType, RegisterResetType, FindPasswordSuccessType, FindPasswordPendingType, FindPasswordFailedType, ChangePasswordSuccessType, ChangePasswordFailedType, ChangePasswordPendingType, LoginResetType, LoginType } from '../action/user';
+import { LoginSuccessType, LoginFailedType, RegisterSuccessType, RegisterFailedType, LoginPendingType, RegisterPendingType, RegisterResetType, FindPasswordSuccessType, FindPasswordPendingType, FindPasswordFailedType, ChangePasswordSuccessType, ChangePasswordFailedType, ChangePasswordPendingType, LoginResetType, LoginType, SyncUserDataSuccessType } from '../action/user';
 import { UserInfoState, userInfoDefaultValue } from '../state/user';
 import { RequestStatus } from '../common/request_status';
 import { SessionInvalidType } from '../action/index';
@@ -10,6 +10,9 @@ export function userState(state: UserInfoState = userInfoDefaultValue, action: a
         }
         case LoginSuccessType: {
             return { ...state, userInfo: action.value.result.user, loginState: { status: RequestStatus.success, message: action.value.message } };
+        }
+        case SyncUserDataSuccessType: {
+            return { ...state, userInfo: action.value.result.user };
         }
         case LoginFailedType: {
             return { ...state, loginState: { status: RequestStatus.failed, message: action.value } };

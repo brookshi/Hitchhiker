@@ -1,4 +1,4 @@
-import { LoginSuccessType } from '../action/user';
+import { LoginSuccessType, SyncUserDataSuccessType } from '../action/user';
 import * as _ from 'lodash';
 import { StressTestState, stressDefaultValue } from '../state/stress';
 import { DtoStress } from '../../../api/interfaces/dto_stress';
@@ -6,10 +6,11 @@ import { SaveStressType, ActiveStressType, DeleteStressType, RunStressFulfillTyp
 
 export function stressTestState(state: StressTestState = stressDefaultValue, action: any): StressTestState {
     switch (action.type) {
-        case LoginSuccessType: {
+        case LoginSuccessType:
+        case SyncUserDataSuccessType: {
             const stresses = action.value.result.stresses as _.Dictionary<DtoStress>;
             const stressIds = _.keys(stresses);
-            const activeStress = stressIds.length > 0 ? (stressIds[0] || '') : '';
+            const activeStress = state.activeStress || (stressIds.length > 0 ? (stressIds[0] || '') : '');
             return { ...state, stresses, activeStress };
         }
         case SaveStressType: {

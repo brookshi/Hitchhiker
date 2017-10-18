@@ -4,6 +4,7 @@ import { actionCreator } from './index';
 import { Urls } from '../utils/urls';
 import LocalStore from '../utils/local_store';
 import message from 'antd/lib/message';
+import { delay } from 'redux-saga';
 
 export const LoginType = 'login';
 
@@ -202,20 +203,25 @@ export function* syncUserData() {
             return;
         }
         syncStart = true;
-        try {
-            const res = yield call(RequestManager.get, Urls.getUrl('user/me'));
-            if (res.ok === false) {
-                message.warning(`sync user data failed, ${res.status} ${res.statusText}`);
-                return;
+
+        while (true) {
+            yield delay(action.value.result.syncInterval * 1000);
+            try {
+                const res = yield call(RequestManager.get, Urls.getUrl('user/me'));
+                if (res.ok === false) {
+                    message.warning(`sync user data failed, ${res.status} ${res.statusText}`);
+                    return;
+                }
+                const body = yield res.json();
+                if (body.success) {
+                    yield put(actionCreator(SyncUserDataSuccessType, body));
+                } else {
+                    message.warning(`sync user data failed, ${body.message}`);
+                }
+            } catch (err) {
+                message.warning(`sync user data error, stop syncing, ${err.toString()}`);
+                break;
             }
-            const body = yield res.json();
-            if (body.success) {
-                yield put(actionCreator(SyncUserDataSuccessType, body));
-            } else {
-                message.warning(`sync user data failed, ${body.message}`);
-            }
-        } catch (err) {
-            yield put(actionCreator(ChangePasswordFailedType, err.toString()));
         }
     });
 }
