@@ -180,6 +180,7 @@ export function multipleStateReducer(state: State, action: any): State {
             });
             return {
                 ...state,
+                collectionState: { ...state.collectionState, collectionsInfo: collection },
                 displayRecordsState: newDisplayRecordState
             };
         }
