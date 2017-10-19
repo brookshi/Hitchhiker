@@ -6,15 +6,14 @@ import { RecordCategory } from '../common/record_category';
 import { CollectionState, collectionDefaultValue, RecordState, DisplayRecordsState, displayRecordsDefaultValue, getNewRecordState } from '../state/collection';
 import { DtoCollectionWithRecord } from '../../../api/interfaces/dto_collection';
 import { RequestStatus } from '../common/request_status';
-import { SyncUserDataSuccessType, LoginSuccessType } from '../action/user';
+import { LoginSuccessType } from '../action/user';
 
 export function collectionState(state: CollectionState = collectionDefaultValue, action: any): CollectionState {
     switch (action.type) {
-        case LoginSuccessType:
-        case SyncUserDataSuccessType: {
-            const collectionInfo = action.value.result.collection as DtoCollectionWithRecord;
-            const keys = _.keys(collectionInfo.collections);
-            return { ...state, collectionsInfo: collectionInfo, fetchCollectionState: { status: RequestStatus.success }, openKeys: keys.length > 0 ? [keys[0]] : [] };
+        case LoginSuccessType: {
+            const collectionsInfo = action.value.result.collection as DtoCollectionWithRecord;
+            const keys = _.keys(collectionsInfo.collections);
+            return { ...state, collectionsInfo, fetchCollectionState: { status: RequestStatus.success }, openKeys: keys.length > 0 ? [keys[0]] : [] };
         }
         case SelectedProjectChangedType: {
             return { ...state, selectedProject: action.value };

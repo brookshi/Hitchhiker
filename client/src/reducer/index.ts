@@ -19,6 +19,7 @@ import { getNewRecordState, RecordState } from '../state/collection';
 import { stressTestState } from './stress';
 import { SyncUserDataSuccessType } from '../action/user';
 import { ConflictType } from '../common/conflict_type';
+import { newRecordFlag } from '../common/constants';
 
 export const reduceReducers = (...reducers) => {
     return (state, action) =>
@@ -147,20 +148,34 @@ export function multipleStateReducer(state: State, action: any): State {
             };
         }
         case SyncUserDataSuccessType: {
-            const { collectionInfo } = action.value.result;
+            const { collection } = action.value.result;
             const displayRecordsState = state.displayRecordsState;
-            const newDisplayRecordState = { ...displayRecordsState };
-
+            const newDisplayRecordState = { ...displayRecordsState, recordStates: { ...displayRecordsState.recordStates } };
+            if (!collection) {
+                return state;
+            }
             _.keys(displayRecordsState.recordStates).forEach(key => {
                 const recordState = displayRecordsState.recordStates[key];
                 const { record, isChanged } = recordState;
-                const isDeleted = !collectionInfo.records[record.collectionId] || !collectionInfo.records[record.collectionId][key];
-                if (isDeleted) {
-                    newDisplayRecordState.recordStates[key] = { ...recordState, conflictType: ConflictType.delete };
-                } else if (isChanged) {
-                    newDisplayRecordState.recordStates[key] = { ...recordState, conflictType: ConflictType.modify };
-                } else {
-                    newDisplayRecordState.recordStates[key] = { ...recordState, record: collectionInfo.records[record.collectionId][key] };
+                const isNew = key.startsWith(newRecordFlag);
+                const getOnlineRecord = () => collection.records[record.collectionId][key];
+                const getCurrentRecord = () => state.collectionState.collectionsInfo.records[record.collectionId][key];
+                const getConflictType = () => newDisplayRecordState.recordStates[key].conflictType;
+                if (!isNew) {
+                    const isDeleted = !collection.records[record.collectionId] || !getOnlineRecord();
+                    if (isDeleted) {
+                        if (getConflictType() === ConflictType.delete) {
+                            newDisplayRecordState.recordStates[key] = { ...recordState, conflictType: ConflictType.delete };
+                        }
+                    } else if (isChanged) {
+                        if (getConflictType() !== ConflictType.modify && !_.isEqual(getCurrentRecord(), getOnlineRecord())) {
+                            newDisplayRecordState.recordStates[key] = { ...recordState, conflictType: ConflictType.modify };
+                        }
+                    } else {
+                        if (!_.isEqual(getOnlineRecord(), getCurrentRecord())) {
+                            newDisplayRecordState.recordStates[key] = { ...recordState, record: getOnlineRecord() };
+                        }
+                    }
                 }
             });
             return {

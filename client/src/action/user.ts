@@ -204,6 +204,7 @@ export function* syncUserData() {
         }
         syncStart = true;
 
+        yield delay(5000);
         while (true) {
             yield delay(action.value.result.syncInterval * 1000);
             try {
