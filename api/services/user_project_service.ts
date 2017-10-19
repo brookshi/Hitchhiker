@@ -14,6 +14,11 @@ import { Setting } from '../utils/setting';
 import { StressService } from './stress_service';
 import { DtoStress } from '../interfaces/dto_stress';
 import { UserData } from '../interfaces/user_data';
+import { UserCollectionService } from './user_collection_service';
+import { DtoRecord } from '../interfaces/dto_record';
+import { RecordService } from './record_service';
+import { DtoCollection } from '../interfaces/dto_collection';
+import { CollectionService } from './collection_service';
 
 export class UserProjectService {
 
@@ -42,13 +47,25 @@ export class UserProjectService {
     }
 
     static async getUserInfo(user: User): Promise<UserData> {
+        const { collections, recordsList } = await UserCollectionService.getUserCollections(user.id);
+        let records: _.Dictionary<_.Dictionary<DtoRecord>> = {};
+        _.keys(recordsList).forEach(k => records[k] = _.chain(recordsList[k]).map(r => RecordService.toDto(r)).keyBy('id').value());
+
         const environments = _.groupBy(await EnvironmentService.getEnvironments(_.flatten(user.projects.map(t => t.environments.map(e => e.id)))), e => e.project.id);
+
         user.projects.forEach(t => t.environments = undefined);
         const projects = _.keyBy(user.projects, 'id');
         user.projects = undefined;
+
         const schedules = _.keyBy((await ScheduleService.getByUserId(user.id)).map(s => ScheduleService.toDto(s)), 'id');
+
         const stresses = _.keyBy((await StressService.getByUserId(user.id)).map(s => StressService.toDto(s)), 'id');
+
         return {
+            collection: {
+                collections: _.keyBy<DtoCollection>(collections.map(c => CollectionService.toDto(c)), 'id'),
+                records
+            },
             user,
             projects,
             environments,

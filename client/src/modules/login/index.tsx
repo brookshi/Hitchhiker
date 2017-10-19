@@ -12,7 +12,6 @@ import FindPasswordPanel from './find_password';
 import LoadingScreen from './loading_screen';
 import { LoginPageMode } from '../../common/custom_type';
 import { RequestStatus } from '../../common/request_status';
-import { RefreshCollectionType } from '../../action/collection';
 import { FetchLocalDataType } from '../../action/local_data';
 
 interface LoginPageStateProps {
@@ -26,8 +25,6 @@ interface LoginPageStateProps {
     registerState: RequestState;
 
     findPasswordState: RequestState;
-
-    fetchCollectionState: RequestState;
 
     fetchLocalDataState: RequestState;
 }
@@ -45,8 +42,6 @@ interface LoginPageDispatchProps {
     resetLogin();
 
     findPassword(email: string);
-
-    fetchCollectionData();
 
     fetchLocalData(userId: string);
 
@@ -129,14 +124,12 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
     }
 
     public render() {
-        const { getUserInfo, fetchCollectionData, fetchCollectionState, fetchLocalData, fetchLocalDataState, loginState, userId } = this.props;
+        const { getUserInfo, fetchLocalData, fetchLocalDataState, loginState, userId } = this.props;
         return (
             <div className="login-page">
                 {
                     loginState.status === RequestStatus.failed ? this.loginMainPanel : (
                         <LoadingScreen
-                            fetchCollectionData={fetchCollectionData}
-                            fetchCollectionDataState={fetchCollectionState}
                             fetchLocalData={() => fetchLocalData(userId)}
                             fetchLocalDataState={fetchLocalDataState}
                             getUserInfo={getUserInfo}
@@ -157,7 +150,6 @@ const mapStateToProps = (state: State): LoginPageStateProps => {
         loginState,
         registerState,
         findPasswordState,
-        fetchCollectionState: state.collectionState.fetchCollectionState,
         fetchLocalDataState: state.localDataState.fetchLocalDataState,
     };
 };
@@ -170,7 +162,6 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): LoginPageDispatchProps => 
         resetRegister: () => dispatch(actionCreator(RegisterResetType)),
         resetLogin: () => dispatch(actionCreator(LoginResetType)),
         findPassword: (email) => dispatch(actionCreator(FindPasswordType, email)),
-        fetchCollectionData: () => dispatch(actionCreator(RefreshCollectionType)),
         fetchLocalData: (userId) => dispatch(actionCreator(FetchLocalDataType, userId)),
         tempUse: () => dispatch(actionCreator(TempUseType))
     };

@@ -1,32 +1,21 @@
 import { collectionState } from '../collection';
 import { actionCreator } from '../../action/index';
 import { collectionDefaultValue } from '../../state/collection';
-import { FetchCollectionSuccessType, FetchCollectionPendingType, FetchCollectionFailedType, SelectedProjectChangedType, CollectionOpenKeysType, SaveCollectionType, DeleteCollectionType } from '../../action/collection';
+import { SelectedProjectChangedType, CollectionOpenKeysType, SaveCollectionType, DeleteCollectionType } from '../../action/collection';
 import { RequestStatus } from '../../common/request_status';
 import { SaveAsRecordType, SaveRecordType, MoveRecordType, DeleteRecordType } from '../../action/record';
 import { RecordCategory } from '../../common/record_category';
 import { defaultUser } from './data';
 import { ParameterType } from '../../common/parameter_type';
+import { LoginSuccessType } from '../../action/user';
 
-test('fetch collection success', () => {
+test('login success', () => {
 
-    let state = collectionState(collectionDefaultValue, actionCreator(FetchCollectionSuccessType, { collections: { ['cid']: { id: 'cid', name: 'c1' } }, records: { ['cid']: { ['rid']: { id: 'rid', name: 'r1' } } } }));
+    let state = collectionState(collectionDefaultValue, actionCreator(LoginSuccessType, {
+        result: { collection: { collections: { ['cid']: { id: 'cid', name: 'c1' } }, records: { ['cid']: { ['rid']: { id: 'rid', name: 'r1' } } } } }
+    }));
 
     expect(state).toEqual({ ...collectionDefaultValue, collectionsInfo: { collections: { ['cid']: { id: 'cid', name: 'c1' } }, records: { ['cid']: { ['rid']: { id: 'rid', name: 'r1' } } } }, fetchCollectionState: { status: RequestStatus.success }, openKeys: ['cid'] });
-});
-
-test('fetch collection pending', () => {
-
-    let state = collectionState(collectionDefaultValue, actionCreator(FetchCollectionPendingType));
-
-    expect(state).toEqual({ ...collectionDefaultValue, fetchCollectionState: { status: RequestStatus.pending } });
-});
-
-test('fetch collection failed', () => {
-
-    let state = collectionState(collectionDefaultValue, actionCreator(FetchCollectionFailedType, 'fetch failed'));
-
-    expect(state).toEqual({ ...collectionDefaultValue, fetchCollectionState: { status: RequestStatus.failed, message: 'fetch failed' } });
 });
 
 test('select project', () => {

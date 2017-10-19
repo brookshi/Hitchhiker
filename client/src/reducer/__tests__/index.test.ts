@@ -11,8 +11,9 @@ import { KeyValueEditType } from '../../common/custom_type';
 import { syncDefaultValue } from '../../state/ui';
 import { ParameterType } from '../../common/parameter_type';
 import { allParameter } from '../../common/constants';
+import { ConflictType } from '../../common/conflict_type';
 
-const defaultRecordState = { name: '', isRequesting: false, isChanged: false, record: {}, parameter: allParameter };
+const defaultRecordState = { name: '', isRequesting: false, isChanged: false, record: {}, parameter: allParameter, conflictType: ConflictType.none };
 const c1 = { id: 'cid_123', name: 'c1', projectId: 'pid_123', description: '' };
 const c2 = { id: 'cid_456', name: 'c2', projectId: 'pid_123', description: '' };
 const c3 = { id: 'cid_789', name: 'c3', projectId: 'pid_789', description: '' };

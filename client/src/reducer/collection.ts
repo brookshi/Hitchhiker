@@ -1,4 +1,4 @@
-import { FetchCollectionSuccessType, SaveCollectionType, DeleteCollectionType, SelectedProjectChangedType, CollectionOpenKeysType, FetchCollectionFailedType, FetchCollectionPendingType } from '../action/collection';
+import { SaveCollectionType, DeleteCollectionType, SelectedProjectChangedType, CollectionOpenKeysType } from '../action/collection';
 import { ActiveTabType, ActiveRecordType, DeleteRecordType, MoveRecordType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, SaveAsRecordType, ChangeCurrentParamType, SendRequestForParamType, SendRequestForParamFulfilledType, UpdateDisplayRecordPropertyType } from '../action/record';
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
@@ -6,19 +6,15 @@ import { RecordCategory } from '../common/record_category';
 import { CollectionState, collectionDefaultValue, RecordState, DisplayRecordsState, displayRecordsDefaultValue, getNewRecordState } from '../state/collection';
 import { DtoCollectionWithRecord } from '../../../api/interfaces/dto_collection';
 import { RequestStatus } from '../common/request_status';
+import { SyncUserDataSuccessType, LoginSuccessType } from '../action/user';
 
 export function collectionState(state: CollectionState = collectionDefaultValue, action: any): CollectionState {
     switch (action.type) {
-        case FetchCollectionSuccessType: {
-            const collectionInfo = action.value as DtoCollectionWithRecord;
+        case LoginSuccessType:
+        case SyncUserDataSuccessType: {
+            const collectionInfo = action.value.result.collection as DtoCollectionWithRecord;
             const keys = _.keys(collectionInfo.collections);
             return { ...state, collectionsInfo: collectionInfo, fetchCollectionState: { status: RequestStatus.success }, openKeys: keys.length > 0 ? [keys[0]] : [] };
-        }
-        case FetchCollectionPendingType: {
-            return { ...state, fetchCollectionState: { status: RequestStatus.pending } };
-        }
-        case FetchCollectionFailedType: {
-            return { ...state, fetchCollectionState: { status: RequestStatus.failed, message: action.value } };
         }
         case SelectedProjectChangedType: {
             return { ...state, selectedProject: action.value };

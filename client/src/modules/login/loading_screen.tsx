@@ -7,11 +7,7 @@ interface LoadingScreenProps {
 
     loginState: RequestState;
 
-    fetchCollectionDataState: RequestState;
-
     fetchLocalDataState: RequestState;
-
-    fetchCollectionData();
 
     fetchLocalData();
 
@@ -24,11 +20,6 @@ class LoadingScreen extends React.Component<LoadingScreenProps, LoadingScreenSta
 
     public componentWillReceiveProps(nextProps: LoadingScreenProps) {
         if (nextProps.loginState.status === RequestStatus.success &&
-            nextProps.fetchCollectionDataState.status === RequestStatus.none) {
-            this.props.fetchCollectionData();
-        }
-
-        if (nextProps.fetchCollectionDataState.status === RequestStatus.success &&
             nextProps.fetchLocalDataState.status === RequestStatus.none) {
             this.props.fetchLocalData();
         }
@@ -38,7 +29,7 @@ class LoadingScreen extends React.Component<LoadingScreenProps, LoadingScreenSta
         if (this.props.loginState.status === RequestStatus.failed || this.props.loginState.status === RequestStatus.none) {
             this.props.getUserInfo();
         } else if (this.props.loginState.status === RequestStatus.success) {
-            this.props.fetchCollectionData();
+            this.props.fetchLocalData();
         }
     }
 

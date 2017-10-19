@@ -1,16 +1,7 @@
-import { call, put, takeLatest, takeEvery } from 'redux-saga/effects';
-import RequestManager from '../utils/request_manager';
+import { put, takeEvery } from 'redux-saga/effects';
 import { HttpMethod } from '../common/http_method';
-import { syncAction, actionCreator, SessionInvalidType, ReloadType } from './index';
+import { syncAction, actionCreator, ReloadType } from './index';
 import { Urls } from '../utils/urls';
-
-export const RefreshCollectionType = 'refresh collection';
-
-export const FetchCollectionPendingType = 'fetch collection pending';
-
-export const FetchCollectionSuccessType = 'fetch collection success';
-
-export const FetchCollectionFailedType = 'fetch collection failed';
 
 export const DeleteCollectionType = 'delete collection';
 
@@ -23,27 +14,6 @@ export const SelectedProjectChangedType = 'select project';
 export const CollectionOpenKeysType = 'open/close collection';
 
 export const ImportPostmanDataType = 'import postman data';
-
-export function* refreshCollection() {
-    yield takeLatest(RefreshCollectionType, function* () {
-        try {
-            yield put(actionCreator(FetchCollectionPendingType));
-            const res = yield call(RequestManager.get, Urls.getUrl('collections'));
-            if (res.status === 403) {
-                yield put(actionCreator(SessionInvalidType));
-            } else {
-                const body = yield res.json();
-                if (!body.success) {
-                    yield put(actionCreator(FetchCollectionFailedType, body.message));
-                } else {
-                    yield put(actionCreator(FetchCollectionSuccessType, body.result));
-                }
-            }
-        } catch (err) {
-            yield put(actionCreator(FetchCollectionFailedType, err.toString()));
-        }
-    });
-}
 
 export function* deleteCollection() {
     yield takeEvery(DeleteCollectionType, function* (action: any) {
