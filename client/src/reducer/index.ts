@@ -168,7 +168,7 @@ export function multipleStateReducer(state: State, action: any): State {
                             newDisplayRecordState.recordStates[key] = { ...recordState, conflictType: ConflictType.delete };
                         }
                     } else if (isChanged) {
-                        if (getConflictType() !== ConflictType.modify && !_.isEqual(getCurrentRecord(), getOnlineRecord())) {
+                        if (getConflictType() !== ConflictType.modify && !_.isEqual(newDisplayRecordState.recordStates[key].record, getOnlineRecord())) {
                             newDisplayRecordState.recordStates[key] = { ...recordState, conflictType: ConflictType.modify };
                         }
                     } else {

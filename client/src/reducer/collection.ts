@@ -7,6 +7,7 @@ import { CollectionState, collectionDefaultValue, RecordState, DisplayRecordsSta
 import { DtoCollectionWithRecord } from '../../../api/interfaces/dto_collection';
 import { RequestStatus } from '../common/request_status';
 import { LoginSuccessType } from '../action/user';
+import { ConflictType } from '../common/conflict_type';
 
 export function collectionState(state: CollectionState = collectionDefaultValue, action: any): CollectionState {
     switch (action.type) {
@@ -159,11 +160,11 @@ export function recordStates(states: _.Dictionary<RecordState> = displayRecordsD
             const { isNew, record, oldId } = action.value;
             const { id, name } = record;
             if (isNew && oldId && states[oldId]) {
-                const newState = { ...states, [id]: { ...states[oldId], record, name, isChanged: false } };
+                const newState = { ...states, [id]: { ...states[oldId], record, name, isChanged: false, conflictType: ConflictType.none } };
                 Reflect.deleteProperty(newState, oldId);
                 return newState;
             } else if (states[id]) {
-                return { ...states, [id]: { ...states[id], record, name, isChanged: false } };
+                return { ...states, [id]: { ...states[id], record, name, isChanged: false, conflictType: ConflictType.none } };
             }
             return states;
         }

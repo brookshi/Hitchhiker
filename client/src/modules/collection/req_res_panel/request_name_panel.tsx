@@ -1,16 +1,21 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { Form, Input } from 'antd';
+import { Form, Input, Alert } from 'antd';
 import { ValidateStatus, ValidateType } from '../../../common/custom_type';
 import { actionCreator } from '../../../action/index';
 import { UpdateDisplayRecordPropertyType } from '../../../action/record';
-import { getActiveRecordSelector } from './selector';
+import { getActiveRecordSelector, getActiveRecordStateSelector } from './selector';
+import { ConflictType } from '../../../common/conflict_type';
 
 const FItem = Form.Item;
 
 interface RequestNamePanelStateProps {
 
     name: string;
+
+    notShowConflict?: boolean;
+
+    conflictType: ConflictType;
 }
 
 interface RequestNamePanelDispatchProps {
@@ -49,33 +54,55 @@ class RequestNamePanel extends React.Component<RequestNamePanelProps, RequestNam
         this.props.changeRecord({ 'name': value });
     }
 
+    private getConflictModifyMsg = () => {
+        return (
+            <div>
+                <span>This request had been modified by someone else.</span>
+                <span><a>View changes</a></span>
+            </div>
+        );
+    }
+
     public render() {
 
         const { nameValidateStatus } = this.state;
-        const { name } = this.props;
+        const { name, notShowConflict, conflictType } = this.props;
+        const currentConflictType = notShowConflict ? ConflictType.none : conflictType;
 
         return (
-            <Form className="req-panel">
-                <FItem
-                    className="req-name"
-                    style={{ marginBottom: 8 }}
-                    hasFeedback={true}
-                    validateStatus={nameValidateStatus}
-                >
-                    <Input
-                        placeholder="please enter name for this request"
-                        spellCheck={false}
-                        onChange={(e) => this.onNameChanged(e.currentTarget.value)}
-                        value={name} />
-                </FItem>
-            </Form>
+            <div>
+                {
+                    currentConflictType === ConflictType.delete ?
+                        <Alert message="This request had been delete in remote." type="error" showIcon={true} closable={true} /> : (
+                            currentConflictType === ConflictType.modify ?
+                                <Alert message={this.getConflictModifyMsg()} type="warning" showIcon={true} /> : ''
+                        )
+                }
+                <Form className="req-panel">
+                    <FItem
+                        className="req-name"
+                        style={{ marginBottom: 8 }}
+                        hasFeedback={true}
+                        validateStatus={nameValidateStatus}
+                    >
+                        <Input
+                            placeholder="please enter name for this request"
+                            spellCheck={false}
+                            onChange={(e) => this.onNameChanged(e.currentTarget.value)}
+                            value={name} />
+                    </FItem>
+                </Form>
+            </div>
         );
     }
 }
 
 const mapStateToProps = (state: any): RequestNamePanelStateProps => {
+    const activeRecordState = getActiveRecordStateSelector()(state);
     return {
-        name: getActiveRecordSelector()(state).name
+        name: getActiveRecordSelector()(state).name,
+        notShowConflict: activeRecordState.notShowConflict,
+        conflictType: activeRecordState.conflictType
     };
 };
 

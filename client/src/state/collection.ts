@@ -69,6 +69,8 @@ export interface RecordState {
     parameterStatus?: ParameterStatusState;
 
     conflictType: ConflictType;
+
+    notShowConflict?: boolean;
 }
 
 export interface ParameterStatusState {
