@@ -1,7 +1,7 @@
 import { EditEnvType } from '../action/project';
-import { UIState, AppUIState, appUIDefaultValue, ReqResUIState, uiDefaultValue, SyncState, syncDefaultValue } from '../state/ui';
+import { UIState, AppUIState, appUIDefaultValue, ReqResUIState, uiDefaultValue, SyncState, syncDefaultValue, TimelineState, timelineDefaultValue } from '../state/ui';
 import { combineReducers } from 'redux';
-import { ResizeLeftPanelType, UpdateLeftPanelType, SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType, SwitchHeadersEditModeType } from '../action/ui';
+import { ResizeLeftPanelType, UpdateLeftPanelType, SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType, SwitchHeadersEditModeType, CloseTimelineType } from '../action/ui';
 import { SyncType, SyncSuccessType, SyncRetryType, ResetSyncMsgType, SyncFailedType } from '../action/index';
 import { RemoveTabType, SaveRecordType } from '../action/record';
 
@@ -9,7 +9,8 @@ export function uiState(state: UIState = uiDefaultValue, action: any): UIState {
     return combineReducers<UIState>({
         appUIState,
         reqResUIState,
-        syncState
+        syncState,
+        timelineState
     })(state, action);
 }
 
@@ -90,6 +91,16 @@ function reqResUIState(state: _.Dictionary<ReqResUIState> = {}, action: any): _.
                 return newState;
             }
             return state;
+        }
+        default:
+            return state;
+    }
+}
+
+function timelineState(state: TimelineState = timelineDefaultValue, action: any): TimelineState {
+    switch (action.type) {
+        case CloseTimelineType: {
+            return { isShow: false, record: undefined };
         }
         default:
             return state;

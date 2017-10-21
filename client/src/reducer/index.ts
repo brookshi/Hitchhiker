@@ -20,6 +20,7 @@ import { stressTestState } from './stress';
 import { SyncUserDataSuccessType } from '../action/user';
 import { ConflictType } from '../common/conflict_type';
 import { newRecordFlag } from '../common/constants';
+import { ShowTimelineType } from '../action/ui';
 
 export const reduceReducers = (...reducers) => {
     return (state, action) =>
@@ -65,6 +66,17 @@ export function multipleStateReducer(state: State, action: any): State {
         case ReloadType: {
             location.reload(true);
             return state;
+        }
+        case ShowTimelineType: {
+            let record;
+            const ckeys = _.keys(state.collectionState.collectionsInfo.records);
+            for (let cid of ckeys) {
+                record = state.collectionState.collectionsInfo.records[cid][action.value];
+                if (record) {
+                    break;
+                }
+            }
+            return { ...state, uiState: { ...state.uiState, timelineState: { isShow: true, record } } };
         }
         case QuitProjectType:
         case DisbandProjectType: {
@@ -164,16 +176,16 @@ export function multipleStateReducer(state: State, action: any): State {
                 if (!isNew) {
                     const isDeleted = !collection.records[record.collectionId] || !getOnlineRecord();
                     if (isDeleted) {
-                        if (getConflictType() === ConflictType.delete) {
+                        if (getConflictType() !== ConflictType.delete) {
                             newDisplayRecordState.recordStates[key] = { ...recordState, conflictType: ConflictType.delete };
                         }
                     } else if (isChanged) {
-                        if (getConflictType() !== ConflictType.modify && !_.isEqual(newDisplayRecordState.recordStates[key].record, getOnlineRecord())) {
+                        if (getConflictType() !== ConflictType.modify && !_.isEqual(getCurrentRecord(), getOnlineRecord())) {
                             newDisplayRecordState.recordStates[key] = { ...recordState, conflictType: ConflictType.modify };
                         }
                     } else {
                         if (!_.isEqual(getOnlineRecord(), getCurrentRecord())) {
-                            newDisplayRecordState.recordStates[key] = { ...recordState, record: getOnlineRecord() };
+                            newDisplayRecordState.recordStates[key] = { ...recordState, name: getOnlineRecord().name, record: getOnlineRecord() };
                         }
                     }
                 }

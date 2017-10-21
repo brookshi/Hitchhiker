@@ -19,6 +19,7 @@ import { getProjectsIdNameStateSelector, getDisplayCollectionSelector } from './
 import { newCollectionName, allProject } from '../../../common/constants';
 import RecordTimeline from '../../../components/record_timeline';
 import './style/index.less';
+import { ShowTimelineType, CloseTimelineType } from '../../../action/ui';
 
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
@@ -36,6 +37,10 @@ interface CollectionListStateProps {
     openKeys: string[];
 
     selectedProject: string;
+
+    timelineRecord?: DtoRecord;
+
+    isTimelineDlgOpen: boolean;
 }
 
 interface CollectionListDispatchProps {
@@ -61,6 +66,10 @@ interface CollectionListDispatchProps {
     openKeysChanged(openKeys: string[]);
 
     selectProject(projectid: string);
+
+    showTimeLine(id: string);
+
+    closeTimeLine();
 }
 
 type CollectionListProps = CollectionListStateProps & CollectionListDispatchProps;
@@ -76,10 +85,6 @@ interface CollectionListState {
     newCollectionName: string;
 
     shareCollectionId: string;
-
-    isTimelineDlgOpen: boolean;
-
-    timelineRecord?: DtoRecord;
 }
 
 class CollectionList extends React.Component<CollectionListProps, CollectionListState> {
@@ -94,8 +99,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             projectSelectedDlgMode: ProjectSelectedDialogType.create,
             isProjectSelectedDlgOpen: false,
             newCollectionName: newCollectionName,
-            shareCollectionId: '',
-            isTimelineDlgOpen: false
+            shareCollectionId: ''
         };
     }
 
@@ -205,7 +209,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     }
 
     private loopRecords = (data: DtoRecord[], cid: string, inFolder: boolean = false) => {
-        const { openKeys, records, deleteRecord } = this.props;
+        const { openKeys, records, deleteRecord, showTimeLine } = this.props;
 
         return data.map(r => {
             const recordStyle = { height: '30px', lineHeight: '30px' };
@@ -239,24 +243,20 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                         moveToCollection={this.moveToCollection}
                         duplicateRecord={() => this.duplicateRecord(r)}
                         deleteRecord={() => deleteRecord(r.id, records[cid])}
-                        showTimeline={() => this.showTimeLineDlg(r)}
+                        showTimeline={() => showTimeLine(r.id)}
                     />
                 </MenuItem>
             );
         });
     }
 
-    private showTimeLineDlg = (record) => {
-        this.setState({ ...this.state, isTimelineDlgOpen: true, timelineRecord: record });
-    }
-
     private get timelineDialog() {
-        const { timelineRecord, isTimelineDlgOpen } = this.state;
+        const { timelineRecord, isTimelineDlgOpen, closeTimeLine } = this.props;
         return (
             <RecordTimeline
                 visible={isTimelineDlgOpen}
                 record={timelineRecord}
-                onClose={() => this.setState({ ...this.state, isTimelineDlgOpen: false })}
+                onClose={closeTimeLine}
             />
         );
     }
@@ -371,6 +371,7 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
 
     const mapStateToProps: (state: State) => CollectionListStateProps = state => {
         const { collectionsInfo, selectedProject } = state.collectionState;
+        const { record, isShow } = state.uiState.timelineState;
 
         return {
             collections: getCollections(state),
@@ -378,7 +379,9 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
             activeKey: state.displayRecordsState.activeKey,
             projects: getProjects(state),
             openKeys: state.collectionState.openKeys,
-            selectedProject
+            selectedProject,
+            timelineRecord: record,
+            isTimelineDlgOpen: isShow
         };
     };
     return mapStateToProps;
@@ -404,7 +407,9 @@ const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps
         createRecord: (record) => dispatch(actionCreator(SaveAsRecordType, { isNew: true, record })),
         moveRecord: record => dispatch(actionCreator(MoveRecordType, { record })),
         openKeysChanged: openKeys => dispatch(actionCreator(CollectionOpenKeysType, openKeys)),
-        selectProject: projectId => dispatch(actionCreator(SelectedProjectChangedType, projectId))
+        selectProject: projectId => dispatch(actionCreator(SelectedProjectChangedType, projectId)),
+        showTimeLine: id => dispatch(actionCreator(ShowTimelineType, id)),
+        closeTimeLine: () => dispatch(actionCreator(CloseTimelineType))
     };
 };
 

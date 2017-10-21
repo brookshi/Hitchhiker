@@ -11,3 +11,7 @@ export const ResizeLeftPanelType = 'resize left panel';
 export const UpdateLeftPanelType = 'collapse left panel';
 
 export const SwitchHeadersEditModeType = 'switch headers edit mode';
+
+export const ShowTimelineType = 'show timeline';
+
+export const CloseTimelineType = 'close timeline';

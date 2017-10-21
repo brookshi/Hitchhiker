@@ -1,6 +1,7 @@
 import { SyncItem } from '../utils/request_manager';
 import { defaultLeftPanelWidth, defaultModuleKey, defaultReqTabKey, defaultResTabKey } from '../common/constants';
 import { KeyValueEditMode, KeyValueEditType } from '../common/custom_type';
+import { DtoRecord } from '../../../api/interfaces/dto_record';
 
 export interface AppUIState {
 
@@ -33,6 +34,13 @@ export interface ReqResUIState {
     headersEditMode: KeyValueEditMode;
 }
 
+export interface TimelineState {
+
+    record?: DtoRecord;
+
+    isShow: boolean;
+}
+
 export interface UIState {
 
     appUIState: AppUIState;
@@ -40,6 +48,8 @@ export interface UIState {
     reqResUIState: _.Dictionary<ReqResUIState>;
 
     syncState: SyncState;
+
+    timelineState: TimelineState;
 }
 
 export const appUIDefaultValue: AppUIState = {
@@ -61,8 +71,13 @@ export const syncDefaultValue: SyncState = {
     syncItems: []
 };
 
+export const timelineDefaultValue: TimelineState = {
+    isShow: false
+};
+
 export const uiDefaultValue = {
     appUIState: appUIDefaultValue,
     reqResUIState: {},
-    syncState: syncDefaultValue
+    syncState: syncDefaultValue,
+    timelineState: timelineDefaultValue
 };

@@ -6,10 +6,13 @@ import { actionCreator } from '../../../action/index';
 import { UpdateDisplayRecordPropertyType } from '../../../action/record';
 import { getActiveRecordSelector, getActiveRecordStateSelector } from './selector';
 import { ConflictType } from '../../../common/conflict_type';
+import { ShowTimelineType } from '../../../action/ui';
 
 const FItem = Form.Item;
 
 interface RequestNamePanelStateProps {
+
+    activeKey: string;
 
     name: string;
 
@@ -21,6 +24,8 @@ interface RequestNamePanelStateProps {
 interface RequestNamePanelDispatchProps {
 
     changeRecord(value: { [key: string]: any });
+
+    showTimeLine(id: string);
 }
 
 type RequestNamePanelProps = RequestNamePanelStateProps & RequestNamePanelDispatchProps;
@@ -58,7 +63,7 @@ class RequestNamePanel extends React.Component<RequestNamePanelProps, RequestNam
         return (
             <div>
                 <span>This request had been modified by someone else.</span>
-                <span><a>View changes</a></span>
+                <span style={{ marginLeft: 12 }}><a onClick={() => this.props.showTimeLine(this.props.activeKey)}>View changes</a></span>
             </div>
         );
     }
@@ -75,7 +80,7 @@ class RequestNamePanel extends React.Component<RequestNamePanelProps, RequestNam
                     currentConflictType === ConflictType.delete ?
                         <Alert message="This request had been delete in remote." type="error" showIcon={true} closable={true} /> : (
                             currentConflictType === ConflictType.modify ?
-                                <Alert message={this.getConflictModifyMsg()} type="warning" showIcon={true} /> : ''
+                                <Alert message={this.getConflictModifyMsg()} type="warning" showIcon={true} closable={true} /> : ''
                         )
                 }
                 <Form className="req-panel">
@@ -100,6 +105,7 @@ class RequestNamePanel extends React.Component<RequestNamePanelProps, RequestNam
 const mapStateToProps = (state: any): RequestNamePanelStateProps => {
     const activeRecordState = getActiveRecordStateSelector()(state);
     return {
+        activeKey: state.displayRecordsState.activeKey,
         name: getActiveRecordSelector()(state).name,
         notShowConflict: activeRecordState.notShowConflict,
         conflictType: activeRecordState.conflictType
@@ -109,6 +115,7 @@ const mapStateToProps = (state: any): RequestNamePanelStateProps => {
 const mapDispatchToProps = (dispatch: Dispatch<any>): RequestNamePanelDispatchProps => {
     return {
         changeRecord: (value) => dispatch(actionCreator(UpdateDisplayRecordPropertyType, value)),
+        showTimeLine: (id) => dispatch(actionCreator(ShowTimelineType, id))
     };
 };
 
