@@ -20,4 +20,8 @@ export class DateUtil {
     static getLocaleDateString(utcDate: Date): string {
         return new Date(new Date() + ' UTC').toLocaleString();
     }
+
+    static subNowSec(date: Date): number {
+        return (Date.now() - date.valueOf()) / 1000;
+    }
 }

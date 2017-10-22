@@ -15,6 +15,7 @@ import { State } from '../../../state/index';
 import { ResizeResHeightType } from '../../../action/ui';
 import { getReqActiveTabKeySelector, getIsResPanelMaximumSelector, getActiveRecordStateSelector, getResHeightSelector } from './selector';
 import { newRecordFlag } from '../../../common/constants';
+import { ConflictType } from '../../../common/conflict_type';
 
 interface ReqResPanelStateProps {
 
@@ -90,7 +91,8 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
             recordProperties: _.values(props.recordStates).map(r => ({
                 isChanged: r.isChanged,
                 name: r.name,
-                id: r.record
+                id: r.record,
+                conflictType: r.conflictType
             }))
         };
     }
@@ -168,11 +170,12 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                 >
                     {
                         _.keys(recordStates).map(key => {
-                            const { name, isChanged } = recordStates[key];
+                            const { name, isChanged, conflictType } = recordStates[key];
+                            const tabFontColorStyle = conflictType === undefined || conflictType === ConflictType.none ? {} : { color: conflictType === ConflictType.delete ? '#ff0000' : '#ffc000' };
                             return (
                                 <Tabs.TabPane
                                     key={key}
-                                    tab={<Badge count="" dot={isChanged}>{name}</Badge>}
+                                    tab={<Badge count="" dot={isChanged}><span style={tabFontColorStyle}>{name}</span></Badge>}
                                     closable={true} />
                             );
                         })

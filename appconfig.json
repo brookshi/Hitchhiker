@@ -8,7 +8,7 @@
         "defaultPassword": "123456",
         "tempUser": "test@test.test",
         "tempDelKey": "test",
-        "syncInterval": 5,
+        "syncInterval": 30,
         "defaultHeaders": [
             "Accept:*/*",
             "User-Agent:Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36",
