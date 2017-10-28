@@ -84,8 +84,26 @@ export class StringUtil {
         });
     }
 
-    static fixedEncodeURI(str) {
-        return encodeURI(str).replace(/%5B/g, '[').replace(/%5D/g, ']');
+    static fixedEncodeURI(url: string) {
+        try {
+            const uri = URL.parse(url, true);
+            uri.search = '';
+            let i = 0;
+            for (let k of _.keys(uri.query)) {
+                uri.search += `${i > 0 ? '&' : ''}${k}=${encodeURIComponent(uri.query[k])}`;
+                i++;
+            }
+            return URL.format(uri);
+
+        } catch (e) {
+            return url;
+        }
+    }
+
+    static fixedEncodeURIComponent(url) {
+        return encodeURIComponent(url).replace(/[!'()*]/g, function (c) {
+            return '%' + c.charCodeAt(0).toString(16);
+        });
     }
 
     static verifyParameters(parameters: string, parameterType: ParameterType): { isValid: boolean, count: number, msg: string } {
