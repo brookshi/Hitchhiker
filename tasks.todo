@@ -96,31 +96,34 @@
 0.2.0:
     ✔ run schedule in background with empty request will throw exception @done (9/29/2017, 6:45:10 PM)
     ✔ stree test @done (10/10/2017, 10:08:28 PM)
-0.2.1:
+0.3.0:
+    ✔ sync user data per 30s @done (10/29/2017, 5:52:24 PM)
+    ✔ url encode @done (10/29/2017, 5:52:25 PM)
+0.4:
+    ☐ pre request script
+    ☐ project folder system
+0.5:
     ☐ form data, text, binary body type
-    ☐ fetch data per 30s
     ☐ import postman env
     ☐ convert variable function while importing postman collection
-    ☐ url encode
-0.2.2:
     ☐ improve test for param request (test for each param, copy param to test)
     ☐ collection tree follow active tab(expand collection/folder)
     ☐ project share collection/env
     ☐ body type
     ☐ project share collection/env for own
     ☐ stop running stress test
-0.2.3:
+0.6:
     ☐ variable highlight
     ☐ save all tabs, close all tabs, close all but active.
     ☐ Me project should be removable
-0.3.0:
+0.7.0:
     ☐ data mock
     ☐ test result detail
     ☐ hot key
-0.4.0:
+0.8.0:
     ☐ api document
     ☐ record auth
-0.5.0:
+0.9.0:
     ☐ project permission
 
 backlog:

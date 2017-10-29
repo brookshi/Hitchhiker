@@ -84,7 +84,7 @@ export function multipleStateReducer(state: State, action: any): State {
             const projectId = action.value.id;
             const originRecords = state.collectionState.collectionsInfo.records;
             const collections = _.chain(state.collectionState.collectionsInfo.collections).values<DtoCollection>().filter(c => c.projectId !== projectId).keyBy('id').value();
-            const records = _.pick<_.Dictionary<_.Dictionary<DtoRecord>>, _.Dictionary<_.Dictionary<DtoRecord>>>(originRecords, _.keys(collections));
+            const records = _.pick(originRecords, _.keys(collections)) as _.Dictionary<_.Dictionary<DtoRecord>>;
             const newRecordState = getNewRecordState();
             let recordStates = _.chain(state.displayRecordsState.recordStates).values<RecordState>().filter(c => !c.record.collectionId || !!collections[c.record.collectionId]).keyBy('record.id').value();
             let recordsOrder = state.displayRecordsState.recordsOrder.filter(r => !!recordStates[r]);
