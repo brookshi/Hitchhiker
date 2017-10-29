@@ -102,3 +102,8 @@ Hitchhiker will display real-time state of stress test task, include workers, re
 3. request failed status, include No Response, Server Error(500), Test Failed.
 
 **Stress Test Only support using ES5 in test**
+
+### Sync data automatically
+
+Auto sync Collectio data to all team members.
+Default interval is 30s，you can change in appconfig.json (syncInterval)，or set env variable while installing (HITCHHIKER_SYNC_INTERVAL).

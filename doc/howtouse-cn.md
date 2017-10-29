@@ -106,3 +106,8 @@
 3. 请求失败的状态，包括 No Response, Server Error(500), Test失败 这三种情况
 
 **压力测试只支持在test中使用ES5语法**
+
+### 数据同步
+
+同一个Project下的Collection，数据会自动同步给Project的成员，而不用手动刷新。
+自动同步的时间间隔默认为30s，可以在appconfig.json文件中修改(syncInterval)，也可以在安装时写入环境变量HITCHHIKER_SYNC_INTERVAL来控制。

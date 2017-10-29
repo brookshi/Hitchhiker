@@ -1,3 +1,19 @@
+# 0.3 2017-10-30
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/sync.gif)
+
+## Features:
+* support data sync automatically.
+
+# Bugs:
+* url doesn't support chinese.
+
+## Features:
+* 支持数据自动同步更新
+
+# Bugs:
+* 修正url不支持中文
+
+
 # 0.2 2017-10-15
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/stresstest.gif)
 
