@@ -212,9 +212,11 @@ export function* syncUserData() {
             if (GlobalVar.instance.isUserInfoSyncing) {
                 continue;
             }
-            GlobalVar.instance.isUserInfoSyncing = true;
-            const channelAction = syncAction({ type: LoginSuccessType, method: HttpMethod.GET, url: Urls.getUrl(`user/me`), successAction: DateUtil.subNowSec(GlobalVar.instance.lastSyncDate) < 1 ? undefined : value => { GlobalVar.instance.isUserInfoSyncing = false; return actionCreator(SyncUserDataSuccessType, { result: value }); } });
-            yield put(channelAction);
+            if (DateUtil.subNowSec(GlobalVar.instance.lastSyncDate) > 5) {
+                GlobalVar.instance.isUserInfoSyncing = true;
+                const channelAction = syncAction({ type: LoginSuccessType, method: HttpMethod.GET, url: Urls.getUrl(`user/me`), successAction: value => { GlobalVar.instance.isUserInfoSyncing = false; return actionCreator(SyncUserDataSuccessType, { result: value }); } });
+                yield put(channelAction);
+            }
         }
     });
 }
