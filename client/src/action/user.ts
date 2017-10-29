@@ -209,7 +209,11 @@ export function* syncUserData() {
         yield delay(5000);
         while (true) {
             yield delay(action.value.result.syncInterval * 1000);
-            const channelAction = syncAction({ type: LoginSuccessType, method: HttpMethod.GET, url: Urls.getUrl(`user/me`), successAction: DateUtil.subNowSec(GlobalVar.instance.lastSyncDate) < 1 ? undefined : value => actionCreator(SyncUserDataSuccessType, { result: value }) });
+            if (GlobalVar.instance.isUserInfoSyncing) {
+                continue;
+            }
+            GlobalVar.instance.isUserInfoSyncing = true;
+            const channelAction = syncAction({ type: LoginSuccessType, method: HttpMethod.GET, url: Urls.getUrl(`user/me`), successAction: DateUtil.subNowSec(GlobalVar.instance.lastSyncDate) < 1 ? undefined : value => { GlobalVar.instance.isUserInfoSyncing = false; return actionCreator(SyncUserDataSuccessType, { result: value }); } });
             yield put(channelAction);
         }
     });
