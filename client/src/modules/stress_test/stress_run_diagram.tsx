@@ -129,7 +129,7 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
                 name: 'Average DNS',
                 ...baseBarOption,
                 stack: 'average',
-                data: _.values(data).map(d => d.statistics ? _.round(d.statistics.averageConnect, 2) : 0)
+                data: _.values(data).map(d => d.statistics ? _.round(d.statistics.averageDns, 2) : 0)
             }, {
                 name: 'Average Connect',
                 ...baseBarOption,

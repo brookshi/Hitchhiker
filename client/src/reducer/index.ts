@@ -21,6 +21,7 @@ import { SyncUserDataSuccessType } from '../action/user';
 import { ConflictType } from '../common/conflict_type';
 import { newRecordFlag } from '../common/constants';
 import { ShowTimelineType } from '../action/ui';
+import { CompareUtil } from '../utils/compare_util';
 
 export const reduceReducers = (...reducers) => {
     return (state, action) =>
@@ -180,11 +181,11 @@ export function multipleStateReducer(state: State, action: any): State {
                             newDisplayRecordState.recordStates[key] = { ...recordState, conflictType: ConflictType.delete };
                         }
                     } else if (isChanged) {
-                        if (getConflictType() !== ConflictType.modify && !_.isEqual(getCurrentRecord(), getOnlineRecord())) {
+                        if (getConflictType() !== ConflictType.modify && !CompareUtil.compare(getCurrentRecord(), getOnlineRecord())) {
                             newDisplayRecordState.recordStates[key] = { ...recordState, conflictType: ConflictType.modify };
                         }
                     } else {
-                        if (!_.isEqual(getOnlineRecord(), getCurrentRecord())) {
+                        if (!CompareUtil.compare(getOnlineRecord(), getCurrentRecord())) {
                             newDisplayRecordState.recordStates[key] = { ...recordState, name: getOnlineRecord().name, record: getOnlineRecord() };
                         }
                     }
@@ -203,7 +204,7 @@ export function multipleStateReducer(state: State, action: any): State {
         const cid = record.collectionId;
         let isChanged = true;
         if (cid) {
-            isChanged = !_.isEqual(rootState.collectionState.collectionsInfo.records[record.collectionId][record.id], record);
+            isChanged = !CompareUtil.compare(rootState.collectionState.collectionsInfo.records[record.collectionId][record.id], record);
         }
         const recordStates = rootState.displayRecordsState.recordStates;
         return {
