@@ -64,6 +64,9 @@ export class Record {
     dataMode: DataMode;
 
     @Column('text', { nullable: true })
+    prescript: string;
+
+    @Column('text', { nullable: true })
     test: string;
 
     @Column('int', { nullable: true })

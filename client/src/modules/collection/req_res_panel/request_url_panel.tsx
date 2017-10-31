@@ -195,7 +195,8 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
             url: this.applyVariables(record.url, variables),
             headers,
             body: this.applyVariables(record.body, variables),
-            test: this.applyVariables(record.test, variables)
+            test: this.applyVariables(record.test, variables),
+            prescript: this.applyVariables(record.prescript, variables)
         };
     }
 
@@ -213,7 +214,8 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
             url: this.applyVariables(record.url, parameter),
             headers,
             body: this.applyVariables(record.body, parameter),
-            test: this.applyVariables(record.test, parameter)
+            test: this.applyVariables(record.test, parameter),
+            prescript: this.applyVariables(record.prescript, parameter)
         };
     }
 

@@ -38,6 +38,8 @@ interface RequestOptionPanelStateProps {
 
     test?: string;
 
+    prescript?: string;
+
     bodyType?: string;
 
     parameters?: string;
@@ -133,7 +135,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
 
     public render() {
 
-        const { activeTabKey, headers, body, parameters, parameterType, test, headersEditMode, favHeaders } = this.props;
+        const { activeTabKey, headers, body, parameters, parameterType, test, prescript, headersEditMode, favHeaders } = this.props;
         const { isValid, msg } = StringUtil.verifyParameters(parameters || '', parameterType);
         let paramArr = StringUtil.getUniqParamArr(parameters, parameterType);
 
@@ -180,6 +182,13 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                     <Editor ref={ele => this.bodyEditor = ele} type={bodyTypes[this.currentBodyType()]} fixHeight={true} height={300} value={body} onChange={v => this.props.changeRecord({ 'body': v })} />
                 </TabPane>
                 <TabPane tab={(
+                    <Badge style={normalBadgeStyle} dot={!!prescript && prescript.length > 0} count="">
+                        Pre Request Script
+                    </Badge>
+                )} key="prescript">
+                    <Editor type="javascript" height={300} fixHeight={true} value={prescript} onChange={v => this.props.changeRecord({ 'prescript': v })} />
+                </TabPane>
+                <TabPane tab={(
                     <Badge style={normalBadgeStyle} dot={!!test && test.length > 0} count="">
                         Test
                     </Badge>
@@ -215,6 +224,7 @@ const mapStateToProps = (state: State): RequestOptionPanelStateProps => {
         headers: record.headers,
         body: record.body,
         test: record.test,
+        prescript: record.prescript,
         bodyType: record.bodyType,
         parameters: record.parameters,
         parameterType: record.parameterType,

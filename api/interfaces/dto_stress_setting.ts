@@ -51,6 +51,8 @@ export interface RequestBody {
     headers?: _.Dictionary<string>;
 
     test?: string;
+
+    prescript?: string;
 }
 
 export interface WorkerInfo {

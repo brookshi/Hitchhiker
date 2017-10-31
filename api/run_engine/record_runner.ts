@@ -140,7 +140,8 @@ export class RecordRunner {
             headers,
             url: RecordRunner.applyVariables(record.url, variables),
             test: RecordRunner.applyVariables(record.test, variables),
-            body: RecordRunner.applyVariables(record.body, variables)
+            body: RecordRunner.applyVariables(record.body, variables),
+            prescript: RecordRunner.applyVariables(record.prescript, variables),
         };
     }
 
@@ -158,7 +159,8 @@ export class RecordRunner {
             url: RecordRunner.applyVariables(record.url, parameter),
             headers,
             body: RecordRunner.applyVariables(record.body, parameter),
-            test: RecordRunner.applyVariables(record.test, parameter)
+            test: RecordRunner.applyVariables(record.test, parameter),
+            prescript: RecordRunner.applyVariables(record.prescript, parameter)
         };
     }
 

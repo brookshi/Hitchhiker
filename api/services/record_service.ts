@@ -44,6 +44,7 @@ export class RecordService {
         record.bodyType = target.bodyType;
         record.parameters = target.parameters;
         record.parameterType = target.parameterType;
+        record.prescript = target.prescript || '';
         return record;
     }
 

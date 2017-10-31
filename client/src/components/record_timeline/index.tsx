@@ -62,6 +62,7 @@ class RecordTimeline extends React.Component<RecordTimelineProps, RecordTimeline
                     {this.generateItem('parameters', this.getDiffCode(record, lastRecord, 'parameters'))}
                     {this.generateItem('body', this.getDiffCode(record, lastRecord, 'body'))}
                     {this.generateItem('test', this.getDiffCode(record, lastRecord, 'test'))}
+                    {this.generateItem('prescript', this.getDiffCode(record, lastRecord, 'prescript'))}
                 </div>
             </Timeline.Item>
         );

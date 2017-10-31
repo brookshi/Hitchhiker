@@ -32,6 +32,8 @@ export interface DtoRecord {
 
     parameterType: ParameterType;
 
+    prescript?: string;
+
     test?: string;
 
     sort?: number;

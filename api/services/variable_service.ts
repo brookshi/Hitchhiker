@@ -33,6 +33,7 @@ export class VariableService {
         record.url = StringUtil.applyTemplate(record.url, variables);
         record.body = StringUtil.applyTemplate(record.body, variables);
         record.test = StringUtil.applyTemplate(record.test, variables);
+        record.prescript = StringUtil.applyTemplate(record.prescript, variables);
         record.headers = r.headers.map(header => ({
             ...header,
             key: StringUtil.applyTemplate(header.key, variables),
