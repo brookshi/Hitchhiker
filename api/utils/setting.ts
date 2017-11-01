@@ -104,6 +104,10 @@ export class Setting {
     }
 
     get defaultHeaders() {
-        return this._setting.app.defaultHeaders ? this._setting.app.defaultHeaders.join('\n') : '';
+        return process.env.HITCHHIKER_DEFAULT_HEADERS || (this._setting.app.defaultHeaders ? this._setting.app.defaultHeaders.join('\n') : '');
+    }
+
+    get safeVM() {
+        return process.env.HITCHHIKER_SAFE_VM || this.app.safeVM;
     }
 }

@@ -1,7 +1,9 @@
 import * as request from 'request';
 import * as _ from 'lodash';
 import { ProjectService } from '../services/project_service';
-const { VM } = require('vm2');
+import * as freeVM from 'vm';
+import { Setting } from '../utils/setting';
+const { VM: safeVM } = require('vm2');
 
 export class TestRunner {
 
@@ -13,13 +15,17 @@ export class TestRunner {
         let $exportObj$ = { content: TestRunner.defaultExport };
         let $export$ = obj => $exportObj$.content = obj;
 
-        const vm = new VM({
-            timeout: 50000,
-            sandbox: { tests, $variables$, $export$, $exportObj$, ...TestRunner.getInitSandbox(res, elapsed) }
-        });
-
         try {
-            vm.run(globalFunc + code);
+            if (Setting.instance.safeVM) {
+                const vm = new safeVM({
+                    timeout: 50000,
+                    sandbox: { tests, $variables$, $export$, $exportObj$, ...TestRunner.getInitSandbox(res, elapsed) }
+                });
+                vm.run(globalFunc + code);
+            } else {
+                const sandbox = safeVM.createContext({ tests, $variables$, $export$, $exportObj$, ...TestRunner.getInitSandbox(res, elapsed) });
+                freeVM.runInContext(globalFunc + code, sandbox, { timeout: 50000 });
+            }
         } catch (err) {
             tests = { [err]: false };
         }
