@@ -134,7 +134,7 @@ export class StressService {
                 });
             }
         }
-        const globalFunc = await ProjectService.getGlobalFunc(stress.collectionId);
+        const { globalFunction } = (await ProjectService.getProjectByCollectionId(stress.collectionId)) || { globalFunction: '' };
         const requestBodyList = new Array<RequestBody>();
         stress.requests.forEach(i => {
             let record = records[i];
@@ -143,7 +143,7 @@ export class StressService {
 
             if (paramArr.length === 0) {
                 record.headers.forEach(h => { if (h.isActive) { headers[h.key] = h.value; } });
-                requestBodyList.push(<any>{ ...record, headers, test: globalFunc + record.test });
+                requestBodyList.push(<any>{ ...record, headers, test: globalFunction + record.test });
             } else {
                 for (let p of paramArr) {
                     let newRecord = RecordRunner.applyReqParameterToRecord(record, p);

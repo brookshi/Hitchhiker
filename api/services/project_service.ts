@@ -194,12 +194,12 @@ export class ProjectService {
         return { success: true, message: Message.updateGlobalFuncSuccess };
     }
 
-    static async getGlobalFunc(collectionId: string): Promise<string> {
+    static async getProjectByCollectionId(collectionId: string): Promise<Project> {
         const collection = await CollectionService.getById(collectionId);
         if (collection) {
-            const project = await ProjectService.getProject(collection.project.id, false, false);
-            return project ? project.globalFunction || '' : '';
+            return await ProjectService.getProject(collection.project.id, false, false);
+            //return {globalFunc: project ? project.globalFunction || '' : '', projectId: project ? project.id : ''};
         }
-        return '';
+        return undefined;
     }
 }
