@@ -5,6 +5,8 @@ import { UserService } from './user_service';
 
 export class SessionService {
 
+    static session: any;
+
     static get bypass(): string[] {
         return [
             'api/user/login$',
@@ -35,7 +37,7 @@ export class SessionService {
     }
 
     static async isSessionValid(ctx: Koa.Context): Promise<boolean> {
-        const userId = (<any>ctx).session.userId; // 'Hk3wQ60ix'
+        const userId = (<any>ctx).session.userId;
         let validUser = !!userId;
         if (validUser) {
             const checkRst = await UserService.checkUserById(userId);
@@ -43,6 +45,7 @@ export class SessionService {
             if (validUser) {
                 (<any>ctx).session.user = checkRst.result;
                 (<any>ctx).session.userId = userId;
+                SessionService.session = (<any>ctx).session;
             }
         }
         return validUser || !!SessionService.bypass.find(o => new RegExp(o, 'g').test(ctx.request.url.replace(`?${ctx.request.querystring}`, '')));

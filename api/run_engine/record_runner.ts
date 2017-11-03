@@ -2,7 +2,7 @@ import { Record } from '../models/record';
 import { RequestOptionAdapter } from './request_option_adapter';
 import * as request from 'request';
 import { ServerResponse } from 'http';
-import { TestRunner } from './test_runner';
+import { JSRunner } from './test_runner';
 import * as _ from 'lodash';
 import { RunResult } from '../interfaces/dto_run_result';
 import { StringUtil } from '../utils/string_util';
@@ -196,7 +196,7 @@ export class RecordRunner {
     }
 
     static handleRes(res: request.RequestResponse, err: Error, record: Record, pid: string, globalFunc: string, envId: string, elapsed: number, pipeRes?: ServerResponse, needPipe?: boolean): RunResult {
-        const testRst = !err && record.test ? TestRunner.test(pid, res, globalFunc, record.prescript, record.test, elapsed) : { tests: {}, variables: {}, export: {} };
+        const testRst = !err && record.test ? JSRunner.test(pid, res, globalFunc, record.prescript, record.test, elapsed) : { tests: {}, variables: {}, export: {} };
         const pRes: Partial<request.RequestResponse> = res || {};
         const finalRes: RunResult = {
             id: record.id,

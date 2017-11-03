@@ -18,9 +18,9 @@ import { ProjectService } from '../services/project_service';
 import { MailService } from '../services/mail_service';
 import { Log } from '../utils/log';
 import { DateUtil } from '../utils/date_util';
-import { RecordCategory } from "../common/record_category";
-import { TestRunner } from "./test_runner";
-import { StringUtil } from "../utils/string_util";
+import { RecordCategory } from '../common/record_category';
+import { StringUtil } from '../utils/string_util';
+import { Sandbox } from './sandbox';
 
 export class ScheduleRunner {
 
@@ -170,8 +170,8 @@ export class ScheduleRunner {
     }
 
     private compareExport(originRst: RunResult, compareRst: RunResult): boolean {
-        if (originRst.export !== TestRunner.defaultExport &&
-            compareRst.export !== TestRunner.defaultExport) {
+        if (originRst.export !== Sandbox.defaultExport &&
+            compareRst.export !== Sandbox.defaultExport) {
             return _.isEqual(originRst.export, compareRst.export);
         }
         return originRst.body === compareRst.body;
