@@ -9,9 +9,18 @@ const { VM: safeVM } = require('vm2');
 
 class Sandbox {
 
-    _jsFiles: _.Dictionary<string> = {};
+    static libFolder: string = 'lib';
+    static dataFolder: string = 'data';
 
-    _allFiles: _.Dictionary<string> = {};
+    _pJsFiles: _.Dictionary<string> = {};
+
+    _pDataFiles: _.Dictionary<string> = {};
+
+    _gJsFiles: _.Dictionary<string> = {};
+
+    _gDataFiles: _.Dictionary<string> = {};
+
+    _allJsFiles: _.Dictionary<string> = {};
 
     tests: _.Dictionary<boolean> = {};
 
@@ -19,27 +28,73 @@ class Sandbox {
 
     exportObj = { content: TestRunner.defaultExport };
 
-    constructor(projectId: string) {
+    constructor(private projectId: string) {
         const globalFolder = path.join(__dirname, `../global_data`);
-        const projectFolder = `${globalFolder}/${projectId}`;
-        const initFiles = folder => {
+        const projectFolder = this.getProjectFolder();
+        const initFiles = (folder, isProject, isJs) => {
+            if (isJs) {
+                folder = this.getActualPath(globalFolder, 'lib');
+            } else {
+                folder = this.getActualPath(globalFolder, 'data');
+            }
             if (fs.existsSync(folder)) {
                 const files = fs.readdirSync(folder).filter(value => fs.lstatSync(path.join(folder, value)).isFile);
                 files.forEach(f => {
-                    if (f.endsWith('.js')) {
-                        const fname = f.substr(0, f.length - 3);
-                        this._jsFiles[f.substr(0, f.length - 3)] = `${folder}/${fname}`;
+                    if (isJs) {
+                        if (f.endsWith('.js')) {
+                            const fileName = f.substr(0, f.length - 3);
+                            (isProject ? this._pJsFiles : this._gJsFiles)[f.substr(0, f.length - 3)] = `${folder}/${fileName}`;
+                        }
+                    } else {
+                        (isProject ? this._pDataFiles : this._gDataFiles)[f] = `${folder}/${f}`;
                     }
-                    this._allFiles[f] = `${folder}/${f}`;
                 });
             }
         };
-        initFiles(globalFolder);
-        initFiles(projectFolder);
+        initFiles(globalFolder, false, true);
+        initFiles(globalFolder, false, false);
+        initFiles(projectFolder, true, true);
+        initFiles(projectFolder, true, false);
+        _.keys(this._gJsFiles).forEach(k => this._allJsFiles[k] = this._gJsFiles[k]);
+        _.keys(this._pJsFiles).forEach(k => this._allJsFiles[k] = this._pJsFiles[k]);
+    }
+
+    getProjectFolder(): string {
+        return path.join(__dirname, `../global_data/${this.projectId}`);
+    }
+
+    getProjectFile(file: string): string {
+        return path.join(__dirname, `../global_data/${this.projectId}/${file}`);
+    }
+
+    getActualPath(folder: string, type: 'lib' | 'data'): string {
+        return path.join(folder, type);
     }
 
     require(lib: string) {
-        return require(this._jsFiles[lib]);
+        return require(this._allJsFiles[lib]);
+    }
+
+    readFile(file: string): string {
+        return this.readFileByReader(file, f => fs.readFileSync(f, 'utf8'));
+    }
+
+    readFileByReader(file: string, reader: (file: string) => any): any {
+        if (this._pDataFiles[file]) {
+            return reader(this._pDataFiles[file]);
+        }
+        if (this._gDataFiles[file]) {
+            return reader(this._pDataFiles[file]);
+        }
+        throw new Error(`${file} not exists.`);
+    }
+
+    saveFile(file: string, content: string, replaceIfExist: boolean = true) {
+        if (!replaceIfExist && this._pDataFiles[file]) {
+            return;
+        }
+        const projectFile = this.getProjectFile(file);
+        fs.writeFileSync(projectFile, content);
     }
 
     export(obj: any) {
@@ -61,10 +116,10 @@ export class TestRunner {
 
         try {
             if (!Setting.instance.safeVM) {
-                const vm = new safeVM({ timeout: 50000, sandbox });
+                const vm = new safeVM({ timeout: Setting.instance.scriptTimeout, sandbox });
                 vm.run(globalFunc + prescript + code);
             } else {
-                freeVM.runInContext(globalFunc + prescript + code, freeVM.createContext(sandbox), { timeout: 50000 });
+                freeVM.runInContext(globalFunc + prescript + code, freeVM.createContext(sandbox), { timeout: Setting.instance.scriptTimeout });
             }
         } catch (err) {
             tests[err] = false;

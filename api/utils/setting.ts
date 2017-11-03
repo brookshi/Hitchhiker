@@ -65,7 +65,7 @@ export class Setting {
 
     get appPort() {
         let port = this.appHost.substr(this.appHost.lastIndexOf(':') + 1).replace('/', '');
-        if (!(/^[0-9]$/.test(port))) {
+        if (!(/^[0-9]*$/.test(port))) {
             port = 8080;
         }
         return this.isDev ? 81 : port;
@@ -108,6 +108,10 @@ export class Setting {
     }
 
     get safeVM() {
-        return process.env.HITCHHIKER_SAFE_VM || this.app.safeVM;
+        return process.env.HITCHHIKER_SAFE_VM === undefined ? this.app.safeVM : process.env.HITCHHIKER_SAFE_VM;
+    }
+
+    get scriptTimeout() {
+        return process.env.HITCHHIKER_SCRIPT_TIMEOUT || this.app.scriptTimeout;
     }
 }
