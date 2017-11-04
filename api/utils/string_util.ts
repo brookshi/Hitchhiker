@@ -179,7 +179,7 @@ export class StringUtil {
         if (_.isPlainObject(obj) || _.isArray(obj)) {
             return JSON.stringify(obj);
         } else {
-            return obj.toString();
+            return obj ? obj.toString() : '';
         }
     }
 }

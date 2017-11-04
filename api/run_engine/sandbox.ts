@@ -1,6 +1,9 @@
 import * as _ from 'lodash';
 import * as fs from 'fs';
 import * as path from 'path';
+import { SessionService } from '../services/session_service';
+import { UserVariableManager } from '../services/user_variable_manager';
+import { Setting } from '../utils/setting';
 
 export class Sandbox {
 
@@ -21,18 +24,22 @@ export class Sandbox {
 
     tests: _.Dictionary<boolean> = {};
 
-    variables: any = {};
+    variables: any;
 
     exportObj = { content: Sandbox.defaultExport };
 
-    constructor(private projectId: string) {
+    constructor(private projectId: string, private vid: string, private envId: string) {
+        this.initVariables();
         const globalFolder = path.join(__dirname, `../global_data`);
         const projectFolder = this.getProjectFolder();
+        if (!fs.existsSync(projectFolder)) {
+            fs.mkdirSync(projectFolder, 0o666);
+        }
         const initFiles = (folder, isProject, isJs) => {
             if (isJs) {
-                folder = this.getActualPath(globalFolder, 'lib');
+                folder = this.getActualPath(folder, 'lib');
             } else {
-                folder = this.getActualPath(globalFolder, 'data');
+                folder = this.getActualPath(folder, 'data');
             }
             if (fs.existsSync(folder)) {
                 const files = fs.readdirSync(folder).filter(value => fs.lstatSync(path.join(folder, value)).isFile);
@@ -46,6 +53,8 @@ export class Sandbox {
                         (isProject ? this._pDataFiles : this._gDataFiles)[f] = `${folder}/${f}`;
                     }
                 });
+            } else {
+                fs.mkdirSync(folder, 0o666);
             }
         };
         initFiles(globalFolder, false, true);
@@ -56,12 +65,16 @@ export class Sandbox {
         _.keys(this._pJsFiles).forEach(k => this._allJsFiles[k] = this._pJsFiles[k]);
     }
 
+    initVariables() {
+        this.variables = UserVariableManager.getVariables(this.vid, this.envId);
+    }
+
     getProjectFolder(): string {
         return path.join(__dirname, `../global_data/${this.projectId}`);
     }
 
-    getProjectFile(file: string): string {
-        return path.join(__dirname, `../global_data/${this.projectId}/${file}`);
+    getProjectFile(file: string, type: 'lib' | 'data'): string {
+        return path.join(__dirname, `../global_data/${this.projectId}/${type}/${file}`);
     }
 
     getActualPath(folder: string, type: 'lib' | 'data'): string {
@@ -69,6 +82,9 @@ export class Sandbox {
     }
 
     require(lib: string) {
+        if (Setting.instance.safeVM) {
+            throw new Error('not support [require] in SafeVM mode, you can set it to false if you want to use [require]');
+        }
         return require(this._allJsFiles[lib]);
     }
 
@@ -90,8 +106,21 @@ export class Sandbox {
         if (!replaceIfExist && this._pDataFiles[file]) {
             return;
         }
-        const projectFile = this.getProjectFile(file);
+        const projectFile = this.getProjectFile(file, 'data');
         fs.writeFileSync(projectFile, content);
+        this._pDataFiles[file] = projectFile;
+    }
+
+    setEnvVariable(key: string, value: any) {
+        this.variables[key] = value;
+    }
+
+    getEnvVariable(key: string) {
+        return this.variables[key];
+    }
+
+    removeEnvVariable(key: string) {
+        Reflect.deleteProperty(this.variables, key);
     }
 
     export(obj: any) {

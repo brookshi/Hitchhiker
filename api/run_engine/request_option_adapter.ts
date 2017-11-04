@@ -11,7 +11,9 @@ import * as _ from 'lodash';
 export class RequestOptionAdapter {
     static async fromRecord(envId: string, record: Record, userId?: string): Promise<Options> {
         record = await VariableService.applyVariableForRecord(envId, RequestOptionAdapter.applyDefaultHeaders(record));
-        await RequestOptionAdapter.applyLocalhost(record, userId);
+        if (userId) {
+            await RequestOptionAdapter.applyLocalhost(record, userId);
+        }
         return {
             url: StringUtil.fixedEncodeURI(record.url),
             method: record.method,
@@ -20,7 +22,7 @@ export class RequestOptionAdapter {
         };
     }
 
-    static async applyLocalhost(record: Record, userId?: string): Promise<any> {
+    static async applyLocalhost(record: Record, userId: string): Promise<any> {
         const regex = /^(http:\/\/|https:\/\/)?localhost(:|\/)/g;
         if (!regex.test(record.url)) {
             return;

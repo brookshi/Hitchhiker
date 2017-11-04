@@ -15,7 +15,7 @@
             "Cache-Control:no-cache"
         ],
         "scriptTimeout": 60000,
-        "safeVM": true
+        "safeVM": false
     },
     "db": {
         "host": "localhost",

@@ -2,10 +2,9 @@ import * as Koa from 'koa';
 import { DateUtil } from '../utils/date_util';
 import { User } from '../models/user';
 import { UserService } from './user_service';
+import { UserVariableManager } from './user_variable_manager';
 
 export class SessionService {
-
-    static session: any;
 
     static get bypass(): string[] {
         return [
@@ -33,6 +32,11 @@ export class SessionService {
     }
 
     static logout(ctx: Koa.Context) {
+        const userId = (<any>ctx).session.userId;
+        if ((<any>ctx).session && (<any>ctx).session.userId) {
+            UserVariableManager.clearVariables((<any>ctx).session.userId);
+            UserVariableManager.clearCookies((<any>ctx).session.userId);
+        }
         (<any>ctx).session = null;
     }
 
@@ -45,7 +49,6 @@ export class SessionService {
             if (validUser) {
                 (<any>ctx).session.user = checkRst.result;
                 (<any>ctx).session.userId = userId;
-                SessionService.session = (<any>ctx).session;
             }
         }
         return validUser || !!SessionService.bypass.find(o => new RegExp(o, 'g').test(ctx.request.url.replace(`?${ctx.request.querystring}`, '')));

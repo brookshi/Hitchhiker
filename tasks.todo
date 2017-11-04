@@ -102,6 +102,8 @@
 0.4:
     ☐ pre request script
     ☐ project folder system
+    ☐ min unit for schedule
+    ☐ env edit dialog will be clear when sync data
 0.5:
     ☐ form data, text, binary body type
     ☐ import postman env

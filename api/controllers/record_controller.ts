@@ -31,7 +31,7 @@ export default class RecordController extends BaseController {
     async run(ctx: Koa.Context, @BodyParam data: DtoRecordRun) {
         const record = RecordService.fromDto(data.record);
         const userId = SessionService.getUserId(ctx);
-        return await RecordRunner.runRecord(data.environment, record, userId, ctx.res);
+        return await RecordRunner.runRecordFromClient(record, data.environment, userId, ctx.res);
     }
 
     @POST('/record/sort')
