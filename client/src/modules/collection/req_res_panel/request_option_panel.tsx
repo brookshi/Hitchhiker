@@ -186,7 +186,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                         Pre Request Script
                     </Badge>
                 )} key="prescript">
-                    <Editor type="javascript" height={300} fixHeight={true} value={prescript} onChange={v => this.props.changeRecord({ 'prescript': v })} />
+                    <Editor type="javascript" height={300} fixHeight={true} value={prescript || ''} onChange={v => this.props.changeRecord({ 'prescript': v })} />
                 </TabPane>
                 <TabPane tab={(
                     <Badge style={normalBadgeStyle} dot={!!test && test.length > 0} count="">

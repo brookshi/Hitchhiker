@@ -42,14 +42,17 @@ export class Sandbox {
                 folder = this.getActualPath(folder, 'data');
             }
             if (fs.existsSync(folder)) {
-                const files = fs.readdirSync(folder).filter(value => fs.lstatSync(path.join(folder, value)).isFile);
+                const files = fs.readdirSync(folder);
                 files.forEach(f => {
+                    const fileStat = fs.lstatSync(path.join(folder, f));
                     if (isJs) {
-                        if (f.endsWith('.js')) {
+                        if (fileStat.isDirectory) {
+                            (isProject ? this._pJsFiles : this._gJsFiles)[f] = `${folder}/${f}`;
+                        } else if (fileStat.isFile && f.endsWith('.js')) {
                             const fileName = f.substr(0, f.length - 3);
                             (isProject ? this._pJsFiles : this._gJsFiles)[f.substr(0, f.length - 3)] = `${folder}/${fileName}`;
                         }
-                    } else {
+                    } else if (fileStat.isFile) {
                         (isProject ? this._pDataFiles : this._gDataFiles)[f] = `${folder}/${f}`;
                     }
                 });

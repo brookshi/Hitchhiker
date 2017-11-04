@@ -5,22 +5,25 @@ import * as path from 'path';
 import { ProjectService } from '../services/project_service';
 import { Setting } from '../utils/setting';
 import { Sandbox } from './sandbox';
-const { VM: safeVM } = require('vm2');
+import * as freeVM from 'vm';
+import { ResObject } from '../common/res_object';
+import { Log } from '../utils/log';
+const { NodeVM: safeVM } = require('vm2');
 
 export class ScriptRunner {
 
-    static prerequest(projectId: string, vid: string, envId: string, globalFunc: string, code: string): { success: boolean, message: string } {
+    static async prerequest(projectId: string, vid: string, envId: string, globalFunc: string, code: string): Promise<ResObject> {
         let hitchhiker, rst;
         try {
             hitchhiker = new Sandbox(projectId, vid, envId);
         } catch (ex) {
             rst = { success: false, message: ex };
         }
-        rst = ScriptRunner.run({ hitchhiker, hh: hitchhiker }, globalFunc, code);
+        rst = await ScriptRunner.run({ hitchhiker, hh: hitchhiker }, globalFunc, code);
         return rst;
     }
 
-    static test(projectId: string, vid: string, envId: string, res: request.RequestResponse, globalFunc: string, code: string, elapsed: number): { tests: _.Dictionary<boolean>, export: {} } {
+    static async test(projectId: string, vid: string, envId: string, res: request.RequestResponse, globalFunc: string, code: string, elapsed: number): Promise<{ tests: _.Dictionary<boolean>, export: {} }> {
         let hitchhiker, tests;
         try {
             hitchhiker = new Sandbox(projectId, vid, envId);
@@ -37,7 +40,7 @@ export class ScriptRunner {
 
         const sandbox = { hitchhiker, hh: hitchhiker, $variables$, $export$, tests, ...ScriptRunner.getInitResObj(res, elapsed) };
 
-        const rst = ScriptRunner.run(sandbox, globalFunc, code);
+        const rst = await ScriptRunner.run(sandbox, globalFunc, code);
         if (!rst.success) {
             tests[rst.message] = false;
         }
@@ -45,20 +48,31 @@ export class ScriptRunner {
         return { tests, export: hitchhiker.exportObj.content };
     }
 
-    private static run(sandbox: any, globalFunc: string, code: string): { success: boolean, message: string } {
+    private static run(sandbox: any, globalFunc: string, code: string): Promise<ResObject> {
         let success = true, message = '';
         try {
-            code = globalFunc + code;
+            code = 'module.exports = function(callback) { void async function() { try{' + (globalFunc || '') + (code || '') + ' callback();}catch(err){ callback(err);};}(); }';
             const vm = new safeVM({ timeout: Setting.instance.scriptTimeout, sandbox });
-            vm.run(code);
+            const runWithCallback = vm.run(code);
+            return new Promise<ResObject>((resolve, reject) => {
+                runWithCallback((err) => {
+                    if (err) {
+                        Log.error(err);
+                    }
+                    resolve({ success: !err, message: err });
+                });
+            });
+
+            // freeVM.runInContext(code, freeVM.createContext(sandbox), { timeout: 50000 });
         } catch (err) {
             success = false;
             message = err;
+            Log.error(err);
         }
-        return { success, message };
+        return Promise.resolve({ success, message });
     }
 
-    static getInitResObj(res: request.RequestResponse, elapsed: number) {
+    private static getInitResObj(res: request.RequestResponse, elapsed: number) {
         let responseObj = {};
         try {
             responseObj = JSON.parse(res.body); // TODO: more response type, xml, protobuf, zip, chunk...
