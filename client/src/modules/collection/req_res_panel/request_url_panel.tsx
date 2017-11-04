@@ -28,10 +28,6 @@ interface RequestUrlPanelStateProps {
 
     collectionTreeData: TreeData[];
 
-    cookies: _.Dictionary<_.Dictionary<string>>;
-
-    variables: any;
-
     currentParam: string;
 }
 
@@ -68,13 +64,12 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
     }
 
     shouldComponentUpdate(nextProps: RequestUrlPanelStateProps, nextState: RequestUrlPanelState) {
-        const { record, isRequesting, environment, collectionTreeData, cookies } = this.props;
+        const { record, isRequesting, environment, collectionTreeData } = this.props;
         return record.url !== nextProps.record.url ||
             record.method !== nextProps.record.method ||
             isRequesting !== nextProps.isRequesting ||
             environment !== nextProps.environment ||
             collectionTreeData !== nextProps.collectionTreeData ||
-            cookies !== nextProps.cookies ||
             !_.isEqual(this.state, nextState);
     }
 
@@ -143,24 +138,8 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
     }
 
     private sendRequest = () => {
-        const { record, environment, cookies } = this.props;
+        const { record, environment } = this.props;
         let headers = [...record.headers || []];
-
-        const hostName = StringUtil.getHostFromUrl(record.url);
-        let localCookies = { ...(record.collectionId ? cookies[record.collectionId] || {} : {}), ...(hostName ? cookies[hostName] || {} : {}) };
-        const cookieHeader = headers.find(h => h.isActive && (h.key || '').toLowerCase() === 'cookie');
-
-        let recordCookies: _.Dictionary<string> = {};
-        if (cookieHeader) {
-            recordCookies = StringUtil.readCookies(cookieHeader.value || '');
-            if (_.values(recordCookies).some(c => c === 'nocookie')) {
-                localCookies = {};
-            }
-        }
-        const allCookies = { ...localCookies, ...recordCookies };
-        _.remove(headers, h => (h.key || '').toLowerCase() === 'cookie');
-
-        headers = Object.keys(allCookies).length > 0 ? [...headers, { key: 'Cookie', value: _.values(allCookies).join('; '), isActive: true }] : headers;
         this.props.sendRequest(environment, this.applyAllVariables({ ...record, headers }));
     }
 
@@ -168,36 +147,16 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         const { parameters, parameterType } = record;
         const { currParam, paramArr } = StringUtil.parseParameters(parameters, parameterType, this.props.currentParam);
         if (paramArr.length === 0) {
-            return this.applyLocalVariablesToRecord(record);
+            return record;
         }
         const rst: _.Dictionary<DtoRecord> = {};
-        const applyVars = p => this.applyLocalVariablesToRecord(this.applyReqParameterToRecord(record, p));
+        const applyVars = p => this.applyReqParameterToRecord(record, p);
         if (currParam === allParameter) {
             paramArr.forEach(p => rst[JSON.stringify(p)] = applyVars(p));
         } else {
             rst[JSON.stringify(currParam)] = applyVars(currParam);
         }
         return rst;
-    }
-
-    private applyLocalVariablesToRecord = (record: DtoRecord) => {
-        const headers = new Array<DtoHeader>();
-        const variables = this.props.variables;
-        for (let header of record.headers || []) {
-            headers.push({
-                ...header,
-                key: this.applyVariables(header.key, variables),
-                value: this.applyVariables(header.value, variables)
-            });
-        }
-        return {
-            ...record,
-            url: this.applyVariables(record.url, variables),
-            headers,
-            body: this.applyVariables(record.body, variables),
-            test: this.applyVariables(record.test, variables),
-            prescript: this.applyVariables(record.prescript, variables)
-        };
     }
 
     private applyReqParameterToRecord = (record: DtoRecord, parameter: any) => {
@@ -303,8 +262,6 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
             environment: getActiveEnvId(state),
             record: getActiveRecord(state),
             collectionTreeData: getTreeData(state),
-            cookies: state.localDataState.cookies,
-            variables: state.localDataState.variables,
             currentParam: recordState ? recordState.parameter : allParameter
         };
     };
