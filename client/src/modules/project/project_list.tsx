@@ -6,8 +6,10 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import { DtoProject } from '../../../../api/interfaces/dto_project';
 import { StringUtil } from '../../utils/string_util';
 import { DtoUser } from '../../../../api/interfaces/dto_user';
+import { ProjectFiles } from '../../../../api/interfaces/dto_project_data';
 import { newProjectName } from '../../common/constants';
 import Editor from '../../components/editor';
+import * as _ from 'lodash';
 
 interface ProjectListProps {
 
@@ -16,6 +18,8 @@ interface ProjectListProps {
     projects: DtoProject[];
 
     activeProject: string;
+
+    projectFiles: ProjectFiles;
 
     disbandProject(project: DtoProject);
 

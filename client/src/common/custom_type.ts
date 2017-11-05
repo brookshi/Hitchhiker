@@ -66,3 +66,5 @@ export class DiffType {
 
     static json: DiffMode = 'json';
 }
+
+export type ProjectFileType = 'lib' | 'data';

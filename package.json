@@ -7,6 +7,7 @@
     "@types/uuid": "^2.0.29",
     "koa": "^2.0.0-alpha.7",
     "koa-bodyparser": "^3.2.0",
+    "koa-multer": "^1.0.2",
     "koa-query": "^0.0.6",
     "koa-router": "^7.0.1",
     "koa-session-minimal": "^3.0.2",
