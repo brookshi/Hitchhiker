@@ -12,10 +12,10 @@ const { NodeVM: safeVM } = require('vm2');
 
 export class ScriptRunner {
 
-    static async prerequest(projectId: string, vid: string, envId: string, globalFunc: string, code: string): Promise<ResObject> {
+    static async prerequest(projectId: string, vid: string, envId: string, envName: string, globalFunc: string, code: string): Promise<ResObject> {
         let hitchhiker, rst;
         try {
-            hitchhiker = new Sandbox(projectId, vid, envId);
+            hitchhiker = new Sandbox(projectId, vid, envId, envName);
         } catch (ex) {
             rst = { success: false, message: ex };
         }
@@ -23,10 +23,10 @@ export class ScriptRunner {
         return rst;
     }
 
-    static async test(projectId: string, vid: string, envId: string, res: request.RequestResponse, globalFunc: string, code: string, elapsed: number): Promise<{ tests: _.Dictionary<boolean>, export: {} }> {
+    static async test(projectId: string, vid: string, envId: string, envName: string, res: request.RequestResponse, globalFunc: string, code: string, elapsed: number): Promise<{ tests: _.Dictionary<boolean>, export: {} }> {
         let hitchhiker, tests;
         try {
-            hitchhiker = new Sandbox(projectId, vid, envId);
+            hitchhiker = new Sandbox(projectId, vid, envId, envName);
         } catch (ex) {
             tests = {};
             tests[ex] = false;

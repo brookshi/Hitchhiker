@@ -42,4 +42,13 @@ export class VariableService {
 
         return record;
     }
+
+    static async applyVariable(envId: string, content: string): Promise<string> {
+        const env = await EnvironmentService.get(envId, true);
+        if (!env) {
+            return content;
+        }
+        const variables = EnvironmentService.formatVariables(env);
+        return StringUtil.applyTemplate(content, variables);
+    }
 }

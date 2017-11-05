@@ -40,8 +40,11 @@ class ProjectItem extends React.Component<ProjectItemProps, ProjectItemState> {
                         </Menu.Item>
                     ) : ''
                 }
-                <Menu.Item key="globalFunc">
-                    <Icon type="code-o" /> Global function
+                <Menu.Item key="projectLibs">
+                    <Icon type="code-o" /> Project libs
+                </Menu.Item>
+                <Menu.Item key="projectDatas">
+                    <Icon type="file-text" /> Project datas
                 </Menu.Item>
                 <Menu.Item key="delete">
                     <Icon type="delete" /> {this.props.isOwner ? 'Disband' : 'Quit'}
@@ -69,7 +72,11 @@ class ProjectItem extends React.Component<ProjectItemProps, ProjectItemState> {
         }
     }
 
-    globalFunc = () => {
+    projectLibs = () => {
+        this.props.editGlobalFunc(this.props.project.id);
+    }
+
+    projectDatas = () => {
         this.props.editGlobalFunc(this.props.project.id);
     }
 

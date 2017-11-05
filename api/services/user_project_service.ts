@@ -19,6 +19,8 @@ import { DtoRecord } from '../interfaces/dto_record';
 import { RecordService } from './record_service';
 import { DtoCollection } from '../interfaces/dto_collection';
 import { CollectionService } from './collection_service';
+import { ProjectFiles } from '../interfaces/dto_project_data';
+import { ProjectDataService } from './project_data_service';
 
 export class UserProjectService {
 
@@ -61,6 +63,13 @@ export class UserProjectService {
 
         const stresses = _.keyBy((await StressService.getByUserId(user.id)).map(s => StressService.toDto(s)), 'id');
 
+        const projectFiles: ProjectFiles = {
+            globalJS: ProjectDataService.instance._gJsFiles,
+            globalData: ProjectDataService.instance._gDataFiles,
+            projectJS: _.pick(ProjectDataService.instance._pJsFiles, _.keys(projects)),
+            projectData: _.pick(ProjectDataService.instance._pDataFiles, _.keys(projects))
+        }
+
         return {
             collection: {
                 collections: _.keyBy<DtoCollection>(collections.map(c => CollectionService.toDto(c)), 'id'),
@@ -71,6 +80,7 @@ export class UserProjectService {
             environments,
             schedules,
             stresses,
+            projectFiles,
             defaultHeaders: Setting.instance.defaultHeaders,
             syncInterval: Setting.instance.syncInterval
         };

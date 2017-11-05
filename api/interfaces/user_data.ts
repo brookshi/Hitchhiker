@@ -4,6 +4,7 @@ import { Environment } from '../models/environment';
 import { DtoSchedule } from './dto_schedule';
 import { DtoStress } from './dto_stress';
 import { DtoCollectionWithRecord } from './dto_collection';
+import { ProjectFiles } from './dto_project_data';
 
 export interface UserData {
 
@@ -18,6 +19,8 @@ export interface UserData {
     schedules: _.Dictionary<DtoSchedule>;
 
     stresses: _.Dictionary<DtoStress>;
+
+    projectFiles: ProjectFiles;
 
     defaultHeaders: string;
 

@@ -4,23 +4,14 @@ import * as path from 'path';
 import { SessionService } from '../services/session_service';
 import { UserVariableManager } from '../services/user_variable_manager';
 import { Setting } from '../utils/setting';
+import { ProjectDataService, FolderType } from '../services/project_data_service';
+import { ProjectData } from '../interfaces/dto_project_data';
 
 export class Sandbox {
 
     static defaultExport: any = 'export:impossiblethis:tropxe';
 
-    static libFolder: string = 'lib';
-    static dataFolder: string = 'data';
-
-    _pJsFiles: _.Dictionary<string> = {};
-
-    _pDataFiles: _.Dictionary<string> = {};
-
-    _gJsFiles: _.Dictionary<string> = {};
-
-    _gDataFiles: _.Dictionary<string> = {};
-
-    _allJsFiles: _.Dictionary<string> = {};
+    private _allProjectJsFiles: _.Dictionary<ProjectData> = {};
 
     tests: _.Dictionary<boolean> = {};
 
@@ -28,67 +19,24 @@ export class Sandbox {
 
     exportObj = { content: Sandbox.defaultExport };
 
-    constructor(private projectId: string, private vid: string, private envId: string) {
+    constructor(private projectId: string, private vid: string, private envId: string, private envName: string) {
         this.initVariables();
-        const globalFolder = path.join(__dirname, `../global_data`);
-        const projectFolder = this.getProjectFolder();
-        if (!fs.existsSync(projectFolder)) {
-            fs.mkdirSync(projectFolder, 0o666);
-        }
-        const initFiles = (folder, isProject, isJs) => {
-            if (isJs) {
-                folder = this.getActualPath(folder, 'lib');
-            } else {
-                folder = this.getActualPath(folder, 'data');
-            }
-            if (fs.existsSync(folder)) {
-                const files = fs.readdirSync(folder);
-                files.forEach(f => {
-                    const fileStat = fs.lstatSync(path.join(folder, f));
-                    if (isJs) {
-                        if (fileStat.isDirectory) {
-                            (isProject ? this._pJsFiles : this._gJsFiles)[f] = `${folder}/${f}`;
-                        } else if (fileStat.isFile && f.endsWith('.js')) {
-                            const fileName = f.substr(0, f.length - 3);
-                            (isProject ? this._pJsFiles : this._gJsFiles)[f.substr(0, f.length - 3)] = `${folder}/${fileName}`;
-                        }
-                    } else if (fileStat.isFile) {
-                        (isProject ? this._pDataFiles : this._gDataFiles)[f] = `${folder}/${f}`;
-                    }
-                });
-            } else {
-                fs.mkdirSync(folder, 0o666);
-            }
-        };
-        initFiles(globalFolder, false, true);
-        initFiles(globalFolder, false, false);
-        initFiles(projectFolder, true, true);
-        initFiles(projectFolder, true, false);
-        _.keys(this._gJsFiles).forEach(k => this._allJsFiles[k] = this._gJsFiles[k]);
-        _.keys(this._pJsFiles).forEach(k => this._allJsFiles[k] = this._pJsFiles[k]);
+        this._allProjectJsFiles = ProjectDataService.instance.getProjectAllJSFiles(projectId);
     }
 
-    initVariables() {
+    private initVariables() {
         this.variables = UserVariableManager.getVariables(this.vid, this.envId);
     }
 
-    getProjectFolder(): string {
-        return path.join(__dirname, `../global_data/${this.projectId}`);
-    }
-
-    getProjectFile(file: string, type: 'lib' | 'data'): string {
+    private getProjectFile(file: string, type: FolderType): string {
         return path.join(__dirname, `../global_data/${this.projectId}/${type}/${file}`);
-    }
-
-    getActualPath(folder: string, type: 'lib' | 'data'): string {
-        return path.join(folder, type);
     }
 
     require(lib: string) {
         if (Setting.instance.safeVM) {
             throw new Error('not support [require] in SafeVM mode, you can set it to false if you want to use [require]');
         }
-        return require(this._allJsFiles[lib]);
+        return require(this._allProjectJsFiles[lib].path);
     }
 
     readFile(file: string): string {
@@ -96,22 +44,22 @@ export class Sandbox {
     }
 
     readFileByReader(file: string, reader: (file: string) => any): any {
-        if (this._pDataFiles[file]) {
-            return reader(this._pDataFiles[file]);
+        if (ProjectDataService.instance._pDataFiles[this.projectId] &&
+            ProjectDataService.instance._pDataFiles[this.projectId][file]) {
+            return reader(ProjectDataService.instance._pDataFiles[this.projectId][file].path);
         }
-        if (this._gDataFiles[file]) {
-            return reader(this._pDataFiles[file]);
+        if (ProjectDataService.instance._gDataFiles[file]) {
+            return reader(ProjectDataService.instance._gDataFiles[file].path);
         }
         throw new Error(`${file} not exists.`);
     }
 
     saveFile(file: string, content: string, replaceIfExist: boolean = true) {
-        if (!replaceIfExist && this._pDataFiles[file]) {
-            return;
-        }
-        const projectFile = this.getProjectFile(file, 'data');
-        fs.writeFileSync(projectFile, content);
-        this._pDataFiles[file] = projectFile;
+        ProjectDataService.instance.saveFile(this.projectId, file, content, replaceIfExist);
+    }
+
+    removeFile(file: string) {
+        ProjectDataService.instance.removeFile(this.projectId, file);
     }
 
     setEnvVariable(key: string, value: any) {
@@ -124,6 +72,10 @@ export class Sandbox {
 
     removeEnvVariable(key: string) {
         Reflect.deleteProperty(this.variables, key);
+    }
+
+    get environment() {
+        return this.envName;
     }
 
     export(obj: any) {
