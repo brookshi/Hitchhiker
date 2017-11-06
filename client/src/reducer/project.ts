@@ -8,9 +8,10 @@ export function projectState(state: ProjectState = projectDefaultValue, action: 
         case LoginSuccessType:
         case SyncUserDataSuccessType: {
             const projects = action.value.result.projects;
+            const projectFiles = action.value.result.projectFiles;
             const projectIds = _.keys(projects);
             const activeProject = state.activeProject || (projectIds.length > 0 ? (projectIds[0] || '') : '');
-            return { ...state, projects, activeProject };
+            return { ...state, projects, activeProject, projectFiles };
         }
         case SaveProjectType: {
             const project = action.value.project;

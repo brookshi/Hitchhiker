@@ -68,3 +68,10 @@ export class DiffType {
 }
 
 export type ProjectFileType = 'lib' | 'data';
+
+export class ProjectFileTypes {
+
+    static lib: ProjectFileType = 'lib';
+
+    static data: ProjectFileType = 'data';
+}

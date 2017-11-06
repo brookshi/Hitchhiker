@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Upload, Button, message } from 'antd';
+import { Table, Upload, Button, message, Modal } from 'antd';
 import { ProjectData, ProjectFiles } from '../../../../api/interfaces/dto_project_data';
 import * as _ from 'lodash';
 import { ProjectFileType } from '../../common/custom_type';
@@ -11,6 +11,10 @@ interface ProjectDataDialogProps {
     type: ProjectFileType;
 
     projectFiles: ProjectFiles;
+
+    isDlgOpen: boolean;
+
+    title: string;
 
     deleteFile(pid: string, name: string, type: ProjectFileType);
 }
@@ -45,56 +49,64 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
 
     public render() {
         const projectLibs = this.constructProjectLibs();
+        const { isDlgOpen, title } = this.props;
         return (
-            <div>
-                <Upload accept=".zip" action="" multiple={true} withCredentials={true} onChange={this.onUploadStatusChange}>
-                    <Button
-                        className="project-create-btn"
-                        type="primary"
-                        size="small"
-                        icon="upload"
-                        ghost={true}
-                    >
-                        Upload new javascript lib (zip)
+            <Modal
+                visible={isDlgOpen}
+                title={title}
+                width={770}
+                footer={[]}
+            >
+                <div>
+                    <Upload accept=".zip" action="" multiple={true} withCredentials={true} onChange={this.onUploadStatusChange}>
+                        <Button
+                            className="project-create-btn"
+                            type="primary"
+                            size="small"
+                            icon="upload"
+                            ghost={true}
+                        >
+                            Upload new javascript lib (zip)
                     </Button>
-                </Upload>
-                <ProjectLibTable
-                    className="project-table"
-                    bordered={true}
-                    size="middle"
-                    rowKey="file"
-                    dataSource={projectLibs}
-                    pagination={false}
-                >
-                    <ProjectLibColumn
-                        title="Name"
-                        dataIndex="name"
-                    />
-                    <ProjectLibColumn
-                        title="Path"
-                        dataIndex="path"
-                    />
-                    <ProjectLibColumn
-                        title="Size"
-                        dataIndex="size"
-                        render={(text, record) => (record.size > 1024 * 1024 ? `${_.round(record.size / (1024 * 1024), 2)} MB` : (record.size > 1024 ? `${_.round(record.size / 1024, 2)} KB` : text))}
-                    />
-                    <ProjectLibColumn
-                        title="CreatedDate"
-                        dataIndex="createdDate"
-                    />
-                    <ProjectLibColumn
-                        title="Action"
-                        key="action"
-                        width={140}
-                        render={(text, record) => (
-                            <span>
-                                <a href="#" onClick={() => this.delProjectLib(record)}>Delete</a>
-                            </span>
-                        )}
-                    />
-                </ProjectLibTable>
-            </div>
+                    </Upload>
+                    <ProjectLibTable
+                        className="project-table"
+                        bordered={true}
+                        size="middle"
+                        rowKey="file"
+                        dataSource={projectLibs}
+                        pagination={false}
+                    >
+                        <ProjectLibColumn
+                            title="Name"
+                            dataIndex="name"
+                        />
+                        <ProjectLibColumn
+                            title="Path"
+                            dataIndex="path"
+                        />
+                        <ProjectLibColumn
+                            title="Size"
+                            dataIndex="size"
+                            render={(text, record) => (record.size > 1024 * 1024 ? `${_.round(record.size / (1024 * 1024), 2)} MB` : (record.size > 1024 ? `${_.round(record.size / 1024, 2)} KB` : text))}
+                        />
+                        <ProjectLibColumn
+                            title="CreatedDate"
+                            dataIndex="createdDate"
+                        />
+                        <ProjectLibColumn
+                            title="Action"
+                            key="action"
+                            width={140}
+                            render={(text, record) => (
+                                <span>
+                                    <a href="#" onClick={() => this.delProjectLib(record)}>Delete</a>
+                                </span>
+                            )}
+                        />
+                    </ProjectLibTable>
+                </div>
+            </Modal>
         );
     }
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import { Menu, Tooltip, Button, Modal } from 'antd';
 import { SelectParam } from 'antd/lib/menu';
 import ProjectItem from './project_item';
+import ProjectDataDialog from './project_data_dialog';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { DtoProject } from '../../../../api/interfaces/dto_project';
 import { StringUtil } from '../../utils/string_util';
@@ -9,6 +10,7 @@ import { DtoUser } from '../../../../api/interfaces/dto_user';
 import { ProjectFiles } from '../../../../api/interfaces/dto_project_data';
 import { newProjectName } from '../../common/constants';
 import Editor from '../../components/editor';
+import { ProjectFileTypes, ProjectFileType } from '../../common/custom_type';
 import * as _ from 'lodash';
 
 interface ProjectListProps {
@@ -32,13 +34,15 @@ interface ProjectListProps {
     selectProject(projectId: string);
 
     saveGlobalFunc(projectId: string, globalFunc: string);
+
+    deleteFile(pid: string, name: string, type: ProjectFileType);
 }
 
 interface ProjectListState {
 
-    isGlobalFuncDlgOpen: boolean;
+    isOperatedDlgOpen: boolean;
 
-    currentGlobalFuncProject?: string;
+    currentOperatedProject?: string;
 
     globalFunc: string;
 }
@@ -60,7 +64,7 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
     constructor(props: ProjectListProps) {
         super(props);
         this.state = {
-            isGlobalFuncDlgOpen: false,
+            isOperatedDlgOpen: false,
             globalFunc: ''
         };
     }
@@ -99,30 +103,44 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
     }
 
     private saveGlobalFunc = () => {
-        const { currentGlobalFuncProject, globalFunc } = this.state;
-        if (!currentGlobalFuncProject) {
+        const { currentOperatedProject, globalFunc } = this.state;
+        if (!currentOperatedProject) {
             return;
         }
-        this.props.saveGlobalFunc(currentGlobalFuncProject, globalFunc);
-        this.setState({ ...this.state, isGlobalFuncDlgOpen: false, globalFunc: '' });
+        this.props.saveGlobalFunc(currentOperatedProject, globalFunc);
+        this.setState({ ...this.state, isOperatedDlgOpen: false, globalFunc: '' });
     }
 
     private get globalFuncDialog() {
-        const { isGlobalFuncDlgOpen } = this.state;
-        const project = this.getProject(this.state.currentGlobalFuncProject || '');
+        const { isOperatedDlgOpen } = this.state;
+        const project = this.getProject(this.state.currentOperatedProject || '');
         return (
             <Modal
                 title={`${project ? project.name + ': ' : ''}Global Function of Tests`}
-                visible={isGlobalFuncDlgOpen}
+                visible={isOperatedDlgOpen}
                 maskClosable={false}
                 okText="Save"
                 width={800}
                 cancelText="Cancel"
                 onOk={this.saveGlobalFunc}
-                onCancel={() => this.setState({ ...this.state, isGlobalFuncDlgOpen: false, globalFunc: '' })}
+                onCancel={() => this.setState({ ...this.state, isOperatedDlgOpen: false, globalFunc: '' })}
             >
                 <Editor type="javascript" height={600} fixHeight={true} value={this.state.globalFunc} onChange={v => this.setState({ ...this.state, globalFunc: v })} />
             </Modal>
+        );
+    }
+
+    private get ProjectLibDialog() {
+        const { isOperatedDlgOpen, currentOperatedProject } = this.state;
+        return (
+            <ProjectDataDialog
+                projectId={currentOperatedProject || ''}
+                type={ProjectFileTypes.lib}
+                projectFiles={this.props.projectFiles}
+                isDlgOpen={isOperatedDlgOpen}
+                title="Project Libs"
+                deleteFile={() => { }}
+            />
         );
     }
 
@@ -156,9 +174,9 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
                                             onNameChanged={name => this.changeProjectName(name, t)}
                                             editGlobalFunc={id => this.setState({
                                                 ...this.state,
-                                                currentGlobalFuncProject: id,
+                                                currentOperatedProject: id,
                                                 globalFunc: this.getProjectGlobalFunc(id),
-                                                isGlobalFuncDlgOpen: true
+                                                isOperatedDlgOpen: true
                                             })}
                                         />
                                     </Menu.Item>

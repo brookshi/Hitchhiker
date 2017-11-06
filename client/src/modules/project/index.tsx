@@ -9,13 +9,15 @@ import { DtoProject } from '../../../../api/interfaces/dto_project';
 import { State } from '../../state';
 import { actionCreator } from '../../action';
 import { UpdateLeftPanelType, ResizeLeftPanelType } from '../../action/ui';
-import { EditEnvType, DisbandProjectType, QuitProjectType, SaveProjectType, RemoveUserType, InviteMemberType, SaveEnvironmentType, DelEnvironmentType, ActiveProjectType, EditEnvCompletedType, SaveLocalhostMappingType, SaveGlobalFunctionType } from '../../action/project';
+import { EditEnvType, DisbandProjectType, QuitProjectType, SaveProjectType, RemoveUserType, InviteMemberType, SaveEnvironmentType, DelEnvironmentType, ActiveProjectType, EditEnvCompletedType, SaveLocalhostMappingType, SaveGlobalFunctionType, DeleteProjectFileType } from '../../action/project';
 import { DtoUser } from '../../../../api/interfaces/dto_user';
 import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
 import * as _ from 'lodash';
 import './style/index.less';
 import { localhost } from '../../common/constants';
 import { StringUtil } from '../../utils/string_util';
+import { ProjectFileType } from '../../common/custom_type';
+import { ProjectFiles } from '../../../../api/interfaces/dto_project_data';
 
 const { Content, Sider } = Layout;
 
@@ -36,6 +38,8 @@ interface ProjectStateProps {
     isEditEnvDlgOpen: boolean;
 
     editedEnvironment?: string;
+
+    projectFiles: ProjectFiles;
 }
 
 interface ProjectDispatchProps {
@@ -71,6 +75,8 @@ interface ProjectDispatchProps {
     changeLocalhost(id: string, projectId: string, userId: string, ip: string);
 
     saveGlobalFunc(projectId: string, globalFunc: string);
+
+    deleteFile(pid: string, name: string, type: ProjectFileType);
 }
 
 type ProjectProps = ProjectStateProps & ProjectDispatchProps;
@@ -115,7 +121,7 @@ class Project extends React.Component<ProjectProps, ProjectState> {
 
     public render() {
         const project = this.getSelectedProject();
-        const { user, collapsed, collapsedLeftPanel, projects, leftPanelWidth, disbandProject, quitProject, selectProject, updateProject, createProject, removeUser, invite, createEnv, updateEnv, delEnv, isEditEnvDlgOpen, editedEnvironment, activeProject, editEnvCompleted, editEnv, changeLocalhost, saveGlobalFunc } = this.props;
+        const { user, collapsed, collapsedLeftPanel, projects, leftPanelWidth, disbandProject, quitProject, selectProject, updateProject, createProject, removeUser, invite, createEnv, updateEnv, delEnv, isEditEnvDlgOpen, editedEnvironment, activeProject, editEnvCompleted, editEnv, changeLocalhost, saveGlobalFunc, deleteFile, projectFiles } = this.props;
 
         return (
             <Layout className="main-panel">
@@ -136,6 +142,8 @@ class Project extends React.Component<ProjectProps, ProjectState> {
                         updateProject={updateProject}
                         createProject={createProject}
                         saveGlobalFunc={saveGlobalFunc}
+                        deleteFile={deleteFile}
+                        projectFiles={projectFiles}
                     />
                 </Sider>
                 <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
@@ -185,7 +193,8 @@ const mapStateToProps = (state: State): ProjectStateProps => {
         projects: _.chain(projects).values<DtoProject>().sortBy('name').sortBy(t => t.owner.id !== user.id).sortBy(t => t.isMe ? 0 : 1).value(),
         environments: state.environmentState.environments,
         isEditEnvDlgOpen: state.environmentState.isEditEnvDlgOpen,
-        editedEnvironment: state.environmentState.editedEnvironment
+        editedEnvironment: state.environmentState.editedEnvironment,
+        projectFiles: state.projectState.projectFiles
     };
 };
 
@@ -206,7 +215,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): ProjectDispatchProps => {
         editEnvCompleted: () => { dispatch(actionCreator(EditEnvCompletedType)); },
         editEnv: (projectId, envId) => dispatch(actionCreator(EditEnvType, { projectId, envId })),
         changeLocalhost: (id, projectId, userId, ip) => { dispatch(actionCreator(SaveLocalhostMappingType, { isNew: !id, id: id || StringUtil.generateUID(), projectId, userId, ip })); },
-        saveGlobalFunc: (projectId, globalFunc) => { dispatch(actionCreator(SaveGlobalFunctionType, { projectId, globalFunc })); }
+        saveGlobalFunc: (projectId, globalFunc) => { dispatch(actionCreator(SaveGlobalFunctionType, { projectId, globalFunc })); },
+        deleteFile: (pid, name, type) => { dispatch(actionCreator(DeleteProjectFileType, { pid, name, type })); }
     };
 };
 

@@ -29,6 +29,8 @@ export const SaveLocalhostMappingType = 'save localhost mapping';
 
 export const SaveGlobalFunctionType = 'save global function';
 
+export const DeleteProjectFileType = 'delete project file';
+
 export function* quitProject() {
     yield takeEvery(QuitProjectType, function* (action: any) {
         const channelAction = syncAction({ type: QuitProjectType, method: HttpMethod.DELETE, url: Urls.getUrl(`project/${action.value.id}/own`) });
@@ -92,6 +94,13 @@ export function* saveGlobalFunction() {
     yield takeEvery(SaveGlobalFunctionType, function* (action: any) {
         const { projectId, globalFunc } = action.value;
         const channelAction = syncAction({ type: SaveGlobalFunctionType, method: HttpMethod.PUT, url: Urls.getUrl(`project/${projectId}/globalfunc`), body: { content: globalFunc } });
+        yield put(channelAction);
+    });
+}
+
+export function* delProjectFile() {
+    yield takeEvery(DeleteProjectFileType, function* (action: any) {
+        const channelAction = syncAction({ type: DeleteProjectFileType, method: HttpMethod.DELETE, url: Urls.getUrl(`project/${action.value.pid}/file/${action.value.type}/${action.value.name}`) });
         yield put(channelAction);
     });
 }

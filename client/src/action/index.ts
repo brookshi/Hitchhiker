@@ -2,7 +2,7 @@ import { take, actionChannel, call, spawn, put } from 'redux-saga/effects';
 import { delay } from 'redux-saga';
 import RequestManager, { SyncItem } from '../utils/request_manager';
 import { sendRequest, saveRecord, saveAsRecord, deleteRecord, moveRecord, sendRequestForParam } from './record';
-import { saveProject, quitProject, disbandProject, removeUser, inviteMember, saveEnvironment, delEnvironment, saveLocalhostMapping, saveGlobalFunction } from './project';
+import { saveProject, quitProject, disbandProject, removeUser, inviteMember, saveEnvironment, delEnvironment, saveLocalhostMapping, saveGlobalFunction, delProjectFile } from './project';
 import { deleteCollection, saveCollection, importPostman } from './collection';
 import { login, logout, register, findPassword, getUserInfo, changePassword, tempUse, syncUserData } from './user';
 import { storeLocalData, fetchLocalData } from './local_data';
@@ -52,6 +52,7 @@ export function* rootSaga() {
         spawn(saveProject),
         spawn(quitProject),
         spawn(disbandProject),
+        spawn(delProjectFile),
         spawn(saveLocalhostMapping),
         spawn(saveGlobalFunction),
         spawn(removeUser),
