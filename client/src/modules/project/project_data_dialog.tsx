@@ -2,7 +2,7 @@ import React from 'react';
 import { Table, Upload, Button, message, Modal } from 'antd';
 import { ProjectData, ProjectFiles } from '../../../../api/interfaces/dto_project_data';
 import * as _ from 'lodash';
-import { ProjectFileType } from '../../common/custom_type';
+import { ProjectFileType, ProjectFileTypes } from '../../common/custom_type';
 
 interface ProjectDataDialogProps {
 
@@ -17,6 +17,8 @@ interface ProjectDataDialogProps {
     title: string;
 
     deleteFile(pid: string, name: string, type: ProjectFileType);
+
+    onClose();
 }
 
 interface ProjectDataDialogState { }
@@ -30,8 +32,9 @@ class ProjectLibColumn extends Table.Column<ProjectDisplayData> { }
 class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectDataDialogState> {
 
     private constructProjectLibs = () => {
-        const { globalJS, projectJS } = this.props.projectFiles;
-        return _.concat(_.values(projectJS).map(j => ({ ...j, isGlobal: false })), _.values(globalJS).map(j => ({ ...j, isGlobal: true })));
+        const isLib = this.props.type === ProjectFileTypes.lib;
+        const { globalJS, globalData, projectJS, projectData } = this.props.projectFiles;
+        return _.concat(_.values((isLib ? projectJS : projectData)[this.props.projectId] || {}).map(j => ({ ...j, isGlobal: false })), _.values(isLib ? globalJS : globalData).map(j => ({ ...j, isGlobal: true })));
     }
 
     private delProjectLib = (plib: ProjectDisplayData) => {
@@ -49,26 +52,25 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
 
     public render() {
         const projectLibs = this.constructProjectLibs();
-        const { isDlgOpen, title } = this.props;
+        const { isDlgOpen, title, onClose, type } = this.props;
+        const isLib = type === ProjectFileTypes.lib;
         return (
             <Modal
                 visible={isDlgOpen}
                 title={title}
-                width={770}
+                width={860}
+                closable={true}
+                onCancel={onClose}
                 footer={[]}
             >
-                <div>
-                    <Upload accept=".zip" action="" multiple={true} withCredentials={true} onChange={this.onUploadStatusChange}>
-                        <Button
-                            className="project-create-btn"
-                            type="primary"
-                            size="small"
-                            icon="upload"
-                            ghost={true}
-                        >
-                            Upload new javascript lib (zip)
-                    </Button>
-                    </Upload>
+                <div style={{ height: 600 }}>
+                    <div style={{ height: 30 }}>
+                        <Upload accept={isLib ? '.zip' : ''} action="" multiple={true} withCredentials={true} onChange={this.onUploadStatusChange}>
+                            <Button size="small" icon="upload" >
+                                Upload new {isLib ? 'javascript lib (zip)' : 'data file'}
+                            </Button>
+                        </Upload>
+                    </div>
                     <ProjectLibTable
                         className="project-table"
                         bordered={true}
@@ -84,15 +86,17 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
                         <ProjectLibColumn
                             title="Path"
                             dataIndex="path"
+                            render={(text, record) => (text || '').substr((text || '').indexOf('global_data')).replace('\\', '/')}
                         />
-                        <ProjectLibColumn
+                        {/* <ProjectLibColumn
                             title="Size"
                             dataIndex="size"
-                            render={(text, record) => (record.size > 1024 * 1024 ? `${_.round(record.size / (1024 * 1024), 2)} MB` : (record.size > 1024 ? `${_.round(record.size / 1024, 2)} KB` : text))}
-                        />
+                            render={(text, record) => (record.size > 1024 * 1024 ? `${_.round(record.size / (1024 * 1024), 2)} MB` : (record.size > 1024 ? `${_.round(record.size / 1024, 2)} KB` : `${text} B`))}
+                        /> */}
                         <ProjectLibColumn
                             title="CreatedDate"
                             dataIndex="createdDate"
+                            render={(text, record) => new Date(record.createdDate).toLocaleDateString()}
                         />
                         <ProjectLibColumn
                             title="Action"

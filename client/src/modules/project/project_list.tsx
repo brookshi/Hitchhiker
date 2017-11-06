@@ -40,11 +40,15 @@ interface ProjectListProps {
 
 interface ProjectListState {
 
-    isOperatedDlgOpen: boolean;
+    isGlobalFuncDlgOpen: boolean;
+
+    isProjectFileDlgOpen: boolean;
 
     currentOperatedProject?: string;
 
     globalFunc: string;
+
+    projectFileType: ProjectFileType;
 }
 
 const createDefaultProject = (user: DtoUser) => {
@@ -64,8 +68,10 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
     constructor(props: ProjectListProps) {
         super(props);
         this.state = {
-            isOperatedDlgOpen: false,
-            globalFunc: ''
+            isGlobalFuncDlgOpen: false,
+            isProjectFileDlgOpen: false,
+            globalFunc: '',
+            projectFileType: ProjectFileTypes.data
         };
     }
 
@@ -108,22 +114,22 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
             return;
         }
         this.props.saveGlobalFunc(currentOperatedProject, globalFunc);
-        this.setState({ ...this.state, isOperatedDlgOpen: false, globalFunc: '' });
+        this.setState({ ...this.state, isGlobalFuncDlgOpen: false, globalFunc: '' });
     }
 
     private get globalFuncDialog() {
-        const { isOperatedDlgOpen } = this.state;
+        const { isGlobalFuncDlgOpen } = this.state;
         const project = this.getProject(this.state.currentOperatedProject || '');
         return (
             <Modal
                 title={`${project ? project.name + ': ' : ''}Global Function of Tests`}
-                visible={isOperatedDlgOpen}
+                visible={isGlobalFuncDlgOpen}
                 maskClosable={false}
                 okText="Save"
                 width={800}
                 cancelText="Cancel"
                 onOk={this.saveGlobalFunc}
-                onCancel={() => this.setState({ ...this.state, isOperatedDlgOpen: false, globalFunc: '' })}
+                onCancel={() => this.setState({ ...this.state, isGlobalFuncDlgOpen: false, globalFunc: '' })}
             >
                 <Editor type="javascript" height={600} fixHeight={true} value={this.state.globalFunc} onChange={v => this.setState({ ...this.state, globalFunc: v })} />
             </Modal>
@@ -131,15 +137,16 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
     }
 
     private get ProjectLibDialog() {
-        const { isOperatedDlgOpen, currentOperatedProject } = this.state;
+        const { isProjectFileDlgOpen, currentOperatedProject, projectFileType } = this.state;
         return (
             <ProjectDataDialog
                 projectId={currentOperatedProject || ''}
-                type={ProjectFileTypes.lib}
+                type={projectFileType}
                 projectFiles={this.props.projectFiles}
-                isDlgOpen={isOperatedDlgOpen}
-                title="Project Libs"
-                deleteFile={() => { }}
+                isDlgOpen={isProjectFileDlgOpen}
+                title={projectFileType === ProjectFileTypes.lib ? 'Project Lib' : 'Project Data'}
+                deleteFile={name => this.props.deleteFile(currentOperatedProject || '', name, projectFileType)}
+                onClose={() => this.setState({ ...this.state, isProjectFileDlgOpen: false })}
             />
         );
     }
@@ -176,8 +183,10 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
                                                 ...this.state,
                                                 currentOperatedProject: id,
                                                 globalFunc: this.getProjectGlobalFunc(id),
-                                                isOperatedDlgOpen: true
+                                                isGlobalFuncDlgOpen: true
                                             })}
+                                            viewProjectLibs={id => this.setState({ ...this.state, currentOperatedProject: id, isProjectFileDlgOpen: true, projectFileType: ProjectFileTypes.lib })}
+                                            viewProjectDatas={id => this.setState({ ...this.state, currentOperatedProject: id, isProjectFileDlgOpen: true, projectFileType: ProjectFileTypes.data })}
                                         />
                                     </Menu.Item>
                                 )
@@ -186,6 +195,7 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
                     </Menu>
                 </PerfectScrollbar>
                 {this.globalFuncDialog}
+                {this.ProjectLibDialog}
             </div>
         );
     }

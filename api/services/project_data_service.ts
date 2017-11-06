@@ -101,7 +101,7 @@ export class ProjectDataService {
     }
 
     private createFileData(folder: string, name: string, stat: fs.Stats) {
-        return { name, path: `${folder}/${name}`, createdDate: stat.ctime, size: stat.size };
+        return { name, path: path.join(folder, name), createdDate: stat.ctime, size: stat.size };
     }
 
     private initProjectFiles() {

@@ -18,6 +18,10 @@ interface ProjectItemProps {
     onNameChanged(name: string);
 
     editGlobalFunc(projectId: string);
+
+    viewProjectLibs(projectId: string);
+
+    viewProjectDatas(projectId: string);
 }
 
 interface ProjectItemState { }
@@ -40,8 +44,11 @@ class ProjectItem extends React.Component<ProjectItemProps, ProjectItemState> {
                         </Menu.Item>
                     ) : ''
                 }
+                <Menu.Item key="globalFunc">
+                    <Icon type="code-o" /> Global function
+                </Menu.Item>
                 <Menu.Item key="projectLibs">
-                    <Icon type="code-o" /> Project libs
+                    <Icon type="file" /> Project libs
                 </Menu.Item>
                 <Menu.Item key="projectDatas">
                     <Icon type="file-text" /> Project datas
@@ -72,12 +79,16 @@ class ProjectItem extends React.Component<ProjectItemProps, ProjectItemState> {
         }
     }
 
-    projectLibs = () => {
+    globalFunc = () => {
         this.props.editGlobalFunc(this.props.project.id);
     }
 
+    projectLibs = () => {
+        this.props.viewProjectLibs(this.props.project.id);
+    }
+
     projectDatas = () => {
-        this.props.editGlobalFunc(this.props.project.id);
+        this.props.viewProjectDatas(this.props.project.id);
     }
 
     public render() {
