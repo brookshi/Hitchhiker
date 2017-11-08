@@ -3,6 +3,7 @@ import { Table, Upload, Button, message, Modal } from 'antd';
 import { ProjectData, ProjectFiles } from '../../../../api/interfaces/dto_project_data';
 import * as _ from 'lodash';
 import { ProjectFileType, ProjectFileTypes } from '../../common/custom_type';
+import { Urls } from '../../utils/urls';
 
 interface ProjectDataDialogProps {
 
@@ -52,8 +53,9 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
 
     public render() {
         const projectLibs = this.constructProjectLibs();
-        const { isDlgOpen, title, onClose, type } = this.props;
+        const { isDlgOpen, title, projectId, onClose, type } = this.props;
         const isLib = type === ProjectFileTypes.lib;
+        const action = Urls.getUrl(`project/${projectId}/${type}`);
         return (
             <Modal
                 visible={isDlgOpen}
@@ -65,7 +67,7 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
             >
                 <div style={{ height: 600 }}>
                     <div style={{ height: 30 }}>
-                        <Upload accept={isLib ? '.zip' : ''} action="" multiple={true} withCredentials={true} onChange={this.onUploadStatusChange}>
+                        <Upload accept={isLib ? '.zip' : ''} action={action} multiple={true} name="projectfile" showUploadList={false} withCredentials={true} onChange={this.onUploadStatusChange}>
                             <Button size="small" icon="upload" >
                                 Upload new {isLib ? 'javascript lib (zip)' : 'data file'}
                             </Button>

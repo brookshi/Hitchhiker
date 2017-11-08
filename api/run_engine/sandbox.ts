@@ -4,8 +4,9 @@ import * as path from 'path';
 import { SessionService } from '../services/session_service';
 import { UserVariableManager } from '../services/user_variable_manager';
 import { Setting } from '../utils/setting';
-import { ProjectDataService, FolderType } from '../services/project_data_service';
+import { ProjectDataService } from '../services/project_data_service';
 import { ProjectData } from '../interfaces/dto_project_data';
+import { ProjectFolderType } from '../common/string_type';
 
 export class Sandbox {
 
@@ -28,7 +29,7 @@ export class Sandbox {
         this.variables = UserVariableManager.getVariables(this.vid, this.envId);
     }
 
-    private getProjectFile(file: string, type: FolderType): string {
+    private getProjectFile(file: string, type: ProjectFolderType): string {
         return path.join(__dirname, `../global_data/${this.projectId}/${type}/${file}`);
     }
 
@@ -55,7 +56,7 @@ export class Sandbox {
     }
 
     saveFile(file: string, content: string, replaceIfExist: boolean = true) {
-        ProjectDataService.instance.saveFile(this.projectId, file, content, replaceIfExist);
+        ProjectDataService.instance.saveDataFile(this.projectId, file, content, replaceIfExist);
     }
 
     removeFile(file: string) {

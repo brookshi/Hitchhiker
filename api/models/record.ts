@@ -3,7 +3,7 @@ import { Collection } from './collection';
 import { Header } from './header';
 import { RecordCategory } from '../common/record_category';
 import { DataMode } from '../common/data_mode';
-import { BodyType } from '../common/body_type';
+import { BodyType } from '../common/string_type';
 import { ParameterType } from '../common/parameter_type';
 import { RecordDoc } from './record_doc';
 import { RecordHistory } from './record_history';

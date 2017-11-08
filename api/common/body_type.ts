@@ -1,1 +1,0 @@
-export type BodyType = 'json' | 'xml' | 'text';

@@ -15,6 +15,10 @@ import { UserProjectService } from '../services/user_project_service';
 import { ValidateUtil } from '../utils/validate_util';
 import * as _ from 'lodash';
 import { Setting } from '../utils/setting';
+import { ProjectFolderType } from '../common/string_type';
+import * as multer from 'koa-multer';
+import * as path from 'path';
+import { ProjectDataService } from '../services/project_data_service';
 
 export default class ProjectController extends BaseController {
 
@@ -145,5 +149,31 @@ export default class ProjectController extends BaseController {
     @PUT('/project/:projectId/globalfunc')
     async updateGlobalFunction( @PathParam('projectId') projectId: string, @BodyParam globalFunc: any) {
         return await ProjectService.updateGlobalFunc(projectId, globalFunc.content);
+    }
+
+    @POST('/project/:projectId/:type')
+    async uploadProjectData(ctx: Koa.Context, @PathParam('projectId') projectId: string, @PathParam('type') type: ProjectFolderType) {
+
+        let fileName;
+        const storage = multer.diskStorage({
+            destination: function (req: any, file: any, cb: any) {
+                ProjectDataService.instance.prepareProjectFolder(projectId);
+                cb(null, ProjectDataService.instance.getProjectFile(projectId, '', type));
+            },
+            filename: function (req: any, file: any, cb: any) {
+                fileName = file.originalname;
+                cb(null, file.originalname);
+            }
+        });
+
+        const upload = multer({ storage });
+        try {
+            await upload.single('projectfile')(ctx);
+            ProjectDataService.instance.handleUploadFile(projectId, fileName, type);
+            ctx.status = 200;
+        } catch (err) {
+            ctx.status = 500;
+            ctx.body = err;
+        }
     }
 }

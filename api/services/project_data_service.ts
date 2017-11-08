@@ -5,13 +5,13 @@ import { SessionService } from '../services/session_service';
 import { UserVariableManager } from '../services/user_variable_manager';
 import { Setting } from '../utils/setting';
 import { ProjectData } from '../interfaces/dto_project_data';
-
-export type FolderType = 'lib' | 'data';
+import { ProjectFolderType } from '../common/string_type';
+import * as AdmZip from 'adm-zip';
 
 export class ProjectDataService {
 
-    static libFolderName: FolderType = 'lib';
-    static dataFolderName: FolderType = 'data';
+    static libFolderName: ProjectFolderType = 'lib';
+    static dataFolderName: ProjectFolderType = 'data';
     static globalFolder: string = path.join(__dirname, `../global_data`);
 
     static instance: ProjectDataService = new ProjectDataService();
@@ -45,15 +45,10 @@ export class ProjectDataService {
         return allJSFiles;
     }
 
-    saveFile(pid: string, file: string, content: string, replaceIfExist: boolean = true) {
+    saveDataFile(pid: string, file: string, content: string, replaceIfExist: boolean = true) {
         if (!this._pDataFiles[pid]) {
             this._pDataFiles[pid] = {};
-            var projectFolder = path.join(ProjectDataService.globalFolder, `${pid}`);
-            if (!fs.existsSync(projectFolder)) {
-                fs.mkdirSync(projectFolder, 0o666);
-                fs.mkdirSync(this.getActualPath(projectFolder, ProjectDataService.libFolderName), 0o666);
-                fs.mkdirSync(this.getActualPath(projectFolder, ProjectDataService.dataFolderName), 0o666);
-            }
+            this.prepareProjectFolder(pid);
         }
         if (!replaceIfExist && this._pDataFiles[pid][file]) {
             return;
@@ -62,6 +57,36 @@ export class ProjectDataService {
         fs.writeFileSync(projectFile, content);
         const size = Buffer.byteLength(content || '', 'utf8');
         this._pDataFiles[pid][file] = { name: file, path: projectFile, createdDate: new Date(), size };
+    }
+
+    prepareProjectFolder(pid: string) {
+        const projectFolder = path.join(ProjectDataService.globalFolder, `${pid}`);
+        if (!fs.existsSync(projectFolder)) {
+            fs.mkdirSync(projectFolder, 0o666);
+            fs.mkdirSync(this.getActualPath(projectFolder, ProjectDataService.libFolderName), 0o666);
+            fs.mkdirSync(this.getActualPath(projectFolder, ProjectDataService.dataFolderName), 0o666);
+        }
+    }
+
+    handleUploadFile(pid: string, file: string, type: ProjectFolderType) {
+        if (type === 'lib') {
+            this.unZipJS(pid, file);
+        } else {
+            const projectFile = this.getProjectFile(pid, file, 'data');
+            this._pDataFiles[pid][file] = { name: file, path: projectFile, createdDate: new Date(), size: 0 };
+        }
+    }
+
+    unZipJS(pid: string, file: string) {
+        const projectFile = this.getProjectFile(pid, file, 'lib');
+        if (!fs.existsSync(projectFile)) {
+            return;
+        }
+        const projectFolder = path.join(ProjectDataService.globalFolder, `${pid}`);
+        const targetFile = projectFile.endsWith('.zip') ? projectFile.substr(0, projectFile.length - 4) : projectFile;
+        new AdmZip(projectFile).extractAllTo(targetFile, true);
+        this._pJsFiles[pid][file] = { name: file, path: targetFile, createdDate: new Date(), size: 0 };
+        fs.unlink(projectFile);
     }
 
     removeFile(pid: string, file: string) {
@@ -117,11 +142,11 @@ export class ProjectDataService {
         this.initFolderFiles(ProjectDataService.globalFolder, false, false);
     }
 
-    private getActualPath(folder: string, type: FolderType): string {
+    private getActualPath(folder: string, type: ProjectFolderType): string {
         return path.join(folder, type);
     }
 
-    private getProjectFile(pid: string, file: string, type: FolderType): string {
+    getProjectFile(pid: string, file: string, type: ProjectFolderType): string {
         return path.join(__dirname, `../global_data/${pid}/${type}/${file}`);
     }
 }
