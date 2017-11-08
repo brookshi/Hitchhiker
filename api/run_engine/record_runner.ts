@@ -26,7 +26,7 @@ export class RecordRunner {
         if (needOrder && orderRecordIds) {
             let records = _.sortBy(rs, 'name');
             const recordDict = _.keyBy(records, 'id');
-            const orderRecords = orderRecordIds.split(';').filter(r => recordDict[r]).map(r => recordDict[r]);
+            const orderRecords = orderRecordIds.split(';').map(i => i.substr(0, i.length - 2)).filter(r => recordDict[r]).map(r => recordDict[r]);
             records = _.unionBy(orderRecords, records, 'id');
             for (let record of records) {
                 const paramArr = StringUtil.parseParameters(record.parameters, record.parameterType);
@@ -66,8 +66,9 @@ export class RecordRunner {
         return runResults;
     }
 
-    static async runRecordFromClient(record: Record, environmentId: string, envName: string, userId: string, serverRes?: ServerResponse): Promise<RunResult> {
-        return await RecordRunner.runRecordWithVW(record, environmentId, envName, userId, undefined, '', serverRes);
+    static async runRecordFromClient(record: Record, environmentId: string, userId: string, serverRes?: ServerResponse): Promise<RunResult> {
+        const env = await EnvironmentService.get(environmentId);
+        return await RecordRunner.runRecordWithVW(record, environmentId, env ? env.name : '', userId, undefined, '', serverRes);
     }
 
     private static async runRecordWithVW(record: Record, environmentId: string, envName: string, uid: string, vid: string, param: any, serverRes?: ServerResponse, trace?: (msg: string) => void) {
@@ -174,7 +175,7 @@ export class RecordRunner {
         };
     }
 
-    private static applyReqParameterToRecord(record: Record, parameter: any): Record {
+    static applyReqParameterToRecord(record: Record, parameter: any): Record {
         const headers = [];
         for (let header of record.headers || []) {
             headers.push({

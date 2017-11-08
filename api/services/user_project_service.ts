@@ -19,7 +19,7 @@ import { DtoRecord } from '../interfaces/dto_record';
 import { RecordService } from './record_service';
 import { DtoCollection } from '../interfaces/dto_collection';
 import { CollectionService } from './collection_service';
-import { ProjectFiles } from '../interfaces/dto_project_data';
+import { ProjectFiles, ProjectData } from '../interfaces/dto_project_data';
 import { ProjectDataService } from './project_data_service';
 
 export class UserProjectService {
@@ -66,9 +66,9 @@ export class UserProjectService {
         const projectFiles: ProjectFiles = {
             globalJS: ProjectDataService.instance._gJsFiles,
             globalData: ProjectDataService.instance._gDataFiles,
-            projectJS: _.pick(ProjectDataService.instance._pJsFiles, _.keys(projects)),
-            projectData: _.pick(ProjectDataService.instance._pDataFiles, _.keys(projects))
-        }
+            projectJS: _.pick(ProjectDataService.instance._pJsFiles, _.keys(projects)) as _.Dictionary<_.Dictionary<ProjectData>>,
+            projectData: _.pick(ProjectDataService.instance._pDataFiles, _.keys(projects)) as _.Dictionary<_.Dictionary<ProjectData>>
+        };
 
         return {
             collection: {

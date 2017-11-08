@@ -149,7 +149,7 @@ export class StressService {
                     let newRecord = RecordRunner.applyReqParameterToRecord(record, p);
                     newRecord.headers.forEach(h => { if (h.isActive) { headers[h.key] = h.value; } });
                     const param = StringUtil.toString(p);
-                    requestBodyList.push(<any>{ ...newRecord, param, id: `${record.id}${param}`, name: `${newRecord.name}\n${param}`, headers, test: globalFunc + newRecord.test });
+                    requestBodyList.push(<any>{ ...newRecord, param, id: `${record.id}${param}`, name: `${newRecord.name}\n${param}`, headers, test: globalFunction + newRecord.test });
                 }
             }
         });
