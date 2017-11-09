@@ -36,6 +36,8 @@ interface ProjectListProps {
     saveGlobalFunc(projectId: string, globalFunc: string);
 
     deleteFile(pid: string, name: string, type: ProjectFileType);
+
+    addFile(pid: string, name: string, path: string, type: ProjectFileType);
 }
 
 interface ProjectListState {
@@ -145,7 +147,8 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
                 projectFiles={this.props.projectFiles}
                 isDlgOpen={isProjectFileDlgOpen}
                 title={projectFileType === ProjectFileTypes.lib ? 'Project Lib' : 'Project Data'}
-                deleteFile={name => this.props.deleteFile(currentOperatedProject || '', name, projectFileType)}
+                deleteFile={(pid, name, type) => this.props.deleteFile(pid, name, type)}
+                addFile={(pid, name, path, type) => this.props.addFile(pid, name, path, type)}
                 onClose={() => this.setState({ ...this.state, isProjectFileDlgOpen: false })}
             />
         );

@@ -63,7 +63,7 @@ export class Sandbox {
     }
 
     removeFile(file: string) {
-        ProjectDataService.instance.removeFile(this.projectId, file);
+        ProjectDataService.instance.removeFile(ProjectDataService.dataFolderName, this.projectId, file);
     }
 
     setEnvVariable(key: string, value: any) {

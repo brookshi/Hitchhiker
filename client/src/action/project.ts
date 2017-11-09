@@ -29,6 +29,8 @@ export const SaveLocalhostMappingType = 'save localhost mapping';
 
 export const SaveGlobalFunctionType = 'save global function';
 
+export const AddProjectFileType = 'add project file';
+
 export const DeleteProjectFileType = 'delete project file';
 
 export function* quitProject() {

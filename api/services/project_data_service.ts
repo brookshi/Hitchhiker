@@ -83,12 +83,12 @@ export class ProjectDataService {
             return;
         }
         const projectFolder = path.join(ProjectDataService.globalFolder, `${pid}`);
-        const targetFile = projectFile.endsWith('.zip') ? projectFile.substr(0, projectFile.length - 4) : projectFile;
+        const targetFile = this.removeExt(projectFile, 'zip');
         new AdmZip(projectFile).extractAllTo(targetFile, true);
         if (!this._pJsFiles[pid]) {
             this._pJsFiles[pid] = {};
         }
-        this._pJsFiles[pid][targetFile] = { name: targetFile, path: targetFile, createdDate: new Date(), size: 0 };
+        this._pJsFiles[pid][this.removeExt(file, 'zip')] = { name: this.removeExt(file, 'zip'), path: targetFile, createdDate: new Date(), size: 0 };
         fs.unlink(projectFile);
     }
 
@@ -117,8 +117,8 @@ export class ProjectDataService {
                     if (fileStat.isDirectory) {
                         (isProject ? this._pJsFiles[pid] : this._gJsFiles)[f] = this.createFileData(folder, f, fileStat);
                     } else if (fileStat.isFile && f.endsWith('.js')) {
-                        const fileName = f.substr(0, f.length - 3);
-                        (isProject ? this._pJsFiles[pid] : this._gJsFiles)[f.substr(0, f.length - 3)] = this.createFileData(folder, fileName, fileStat);
+                        const fileName = this.removeExt(f, 'js');
+                        (isProject ? this._pJsFiles[pid] : this._gJsFiles)[fileName] = this.createFileData(folder, f, fileStat);
                     }
                 } else if (fileStat.isFile) {
                     (isProject ? this._pDataFiles[pid] : this._gDataFiles)[f] = this.createFileData(folder, f, fileStat);
@@ -152,6 +152,10 @@ export class ProjectDataService {
 
     private getActualPath(folder: string, type: ProjectFolderType): string {
         return path.join(folder, type);
+    }
+
+    private removeExt(file: string, ext: string) {
+        return file.endsWith(ext) ? file.substr(0, file.length - ext.length - 1) : file;
     }
 
     getProjectFile(pid: string, file: string, type: ProjectFolderType): string {

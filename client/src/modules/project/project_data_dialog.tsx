@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Upload, Button, message, Modal } from 'antd';
+import { Table, Upload, Button, message, Modal, Popconfirm } from 'antd';
 import { ProjectData, ProjectFiles } from '../../../../api/interfaces/dto_project_data';
 import * as _ from 'lodash';
 import { ProjectFileType, ProjectFileTypes } from '../../common/custom_type';
@@ -19,6 +19,8 @@ interface ProjectDataDialogProps {
 
     deleteFile(pid: string, name: string, type: ProjectFileType);
 
+    addFile(pid: string, name: string, path: string, type: ProjectFileType);
+
     onClose();
 }
 
@@ -35,7 +37,7 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
     private constructProjectLibs = () => {
         const isLib = this.props.type === ProjectFileTypes.lib;
         const { globalJS, globalData, projectJS, projectData } = this.props.projectFiles;
-        return _.concat(_.values((isLib ? projectJS : projectData)[this.props.projectId] || {}).map(j => ({ ...j, isGlobal: false })), _.values(isLib ? globalJS : globalData).map(j => ({ ...j, isGlobal: true })));
+        return _.orderBy(_.concat(_.values((isLib ? projectJS : projectData)[this.props.projectId] || {}).map(j => ({ ...j, isGlobal: false })), _.values(isLib ? globalJS : globalData).map(j => ({ ...j, isGlobal: true }))), ['createdDate'], ['desc']);
     }
 
     private delProjectLib = (plib: ProjectDisplayData) => {
@@ -43,12 +45,24 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
         deleteFile(projectId, plib.name, type);
     }
 
-    private onUploadStatusChange(info: any) {
+    private onUploadStatusChange = (info: any) => {
         if (info.file.status === 'done') {
+            const { addFile, projectId, type } = this.props;
+            addFile(projectId, this.adjustExt(info.file.name), `${projectId}/${info.file.name}`, type);
             message.success(`${info.file.name} file uploaded successfully`);
         } else if (info.file.status === 'error') {
             message.error(`${info.file.name} file upload failed.`);
         }
+    }
+
+    private adjustExt = (file: string) => {
+        if (this.props.type === ProjectFileTypes.lib) {
+            const dotIndex = file.lastIndexOf('.');
+            if (dotIndex > 0) {
+                return file.substr(0, dotIndex);
+            }
+        }
+        return file;
     }
 
     public render() {
@@ -88,7 +102,15 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
                         <ProjectLibColumn
                             title="Path"
                             dataIndex="path"
-                            render={(text, record) => (text || '').substr((text || '').indexOf('global_data')).replace('\\', '/')}
+                            render={(text, record) => {
+                                const globalPathIndex = (text || '').indexOf('global_data');
+                                if (globalPathIndex < 0) {
+                                    return (text || '').replace(/\\/g, '/');
+                                } else {
+                                    return (text || '').substr(globalPathIndex + 12).replace(/\\/g, '/');
+                                }
+                            }
+                            }
                         />
                         {/* <ProjectLibColumn
                             title="Size"
@@ -106,7 +128,9 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
                             width={140}
                             render={(text, record) => (
                                 <span>
-                                    <a href="#" onClick={() => this.delProjectLib(record)}>Delete</a>
+                                    <Popconfirm title="Sure to delete?" okText="Yes" cancelText="No" onConfirm={() => this.delProjectLib(record)}>
+                                        <a>Delete</a>
+                                    </Popconfirm>
                                 </span>
                             )}
                         />

@@ -9,7 +9,7 @@ import { DtoProject } from '../../../../api/interfaces/dto_project';
 import { State } from '../../state';
 import { actionCreator } from '../../action';
 import { UpdateLeftPanelType, ResizeLeftPanelType } from '../../action/ui';
-import { EditEnvType, DisbandProjectType, QuitProjectType, SaveProjectType, RemoveUserType, InviteMemberType, SaveEnvironmentType, DelEnvironmentType, ActiveProjectType, EditEnvCompletedType, SaveLocalhostMappingType, SaveGlobalFunctionType, DeleteProjectFileType } from '../../action/project';
+import { EditEnvType, DisbandProjectType, QuitProjectType, SaveProjectType, RemoveUserType, InviteMemberType, SaveEnvironmentType, DelEnvironmentType, ActiveProjectType, EditEnvCompletedType, SaveLocalhostMappingType, SaveGlobalFunctionType, DeleteProjectFileType, AddProjectFileType } from '../../action/project';
 import { DtoUser } from '../../../../api/interfaces/dto_user';
 import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
 import * as _ from 'lodash';
@@ -77,6 +77,8 @@ interface ProjectDispatchProps {
     saveGlobalFunc(projectId: string, globalFunc: string);
 
     deleteFile(pid: string, name: string, type: ProjectFileType);
+
+    addFile(pid: string, name: string, path: string, type: ProjectFileType);
 }
 
 type ProjectProps = ProjectStateProps & ProjectDispatchProps;
@@ -121,7 +123,7 @@ class Project extends React.Component<ProjectProps, ProjectState> {
 
     public render() {
         const project = this.getSelectedProject();
-        const { user, collapsed, collapsedLeftPanel, projects, leftPanelWidth, disbandProject, quitProject, selectProject, updateProject, createProject, removeUser, invite, createEnv, updateEnv, delEnv, isEditEnvDlgOpen, editedEnvironment, activeProject, editEnvCompleted, editEnv, changeLocalhost, saveGlobalFunc, deleteFile, projectFiles } = this.props;
+        const { user, collapsed, collapsedLeftPanel, projects, leftPanelWidth, disbandProject, quitProject, selectProject, updateProject, createProject, removeUser, invite, createEnv, updateEnv, delEnv, isEditEnvDlgOpen, editedEnvironment, activeProject, editEnvCompleted, editEnv, changeLocalhost, saveGlobalFunc, deleteFile, addFile, projectFiles } = this.props;
 
         return (
             <Layout className="main-panel">
@@ -143,6 +145,7 @@ class Project extends React.Component<ProjectProps, ProjectState> {
                         createProject={createProject}
                         saveGlobalFunc={saveGlobalFunc}
                         deleteFile={deleteFile}
+                        addFile={addFile}
                         projectFiles={projectFiles}
                     />
                 </Sider>
@@ -216,7 +219,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): ProjectDispatchProps => {
         editEnv: (projectId, envId) => dispatch(actionCreator(EditEnvType, { projectId, envId })),
         changeLocalhost: (id, projectId, userId, ip) => { dispatch(actionCreator(SaveLocalhostMappingType, { isNew: !id, id: id || StringUtil.generateUID(), projectId, userId, ip })); },
         saveGlobalFunc: (projectId, globalFunc) => { dispatch(actionCreator(SaveGlobalFunctionType, { projectId, globalFunc })); },
-        deleteFile: (pid, name, type) => { dispatch(actionCreator(DeleteProjectFileType, { pid, name, type })); }
+        deleteFile: (pid, name, type) => { dispatch(actionCreator(DeleteProjectFileType, { pid, name, type })); },
+        addFile: (pid, name, path, type) => { dispatch(actionCreator(AddProjectFileType, { pid, name, path, type })); }
     };
 };
 
