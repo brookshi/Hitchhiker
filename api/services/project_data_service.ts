@@ -53,7 +53,7 @@ export class ProjectDataService {
         if (!replaceIfExist && this._pDataFiles[pid][file]) {
             return;
         }
-        const projectFile = this.getProjectFile(pid, file, 'data');
+        const projectFile = this.getProjectFile(pid, file, ProjectDataService.dataFolderName);
         fs.writeFileSync(projectFile, content);
         const size = Buffer.byteLength(content || '', 'utf8');
         this._pDataFiles[pid][file] = { name: file, path: projectFile, createdDate: new Date(), size };
@@ -72,27 +72,31 @@ export class ProjectDataService {
         if (type === 'lib') {
             this.unZipJS(pid, file);
         } else {
-            const projectFile = this.getProjectFile(pid, file, 'data');
+            const projectFile = this.getProjectFile(pid, file, ProjectDataService.dataFolderName);
             this._pDataFiles[pid][file] = { name: file, path: projectFile, createdDate: new Date(), size: 0 };
         }
     }
 
     unZipJS(pid: string, file: string) {
-        const projectFile = this.getProjectFile(pid, file, 'lib');
+        const projectFile = this.getProjectFile(pid, file, ProjectDataService.libFolderName);
         if (!fs.existsSync(projectFile)) {
             return;
         }
         const projectFolder = path.join(ProjectDataService.globalFolder, `${pid}`);
         const targetFile = projectFile.endsWith('.zip') ? projectFile.substr(0, projectFile.length - 4) : projectFile;
         new AdmZip(projectFile).extractAllTo(targetFile, true);
-        this._pJsFiles[pid][file] = { name: file, path: targetFile, createdDate: new Date(), size: 0 };
+        if (!this._pJsFiles[pid]) {
+            this._pJsFiles[pid] = {};
+        }
+        this._pJsFiles[pid][targetFile] = { name: targetFile, path: targetFile, createdDate: new Date(), size: 0 };
         fs.unlink(projectFile);
     }
 
-    removeFile(pid: string, file: string) {
-        if (this._pDataFiles[pid] && this._pDataFiles[pid][file]) {
-            Reflect.deleteProperty(this._pDataFiles[pid], file);
-            fs.rmdirSync(this.getProjectFile(pid, file, ProjectDataService.dataFolderName));
+    removeFile(type: ProjectFolderType, pid: string, file: string) {
+        const files = type === ProjectDataService.dataFolderName ? this._pDataFiles : this._pJsFiles;
+        if (files[pid] && files[pid][file]) {
+            Reflect.deleteProperty(files[pid], file);
+            fs.unlink(this.getProjectFile(pid, file, ProjectDataService.dataFolderName));
         }
     }
 
@@ -130,11 +134,15 @@ export class ProjectDataService {
     }
 
     private initProjectFiles() {
-        const projectFolders = fs.readdirSync(ProjectDataService.globalFolder).filter(f => fs.lstatSync(path.join(ProjectDataService.globalFolder, f)).isDirectory);
+        const projectFolders = fs.readdirSync(ProjectDataService.globalFolder).filter(f => fs.lstatSync(path.join(ProjectDataService.globalFolder, f)).isDirectory && !this.isDataOrLibFolder(f));
         projectFolders.forEach(folder => {
             this.initFolderFiles(path.join(ProjectDataService.globalFolder, folder), true, true, folder);
             this.initFolderFiles(path.join(ProjectDataService.globalFolder, folder), true, false, folder);
         });
+    }
+
+    private isDataOrLibFolder(folder: string) {
+        return folder === ProjectDataService.libFolderName || folder === ProjectDataService.dataFolderName;
     }
 
     private initGlobalFiles() {
@@ -147,6 +155,6 @@ export class ProjectDataService {
     }
 
     getProjectFile(pid: string, file: string, type: ProjectFolderType): string {
-        return path.join(__dirname, `../global_data/${pid}/${type}/${file}`);
+        return path.join(ProjectDataService.globalFolder, `${pid}/${type}/${file}`);
     }
 }

@@ -166,7 +166,11 @@ export default class ProjectController extends BaseController {
             }
         });
 
-        const upload = multer({ storage });
+        const upload = multer({
+            storage,
+            fileFilter: (req, file, cb) => this.updateFileFilter(type, req, file, cb),
+            limits: { filedSize: 1024 * 1024 * 100 }
+        });
         try {
             await upload.single('projectfile')(ctx);
             ProjectDataService.instance.handleUploadFile(projectId, fileName, type);
@@ -174,6 +178,14 @@ export default class ProjectController extends BaseController {
         } catch (err) {
             ctx.status = 500;
             ctx.body = err;
+        }
+    }
+
+    private updateFileFilter(type: ProjectFolderType, req: any, file: any, cb: any) {
+        if (type === 'lib' && !file.originalname.endsWith('.zip')) {
+            cb(new Error('only support zip file for js lib.'));
+        } else {
+            cb(null, true);
         }
     }
 }
