@@ -102,7 +102,8 @@ export function* saveGlobalFunction() {
 
 export function* delProjectFile() {
     yield takeEvery(DeleteProjectFileType, function* (action: any) {
-        const channelAction = syncAction({ type: DeleteProjectFileType, method: HttpMethod.DELETE, url: Urls.getUrl(`project/${action.value.pid}/file/${action.value.type}/${action.value.name}`) });
+        const { pid, type, name } = action.value;
+        const channelAction = syncAction({ type: DeleteProjectFileType, method: HttpMethod.DELETE, url: Urls.getUrl(`project/${pid}/file/${type}/${name}`) });
         yield put(channelAction);
     });
 }

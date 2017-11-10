@@ -48,14 +48,15 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
     private onUploadStatusChange = (info: any) => {
         if (info.file.status === 'done') {
             const { addFile, projectId, type } = this.props;
-            addFile(projectId, this.adjustExt(info.file.name), `${projectId}/${info.file.name}`, type);
+            const fileNameWithoutExt = this.removeExt(info.file.name);
+            addFile(projectId, fileNameWithoutExt, `${projectId}/${fileNameWithoutExt}`, type);
             message.success(`${info.file.name} file uploaded successfully`);
         } else if (info.file.status === 'error') {
             message.error(`${info.file.name} file upload failed.`);
         }
     }
 
-    private adjustExt = (file: string) => {
+    private removeExt = (file: string) => {
         if (this.props.type === ProjectFileTypes.lib) {
             const dotIndex = file.lastIndexOf('.');
             if (dotIndex > 0) {
@@ -81,7 +82,7 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
             >
                 <div style={{ height: 600 }}>
                     <div style={{ height: 30 }}>
-                        <Upload accept={isLib ? '.zip' : ''} action={action} multiple={true} name="projectfile" showUploadList={false} withCredentials={true} onChange={this.onUploadStatusChange}>
+                        <Upload accept={isLib ? '.zip' : ''} action={action} multiple={false} name="projectfile" showUploadList={false} withCredentials={true} onChange={this.onUploadStatusChange}>
                             <Button size="small" icon="upload" >
                                 Upload new {isLib ? 'javascript lib (zip)' : 'data file'}
                             </Button>

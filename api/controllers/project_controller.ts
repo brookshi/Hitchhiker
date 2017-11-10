@@ -151,8 +151,14 @@ export default class ProjectController extends BaseController {
         return await ProjectService.updateGlobalFunc(projectId, globalFunc.content);
     }
 
+    @DELETE('/project/:projectId/file/:type/:name')
+    deleteProjectFile( @PathParam('projectId') projectId: string, @PathParam('type') type: ProjectFolderType, @PathParam('name') name: string): ResObject {
+        ProjectDataService.instance.removeFile(type, projectId, name);
+        return { success: true, message: Message.deleteProjectFileSuccess };
+    }
+
     @POST('/project/:projectId/:type')
-    async uploadProjectData(ctx: Koa.Context, @PathParam('projectId') projectId: string, @PathParam('type') type: ProjectFolderType) {
+    async uploadProjectFile(ctx: Koa.Context, @PathParam('projectId') projectId: string, @PathParam('type') type: ProjectFolderType) {
 
         let fileName;
         const storage = multer.diskStorage({
