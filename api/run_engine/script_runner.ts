@@ -51,7 +51,17 @@ export class ScriptRunner {
     private static run(sandbox: any, globalFunc: string, code: string): Promise<ResObject> {
         let success = true, message = '';
         try {
-            code = 'module.exports = function(callback) { void async function() { try{' + (globalFunc || '') + (code || '') + ' callback();}catch(err){ callback(err);};}(); }';
+            code = `module.exports = function(callback) { 
+                    void async function() { 
+                        try{
+                            ${globalFunc || ''};
+                            ${code || ''};
+                            callback();
+                        }catch(err){
+                            callback(err);
+                        }
+                    }(); 
+                }`;
             const vm = new safeVM({ timeout: Setting.instance.scriptTimeout, sandbox });
             const runWithCallback = vm.run(code);
             return new Promise<ResObject>((resolve, reject) => {

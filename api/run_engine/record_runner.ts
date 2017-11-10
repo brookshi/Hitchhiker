@@ -12,6 +12,8 @@ import { ResObject } from '../common/res_object';
 import { VariableService } from '../services/variable_service';
 import { EnvironmentService } from '../services/environment_service';
 
+type BatchRunResult = RunResult | _.Dictionary<RunResult>;
+
 export class RecordRunner {
 
     private static RequestTimeout = 30 * 60 * 1000;
@@ -19,51 +21,57 @@ export class RecordRunner {
     static async runRecords(rs: Record[], environmentId: string, needOrder: boolean = false, orderRecordIds: string = '', applyCookies?: boolean, trace?: (msg: string) => void): Promise<Array<RunResult | _.Dictionary<RunResult>>> {
         const runResults: Array<RunResult | _.Dictionary<RunResult>> = [];
         const vid = StringUtil.generateUID();
-        const cookies: _.Dictionary<string> = {};
-        let variables: any = {};
         const env = await EnvironmentService.get(environmentId, false);
         const envName = env ? env.name : '';
         if (needOrder && orderRecordIds) {
-            let records = _.sortBy(rs, 'name');
-            const recordDict = _.keyBy(records, 'id');
-            const orderRecords = orderRecordIds.split(';').map(i => i.substr(0, i.length - 2)).filter(r => recordDict[r]).map(r => recordDict[r]);
-            records = _.unionBy(orderRecords, records, 'id');
-            for (let record of records) {
-                const paramArr = StringUtil.parseParameters(record.parameters, record.parameterType);
-                if (paramArr.length === 0) {
-                    runResults.push(await RecordRunner.runRecordWithVW(record, environmentId, envName, undefined, vid, '', undefined, trace));
-                } else {
-                    // TODO: sync or async ?
-                    for (let param of paramArr) {
-                        record = RecordRunner.applyReqParameterToRecord(record, param);
-                        const runResult = await RecordRunner.runRecordWithVW(record, environmentId, envName, undefined, vid, param, undefined, trace);
-                        runResults.push({ [runResult.param]: runResult });
-                    }
-                }
-            }
+            await RecordRunner.runRecordSeries(rs, orderRecordIds, environmentId, envName, vid, runResults, trace);
         } else {
-            await Promise.all(rs.map(async r => {
-                const paramArr = StringUtil.parseParameters(r.parameters, r.parameterType);
-                let result;
-                if (paramArr.length === 0) {
-                    result = await RecordRunner.runRecordWithVW(r, environmentId, envName, undefined, vid, '');
-                    runResults.push(result);
-                } else {
-                    await Promise.all(paramArr.map(async p => {
-                        const record = RecordRunner.applyReqParameterToRecord(r, p);
-                        result = await RecordRunner.runRecordWithVW(record, environmentId, envName, undefined, vid, p);
-                        result.param = StringUtil.toString(p);
-                        runResults.push({ [result.param]: result });
-                    }));
-                }
-                if (trace) {
-                    trace(JSON.stringify(result));
-                }
-            }));
+            await RecordRunner.runRecordParallel(rs, environmentId, envName, vid, runResults, trace);
         }
         UserVariableManager.clearVariables(vid);
         UserVariableManager.clearCookies(vid);
         return runResults;
+    }
+
+    private static async runRecordSeries(rs: Record[], orderRecordIds: string, environmentId: string, envName: string, vid: string, runResults: BatchRunResult[], trace?: (msg: string) => void) {
+        let records = _.sortBy(rs, 'name');
+        const recordDict = _.keyBy(records, 'id');
+        const orderRecords = orderRecordIds.split(';').map(i => i.substr(0, i.length - 2)).filter(r => recordDict[r]).map(r => recordDict[r]);
+        records = _.unionBy(orderRecords, records, 'id');
+        for (let record of records) {
+            const paramArr = StringUtil.parseParameters(record.parameters, record.parameterType);
+            if (paramArr.length === 0) {
+                runResults.push(await RecordRunner.runRecordWithVW(record, environmentId, envName, undefined, vid, '', undefined, trace));
+            } else {
+                // TODO: sync or async ?
+                for (let param of paramArr) {
+                    record = RecordRunner.applyReqParameterToRecord(record, param);
+                    const runResult = await RecordRunner.runRecordWithVW(record, environmentId, envName, undefined, vid, param, undefined, trace);
+                    runResults.push({ [runResult.param]: runResult });
+                }
+            }
+        }
+    }
+
+    private static async runRecordParallel(rs: Record[], environmentId: string, envName: string, vid: string, runResults: BatchRunResult[], trace?: (msg: string) => void) {
+        await Promise.all(rs.map(async (r) => {
+            const paramArr = StringUtil.parseParameters(r.parameters, r.parameterType);
+            let result;
+            if (paramArr.length === 0) {
+                result = await RecordRunner.runRecordWithVW(r, environmentId, envName, undefined, vid, '');
+                runResults.push(result);
+            } else {
+                await Promise.all(paramArr.map(async (p) => {
+                    const record = RecordRunner.applyReqParameterToRecord(r, p);
+                    result = await RecordRunner.runRecordWithVW(record, environmentId, envName, undefined, vid, p);
+                    result.param = StringUtil.toString(p);
+                    runResults.push({ [result.param]: result });
+                }));
+            }
+            if (trace) {
+                trace(JSON.stringify(result));
+            }
+        }));
     }
 
     static async runRecordFromClient(record: Record, environmentId: string, userId: string, serverRes?: ServerResponse): Promise<RunResult> {
@@ -77,8 +85,6 @@ export class RecordRunner {
         let variables: any = UserVariableManager.getVariables(uid || vid, environmentId);
         const cookies: _.Dictionary<string> = UserVariableManager.getCookies(uid || vid, environmentId);
 
-        record = RecordRunner.applyLocalVariables(record, variables);
-        const option = await RequestOptionAdapter.fromRecord(environmentId, record, uid);
 
         const start = process.hrtime();
         if (record.prescript) {
@@ -86,11 +92,12 @@ export class RecordRunner {
             const { globalFunction, id: pid } = (await ProjectService.getProjectByCollectionId(record.collection.id)) || { globalFunction: '', id: '' };
             prescriptResult = await ScriptRunner.prerequest(pid, uid || vid, environmentId, envName, globalFunction, prescriptWithVar);
             variables = UserVariableManager.getVariables(uid || vid, environmentId);
-            record = RecordRunner.applyLocalVariables(record, variables);
         }
 
+        record = RecordRunner.applyLocalVariables(record, variables);
         record = RecordRunner.applyCookies(record, cookies);
 
+        const option = await RequestOptionAdapter.fromRecord(environmentId, record, uid);
         const result = await RecordRunner.runRecord(start, option, environmentId, envName, record, prescriptResult, uid, vid, serverRes);
 
         RecordRunner.storeVariables(result, variables);

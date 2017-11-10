@@ -40,10 +40,21 @@ export class Sandbox {
         if (!this._allProjectJsFiles[lib]) {
             throw new Error(`no valid js lib named [${lib}], you should upload this lib first.`);
         }
-        return require(this._allProjectJsFiles[lib].path);
+        let libPath = this._allProjectJsFiles[lib].path;
+        if (!fs.existsSync(libPath)) {
+            throw new Error(`[${libPath}] doesnot exist.`);
+        }
+        const stat = fs.statSync(libPath);
+        if (stat.isDirectory()) {
+            const subFiles = fs.readdirSync(libPath);
+            if (subFiles.length === 1 && fs.statSync(path.join(libPath, subFiles[0])).isDirectory()) {
+                libPath = path.join(libPath, subFiles[0]);
+            }
+        }
+        return require(libPath);
     }
 
-    readFile(file: string): string {
+    readFile(file: string): any {
         return this.readFileByReader(file, f => fs.readFileSync(f, 'utf8'));
     }
 
