@@ -1,0 +1,102 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style>
+        a {
+            color: #3b5998;
+        }
+
+        .bottom {
+            color: gray;
+            margin: 0 40px;
+            font-size: 12px;
+            background: #fff;
+            border-top: 1px solid #ddd;
+            height: 90px;
+            line-height: 25px
+        }
+
+        .header {
+            margin: 0 40px;
+            color: #999;
+            border-bottom: 1px dotted #ddd;
+            padding: 10px 0;
+            font-size: 20px;
+        }
+
+        .content {
+            padding: 30px 40px;
+            font-size: 16px
+        }
+
+        .body {
+            margin: 10px auto;
+            background: #fff;
+            text-align: left;
+        }
+
+        .button {
+            padding: 8px 18px;
+            background: #009a61;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 3px;
+            width: 100px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .button-wraper {
+            background-color: #2c8ece;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 14px;
+            color: #ffffff;
+            line-height: 30px;
+            width: auto;
+            float: left;
+            margin-right: 9px
+        }
+    </style>
+</head>
+
+<body>
+    <div class="body">
+        <div class="header">
+            开源API集成测试工具
+        </div>
+        <div class="content">
+            <div>
+                欢迎使用 HitchhikerAPI ！{{inviter}} 邀请您加入 {{project}} 项目。
+                <br><br> 要加入此组或拒绝邀请，请点击下面的按钮 (点击接受后系统会自动为您生成账号并发送一封包含登录密码的邮件):
+            </div>
+            <div style="padding:20px 0px 10px 0px;display:inline-block;">
+                <div class="wraper">
+                    <a href="{{accept}}" class="button" target="_blank">加入项目</a>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+            <div style="margin: 0px 0px 0px 10px; padding:20px 0px 10px 0px;display:inline-block;">
+                <div class="wraper">
+                    <a href="{{reject}}" class="button" target="_blank">拒绝邀请</a>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+            <br>遇到问题？请联系我们 <a href="mailto:support@hitchhiker-api.com" target="_blank">support@hitchhiker-api.com</a>
+        </div>
+
+        <div class="bottom">
+            <div style="margin: 10px 0px 0px 0px">
+                官网：<a href="http://www.hitchhiker-api.com/" target="_blank"> http://www.hitchhiker-api.com/</a>
+            </div>
+            <div>
+                github：<a href="http://www.github.com/brookshi/hitchhiker/" target="_blank"> http://www.github.com/brookshi/hitchhiker/</a>
+            </div>
+            <div>此邮件由系统生成，请不要回复</div>
+        </div>
+    </div>
+
+</body>
+
+</html>

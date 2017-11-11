@@ -3,11 +3,18 @@ var gulp = require('gulp'),
     replace = require('gulp-replace'),
     exec = require('child_process').exec;
 
-gulp.task('release', ['copy']);
+gulp.task('build', ['copyTemplate']);
+
+gulp.task('release', ['copy', 'copyTemplate']);
 
 gulp.task('copy', ['compilerClient'], function () {
     return gulp.src('./client/build/**/*.*')
         .pipe(gulp.dest('./build/public'));
+});
+
+gulp.task('copyTemplate', function () {
+    return gulp.src('./api/mail/templates/**/*.*')
+        .pipe(gulp.dest('./build/mail/templates'));
 });
 
 gulp.task('compilerClient', ['compilerServer'], function (cb) {

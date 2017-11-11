@@ -103,9 +103,10 @@
     ✔ #26 pre request script @done (11/11/2017, 10:45:46 AM)
     ✔ #29 project folder system @done (11/11/2017, 10:45:47 AM)
     ☐ #22 min unit for schedule
-    ☐ #34 email notify interface
+    ✔ #34 email notify interface @done (11/11/2017, 4:26:18 PM)
     ✔ #24 schedule sort request invalid @done (11/8/2017, 1:38:25 PM)
     ☐ #24 add a run now interface
+    ☐ sync will override
     ✔ env edit dialog will be clear when sync data @done (11/11/2017, 11:12:31 AM)
 0.5:
     ☐ form data, text, binary body type
@@ -121,6 +122,7 @@
     ☐ variable highlight
     ☐ save all tabs, close all tabs, close all but active.
     ☐ Me project should be removable
+    ☐ improve mail
 0.7.0:
     ☐ data mock
     ☐ test result detail

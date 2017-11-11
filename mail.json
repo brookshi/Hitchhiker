@@ -1,0 +1,100 @@
+{
+    "key": {
+        "id": "gQfRTfM5mFj8xVfp",
+        "secret": "qNrumDMKjbn1mVRfwscuAwNMcWf0hj",
+        "account": "admin@hitchhiker-api.com",
+        "replyToAddress": false
+    },
+    "templates": {
+        "register": {
+            "title": {
+                "cn": "欢迎注册 HitchhikerAPI",
+                "en": "Welcome to HitchhikerAPI"
+            },
+            "template": {
+                "cn": "register_cn.html",
+                "en": "register_en.html"
+            }
+        },
+        "inviteToProject": {
+            "title": {
+                "cn": "[HitchhikerAPI] {{inviter}} 邀请您加入 {{project}} 项目",
+                "en": "[HitchhikerAPI] {{inviter}} invite you to join project - {{project}}"
+            },
+            "template": {
+                "cn": "invite_project_cn.html",
+                "en": "invite_project_en.html"
+            }
+        },
+        "invite": {
+            "title": {
+                "cn": "{{inviter}} 邀请您使用 HitchhikerAPI",
+                "en": "{{inviter}} invite you to use HitchhikerAPI"
+            },
+            "template": {
+                "cn": "invite_cn.html",
+                "en": "invite_en.html"
+            }
+        },
+        "acceptInvitation": {
+            "title": {
+                "cn": "[HitchhikerAPI] {{user}} 加入{{project}}项目",
+                "en": "[HitchhikerAPI] {{user}} join {{project}} project"
+            },
+            "template": {
+                "cn": "accept_invitation_cn.html",
+                "en": "accept_invitation_en.html"
+            }
+        },
+        "rejectInvitation": {
+            "title": {
+                "cn": "[HitchhikerAPI] {{user}} 拒绝加入{{project}}项目",
+                "en": "[HitchhikerAPI] {{user}} reject to join {{project}} project"
+            },
+            "template": {
+                "cn": "reject_invitation_cn.html",
+                "en": "reject_invitation_en.html"
+            }
+        },
+        "findPwd": {
+            "title": {
+                "cn": "[HitchhikerAPI] 您的新密码",
+                "en": "[HitchhikerAPI] your new password"
+            },
+            "template": {
+                "cn": "find_pwd_cn.html",
+                "en": "find_pwd_en.html"
+            }
+        },
+        "userInfo": {
+            "title": {
+                "cn": "[HitchhikerAPI] 您的登录密码",
+                "en": "[HitchhikerAPI] Your password"
+            },
+            "template": {
+                "cn": "user_info_cn.html",
+                "en": "user_info_en.html"
+            }
+        },
+        "scheduleSuccess": {
+            "title": {
+                "cn": "[HitchhikerAPI] Schedule: {{scheduleName}} 运行成功",
+                "en": "[HitchhikerAPI] Schedule: {{scheduleName}} run success"
+            },
+            "template": {
+                "cn": "schedule_success_cn.html",
+                "en": "schedule_success_en.html"
+            }
+        },
+        "scheduleFailed": {
+            "title": {
+                "cn": "[HitchhikerAPI] Schedule: {{scheduleName}} 运行失败",
+                "en": "[HitchhikerAPI] Schedule: {{scheduleName}} run failed"
+            },
+            "template": {
+                "cn": "schedule_fail_cn.html",
+                "en": "schedule_fail_en.html"
+            }
+        }
+    }
+}

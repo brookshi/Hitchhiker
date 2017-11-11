@@ -114,4 +114,12 @@ export class Setting {
     get scriptTimeout() {
         return process.env.HITCHHIKER_SCRIPT_TIMEOUT || this.app.scriptTimeout;
     }
+
+    get isUseCustomMail() {
+        return process.env.HITCHHIKER_MAIL_CUSTOM || this.mail.custom;
+    }
+
+    get customMailApi() {
+        return process.env.HITCHHIKER_MAIL_API || this.mail.customApi;
+    }
 }
