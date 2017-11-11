@@ -85,7 +85,6 @@ export class RecordRunner {
         let variables: any = UserVariableManager.getVariables(uid || vid, environmentId);
         const cookies: _.Dictionary<string> = UserVariableManager.getCookies(uid || vid, environmentId);
 
-
         const start = process.hrtime();
         if (record.prescript) {
             const prescriptWithVar = await VariableService.applyVariable(environmentId, record.prescript);

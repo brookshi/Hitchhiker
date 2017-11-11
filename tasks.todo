@@ -100,13 +100,13 @@
     ✔ sync user data per 30s @done (10/29/2017, 5:52:24 PM)
     ✔ url encode @done (10/29/2017, 5:52:25 PM)
 0.4:
-    ☐ #26 pre request script
-    ☐ #29 project folder system
+    ✔ #26 pre request script @done (11/11/2017, 10:45:46 AM)
+    ✔ #29 project folder system @done (11/11/2017, 10:45:47 AM)
     ☐ #22 min unit for schedule
     ☐ #34 email notify interface
     ✔ #24 schedule sort request invalid @done (11/8/2017, 1:38:25 PM)
     ☐ #24 add a run now interface
-    ☐ env edit dialog will be clear when sync data
+    ✔ env edit dialog will be clear when sync data @done (11/11/2017, 11:12:31 AM)
 0.5:
     ☐ form data, text, binary body type
     ☐ import postman env

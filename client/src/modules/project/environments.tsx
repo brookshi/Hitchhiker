@@ -38,6 +38,8 @@ interface EnvironmentsState {
     environment: DtoEnvironment;
 
     isNew: boolean;
+
+    isEditEnvDlgOpen: boolean;
 }
 
 class EnvironmentTable extends Table<DtoEnvironment> { }
@@ -53,7 +55,8 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
         this.state = {
             isNew: false,
             variablesEditMode: KeyValueEditType.keyValueEdit,
-            environment: getDefaultEnv(props.activeProject)
+            environment: getDefaultEnv(props.activeProject),
+            isEditEnvDlgOpen: false
         };
     }
 
@@ -67,9 +70,9 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
 
     private showEditDlg = (props: EnvironmentsProps) => {
         const { editedEnvironment, environments, activeProject, isEditEnvDlgOpen } = props;
-        if (isEditEnvDlgOpen) {
+        if (isEditEnvDlgOpen && !this.state.isEditEnvDlgOpen) {
             this.setState({
-                ...this.state, environment: environments.find(e => e.id === editedEnvironment) || getDefaultEnv(activeProject)
+                ...this.state, isEditEnvDlgOpen: true, environment: environments.find(e => e.id === editedEnvironment) || getDefaultEnv(activeProject)
             }, () => this.envNameInput && this.envNameInput.focus());
         }
     }
@@ -80,6 +83,11 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
         }
 
         this.state.isNew ? this.props.createEnv(this.state.environment) : this.props.updateEnv(this.state.environment);
+        this.finishEditEnv();
+    }
+
+    private finishEditEnv = () => {
+        this.setState({ ...this.state, isEditEnvDlgOpen: false });
         this.props.editEnvCompleted();
     }
 
@@ -163,8 +171,8 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
                 </EnvironmentTable>
                 <Modal
                     title="Edit Environment"
-                    visible={this.props.isEditEnvDlgOpen}
-                    onCancel={() => this.props.editEnvCompleted()}
+                    visible={this.state.isEditEnvDlgOpen}
+                    onCancel={() => this.finishEditEnv()}
                     okText="Save"
                     cancelText="Cancel"
                     onOk={this.saveEnvironment}
