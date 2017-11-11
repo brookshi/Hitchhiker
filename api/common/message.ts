@@ -63,6 +63,7 @@ export class Message {
     static scheduleCreateFailed: string = 'create schedule failed';
     static scheduleUpdateSuccess: string = 'update schedule success';
     static scheduleDeleteSuccess: string = 'delete schedule success';
+    static scheduleNotExist: string = 'schedule id does not exist';
 
     static stressCreateSuccess: string = 'create stress test success';
     static stressCreateFailed: string = 'create stress test failed';

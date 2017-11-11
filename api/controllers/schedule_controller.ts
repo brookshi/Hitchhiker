@@ -3,6 +3,8 @@ import { ResObject } from '../common/res_object';
 import * as Koa from 'koa';
 import { DtoSchedule } from '../interfaces/dto_schedule';
 import { ScheduleService } from '../services/schedule_service';
+import { Message } from '../common/message';
+import { ScheduleRunner } from '../run_engine/schedule_runner';
 
 export default class ScheduleController extends BaseController {
 
@@ -25,5 +27,16 @@ export default class ScheduleController extends BaseController {
     async getSchedules(ctx: Koa.Context): Promise<ResObject> {
         const schedules = await ScheduleService.getByUserId((<any>ctx).session.userId);
         return { success: true, message: '', result: schedules };
+    }
+
+    @GET('/schedule/:id/run')
+    async run( @PathParam('id') id: string): Promise<ResObject> {
+        const schedule = await ScheduleService.getById(id);
+        if (!schedule) {
+            return { success: false, message: Message.scheduleNotExist };
+        }
+
+        new ScheduleRunner().runSchedule(schedule, null, false);
+        return { success: true, message: '' };
     }
 }

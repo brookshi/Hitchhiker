@@ -28,6 +28,10 @@ export class StringUtil {
         return rst;
     }
 
+    static checkAutho(authorization: string) {
+        return /^ *(?:[Bb][Aa][Ss][Ii][Cc]) +([A-Za-z0-9._~+/-]+=*) *$/.exec(authorization);
+    }
+
     static applyTemplate(target: string, variables: { [key: string]: string }): string {
         let arr = new Array<string>();
         let regex = /{{.*?}}/g;

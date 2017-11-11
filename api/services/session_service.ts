@@ -3,6 +3,7 @@ import { DateUtil } from '../utils/date_util';
 import { User } from '../models/user';
 import { UserService } from './user_service';
 import { UserVariableManager } from './user_variable_manager';
+import { StringUtil } from '../utils/string_util';
 
 export class SessionService {
 
@@ -49,6 +50,15 @@ export class SessionService {
             if (validUser) {
                 (<any>ctx).session.user = checkRst.result;
                 (<any>ctx).session.userId = userId;
+            }
+        }
+        if (ctx.headers.authorization) {
+            const match = StringUtil.checkAutho(ctx.headers.authorization);
+            if (match) {
+                const info = Buffer.from(match[1], 'base64').toString();
+                const [user, pwd] = info.split(':');
+                const checkRst = await UserService.checkUser(user, pwd);
+                validUser = checkRst.success;
             }
         }
         return validUser || !!SessionService.bypass.find(o => new RegExp(o, 'g').test(ctx.request.url.replace(`?${ctx.request.querystring}`, '')));
