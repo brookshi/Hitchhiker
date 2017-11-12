@@ -8,7 +8,6 @@ import { login, logout, register, findPassword, getUserInfo, changePassword, tem
 import { storeLocalData, fetchLocalData } from './local_data';
 import { deleteSchedule, saveSchedule, runSchedule } from './schedule';
 import { saveStress, deleteStress, runStress } from './stress';
-import { GlobalVar } from '../utils/global_var';
 
 export const SyncType = 'sync';
 
@@ -83,7 +82,6 @@ function* handleRequest(syncItem: SyncItem) {
     let delayTime = 1000;
     for (let i = 0; i <= Number.MAX_VALUE; i++) {
         try {
-            GlobalVar.instance.lastSyncDate = new Date();
             const res = yield call(RequestManager.sync, syncItem);
             if (res.status === 403) {
                 yield put(actionCreator(SessionInvalidType));

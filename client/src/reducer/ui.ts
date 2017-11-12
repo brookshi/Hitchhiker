@@ -4,6 +4,8 @@ import { combineReducers } from 'redux';
 import { ResizeLeftPanelType, UpdateLeftPanelType, SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType, SwitchHeadersEditModeType, CloseTimelineType } from '../action/ui';
 import { SyncType, SyncSuccessType, SyncRetryType, ResetSyncMsgType, SyncFailedType } from '../action/index';
 import { RemoveTabType, SaveRecordType } from '../action/record';
+import { SyncUserDataType } from '../action/user';
+import { GlobalVar } from '../utils/global_var';
 
 export function uiState(state: UIState = uiDefaultValue, action: any): UIState {
     return combineReducers<UIState>({
@@ -34,7 +36,10 @@ function syncState(state: SyncState = syncDefaultValue, action: any): SyncState 
     switch (action.type) {
         case SyncType: {
             const { syncCount, syncItems } = state;
-            return { ...state, syncCount: syncCount + 1, syncItems: [...syncItems, action.value], message: undefined };
+            if (action.syncItem.type !== SyncUserDataType) {
+                GlobalVar.instance.lastSyncDate = new Date();
+            }
+            return { ...state, syncCount: syncCount + 1, syncItems: [...syncItems, action.syncItem], message: undefined };
         }
         case SyncSuccessType: {
             const syncItems = [...state.syncItems];
