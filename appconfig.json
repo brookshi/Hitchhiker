@@ -27,7 +27,8 @@
     },
     "schedule": {
         "duration": 60,
-        "storeMaxCount": 50
+        "storeMaxCount": 50,
+        "mailOnlyForFail": true
     },
     "stress": {
         "storeMaxCount": 5,

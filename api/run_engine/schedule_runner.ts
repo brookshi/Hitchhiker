@@ -21,6 +21,7 @@ import { DateUtil } from '../utils/date_util';
 import { RecordCategory } from '../common/record_category';
 import { StringUtil } from '../utils/string_util';
 import { Sandbox } from './sandbox';
+import { Setting } from '../utils/setting';
 
 export class ScheduleRunner {
 
@@ -66,13 +67,14 @@ export class ScheduleRunner {
         }
 
         Log.info('send mails');
-        const mails = await this.getMailsByMode(schedule);
-        if (!mails || mails.length === 0) {
-            Log.info('no valid email');
-            return;
+        if (!Setting.instance.scheduleMailOnlyForFail || !record.success) {
+            const mails = await this.getMailsByMode(schedule);
+            if (!mails || mails.length === 0) {
+                Log.info('no valid email');
+                return;
+            }
+            await MailService.scheduleMail(mails, await this.getRecordInfoForMail(record, records, schedule.environmentId, schedule.compareEnvironmentId));
         }
-        await MailService.scheduleMail(mails, await this.getRecordInfoForMail(record, records, schedule.environmentId, schedule.compareEnvironmentId));
-
         Log.info(`run schedule finish`);
     }
 

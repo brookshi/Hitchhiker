@@ -87,6 +87,10 @@ export class Setting {
         return process.env.HITCHHIKER_SCHEDULE_COUNT || this.schedule.storeMaxCount;
     }
 
+    get scheduleMailOnlyForFail() {
+        return process.env.HITCHHIKER_SCHEDULE_MAILFORFAIL || this.schedule.mailOnlyForFail;
+    }
+
     get stressMaxCount() {
         return process.env.HITCHHIKER_STRESS_COUNT || this._setting.stress.storeMaxCount;
     }
