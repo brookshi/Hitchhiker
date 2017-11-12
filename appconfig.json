@@ -37,6 +37,8 @@
         "registerMailConfirm": false
     },
     "mail": {
-        "host": "http://email.hitchhiker-api.com/api/mail/"
+        "host": "http://email.hitchhiker-api.com/api/mail/",
+        "custom": false,
+        "customApi": "http://"
     }
 }
