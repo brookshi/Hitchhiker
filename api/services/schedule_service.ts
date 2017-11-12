@@ -73,11 +73,18 @@ export class ScheduleService {
         });
         const whereStr = whereStrings.length > 1 ? '(' + whereStrings.join(' OR ') + ')' : whereStrings[0];
 
-        return await connection.getRepository(Schedule)
+        var schedules = await connection.getRepository(Schedule)
             .createQueryBuilder('schedule')
             .leftJoinAndSelect('schedule.scheduleRecords', 'record')
             .where(whereStr, parameters)
             .getMany();
+
+        schedules.forEach(s => {
+            if (s.lastRunDate) {
+                s.lastRunDate = new Date(s.lastRunDate + ' UTC');
+            }
+        });
+        return schedules;
     }
 
     static async getAllNeedRun(): Promise<Schedule[]> {
