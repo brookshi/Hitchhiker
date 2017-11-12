@@ -1,11 +1,13 @@
 var gulp = require('gulp'),
     argv = require('yargs').argv,
     replace = require('gulp-replace'),
-    exec = require('child_process').exec;
+    exec = require('child_process').exec,
+    fs = require('fs-extra'),
+    path = require('path');
 
-gulp.task('build', ['copyTemplate']);
+gulp.task('build', ['copyTemplate', 'copyGlobalData']);
 
-gulp.task('release', ['copy', 'copyTemplate']);
+gulp.task('release', ['copy', 'copyTemplate', 'copyGlobalData']);
 
 gulp.task('copy', ['compilerClient'], function () {
     return gulp.src('./client/build/**/*.*')
@@ -13,8 +15,15 @@ gulp.task('copy', ['compilerClient'], function () {
 });
 
 gulp.task('copyTemplate', function () {
+    fs.removeSync(path.join(__dirname, 'build/mail/templates'));
     return gulp.src('./api/mail/templates/**/*.*')
         .pipe(gulp.dest('./build/mail/templates'));
+});
+
+gulp.task('copyGlobalData', function () {
+    fs.removeSync(path.join(__dirname, 'build/global_data'));
+    return gulp.src('./api/global_data/**/*.*')
+        .pipe(gulp.dest('./build/global_data'));
 });
 
 gulp.task('compilerClient', ['compilerServer'], function (cb) {
