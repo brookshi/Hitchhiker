@@ -80,35 +80,35 @@ export class Setting {
     }
 
     get scheduleDuration() {
-        return process.env.HITCHHIKER_SCHEDULE_DURATION || this.schedule.duration;
+        return this.getValidNum(process.env.HITCHHIKER_SCHEDULE_DURATION, this.schedule.duration);
     }
 
     get scheduleMaxCount() {
-        return process.env.HITCHHIKER_SCHEDULE_COUNT || this.schedule.storeMaxCount;
+        return this.getValidNum(process.env.HITCHHIKER_SCHEDULE_COUNT, this.schedule.storeMaxCount);
     }
 
     get scheduleMailOnlyForFail() {
-        return process.env.HITCHHIKER_SCHEDULE_MAILFORFAIL || this.schedule.mailOnlyForFail;
+        return this.getValidBoolean(process.env.HITCHHIKER_SCHEDULE_MAILFORFAIL, this.schedule.mailOnlyForFail);
     }
 
     get stressMaxCount() {
-        return process.env.HITCHHIKER_STRESS_COUNT || this._setting.stress.storeMaxCount;
+        return this.getValidNum(process.env.HITCHHIKER_STRESS_COUNT, this._setting.stress.storeMaxCount);
     }
 
     get stressPort() {
-        return this.isDev ? 11011 : (process.env.HITCHHIKER_STRESS_PORT || this._setting.stress.stressPort);
+        return this.isDev ? 11011 : (this.getValidNum(process.env.HITCHHIKER_STRESS_PORT, this._setting.stress.stressPort));
     }
 
     get stressUpdateInterval() {
-        return process.env.HITCHHIKER_STRESS_UPDATE_INTERVAL || this._setting.stress.stressUpdateInterval;
+        return this.getValidNum(process.env.HITCHHIKER_STRESS_UPDATE_INTERVAL, this._setting.stress.stressUpdateInterval);
     }
 
     get sync() {
-        return process.env.HITCHHIKER_SYNC_ONOFF || this.app.sync;
+        return this.getValidBoolean(process.env.HITCHHIKER_SYNC_ONOFF, this.app.sync);
     }
 
     get syncInterval() {
-        return process.env.HITCHHIKER_SYNC_INTERVAL || this.app.syncInterval;
+        return this.getValidNum(process.env.HITCHHIKER_SYNC_INTERVAL, this.app.syncInterval);
     }
 
     get defaultHeaders() {
@@ -116,22 +116,30 @@ export class Setting {
     }
 
     get safeVM() {
-        return process.env.HITCHHIKER_SAFE_VM === undefined ? this.app.safeVM : process.env.HITCHHIKER_SAFE_VM;
+        return this.getValidBoolean(process.env.HITCHHIKER_SAFE_VM, this.app.safeVM);
     }
 
     get enableUpload() {
-        return process.env.HITCHHIKER_ENABLE_UPLOAD === undefined ? this.app.enableUpload : process.env.HITCHHIKER_ENABLE_UPLOAD;
+        return this.getValidBoolean(process.env.HITCHHIKER_ENABLE_UPLOAD, this.app.enableUpload);
     }
 
     get scriptTimeout() {
-        return process.env.HITCHHIKER_SCRIPT_TIMEOUT || this.app.scriptTimeout;
+        return this.getValidNum(process.env.HITCHHIKER_SCRIPT_TIMEOUT, this.app.scriptTimeout);
     }
 
     get isUseCustomMail() {
-        return process.env.HITCHHIKER_MAIL_CUSTOM === undefined ? this.mail.custom : process.env.HITCHHIKER_MAIL_CUSTOM;
+        return this.getValidBoolean(process.env.HITCHHIKER_MAIL_CUSTOM, this.mail.custom);
     }
 
     get customMailApi() {
         return process.env.HITCHHIKER_MAIL_API || this.mail.customApi;
+    }
+
+    private getValidNum(envVar: any, spare: number) {
+        return envVar === undefined ? spare : parseInt(envVar);
+    }
+
+    private getValidBoolean(envVar: any, spare: boolean) {
+        return envVar === undefined ? spare : (envVar === '1');
     }
 }

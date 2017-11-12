@@ -9,7 +9,7 @@ export class ConnectionManager {
     private static connectionOptions: ConnectionOptions = {
         ...Setting.instance.db,
         host: process.env.HITCHHIKER_DB_HOST || Setting.instance.db.host,
-        port: process.env.HITCHHIKER_DB_PORT || Setting.instance.db.port,
+        port: parseInt(process.env.HITCHHIKER_DB_PORT) || Setting.instance.db.port,
         username: process.env.HITCHHIKER_DB_USERNAME || Setting.instance.db.username,
         database: process.env.MYSQL_DATABASE || Setting.instance.db.database,
         password: process.env.MYSQL_ROOT_PASSWORD || Setting.instance.db.password,
