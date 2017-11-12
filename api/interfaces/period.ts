@@ -1,4 +1,13 @@
-enum Period {
+export enum TimerType {
+
+    Minute = 1,
+
+    Hour = 2,
+
+    Day = 3
+}
+
+export enum Period {
 
     daily = 1,
 
@@ -16,5 +25,3 @@ enum Period {
 
     sunday = 8
 }
-
-export { Period };

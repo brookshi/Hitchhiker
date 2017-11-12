@@ -1,5 +1,5 @@
 import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
-import { Period } from '../interfaces/period';
+import { Period, TimerType } from '../interfaces/period';
 import { NotificationMode } from '../interfaces/notification_mode';
 import { ScheduleRecord } from './schedule_record';
 
@@ -24,7 +24,10 @@ export class Schedule {
     @Column({ nullable: true })
     compareEnvironmentId: string;
 
-    @Column('int', { default: 0 })
+    @Column('int', { default: 3 })
+    timer: TimerType;
+
+    @Column('int', { default: 1 })
     period: Period;
 
     @Column()

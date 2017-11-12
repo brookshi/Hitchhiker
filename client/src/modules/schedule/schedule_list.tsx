@@ -7,7 +7,7 @@ import { StringUtil } from '../../utils/string_util';
 import { Tooltip, Button, Menu } from 'antd';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import ScheduleEditDialog from './schedule_edit_dialog';
-import { Period } from '../../common/period';
+import { Period, TimerType } from '../../common/period';
 import { NotificationMode } from '../../common/notification_mode';
 import { noEnvironment, newScheduleName, unknownName } from '../../common/constants';
 import { DateUtil } from '../../utils/date_util';
@@ -65,6 +65,7 @@ const createDefaultSchedule: (user: DtoUser) => DtoSchedule = (user: DtoUser) =>
         needCompare: false,
         compareEnvironmentId: noEnvironment,
         period: Period.daily,
+        timer: TimerType.Day,
         hour: DateUtil.localHourToUTC(7),
         notification: NotificationMode.none,
         emails: '',

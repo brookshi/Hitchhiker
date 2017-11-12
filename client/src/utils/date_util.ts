@@ -7,6 +7,10 @@ export class DateUtil {
         return hour === 0 ? '12:00 AM' : (hour < 12 ? `${hour}:00 AM` : `${hour === 12 ? 12 : hour - 12}:00 PM`);
     }
 
+    static getEveryTime(time: number, unit: string): string {
+        return `Every ${time} ${unit}${time > 1 ? 's' : ''}`;
+    }
+
     static utcHourToLocal(hour: number): number {
         const date = new Date();
         return date.getHours() - date.getUTCHours() + hour;

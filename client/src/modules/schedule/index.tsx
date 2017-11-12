@@ -11,7 +11,6 @@ import { Layout } from 'antd';
 import Splitter from '../../components/splitter';
 import { UpdateLeftPanelType, ResizeLeftPanelType } from '../../action/ui';
 import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType, RunScheduleType } from '../../action/schedule';
-import ScheduleInfo from './schedule_info';
 import ScheduleRunHistoryGrid from './schedule_run_history_grid';
 import { noEnvironment, unknownName } from '../../common/constants';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
@@ -110,14 +109,6 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
                 </Sider>
                 <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
                 <Content className="schedule-content">
-                    {activeSchedule && schedule.collectionId ? (
-                        <ScheduleInfo
-                            schedule={schedule}
-                            environmentName={envName}
-                            compareEnvName={compareEnvName}
-                            collectionName={collections[schedule.collectionId].name}
-                        />
-                    ) : ''}
                     <ScheduleRunHistoryGrid
                         schedule={schedule}
                         scheduleRecords={schedule.scheduleRecords}

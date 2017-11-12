@@ -1,4 +1,4 @@
-import { Period } from '../../common/period';
+import { Period, TimerType } from '../../common/period';
 import { NotificationMode } from '../../common/notification_mode';
 
 export const defaultSchedule = {
@@ -9,6 +9,7 @@ export const defaultSchedule = {
     needCompare: false,
     compareEnvironmentId: 'eid_456',
     period: Period.daily,
+    timer: TimerType.Day,
     hour: 10,
     notification: NotificationMode.me,
     emails: '',

@@ -4,7 +4,7 @@ import { DtoSchedule } from '../../../../api/interfaces/dto_schedule';
 import { noEnvironment } from '../../common/constants';
 import { StringUtil } from '../../utils/string_util';
 import * as _ from 'lodash';
-import { Period, PeriodStr } from '../../common/period';
+import { Period, PeriodStr, TimerType, TimerCode } from '../../common/period';
 import { NotificationMode, NotificationStr } from '../../common/notification_mode';
 import { DateUtil } from '../../utils/date_util';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
@@ -52,6 +52,8 @@ interface ScheduleEditDialogState {
     sortedRecords: MatchableRecord[];
 
     environmentNames: _.Dictionary<string>;
+
+    currentTimerType: TimerType;
 }
 
 type MatchableRecord = DtoRecord & { match: boolean };
@@ -89,7 +91,8 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
             needOrder: props.schedule.needOrder,
             enableSort: !!props.schedule.collectionId,
             sortedRecords,
-            environmentNames
+            environmentNames,
+            currentTimerType: props.schedule.timer
         };
     }
 
@@ -136,6 +139,25 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
         );
     }
 
+    private generateTimerSelect = () => {
+        return (
+            <Select dropdownMenuStyle={{ maxHeight: 200 }} onChange={(id: string) => {
+                console.log('a:' + id);
+                this.setState({ ...this.state, currentTimerType: parseInt(id) });
+                this.props.form.setFieldsValue({ hour: this.getDefaultHour(parseInt(id)).toString() });
+            }}>
+                {
+                    Object.keys(TimerType).filter(k => StringUtil.isNumberString(k)).map(k =>
+                        <Option key={k} value={k}>{TimerCode.convert(parseInt(k) as TimerType)}</Option>)
+                }
+            </Select>
+        );
+    }
+
+    private getDefaultHour = (type: TimerType) => {
+        return type === TimerType.Day ? 7 : (type === TimerType.Hour ? 1 : 5);
+    }
+
     private generatePeriodSelect = () => {
         return (
             <Select dropdownMenuStyle={{ maxHeight: 300 }}>
@@ -148,11 +170,16 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
     }
 
     private generateHourSelect = () => {
+        const currentTimerType = this.state.currentTimerType;
+        const num = currentTimerType === TimerType.Minute ? 59 : 24;
+        const displayFunc = currentTimerType === TimerType.Day ? DateUtil.getDisplayHour : t => DateUtil.getEveryTime(t, TimerType[currentTimerType]);
         return (
             <Select>
                 {
-                    _.times(24, Number).map(k =>
-                        <Option key={k.toString()} value={k.toString()}>{DateUtil.getDisplayHour(k)}</Option>)
+                    _.times(num, Number).map(k => {
+                        k = currentTimerType === TimerType.Day ? k : k + 1;
+                        return <Option key={k.toString()} value={k.toString()}>{displayFunc(k)}</Option>;
+                    })
                 }
             </Select>
         );
@@ -267,7 +294,8 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                 emails: values.emails.join(';'),
                 environmentId: values.environmentId,
                 notification: Number.parseInt(values.notification),
-                hour: DateUtil.localHourToUTC(Number.parseInt(values.hour)),
+                timer: Number.parseInt(values.timer),
+                hour: this.state.currentTimerType === TimerType.Day ? DateUtil.localHourToUTC(Number.parseInt(values.hour)) : Number.parseInt(values.hour),
                 recordsOrder: this.state.sortedRecords.map(r => `${r.id}:${r.match ? 1 : 0}`).join(';')
             });
             this.reset();
@@ -290,6 +318,8 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
             labelCol: { span: 5 },
             wrapperCol: { span: 17 },
         };
+        const needPeriod = this.state.currentTimerType === TimerType.Day;
+        console.log(this.state.currentTimerType);
         return (
             <Modal
                 visible={isEditDlgOpen}
@@ -351,19 +381,30 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                     }
                     <FormItem {...formItemLayout} label="Period" >
                         <Row gutter={8}>
-                            <Col span={12}>
+                            <Col span={needPeriod ? 8 : 12}>
                                 <FormItem>
-                                    {getFieldDecorator('period', {
-                                        initialValue: schedule.period.toString()
+                                    {getFieldDecorator('timer', {
+                                        initialValue: schedule.timer.toString()
                                     })(
-                                        this.generatePeriodSelect()
+                                        this.generateTimerSelect()
                                         )}
                                 </FormItem>
                             </Col>
-                            <Col span={12}>
+                            {needPeriod ? (
+                                <Col span={needPeriod ? 8 : 12}>
+                                    <FormItem>
+                                        {getFieldDecorator('period', {
+                                            initialValue: schedule.period.toString()
+                                        })(
+                                            this.generatePeriodSelect()
+                                            )}
+                                    </FormItem>
+                                </Col>
+                            ) : ''}
+                            <Col span={needPeriod ? 8 : 12}>
                                 <FormItem>
                                     {getFieldDecorator('hour', {
-                                        initialValue: DateUtil.utcHourToLocal(schedule.hour).toString(),
+                                        initialValue: this.state.currentTimerType === TimerType.Day ? DateUtil.utcHourToLocal(schedule.hour).toString() : schedule.hour.toString(),
                                     })(
                                         this.generateHourSelect()
                                         )}

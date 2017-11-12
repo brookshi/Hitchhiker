@@ -1,11 +1,14 @@
 export class DateUtil {
-    static readonly HOUR = 3600 * 1000;
+
+    static readonly MINUTE = 60 * 1000;
+
+    static readonly HOUR = 60 * DateUtil.MINUTE;
 
     static readonly DAY = 24 * DateUtil.HOUR;
 
-    static diff(start: Date, end: Date): number {
+    static diff(start: Date, end: Date, unit: 'h' | 'm' = 'h'): number {
         const timeDiff = Math.abs(end.getTime() - start.getTime());
-        return Math.ceil(timeDiff / DateUtil.HOUR);
+        return Math.ceil(timeDiff / (unit === 'h' ? DateUtil.HOUR : DateUtil.MINUTE));
     }
 
     static getUTCDate(date?: Date): Date {

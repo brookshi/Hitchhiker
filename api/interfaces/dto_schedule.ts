@@ -1,5 +1,5 @@
 import { DtoScheduleRecord } from './dto_schedule_record';
-import { Period } from './period';
+import { Period, TimerType } from './period';
 import { NotificationMode } from './notification_mode';
 
 export interface DtoSchedule {
@@ -15,6 +15,8 @@ export interface DtoSchedule {
     needCompare: boolean;
 
     compareEnvironmentId: string;
+
+    timer: TimerType;
 
     period: Period;
 

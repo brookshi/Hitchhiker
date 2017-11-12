@@ -9,6 +9,9 @@ import { UserCollectionService } from './user_collection_service';
 import { ObjectLiteral } from 'typeorm/common/ObjectLiteral';
 import { ScheduleRecordService } from './schedule_record_service';
 import { ScheduleRecord } from '../models/schedule_record';
+import { Period, TimerType } from '../interfaces/period';
+import { DateUtil } from '../utils/date_util';
+import { Log } from '../utils/log';
 
 export class ScheduleService {
 
@@ -27,6 +30,7 @@ export class ScheduleService {
         schedule.needOrder = dtoSchedule.needOrder;
         schedule.notification = dtoSchedule.notification;
         schedule.period = dtoSchedule.period;
+        schedule.timer = dtoSchedule.timer;
         schedule.recordsOrder = dtoSchedule.recordsOrder;
         schedule.suspend = dtoSchedule.suspend;
         return schedule;
@@ -115,14 +119,22 @@ export class ScheduleService {
     }
 
     static checkScheduleNeedRun(schedule: Schedule): boolean {
-        const isRunFinish = new Date(schedule.lastRunDate + ' UTC').toDateString() === new Date().toDateString(); // TODO: may just toDateString is enough.
-        if (isRunFinish) {
-            return false;
-        }
         const now = new Date();
-        const UTCPeriod = schedule.hour >= 0 ? schedule.period : schedule.period - 1;
-        const UTCDay = UTCPeriod === 1 ? 6 : UTCPeriod - 2;
-        const isPeriodRight = schedule.period === 1 || UTCDay === now.getUTCDay();
-        return isPeriodRight && (schedule.hour < 0 ? 24 + schedule.hour : schedule.hour) === now.getUTCHours();
+        if (schedule.timer === TimerType.Day) {
+            const isRunFinish = new Date(schedule.lastRunDate + ' UTC').toDateString() === new Date().toDateString();
+            if (isRunFinish) {
+                return false;
+            }
+            const UTCPeriod = schedule.hour >= 0 ? schedule.period : schedule.period - 1;
+            const UTCDay = UTCPeriod === 1 ? 6 : UTCPeriod - 2;
+            const isPeriodRight = schedule.period === 1 || UTCDay === now.getUTCDay();
+            const scheduleHour = schedule.hour < 0 ? 24 + schedule.hour : schedule.hour;
+            return isPeriodRight && scheduleHour === now.getUTCHours();
+        } else if (schedule.timer === TimerType.Hour) {
+            return DateUtil.diff(DateUtil.getUTCDate(), schedule.lastRunDate) >= schedule.hour;
+        } else if (schedule.timer === TimerType.Minute) {
+            return DateUtil.diff(DateUtil.getUTCDate(), schedule.lastRunDate, 'm') >= schedule.hour;
+        }
+        return false;
     }
 }

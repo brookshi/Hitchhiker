@@ -58,3 +58,34 @@ export class PeriodStr {
         }
     }
 }
+
+export enum TimerType {
+
+    Minute = 1,
+
+    Hour = 2,
+
+    Day = 3
+}
+
+export class TimerCode {
+
+    static minute = 'Minute Timer';
+
+    static hour = 'Hour Timer';
+
+    static day = 'Day Timer';
+
+    static convert(type: TimerType) {
+        switch (type) {
+            case TimerType.Minute:
+                return TimerCode.minute;
+            case TimerType.Hour:
+                return TimerCode.hour;
+            case TimerType.Day:
+                return TimerCode.day;
+            default:
+                return TimerCode.day;
+        }
+    }
+}

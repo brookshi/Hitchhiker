@@ -4,7 +4,7 @@ import { Menu, Icon, Popover } from 'antd';
 import { confirmDlg } from '../../components/confirm_dialog/index';
 import { DtoSchedule } from '../../../../api/interfaces/dto_schedule';
 import './style/index.less';
-import { PeriodStr } from '../../common/period';
+import { PeriodStr, TimerCode, TimerType } from '../../common/period';
 import { DateUtil } from '../../utils/date_util';
 import { NotificationStr, NotificationMode } from '../../common/notification_mode';
 import { noEnvironment } from '../../common/constants';
@@ -87,14 +87,15 @@ class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState>
     }
 
     private get scheduleInfo() {
-        const { period, hour, notification, emails, suspend, needCompare } = this.props.schedule;
+        const { timer, period, hour, notification, emails, suspend, needCompare } = this.props.schedule;
         return (
             <div>
                 <div><span>Collection: </span>{this.props.collectionName}</div>
                 <div><span>Environment: </span>{this.props.environmentName || noEnvironment}</div>
                 {needCompare ? <div><span>Compare to: </span>{this.props.compareEnvName || noEnvironment}</div> : ''}
-                <div><span>Period: </span>{PeriodStr.convert(period)}</div>
-                <div><span>Hour: </span>{DateUtil.getDisplayHour(hour, true)}</div>
+                <div><span>Timer: </span>{TimerCode.convert(timer)}</div>
+                {timer === TimerType.Day ? <div><span>Period: </span>{PeriodStr.convert(period)}</div> : ''}
+                <div><span>Unit: </span>{(timer === TimerType.Day ? DateUtil.getDisplayHour : t => DateUtil.getEveryTime(t, TimerType[timer]))(hour, true)}</div>
                 <div><span>Notification: </span>{NotificationStr.convert(notification)}</div>
                 {notification === NotificationMode.custom ? <div><span>Emails: </span>{emails}</div> : ''}
                 <div><span>Suspend: </span>{suspend.toString()}</div>
