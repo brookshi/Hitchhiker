@@ -166,7 +166,7 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                                             isOwner={t.ownerId === user.id}
                                             delete={() => deleteSchedule(t.id)}
                                             edit={() => this.editSchedule(t)}
-                                            run={() => runSchedule(t.id)}
+                                            run={() => { console.log(`run schedule: ${t.id}`); runSchedule(t.id); }}
                                             suspend={() => updateSchedule({ ...t, suspend: !t.suspend })}
                                             isRunning={runState[t.id] ? runState[t.id].isRunning : false}
                                         />
