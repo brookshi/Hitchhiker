@@ -5,4 +5,6 @@ export class GlobalVar {
     lastSyncDate: Date = new Date();
 
     isUserInfoSyncing: boolean = false;
+
+    enableUploadProjectData: boolean = true;
 }

@@ -159,6 +159,9 @@ export default class ProjectController extends BaseController {
 
     @POST('/project/:projectId/:type')
     async uploadProjectFile(ctx: Koa.Context, @PathParam('projectId') projectId: string, @PathParam('type') type: ProjectFolderType) {
+        if (!Setting.instance.enableUpload) {
+            return;
+        }
 
         let fileName;
         const storage = multer.diskStorage({

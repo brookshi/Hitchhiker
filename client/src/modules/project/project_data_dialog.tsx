@@ -90,7 +90,7 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
                             </Button>
                         </Upload>
                     </div>
-                    <div style={{ height: 200, overflowY: 'auto' }}>
+                    <div style={{ height: 600, overflowY: 'auto' }}>
                         <ProjectLibTable
                             className="project-table"
                             bordered={true}

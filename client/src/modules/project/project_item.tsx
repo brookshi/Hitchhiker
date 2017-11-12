@@ -4,6 +4,7 @@ import './style/index.less';
 import { Menu, Icon } from 'antd';
 import { confirmDlg } from '../../components/confirm_dialog/index';
 import { DtoProject } from '../../../../api/interfaces/dto_project';
+import { GlobalVar } from '../../utils/global_var';
 
 interface ProjectItemProps {
 
@@ -47,10 +48,10 @@ class ProjectItem extends React.Component<ProjectItemProps, ProjectItemState> {
                 <Menu.Item key="globalFunc">
                     <Icon type="code-o" /> Global function
                 </Menu.Item>
-                <Menu.Item key="projectLibs">
+                <Menu.Item key="projectLibs" disabled={!GlobalVar.instance.enableUploadProjectData}>
                     <Icon type="file" /> Project libs
                 </Menu.Item>
-                <Menu.Item key="projectDatas">
+                <Menu.Item key="projectDatas" disabled={!GlobalVar.instance.enableUploadProjectData}>
                     <Icon type="file-text" /> Project datas
                 </Menu.Item>
                 <Menu.Item key="delete">

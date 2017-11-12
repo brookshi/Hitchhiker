@@ -142,7 +142,6 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
     private generateTimerSelect = () => {
         return (
             <Select dropdownMenuStyle={{ maxHeight: 200 }} onChange={(id: string) => {
-                console.log('a:' + id);
                 this.setState({ ...this.state, currentTimerType: parseInt(id) });
                 this.props.form.setFieldsValue({ hour: this.getDefaultHour(parseInt(id)).toString() });
             }}>
@@ -319,7 +318,6 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
             wrapperCol: { span: 17 },
         };
         const needPeriod = this.state.currentTimerType === TimerType.Day;
-        console.log(this.state.currentTimerType);
         return (
             <Modal
                 visible={isEditDlgOpen}

@@ -119,12 +119,16 @@ export class Setting {
         return process.env.HITCHHIKER_SAFE_VM === undefined ? this.app.safeVM : process.env.HITCHHIKER_SAFE_VM;
     }
 
+    get enableUpload() {
+        return process.env.HITCHHIKER_ENABLE_UPLOAD === undefined ? this.app.enableUpload : process.env.HITCHHIKER_ENABLE_UPLOAD;
+    }
+
     get scriptTimeout() {
         return process.env.HITCHHIKER_SCRIPT_TIMEOUT || this.app.scriptTimeout;
     }
 
     get isUseCustomMail() {
-        return process.env.HITCHHIKER_MAIL_CUSTOM || this.mail.custom;
+        return process.env.HITCHHIKER_MAIL_CUSTOM === undefined ? this.mail.custom : process.env.HITCHHIKER_MAIL_CUSTOM;
     }
 
     get customMailApi() {

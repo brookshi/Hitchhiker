@@ -27,4 +27,6 @@ export interface UserData {
     syncInterval: number;
 
     sync: boolean;
+
+    enableUpload: boolean;
 }

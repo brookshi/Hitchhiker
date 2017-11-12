@@ -83,7 +83,8 @@ export class UserProjectService {
             projectFiles,
             defaultHeaders: Setting.instance.defaultHeaders,
             syncInterval: Setting.instance.syncInterval,
-            sync: Setting.instance.sync
+            sync: Setting.instance.sync,
+            enableUpload: Setting.instance.enableUpload
         };
     }
 }
