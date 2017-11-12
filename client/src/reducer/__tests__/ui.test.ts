@@ -1,6 +1,6 @@
 import { defaultState } from '../../state/index';
 import { ResizeLeftPanelType, UpdateLeftPanelType, SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType, SwitchHeadersEditModeType } from '../../action/ui';
-import { actionCreator, SyncType, SyncSuccessType, SyncRetryType, SyncFailedType, ResetSyncMsgType, syncAction } from '../../action/index';
+import { actionCreator, SyncSuccessType, SyncRetryType, SyncFailedType, ResetSyncMsgType, syncAction } from '../../action/index';
 import { EditEnvType } from '../../action/project';
 import { uiState } from '../ui';
 import { uiDefaultValue, reqResUIDefaultValue } from '../../state/ui';
