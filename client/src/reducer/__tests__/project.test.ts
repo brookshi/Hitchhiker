@@ -2,11 +2,11 @@ import { projectState } from '../project';
 import { projectDefaultValue } from '../../state/project';
 import { LoginSuccessType } from '../../action/user';
 import { SaveProjectType, ActiveProjectType, QuitProjectType, DisbandProjectType, EditEnvType, RemoveUserType, SaveLocalhostMappingType, SaveGlobalFunctionType } from '../../action/project';
-import { defaultUser } from "./data";
+import { defaultUser } from './data';
 
 test('login success', () => {
 
-    let state = projectState(projectDefaultValue, { type: LoginSuccessType, value: { result: { projects: { ['123']: { id: '123', name: 'project1', ['456']: { id: '456', name: 'project2' } } } } } });
+    let state = projectState(projectDefaultValue, { type: LoginSuccessType, value: { result: { projects: { ['123']: { id: '123', name: 'project1', ['456']: { id: '456', name: 'project2' } } }, projectFiles: projectDefaultValue.projectFiles } } });
 
     expect(state).toEqual({ ...projectDefaultValue, projects: { ['123']: { id: '123', name: 'project1', ['456']: { id: '456', name: 'project2' } } }, activeProject: '123' });
 });

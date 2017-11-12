@@ -1,6 +1,6 @@
 import { defaultState } from '../../state/index';
 import { ResizeLeftPanelType, UpdateLeftPanelType, SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType, SwitchHeadersEditModeType } from '../../action/ui';
-import { actionCreator, SyncType, SyncSuccessType, SyncRetryType, SyncFailedType, ResetSyncMsgType } from '../../action/index';
+import { actionCreator, SyncType, SyncSuccessType, SyncRetryType, SyncFailedType, ResetSyncMsgType, syncAction } from '../../action/index';
 import { EditEnvType } from '../../action/project';
 import { uiState } from '../ui';
 import { uiDefaultValue, reqResUIDefaultValue } from '../../state/ui';
@@ -36,11 +36,11 @@ test('click edit environment button', () => {
 
 test('sync', () => {
 
-    let state = uiState(uiDefaultValue, actionCreator(SyncType, { type: 'sync', url: 'url', method: 'GET' }));
+    let state = uiState(uiDefaultValue, syncAction({ type: 'sync', url: 'url', method: 'GET' }));
 
     expect(state).toEqual({ ...uiDefaultValue, syncState: { ...defaultState.uiState.syncState, syncCount: 1, message: undefined, syncItems: [{ type: 'sync', url: 'url', method: 'GET' }] } });
 
-    state = uiState(state, actionCreator(SyncType, { type: 'sync2', url: 'url2', method: 'POST' }));
+    state = uiState(state, syncAction({ type: 'sync2', url: 'url2', method: 'POST' }));
 
     expect(state).toEqual({ ...uiDefaultValue, syncState: { ...defaultState.uiState.syncState, syncCount: 2, message: undefined, syncItems: [{ type: 'sync', url: 'url', method: 'GET' }, { type: 'sync2', url: 'url2', method: 'POST' }] } });
 });
