@@ -1,142 +1,231 @@
 {
-	"id": "bbfe3f1c-d058-c174-4bf6-e38e613aea96",
+	"id": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
 	"name": "Sample",
 	"description": "",
 	"order": [
-		"5a96195a-7559-b689-d52b-9e2d2e05ab3c",
-		"f21a0502-da15-90bb-74aa-40fbe5d1e83d",
-		"f7e501d1-5847-049b-c13e-d78ad9d00ab4"
+		"6e7f60c9-acbc-f6c5-c393-6223d9ec2f5f",
+		"f9bf371f-262b-f9b0-ad74-e829e8efb10a",
+		"7a021e01-90fb-4623-c583-d3d2af6da990",
+		"e3a40f37-337b-65d5-6d06-18f967cd1abb",
+		"d5f04d52-baa5-0c4f-b73c-687ed2c7917e",
+		"871f08b6-7abe-b32f-b328-0f362f12e140",
+		"dd4bbfc4-9d70-a050-6d53-93575939a188"
 	],
-	"folders": [
-		{
-			"id": "6d397836-5f8e-d758-24c0-653daedef54e",
-			"name": "delete",
-			"description": "",
-			"order": [
-				"2fd4f97f-1df6-799d-b07d-3008cf3adfdc"
-			],
-			"owner": "1010955"
-		}
-	],
-	"timestamp": 1500194431285,
+	"folders": [],
+	"folders_order": [],
+	"timestamp": 1510480454919,
 	"owner": "1010955",
 	"public": false,
 	"requests": [
 		{
-			"id": "2fd4f97f-1df6-799d-b07d-3008cf3adfdc",
-			"headers": "Content-Type: application/json\n",
-			"headerData": [
+			"id": "6e7f60c9-acbc-f6c5-c393-6223d9ec2f5f",
+			"headers": "",
+			"headerData": [],
+			"url": "http://httpbin.org/get?a=b",
+			"queryParams": [
 				{
-					"key": "Content-Type",
-					"value": "application/json",
+					"key": "a",
+					"value": "b",
+					"equals": true,
 					"description": "",
 					"enabled": true
 				}
 			],
-			"url": "http://{{apihost}}/sample/001",
-			"queryParams": [],
-			"preRequestScript": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "DELETE",
-			"data": [],
-			"dataMode": "raw",
-			"tests": "\ntests[\"Status code is 200\"] = responseCode.code === 200;\n\ntests[\"request is success\"] = responseObj.success;\n\ntests[\"Response time is less than 500ms\"] = responseTime < 500;",
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1500195765037,
-			"name": "sample delete",
-			"description": "",
-			"collectionId": "bbfe3f1c-d058-c174-4bf6-e38e613aea96",
-			"responses": [],
-			"rawModeData": "{\n\t\"id\": \"002\",\n\t\"name\": \"sample 3\"\n}"
-		},
-		{
-			"id": "5a96195a-7559-b689-d52b-9e2d2e05ab3c",
-			"headers": "Content-Type: application/json\n",
-			"headerData": [
-				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": true
-				}
-			],
-			"url": "http://{{apihost}}/sample/001",
-			"queryParams": [],
 			"preRequestScript": null,
 			"pathVariables": {},
 			"pathVariableData": [],
 			"method": "GET",
 			"data": null,
 			"dataMode": "params",
-			"tests": "\ntests[\"Status code is 200\"] = responseCode.code === 200;\n\ntests[\"request is success\"] = responseObj.success;\n\ntests[\"id is correct\"] = responseObj.result.id === \"001\";",
+			"version": 2,
+			"tests": "const crypto = hitchhiker.require('crypto-js');\n\ntests[`crypto ${crypto.HmacSHA1('test', 'asdf')}`] = true;\n\ntests[`crypto ${crypto.MD5('test')}`] = true;",
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1500195778453,
-			"name": "sample get",
+			"time": 1510480555818,
+			"name": "crypto",
 			"description": "",
-			"collectionId": "bbfe3f1c-d058-c174-4bf6-e38e613aea96",
+			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
 			"responses": []
 		},
 		{
-			"id": "f21a0502-da15-90bb-74aa-40fbe5d1e83d",
-			"headers": "Content-Type: application/json\n",
-			"headerData": [
+			"id": "7a021e01-90fb-4623-c583-d3d2af6da990",
+			"headers": "",
+			"headerData": [],
+			"url": "http://httpbin.org/get?a=b",
+			"queryParams": [
 				{
-					"key": "Content-Type",
-					"value": "application/json",
+					"key": "a",
+					"value": "b",
+					"equals": true,
 					"description": "",
 					"enabled": true
 				}
 			],
-			"url": "http://{{apihost}}/sample",
-			"queryParams": [],
-			"preRequestScript": null,
+			"preRequestScript": "",
 			"pathVariables": {},
 			"pathVariableData": [],
-			"method": "POST",
-			"data": [],
-			"dataMode": "raw",
-			"tests": "\ntests[\"Status code is 200\"] = responseCode.code === 200;\n\ntests[\"request is success\"] = responseObj.success;\n\ntests[\"id is correct\"] = responseObj.result.id === \"002\";",
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"version": 2,
+			"tests": "const _ = hitchhiker.require('lodash');\n\nconst a = [1, 2];\n\nconst b= [3, 4];\n\ntests[_.union(a, b).join('-')] = true;",
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1500195787228,
-			"name": "sample post",
+			"time": 1510481420285,
+			"name": "lodash",
 			"description": "",
-			"collectionId": "bbfe3f1c-d058-c174-4bf6-e38e613aea96",
-			"responses": [],
-			"rawModeData": "{\n\t\"id\": \"002\",\n\t\"name\": \"sample 2\"\n}"
+			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
+			"responses": []
 		},
 		{
-			"id": "f7e501d1-5847-049b-c13e-d78ad9d00ab4",
-			"headers": "Content-Type: application/json\n",
-			"headerData": [
+			"id": "871f08b6-7abe-b32f-b328-0f362f12e140",
+			"headers": "",
+			"headerData": [],
+			"url": "http://httpbin.org/get?a={{resBody}}",
+			"queryParams": [
 				{
-					"key": "Content-Type",
-					"value": "application/json",
+					"key": "a",
+					"value": "{{resBody}}",
+					"equals": true,
 					"description": "",
 					"enabled": true
 				}
 			],
-			"url": "http://{{apihost}}/sample",
-			"queryParams": [],
-			"preRequestScript": null,
+			"preRequestScript": "const request = hitchhiker.require('request');\n\nfunction getData() {\n    return new Promise((resolve, reject) => {\n            const req = request(\"http://httpbin.org/get?a=request in request\", (err, res, body) => {\n                resolve({ err: err, response: res, body: body });\n            });\n        });\n}\n\nconst res = await getData(); // MUST use async/await\n\nhitchhiker.setEnvVariable('resBody', res.body);",
 			"pathVariables": {},
 			"pathVariableData": [],
-			"method": "PUT",
-			"data": [],
-			"dataMode": "raw",
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
 			"version": 2,
-			"tests": "\ntests[\"Status code is 200\"] = responseCode.code === 200;\n\ntests[\"request is success\"] = responseObj.success;\n\ntests[\"name is update success\"] = responseObj.result.name === \"sample 3\";",
+			"tests": "const body = hitchhiker.getEnvVariable('resBody');\n\nconst obj = JSON.parse(body);\n\ntests[obj.args.a] = true;",
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1500195794286,
-			"name": "sample put",
+			"time": 1510481527045,
+			"name": "request in request",
 			"description": "",
-			"collectionId": "bbfe3f1c-d058-c174-4bf6-e38e613aea96",
-			"responses": [],
-			"rawModeData": "{\n\t\"id\": \"002\",\n\t\"name\": \"sample 3\"\n}"
+			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
+			"responses": []
+		},
+		{
+			"id": "d5f04d52-baa5-0c4f-b73c-687ed2c7917e",
+			"headers": "",
+			"headerData": [],
+			"url": "http://httpbin.org/get?a=b",
+			"queryParams": [
+				{
+					"key": "a",
+					"value": "b",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"preRequestScript": "",
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"version": 2,
+			"tests": "const xlsx = hitchhiker.require('xlsx');\n\nconst workbook = hitchhiker.readFileByReader('test.xlsx', xlsx.readFile); // read excel file in global_data/data by using readFileByReader\n\ntests[workbook.SheetNames[0]] = true;\n\ntests[workbook.Sheets[workbook.SheetNames[0]]['A1'].v] = true;",
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1510481490142,
+			"name": "read excel",
+			"description": "",
+			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
+			"responses": []
+		},
+		{
+			"id": "dd4bbfc4-9d70-a050-6d53-93575939a188",
+			"headers": "",
+			"headerData": [],
+			"url": "http://httpbin.org/get?a=b",
+			"queryParams": [
+				{
+					"key": "a",
+					"value": "b",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"preRequestScript": "",
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"version": 2,
+			"tests": "const uuid = hitchhiker.require('uuid');\n\ntests[uuid.v4()] = true;\n\ntests[uuid.v1()] = true;",
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1510481546798,
+			"name": "uuid",
+			"description": "",
+			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
+			"responses": []
+		},
+		{
+			"id": "e3a40f37-337b-65d5-6d06-18f967cd1abb",
+			"headers": "",
+			"headerData": [],
+			"url": "http://httpbin.org/get?a=b",
+			"queryParams": [
+				{
+					"key": "a",
+					"value": "b",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"preRequestScript": "hitchhiker.saveFile('test.txt', 'test file content'); // save content\n",
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"version": 2,
+			"tests": "const value = hitchhiker.readFile('test.txt');  // read file content, support custom reader by using readFileByReader\n\ntests[value] = true;\n\nhitchhiker.removeFile('test.json'); // remove file",
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1510481465887,
+			"name": "read / save / remove File",
+			"description": "",
+			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
+			"responses": []
+		},
+		{
+			"id": "f9bf371f-262b-f9b0-ad74-e829e8efb10a",
+			"headers": "",
+			"headerData": [],
+			"url": "http://httpbin.org/get?a={{value}}",
+			"queryParams": [
+				{
+					"key": "a",
+					"value": "{{value}}",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"preRequestScript": "hitchhiker.setEnvVariable('value', 'test'); // set env variable",
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"version": 2,
+			"tests": "const value = hitchhiker.getEnvVariable('value'); // get env variable\n\ntests[value] = true;\n\nhitchhiker.removeEnvVariable('value'); // remove env variable\n\ntests[hitchhiker.environment] = true; // get current selected env",
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1510481057584,
+			"name": "environment",
+			"description": "",
+			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
+			"responses": []
 		}
 	]
 }

@@ -155,7 +155,7 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                         onSelect={this.onSelectChanged}
                     >
                         {
-                            schedules.map(t =>
+                            schedules.filter(s => collections[s.collectionId]).map(t =>
                                 (
                                     <Menu.Item key={t.id} data={t}>
                                         <ScheduleItem

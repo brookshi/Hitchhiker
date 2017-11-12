@@ -34,6 +34,8 @@ export interface PostmanRecord extends DtoRecord {
 
     dataMode: string;
 
+    preRequestScript: string;
+
     order: string[];
 }
 

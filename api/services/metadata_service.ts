@@ -121,6 +121,7 @@ export class MetadataService {
         const folder = folders ? folders.find(f => f.order && !!f.order.find(o => o === dtoRecord.id)) : undefined;
         dtoRecord.pid = folder ? folder.id : '';
         dtoRecord.id = StringUtil.generateUID();
+        dtoRecord.prescript = r.preRequestScript;
         return dtoRecord;
     }
 
