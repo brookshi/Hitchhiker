@@ -37,7 +37,9 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
     private constructProjectLibs = () => {
         const isLib = this.props.type === ProjectFileTypes.lib;
         const { globalJS, globalData, projectJS, projectData } = this.props.projectFiles;
-        return _.orderBy(_.concat(_.values((isLib ? projectJS : projectData)[this.props.projectId] || {}).map(j => ({ ...j, isGlobal: false })), _.values(isLib ? globalJS : globalData).map(j => ({ ...j, isGlobal: true }))), ['createdDate'], ['desc']);
+        const projectDatas = _.orderBy(_.values((isLib ? projectJS : projectData)[this.props.projectId] || {}).map(j => ({ ...j, isGlobal: false })), ['createdDate'], ['desc']);
+        const globalDatas = _.orderBy(_.values(isLib ? globalJS : globalData).map(j => ({ ...j, isGlobal: true })), ['createdDate'], ['desc']);
+        return _.concat(projectDatas, globalDatas);
     }
 
     private delProjectLib = (plib: ProjectDisplayData) => {
@@ -75,12 +77,12 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
             <Modal
                 visible={isDlgOpen}
                 title={title}
-                width={860}
+                width={1060}
                 closable={true}
                 onCancel={onClose}
                 footer={[]}
             >
-                <div style={{ height: 600 }}>
+                <div>
                     <div style={{ height: 30 }}>
                         <Upload accept={isLib ? '.zip' : ''} action={action} multiple={false} name="projectfile" showUploadList={false} withCredentials={true} onChange={this.onUploadStatusChange}>
                             <Button size="small" icon="upload" >
@@ -88,54 +90,61 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
                             </Button>
                         </Upload>
                     </div>
-                    <ProjectLibTable
-                        className="project-table"
-                        bordered={true}
-                        size="middle"
-                        rowKey="file"
-                        dataSource={projectLibs}
-                        pagination={false}
-                    >
-                        <ProjectLibColumn
-                            title="Name"
-                            dataIndex="name"
-                        />
-                        <ProjectLibColumn
-                            title="Path"
-                            dataIndex="path"
-                            render={(text, record) => {
-                                const globalPathIndex = (text || '').indexOf('global_data');
-                                if (globalPathIndex < 0) {
-                                    return (text || '').replace(/\\/g, '/');
-                                } else {
-                                    return (text || '').substr(globalPathIndex + 12).replace(/\\/g, '/');
+                    <div style={{ height: 200, overflowY: 'auto' }}>
+                        <ProjectLibTable
+                            className="project-table"
+                            bordered={true}
+                            size="middle"
+                            rowKey="file"
+                            dataSource={projectLibs}
+                            pagination={false}
+                        >
+                            <ProjectLibColumn
+                                title="Name"
+                                dataIndex="name"
+                            />
+                            <ProjectLibColumn
+                                title="Path"
+                                dataIndex="path"
+                                render={(text, record) => {
+                                    const globalPathIndex = (text || '').indexOf('global_data');
+                                    if (globalPathIndex < 0) {
+                                        return (text || '').replace(/\\/g, '/');
+                                    } else {
+                                        return (text || '').substr(globalPathIndex + 12).replace(/\\/g, '/');
+                                    }
                                 }
-                            }
-                            }
-                        />
-                        {/* <ProjectLibColumn
+                                }
+                            />
+                            <ProjectLibColumn
+                                title="Origin"
+                                dataIndex="isGlobal"
+                                render={(text, record) => record.isGlobal ? 'global' : 'project'}
+                            />
+                            {/* <ProjectLibColumn
                             title="Size"
                             dataIndex="size"
                             render={(text, record) => (record.size > 1024 * 1024 ? `${_.round(record.size / (1024 * 1024), 2)} MB` : (record.size > 1024 ? `${_.round(record.size / 1024, 2)} KB` : `${text} B`))}
                         /> */}
-                        <ProjectLibColumn
-                            title="CreatedDate"
-                            dataIndex="createdDate"
-                            render={(text, record) => new Date(record.createdDate).toLocaleDateString()}
-                        />
-                        <ProjectLibColumn
-                            title="Action"
-                            key="action"
-                            width={140}
-                            render={(text, record) => (
-                                <span>
-                                    <Popconfirm title="Sure to delete?" okText="Yes" cancelText="No" onConfirm={() => this.delProjectLib(record)}>
-                                        <a>Delete</a>
-                                    </Popconfirm>
-                                </span>
-                            )}
-                        />
-                    </ProjectLibTable>
+                            <ProjectLibColumn
+                                title="CreatedDate"
+                                dataIndex="createdDate"
+                                render={(text, record) => new Date(record.createdDate).toLocaleDateString()}
+                            />
+                            <ProjectLibColumn
+                                title="Action"
+                                key="action"
+                                width={140}
+                                render={(text, record) => (
+                                    <span>
+                                        <Popconfirm title="Sure to delete?" okText="Yes" cancelText="No" onConfirm={() => this.delProjectLib(record)}>
+                                            <a>Delete</a>
+                                        </Popconfirm>
+                                    </span>
+                                )}
+                            />
+                        </ProjectLibTable>
+                    </div>
                 </div>
             </Modal>
         );
