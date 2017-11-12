@@ -8,6 +8,7 @@
         "defaultPassword": "123456",
         "tempUser": "test@test.test",
         "tempDelKey": "test",
+        "sync": true,
         "syncInterval": 30,
         "defaultHeaders": [
             "Accept:*/*",

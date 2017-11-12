@@ -203,7 +203,7 @@ export function* changePassword() {
 export function* syncUserData() {
     let syncStart = false;
     yield takeLatest(LoginSuccessType, function* (action: any) {
-        if (syncStart) {
+        if (syncStart || !action.value.result.sync) {
             return;
         }
         syncStart = true;

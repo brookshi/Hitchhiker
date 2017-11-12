@@ -75,6 +75,10 @@ export class Setting {
         return this._setting.schedule;
     }
 
+    get db() {
+        return this._setting.db;
+    }
+
     get scheduleDuration() {
         return process.env.HITCHHIKER_SCHEDULE_DURATION || this.schedule.duration;
     }
@@ -95,12 +99,12 @@ export class Setting {
         return process.env.HITCHHIKER_STRESS_UPDATE_INTERVAL || this._setting.stress.stressUpdateInterval;
     }
 
-    get syncInterval() {
-        return process.env.HITCHHIKER_SYNC_INTERVAL || this.app.syncInterval;
+    get sync() {
+        return process.env.HITCHHIKER_SYNC_ONOFF || this.app.sync;
     }
 
-    get db() {
-        return this._setting.db;
+    get syncInterval() {
+        return process.env.HITCHHIKER_SYNC_INTERVAL || this.app.syncInterval;
     }
 
     get defaultHeaders() {

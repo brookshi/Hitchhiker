@@ -82,7 +82,8 @@ export class UserProjectService {
             stresses,
             projectFiles,
             defaultHeaders: Setting.instance.defaultHeaders,
-            syncInterval: Setting.instance.syncInterval
+            syncInterval: Setting.instance.syncInterval,
+            sync: Setting.instance.sync
         };
     }
 }

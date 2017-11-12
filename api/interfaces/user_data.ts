@@ -25,4 +25,6 @@ export interface UserData {
     defaultHeaders: string;
 
     syncInterval: number;
+
+    sync: boolean;
 }
