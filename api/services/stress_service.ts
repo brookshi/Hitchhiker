@@ -143,13 +143,13 @@ export class StressService {
 
             if (paramArr.length === 0) {
                 record.headers.forEach(h => { if (h.isActive) { headers[h.key] = h.value; } });
-                requestBodyList.push(<any>{ ...record, headers, test: globalFunction + record.test });
+                requestBodyList.push(<any>{ ...record, headers, test: (globalFunction || '') + record.test });
             } else {
                 for (let p of paramArr) {
                     let newRecord = RecordRunner.applyReqParameterToRecord(record, p);
                     newRecord.headers.forEach(h => { if (h.isActive) { headers[h.key] = h.value; } });
                     const param = StringUtil.toString(p);
-                    requestBodyList.push(<any>{ ...newRecord, param, id: `${record.id}${param}`, name: `${newRecord.name}\n${param}`, headers, test: globalFunction + newRecord.test });
+                    requestBodyList.push(<any>{ ...newRecord, param, id: `${record.id}${param}`, name: `${newRecord.name}\n${param}`, headers, test: (globalFunction || '') + newRecord.test });
                 }
             }
         });

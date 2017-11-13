@@ -198,7 +198,6 @@ export class ProjectService {
         const collection = await CollectionService.getById(collectionId);
         if (collection) {
             return await ProjectService.getProject(collection.project.id, false, false);
-            //return {globalFunc: project ? project.globalFunction || '' : '', projectId: project ? project.id : ''};
         }
         return undefined;
     }
