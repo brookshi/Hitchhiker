@@ -75,6 +75,7 @@ Cookie will be lost if refresh page in browser, you should request cookie again 
 
 Pre Request Script will be run before sending request, you can read file or set environment variable in it.
 Test script will be run after response returned, you can safe file or add test case in it.
+global js lib that you can require it directly：`uuid`, `lodash`, `request`, `xlsx`, `crypto-js`，you also can upload the js package in zip or data to project if you want to use.
 
 These two script support this function:
 ``` javascript

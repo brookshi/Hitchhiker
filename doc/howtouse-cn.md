@@ -76,6 +76,7 @@
 
 Pre Request Script是在request发出前执行的，你可以在这里读写文件、变量，甚至发出子请求等。
 Test的脚本是在请求返回后执行，可以在这里读写文件、变量以及做测试校验。
+内置的脚本有：`uuid`, `lodash`, `request`, `xlsx`, `crypto-js`，你可以在project里上传想要使用的脚本或数据。
 
 这两个脚本都支持这些函数：
 ``` javascript
