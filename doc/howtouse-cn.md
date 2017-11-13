@@ -134,6 +134,7 @@ environment         // get current selected environment name
 3. 请求失败的状态，包括 No Response, Server Error(500), Test失败 这三种情况
 
 **压力测试只支持在test中使用ES5语法**
+**压力测试目前不支持Pre Request Script和v0.4的新函数**
 
 ### 数据同步
 

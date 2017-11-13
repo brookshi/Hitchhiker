@@ -129,6 +129,7 @@ Hitchhiker will display real-time state of stress test task, include workers, re
 3. request failed status, include No Response, Server Error(500), Test Failed.
 
 **Stress Test Only support using ES5 in test**
+**Stress Test Does not support Pre Request Script and new functions of v0.4**
 
 ### Sync data automatically
 
