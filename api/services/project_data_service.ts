@@ -73,6 +73,9 @@ export class ProjectDataService {
             this.unZipJS(pid, file);
         } else {
             const projectFile = this.getProjectFile(pid, file, ProjectDataService.dataFolderName);
+            if (!this._pDataFiles[pid]) {
+                this._pDataFiles[pid] = {};
+            }
             this._pDataFiles[pid][file] = { name: file, path: projectFile, createdDate: new Date(), size: 0 };
         }
     }

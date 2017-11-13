@@ -221,7 +221,7 @@ function workerUpdated(addr: string, status: WorkerStatus) {
         if (_.values(workers).every(w => w.status === WorkerStatus.ready)) {
             Log.info(`stress - all workers ready`);
             sendMsgToWorkers({ type: StressMessageType.start });
-            userUpdateTimer = setInterval(() => {
+            userUpdateTimer = window.setInterval(() => {
                 sendMsgToUser(StressMessageType.runResult, currentStressRequest, buildStressRunResult());
             }, Setting.instance.stressUpdateInterval);
         }

@@ -136,11 +136,13 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
                                 key="action"
                                 width={140}
                                 render={(text, record) => (
-                                    <span>
-                                        <Popconfirm title="Sure to delete?" okText="Yes" cancelText="No" onConfirm={() => this.delProjectLib(record)}>
-                                            <a>Delete</a>
-                                        </Popconfirm>
-                                    </span>
+                                    record.isGlobal ? '' : (
+                                        <span>
+                                            <Popconfirm title="Sure to delete?" okText="Yes" cancelText="No" onConfirm={() => this.delProjectLib(record)}>
+                                                <a>Delete</a>
+                                            </Popconfirm>
+                                        </span>
+                                    )
                                 )}
                             />
                         </ProjectLibTable>
