@@ -1,3 +1,31 @@
+# 0.4 2017-11-13
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/pre_request_script.PNG)
+
+## Features:
+* add pre request script.
+* #29 project folder system, upload js lib or data to project and then use it in script.
+* #22 schedule support run in hour or minute.
+* #34 email custom notification interface.
+* #24 expose schedule run now interface for external applications.
+
+# Bugs:
+* #24 schedule sort request invalid.
+* sync may override user data
+* env edit dialog will be clear when sync data
+
+## Features:
+* 增加 pre request script。
+* #29 项目文件夹系统，支持上传js或数据文件到文件夹并可以在脚本里使用它们。
+* #22 schedule支持以小时或分钟为单位。
+* #34 支持自定义邮件发送接口。
+* #24 开放schedule的run now接口以便其他程序调用。
+
+# Bugs:
+* #24 schedule的顺序执行无效
+* sync有时会覆盖用户已经更改的数据
+* sync时环境变量编辑对应框里的内容会被清掉
+
+
 # 0.3 2017-10-30
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/sync.gif)
 

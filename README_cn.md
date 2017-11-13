@@ -1,6 +1,6 @@
 # <img src='https://raw.githubusercontent.com/brookshi/Hitchhiker/master/client/public/hitchhiker-title-dark.png' height='20'/>
 
-Hitchhiker 是一款开源的 Restful Api 集成测试工具，支持Schedule, 数据对比，压力测试，可以轻松部署到本地，和你的team成员一起管理Api。
+Hitchhiker 是一款开源的 Restful Api 测试工具，支持Schedule, 数据对比，压力测试，支持上传脚本定制请求，可以轻松部署到本地，和你的team成员一起管理Api。
 
 [English Read Me](README_en.md)
 
@@ -13,6 +13,7 @@ Hitchhiker 是一款开源的 Restful Api 集成测试工具，支持Schedule, �
 * Team协作开发Api
 * Api历史修改记录及diff
 * 支持多环境变量及运行时变量，可以处理Api依赖问题
+* 超强脚本，支持require，可以上传JS包，读excel，加解密，没有做不到，只有想不到
 * 参数化请求，把query/body里的变化点提取出来，构建出参数列表，极大减少request的数量
 * 支持Schedule及批量run
 * 不同环境下的请求数据对比 (eg: stage vs product)
@@ -31,6 +32,7 @@ Hitchhiker 是一款开源的 Restful Api 集成测试工具，支持Schedule, �
 ## 展示
 
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/collection.png' width='800'/>
+<img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/pre_request_script.PNG' width='800'/>
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/header.gif' width='800'/>
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/history.png' width='800'/>
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/parameters.gif' width='800'/>

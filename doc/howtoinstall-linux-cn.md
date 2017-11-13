@@ -1,4 +1,6 @@
 
+#### 系统的参数可以参考：[app setting](app-setting.md), 环境变量可以写到pm2.json里
+
 1. 安装nodejs 7.10+, 并更新npm到最新`npm install npm -g`
 
 2. 安装`mysql 5.7+` ，设置用户名 `root` 密码 `hitchhiker888` 

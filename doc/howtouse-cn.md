@@ -50,7 +50,7 @@
 
 ### 初次使用
 
-部署成功后访问你设置的ip:port，首先需要注册，注册成功后登录系统，系统会给所有人分配一个默认的`Project`: `Me`和`Collection`: `Sample`，`Me`这个Project不能添加其他成员，专门给自己用的，自己做测试的时候可以把`Collection`和`Request`建在`Me`这个Project下。`Sample`这个Collection是个例子，演示了一些基本用法（使用时注意先选择右上角的环境）。
+部署成功后访问你设置的ip:port，首先需要注册，注册成功后登录系统，系统会给所有人分配一个默认的`Project`: `Me`和`Collection`: `Sample`，`Me`这个Project不能添加其他成员，专门给自己用的，自己做测试的时候可以把`Collection`和`Request`建在`Me`这个Project下。`Sample`这个Collection是个例子，演示了一些基本用法。
 
 ### Request:
 
@@ -71,7 +71,33 @@
 
 上面提到的`Environment`本质是就是一组变量的集合，变量在`Environment`里定义好后就可以在`Request`的`url`, `header`, `body`, `test`里使用，使用方法是用`{{}}`括起来，比如：`{{host}}`，这个`host`就是`Environment`里定义的变量`key`，在请求发送前系统会把`{{key}}`转换成对应的`value`。
 
-有时我们发送的请求是有依赖的，比如依赖前一个请求的返回数据，这时可以用到另一种运行时变量，这个变量是在`test`里定义的，定义格式：`$variables$.r_id = responseObj.recordId;`，也就是把变量定义在`$variables$`下面，这样`r_id`变量就可以给其他请求用了，比如：`http://{{host}}/api/test?id={{r_id}}`。这种变量的生命周期和`Cookie`一样，且是全局的，因此可能会带来一些混乱，解决办法是用好的命名方式隔离开。
+
+### Pre Request Script 和 Test
+
+Pre Request Script是在request发出前执行的，你可以在这里读写文件、变量，甚至发出子请求等。
+Test的脚本是在请求返回后执行，可以在这里读写文件、变量以及做测试校验。
+
+这两个脚本都支持这些函数：
+``` javascript
+require             // require some js lib like 'lodash', 'request' etc..
+readFile            // read file in project/global
+readFileByReader    // read file by using custom reader in project/global
+saveFile            // save file to project
+removeFile          // remove project file
+setEnvVariable      // set environment variable
+getEnvVariable      // get environment variable
+removeEnvVariable   // remove environment variable
+environment         // get current selected environment name
+```
+下面这些只在Test里支持：
+``` javascript
+`responseBody`: the response's body
+`responseObj`：json object of this response's body
+`responseHeaders`: response's headers
+`responseTime`: request elapse time (ms)
+`responseCode.code`: response status
+`responseCode.name`: response message       
+```
 
 ### Localhost mapping
 
@@ -82,6 +108,7 @@
 `Schedule`可以选择要跑的`Collection`，`Collection`里的`Request`是否有依赖，有依赖的话需要按顺序跑，没依赖是并行跑的，会比较快；然后选择在哪个环境下跑，以及是否需要与另一个环境做数据对比，对比时因为有时不希望所有数据都做对比，比如请求一个token，结果肯定不一样，对比也没意义，这时可以`unmatch`那个request。
 
 `Schedule`除了可以定时跑外还可以用菜单里的`Run now`，这是随时可以跑的，也可以实时看到跑的过程 (基于WebSocket)。
+并且`Run now`有一个接口可供外部程序调用，url是: `http://ip:port/api/schedule/{schedule_id}/run`, 记得把http authorization header传过去.
 
 ### 数据对比
 
@@ -111,3 +138,8 @@
 
 同一个Project下的Collection，数据会自动同步给Project的成员，而不用手动刷新。
 自动同步的时间间隔默认为30s，可以在appconfig.json文件中修改(syncInterval)，也可以在安装时写入环境变量HITCHHIKER_SYNC_INTERVAL来控制。
+
+### Email通知接口
+
+在appconfig.json里设置mail.custom:true, mail.customApi:{your mail api} 或 设置环境变量: HITCHHIKER_MAIL_CUSTOM = true, HITCHHIKER_MAIL_API='your mail api'.
+Hitchhiker会post {target, subject, content} 到你的邮箱接口，你可以使用类似nodemailer之类轻松搭个出来。

@@ -1,5 +1,7 @@
 ## dependencies: docker, docker-compose
 
+#### app setting reference to: [app setting](app-setting.md), environment variable could be set in docker-compose.yml.
+
 ### Below is a sample:
 ``` bash
 

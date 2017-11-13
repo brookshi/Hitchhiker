@@ -1,6 +1,6 @@
 # <img src='https://raw.githubusercontent.com/brookshi/Hitchhiker/master/client/public/hitchhiker-title-dark.png' height='20'/>
 
-Hitchhiker Api is a Restful Api integrated testing tool that support Schedule, Response comparsion, Stress Test etc. You can deploy it in your local server. It make easier to manage Api with your team.
+Hitchhiker Api is a Restful Api integrated testing tool that support Schedule, Response comparsion, Stress Test, support upload js file to hook request, easy to deploy it in your local server. It make easier to manage Api with your team.
 
 [中文 Read Me](README_cn.md)
 
@@ -12,6 +12,7 @@ Go to [http://www.hitchhiker-api.com](http://www.hitchhiker-api.com) for test，
 * Api collaboration development with team
 * Api history
 * Multiple environments and Runtime variables support, easy to handle api dependence
+* powerful script, support requiring any js lib which upload to project, read excel, cryptographic, no can't do
 * Request parameterization, include ManytoMany and OnetoOne, now you can use a request to handle multple situation like various query string, body
 * Schedule and run batch
 * Make a comparison for Api response between two different environments (eg: stage vs product)
@@ -30,6 +31,7 @@ Go to [http://www.hitchhiker-api.com](http://www.hitchhiker-api.com) for test，
 ## Display
 
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/collection.png' width='800'/>
+<img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/pre_request_script.PNG' width='800'/>
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/header.gif' width='800'/>
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/history.png' width='800'/>
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/parameters.gif' width='800'/>

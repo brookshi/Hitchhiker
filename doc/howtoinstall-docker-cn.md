@@ -1,5 +1,7 @@
 ## 首先要确保你的机器上安装有docker及docker-compose
 
+#### 系统的参数可以参考：[app setting](app-setting.md), 环境变量可以写到docker-compose.yml里
+
 ### 参考使用下面命令，一步一步安装:
 ``` bash
 

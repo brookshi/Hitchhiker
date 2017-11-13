@@ -51,7 +51,7 @@ It's more easier if you are familiar with Postman.
 
 ### First use
 
-After deployed, enter ip:port in chrome/firefox to access Hitchhiker. First you should register and login, then you will get a default `Project`: `Me` and `Collection`: `Sample`，`Me` Project is used for test by yourself, this project can't invite other people. `Sample` Collection is a `Collection` sample, used to show the basic usage of `Collection` (**should select environment before send request**).
+After deployed, enter ip:port in chrome/firefox to access Hitchhiker. First you should register and login, then you will get a default `Project`: `Me` and `Collection`: `Sample`，`Me` Project is used for test by yourself, this project can't invite other people. `Sample` Collection is a `Collection` sample, used to show the basic usage of `Collection` .
 
 ### Request:
 
@@ -71,7 +71,32 @@ Cookie will be lost if refresh page in browser, you should request cookie again 
 
 `Environment` is essentially a collection of variables. After set key-value variables in `Environment`, you can use it in your request's `url`, `header`, `body`, `test` with format `{{key}}`，the `{{key}}` will be replaced by `value`.
 
-In some cases, Api may depend on the response of another Api. for this case Hitchhiker use another runtime variable defined in `Test` to handle it, you can set it with format：`$variables$.r_id = responseObj.recordId;`, that is, you can use the variables that defined in `$variables$` in your other requests. eg: `http://{{host}}/api/test?id={{r_id}}`. The life cycle of this variable is as same as `Cookie`, and it's global, all requests can use it.
+### Pre Request Script & Test
+
+Pre Request Script will be run before sending request, you can read file or set environment variable in it.
+Test script will be run after response returned, you can safe file or add test case in it.
+
+These two script support this function:
+``` javascript
+require             // require some js lib like 'lodash', 'request' etc..
+readFile            // read file in project/global
+readFileByReader    // read file by using custom reader in project/global
+saveFile            // save file to project
+removeFile          // remove project file
+setEnvVariable      // set environment variable
+getEnvVariable      // get environment variable
+removeEnvVariable   // remove environment variable
+environment         // get current selected environment name
+```
+Some special obj for Test script:
+``` javascript
+`responseBody`: the response's body
+`responseObj`：json object of this response's body
+`responseHeaders`: response's headers
+`responseTime`: request elapse time (ms)
+`responseCode.code`: response status
+`responseCode.name`: response message       
+```
 
 ### Localhost mapping
 
@@ -81,6 +106,7 @@ In some cases, Api may depend on the response of another Api. for this case Hitc
 
 Auto run `Collection` in `Schedule`, you need sort requests if there are dependencies between them, and you can select environment and comparing environment.
 By the way, you can use `Run now` in menu to run it at any time, and will receive real-time messages of request (base on WebSocket).
+There is a `Run now` interface exposed for external applications, the url is: `http://ip:port/api/schedule/{schedule_id}/run`, remember pass http authorization header.
 
 ### Compare response 
 
@@ -107,3 +133,8 @@ Hitchhiker will display real-time state of stress test task, include workers, re
 
 Auto sync Collectio data to all team members.
 Default interval is 30s，you can change in appconfig.json (syncInterval)，or set env variable while installing (HITCHHIKER_SYNC_INTERVAL).
+
+### Email notification interface
+
+There is a email notification interface exposed, set it in appconfig.json (mail.custom:true, mail.customApi:{your mail api}) or environment variable: HITCHHIKER_MAIL_CUSTOM = true, HITCHHIKER_MAIL_API='your mail api'.
+Hitchhiker will post {target, subject, content} to the external api.
