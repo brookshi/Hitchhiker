@@ -28,6 +28,21 @@ Go to [http://www.hitchhiker-api.com](http://www.hitchhiker-api.com) for test，
 
 [Hitchhiker-Node](https://github.com/brookshi/Hitchhiker-Node)
 
+## Different with Postman
+
+| | Hitchhiker | Postman 
+---------|----------|---------
+Collaboration | ✔, auto sync | Need Share，Pro support but not free
+Script | ✔ Powerful，could upload js lib | ✔ only can use built-in lib
+Schedule | ✔ | ✔, use Newman and Jenkins 
+Response comparison | ✔ | ✘
+Stress Test | ✔ | ✘ 
+Param Req | ✔ | ✘ 
+Document | ✘, powerful doc system in plan | ✔，weak 
+Api Mock | ✘ | ✔
+Detail | Need improve | Strong 
+security | Strong，deploy in local | Weak, data will upload to server
+
 ## Display
 
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/collection.png' width='800'/>

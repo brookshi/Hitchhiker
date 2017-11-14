@@ -29,6 +29,22 @@ Hitchhiker 是一款开源的 Restful Api 测试工具，支持Schedule, 数据�
 
 [Hitchhiker-Node](https://github.com/brookshi/Hitchhiker-Node)
 
+
+## 对比Postman
+
+| | Hitchhiker | Postman 
+---------|----------|---------
+协作性 | ✔ | 通过Share，Pro收费 
+脚本 | ✔ 强，可以上传脚本 | ✔ 一般，只能用内置的脚本库 
+Schedule | ✔ | ✔ 需要借助Newman, Jenkins 
+数据对比 | ✔ | ✘ 
+压力测试 | ✔ | ✘ 
+参数化请求 | ✔ | ✘ 
+文档 | ✘ 模板化的文档在计划中 | ✔，固定格式 
+Api Mock | ✘ | ✔ 
+细节，稳定性 | 一般，待加强 | 强 
+安全性 | 强，本地部署 | 弱，数据上传 
+
 ## 展示
 
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/collection.png' width='800'/>
