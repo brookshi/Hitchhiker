@@ -73,7 +73,7 @@ export function* saveStress() {
     yield takeEvery(SaveStressType, function* (action: any) {
         const stress = { ...action.value.stress };
         Reflect.deleteProperty(stress, 'stressRecords');
-        const channelAction = syncAction({ type: SaveStressType, method: action.value.isNew ? HttpMethod.POST : HttpMethod.PUT, url: Urls.getUrl(`stress`), body: stress });
+        const channelAction = syncAction({ type: SaveStressType, method: action.value.isNew ? HttpMethod.POST : HttpMethod.PUT, url: Urls.getUrl(`stress`), body: { ...stress, stressRecords: [] } });
         yield put(channelAction);
     });
 }

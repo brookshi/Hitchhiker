@@ -24,7 +24,7 @@ export default function middleware(context: Koa) {
                 }
             }),
             sessionHandle(),
-            Bodyparser(),
+            Bodyparser({ jsonLimit: '50mb' }),
             ctrlRouter.router('../build/controllers', 'api'),
             routeFailed(),
         ]

@@ -55,10 +55,10 @@ export function* sendRequest() {
         }
         let runResult: any = {};
         if (isParamReq) {
-            yield all(Object.keys(value.record).map(k => put(actionCreator(SendRequestForParamType, { param: k, content: { environment: action.value.environment, record: value.record[k] } }))));
+            yield all(Object.keys(value.record).map(k => put(actionCreator(SendRequestForParamType, { param: k, content: { environment: action.value.environment, record: { ...value.record[k], history: [] } } }))));
         } else {
             try {
-                const res = yield call(RequestManager.post, Urls.getUrl(`record/run`), value);
+                const res = yield call(RequestManager.post, Urls.getUrl(`record/run`), { ...value, record: { ...value.record, history: [] } });
                 if (res.status === 403) {
                     yield put(actionCreator(SessionInvalidType));
                 }
@@ -79,7 +79,7 @@ export function* sendRequestForParam() {
         const value = action.value;
         let runResult: any = {};
         try {
-            const res = yield call(RequestManager.post, Urls.getUrl(`record/run`), value.content);
+            const res = yield call(RequestManager.post, Urls.getUrl(`record/run`), { ...value.content, record: { ...value.content.record, history: [] } });
             if (res.status === 403) {
                 yield put(actionCreator(SessionInvalidType));
             }
@@ -104,7 +104,7 @@ export function* saveAsRecord() {
 
 function* pushSaveRecordToChannel(action: any) {
     const method = action.value.isNew ? HttpMethod.POST : HttpMethod.PUT;
-    const channelAction = syncAction({ type: SaveRecordType, method: method, url: Urls.getUrl(`record`), body: action.value.record });
+    const channelAction = syncAction({ type: SaveRecordType, method: method, url: Urls.getUrl(`record`), body: { ...action.value.record, history: [] } });
     yield put(channelAction);
 }
 
@@ -117,7 +117,7 @@ export function* deleteRecord() {
 
 export function* moveRecord() {
     yield takeEvery(MoveRecordType, function* (action: any) {
-        const channelAction = syncAction({ type: MoveRecordType, method: HttpMethod.PUT, url: Urls.getUrl(`record`), body: action.value.record });
+        const channelAction = syncAction({ type: MoveRecordType, method: HttpMethod.PUT, url: Urls.getUrl(`record`), body: { ...action.value.record, history: [] } });
         yield put(channelAction);
     });
 }

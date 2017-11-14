@@ -18,7 +18,7 @@ export const RunScheduleFulfillType = 'run schedule completely';
 
 export function* saveSchedule() {
     yield takeEvery(SaveScheduleType, function* (action: any) {
-        const channelAction = syncAction({ type: SaveScheduleType, method: action.value.isNew ? HttpMethod.POST : HttpMethod.PUT, url: Urls.getUrl(`schedule`), body: action.value.schedule });
+        const channelAction = syncAction({ type: SaveScheduleType, method: action.value.isNew ? HttpMethod.POST : HttpMethod.PUT, url: Urls.getUrl(`schedule`), body: { ...action.value.schedule, scheduleRecords: [] } });
         yield put(channelAction);
     });
 }
