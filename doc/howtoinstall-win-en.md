@@ -1,7 +1,7 @@
 
 #### app setting reference to：[app setting](app-setting.md), environment variable could be set in pm2.json
 
-1. install nodejs 7.10+, update npm to latest`npm install npm -g`
+1. install nodejs 7.60+, recommend use LTS (8.9), update npm to latest`npm install npm -g`
 
 2. install `mysql 5.7+` with name `root` password `hitchhiker888` 
 
