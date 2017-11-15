@@ -1,3 +1,9 @@
+# 0.4.1 2017-11-15
+
+## Bugs:
+* #40 post data more than 1M will cause exception: Payload Too Large
+
+
 # 0.4 2017-11-13
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/pre_request_script.PNG)
 
