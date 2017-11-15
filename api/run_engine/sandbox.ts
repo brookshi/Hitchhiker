@@ -7,6 +7,18 @@ import { Setting } from '../utils/setting';
 import { ProjectDataService } from '../services/project_data_service';
 import { ProjectData } from '../interfaces/dto_project_data';
 import { ProjectFolderType } from '../common/string_type';
+import { Record } from '../models/record';
+
+class SandboxRequest {
+
+    url: string;
+
+    method: string;
+
+    headers: _.Dictionary<string>;
+
+    body: string;
+}
 
 export class Sandbox {
 
@@ -18,11 +30,24 @@ export class Sandbox {
 
     variables: any;
 
+    request: SandboxRequest;
+
     exportObj = { content: Sandbox.defaultExport };
 
-    constructor(private projectId: string, private vid: string, private envId: string, private envName: string) {
+    constructor(private projectId: string, private vid: string, private envId: string, private envName: string, record?: Record) {
         this.initVariables();
         this._allProjectJsFiles = ProjectDataService.instance.getProjectAllJSFiles(projectId);
+        if (record) {
+            this.request = {
+                url: record.url,
+                method: record.method || 'GET',
+                body: record.body,
+                headers: {}
+            };
+            record.headers.filter(h => h.isActive).forEach(h => {
+                this.request.headers[h.key] = h.value;
+            });
+        }
     }
 
     private initVariables() {
@@ -87,6 +112,10 @@ export class Sandbox {
 
     removeEnvVariable(key: string) {
         Reflect.deleteProperty(this.variables, key);
+    }
+
+    setRequest(r: any) {
+        this.request = r;
     }
 
     get environment() {

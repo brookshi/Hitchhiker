@@ -89,7 +89,7 @@ export class RecordRunner {
         if (record.prescript) {
             const prescriptWithVar = await VariableService.applyVariable(environmentId, record.prescript);
             const { globalFunction, id: pid } = (await ProjectService.getProjectByCollectionId(record.collection.id)) || { globalFunction: '', id: '' };
-            prescriptResult = await ScriptRunner.prerequest(pid, uid || vid, environmentId, envName, globalFunction, prescriptWithVar);
+            prescriptResult = await ScriptRunner.prerequest(pid, uid || vid, environmentId, envName, globalFunction, prescriptWithVar, record);
             variables = UserVariableManager.getVariables(uid || vid, environmentId);
         }
 

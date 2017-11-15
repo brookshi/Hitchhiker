@@ -8,14 +8,15 @@ import { Sandbox } from './sandbox';
 import * as freeVM from 'vm';
 import { ResObject } from '../common/res_object';
 import { Log } from '../utils/log';
+import { Record } from '../models/record';
 const { NodeVM: safeVM } = require('vm2');
 
 export class ScriptRunner {
 
-    static async prerequest(projectId: string, vid: string, envId: string, envName: string, globalFunc: string, code: string): Promise<ResObject> {
+    static async prerequest(projectId: string, vid: string, envId: string, envName: string, globalFunc: string, code: string, record: Record): Promise<ResObject> {
         let hitchhiker, rst;
         try {
-            hitchhiker = new Sandbox(projectId, vid, envId, envName);
+            hitchhiker = new Sandbox(projectId, vid, envId, envName, record);
         } catch (ex) {
             rst = { success: false, message: ex };
         }
