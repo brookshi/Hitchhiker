@@ -246,14 +246,14 @@ export class RecordRunner {
             variables: {},
             export: testRst.export,
             elapsed: elapsed,
-            headers: pRes.headers || [],
+            headers: pRes.headers || {},
             cookies: pRes.headers ? pRes.headers['set-cookie'] : [],
             status: pRes.statusCode,
             statusMessage: pRes.statusMessage
         };
         if (needPipe) {
             const headers = pRes.headers;
-            headers['content-length'] = JSON.stringify(finalRes).length;
+            headers['content-length'] = JSON.stringify(finalRes).length + '';
             pipeRes.writeHead(pRes.statusCode, pRes.statusMessage, headers);
         }
 

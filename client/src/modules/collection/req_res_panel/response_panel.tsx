@@ -66,14 +66,18 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
         cookies.map((cookie, index) => <div key={`res-cookie-${index}`}> {cookie} </div>)
     )
 
-    private tabPanelHeaders = (headers: { [key: string]: string; }) => (
+    private tabPanelHeaders = (headers: { [key: string]: string | string[] }) => (
         <ul className="res-tabpanel-list">
             {
-                headers ? Object.keys(headers).map(key => (
-                    <li key={`res-header-${key}`}>
-                        <span className="tabpanel-headers-key">{key}: </span>
-                        <span>{headers[key]}</span>
-                    </li>)
+                headers ? Object.keys(headers).map(key => {
+                    const value = headers[key];
+                    return (
+                        <li key={`res-header-${key}`}>
+                            <span className="tabpanel-headers-key">{key}: </span>
+                            <span>{typeof value === 'string' ? value : value.join(';')}</span>
+                        </li>
+                    );
+                }
                 ) : ''
             }
         </ul>
@@ -117,7 +121,14 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
         tests = tests || [];
         headers = headers || [];
 
-        const value = StringUtil.beautify(body, headers['Content-Type']);
+        let contentType = 'json';
+        const contentTypeValue = headers['content-type'];
+        if (typeof contentTypeValue === 'string') {
+            contentType = contentTypeValue;
+        } else if (contentTypeValue.length > 0) {
+            contentType = contentTypeValue[0];
+        }
+        const value = StringUtil.beautify(body, contentType);
         const testKeys = Object.keys(tests);
         const successTestLen = Object.keys(tests).filter(t => tests[t]).length;
         const testsTag = testKeys.length > 0 ? `${successTestLen}/${Object.keys(tests).length}` : '';

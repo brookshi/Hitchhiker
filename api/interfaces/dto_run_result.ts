@@ -27,7 +27,7 @@ export interface RunResult {
 
     duration?: Duration;
 
-    headers: { [key: string]: string };
+    headers: { [key: string]: string | string[] };
 
     cookies: string[];
 
