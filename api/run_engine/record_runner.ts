@@ -11,6 +11,7 @@ import { UserVariableManager } from '../services/user_variable_manager';
 import { ResObject } from '../common/res_object';
 import { VariableService } from '../services/variable_service';
 import { EnvironmentService } from '../services/environment_service';
+import { HeaderService } from "../services/header_service";
 
 type BatchRunResult = RunResult | _.Dictionary<RunResult>;
 
@@ -81,7 +82,7 @@ export class RecordRunner {
 
     private static async runRecordWithVW(record: Record, environmentId: string, envName: string, uid: string, vid: string, param: any, serverRes?: ServerResponse, trace?: (msg: string) => void) {
 
-        let prescriptResult = { success: true, message: '' };
+        let prescriptResult: ResObject = { success: true, message: '' };
         let variables: any = UserVariableManager.getVariables(uid || vid, environmentId);
         const cookies: _.Dictionary<string> = UserVariableManager.getCookies(uid || vid, environmentId);
 
@@ -90,6 +91,16 @@ export class RecordRunner {
             const prescriptWithVar = await VariableService.applyVariable(environmentId, record.prescript);
             const { globalFunction, id: pid } = (await ProjectService.getProjectByCollectionId(record.collection.id)) || { globalFunction: '', id: '' };
             prescriptResult = await ScriptRunner.prerequest(pid, uid || vid, environmentId, envName, globalFunction, prescriptWithVar, record);
+            if (prescriptResult.success) {
+                record = { ...record, ...prescriptResult.result, headers: [] };
+                _.keys(prescriptResult.result.headers).forEach(k => {
+                    record.headers.push(HeaderService.fromDto({
+                        isActive: true,
+                        key: k,
+                        value: prescriptResult.result.headers[k]
+                    }));
+                });
+            }
             variables = UserVariableManager.getVariables(uid || vid, environmentId);
         }
 

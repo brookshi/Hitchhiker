@@ -26,6 +26,8 @@ interface CollectionItemProps {
     moveToCollection(record: DtoRecord, collectionId?: string);
 
     shareCollection(collectionId: string);
+
+    editPreRequestScript();
 }
 
 interface CollectionItemState {
@@ -76,6 +78,9 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
                 {/*<Menu.Item key="share">
                     <Icon type="share-alt" /> Share
                 </Menu.Item>*/}
+                <Menu.Item key="editPreRequestScript">
+                    <Icon type="code-o" /> Pre Request Script for all requests
+                </Menu.Item>
                 <Menu.Item key="delete">
                     <Icon type="delete" /> Delete
                 </Menu.Item>
@@ -100,6 +105,8 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
     createFolder = () => this.props.createRecord(createDefaultFolder(this.props.collection.id));
 
     createRecord = () => this.props.createRecord({ ...getDefaultRecord(false), collectionId: this.props.collection.id, id: StringUtil.generateUID() });
+
+    editPreRequestScript = () => this.props.editPreRequestScript();
 
     private checkTransferFlag = (e, flag) => {
         return e.dataTransfer.types.indexOf(flag) > -1;
