@@ -1,3 +1,9 @@
+# 0.4.2 2017-11-18
+
+## Bugs:
+* #50 stress test exception, error setInterval
+
+
 # 0.4.1 2017-11-15
 
 ## Bugs:
