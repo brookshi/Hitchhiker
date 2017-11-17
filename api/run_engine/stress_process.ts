@@ -38,7 +38,11 @@ Log.info('stress process start');
 Log.info(`stress - create socket server`);
 const wsServer = new WS.Server({ port: Setting.instance.stressPort });
 
-let userUpdateTimer: number;
+let userUpdateTimer: NodeJS.Timer;
+
+process.on('uncaughtException', (err) => {
+    Log.error(err);
+});
 
 process.on('message', (msg: StressRequest) => {
     Log.info(`stress - user message: ${JSON.stringify(msg)}`);
@@ -221,7 +225,7 @@ function workerUpdated(addr: string, status: WorkerStatus) {
         if (_.values(workers).every(w => w.status === WorkerStatus.ready)) {
             Log.info(`stress - all workers ready`);
             sendMsgToWorkers({ type: StressMessageType.start });
-            userUpdateTimer = window.setInterval(() => {
+            userUpdateTimer = setInterval(() => {
                 sendMsgToUser(StressMessageType.runResult, currentStressRequest, buildStressRunResult());
             }, Setting.instance.stressUpdateInterval);
         }
