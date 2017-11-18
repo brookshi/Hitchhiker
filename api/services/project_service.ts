@@ -56,7 +56,7 @@ export class ProjectService {
 
     static async getProjects(ids: string[], needOwner: boolean = true, needCollection: boolean = true, needUser: boolean = false, needEnv: boolean = false): Promise<Project[]> {
         if (!ids || ids.length === 0) {
-            throw new Error('at least a project');
+            return [];
         }
 
         const connection = await ConnectionManager.getInstance();

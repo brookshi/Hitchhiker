@@ -135,6 +135,10 @@ export class Setting {
         return process.env.HITCHHIKER_MAIL_API || this.mail.customApi;
     }
 
+    get inviteMemberDirectly() {
+        return this.getValidBoolean(process.env.HITCHHIKER_APP_INVITE_DIRECTLY, this.app.inviteMemberDirectly);
+    }
+
     private getValidNum(envVar: any, spare: number) {
         return envVar === undefined ? spare : parseInt(envVar);
     }

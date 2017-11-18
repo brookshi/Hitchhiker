@@ -17,7 +17,8 @@
         ],
         "scriptTimeout": 60000,
         "safeVM": false,
-        "enableUpload": true
+        "enableUpload": true,
+        "inviteMemberDirectly": true
     },
     "db": {
         "host": "localhost",

@@ -140,10 +140,32 @@ export default class ProjectController extends BaseController {
         }
 
         const user = (<any>ctx).session.user;
-        const results = await Promise.all(emailArr.map(email => MailService.projectInviterMail(email, user, project)));
-        const success = results.every(rst => !rst.err);
+        let result;
+        if (Setting.instance.inviteMemberDirectly) {
+            const results = await Promise.all(emailArr.map(email => this.joinProjectDirectly(email, project, user.email)));
+            result = { success: results.every(rst => rst.success), message: results.filter(r => !r.success).map(rst => rst.message).join(';') };
+        } else {
+            const results = await Promise.all(emailArr.map(email => MailService.projectInviterMail(email, user, project)));
+            const success = results.every(rst => !rst.err);
+            result = { success: success, message: results.map(rst => rst.err).join(';') };
+        }
+        return result;
+    }
 
-        return { success: success, message: results.map(rst => rst.err).join(';') };
+    private async joinProjectDirectly(email: string, project: Project, inviter: string): Promise<ResObject> {
+        let targetUser = await UserService.getUserByEmail(email, true);
+        if (!targetUser) {
+            const result = await UserService.createUserByEmail(email, true);
+            if (!result.success) {
+                return result;
+            }
+            targetUser = result.result;
+        }
+
+        targetUser.projects.push(project);
+        await UserService.save(targetUser);
+        MailService.joinProjectMail(inviter, email, project.name);
+        return { success: true, message: '' };
     }
 
     @PUT('/project/:projectId/globalfunc')
