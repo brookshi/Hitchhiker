@@ -91,7 +91,6 @@ export class RecordRunner {
         let variables: any = UserVariableManager.getVariables(uid || vid, environmentId);
         const cookies: _.Dictionary<string> = UserVariableManager.getCookies(uid || vid, environmentId);
         const commonPreScript = record.collection ? record.collection.commonPreScript : '';
-        const start = process.hrtime();
         if (commonPreScript || record.prescript) {
             const data = await RecordRunner.runPreScript(record, commonPreScript, environmentId, envName, uid, vid);
             prescriptResult = data.prescriptResult || prescriptResult;
@@ -104,7 +103,7 @@ export class RecordRunner {
         record = RecordRunner.applyCookies(record, cookies);
 
         const option = await RequestOptionAdapter.fromRecord(environmentId, record, uid);
-        const result = await RecordRunner.runRecord(start, option, environmentId, envName, record, prescriptResult, uid, vid, serverRes);
+        const result = await RecordRunner.runRecord(option, environmentId, envName, record, prescriptResult, uid, vid, serverRes);
 
         RecordRunner.storeVariables(result, variables);
         RecordRunner.storeCookies(result, cookies);
@@ -236,11 +235,10 @@ export class RecordRunner {
         return newContent;
     }
 
-    private static async runRecord(start: [number, number], option: request.Options, envId: string, envName: string, record: Record, prescriptResult: ResObject, userId?: string, vid?: string, serverRes?: ServerResponse, needPipe?: boolean): Promise<RunResult> {
+    private static async runRecord(option: request.Options, envId: string, envName: string, record: Record, prescriptResult: ResObject, userId?: string, vid?: string, serverRes?: ServerResponse, needPipe?: boolean): Promise<RunResult> {
         const res = await RecordRunner.request(option, serverRes, needPipe);
-        const elapsed = process.hrtime(start)[0] * 1000 + _.toInteger(process.hrtime(start)[1] / 1000000);
         const { globalFunction, id: pid } = (await ProjectService.getProjectByCollectionId(record.collection.id)) || { globalFunction: '', id: '' };
-        var rst = await RecordRunner.handleRes(res.response, res.err, record, pid, userId || vid, envId, envName, globalFunction || '', elapsed, serverRes, needPipe);
+        var rst = await RecordRunner.handleRes(res.response, res.err, record, pid, userId || vid, envId, envName, globalFunction || '', serverRes, needPipe);
         if (!prescriptResult.success) {
             rst.tests[prescriptResult.message] = false;
         }
@@ -258,8 +256,8 @@ export class RecordRunner {
         });
     }
 
-    private static async handleRes(res: request.RequestResponse, err: Error, record: Record, pid: string, vid: string, envId: string, envName: string, globalFunc: string, elapsed: number, pipeRes?: ServerResponse, needPipe?: boolean): Promise<RunResult> {
-        const testRst = !err && record.test ? (await ScriptRunner.test(pid, vid, envId, envName, res, globalFunc, record.test, elapsed)) : { tests: {}, variables: {}, export: {} };
+    private static async handleRes(res: request.RequestResponse, err: Error, record: Record, pid: string, vid: string, envId: string, envName: string, globalFunc: string, pipeRes?: ServerResponse, needPipe?: boolean): Promise<RunResult> {
+        const testRst = !err && record.test ? (await ScriptRunner.test(pid, vid, envId, envName, res, globalFunc, record.test, res.timingPhases.total >> 0)) : { tests: {}, variables: {}, export: {} };
         const pRes: Partial<request.RequestResponse> = res || {};
         const finalRes: RunResult = {
             id: record.id,
@@ -270,7 +268,7 @@ export class RecordRunner {
             tests: testRst.tests,
             variables: {},
             export: testRst.export,
-            elapsed: elapsed,
+            elapsed: res.timingPhases.total >> 0,
             headers: pRes.headers || {},
             cookies: pRes.headers ? pRes.headers['set-cookie'] : [],
             status: pRes.statusCode,

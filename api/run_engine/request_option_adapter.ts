@@ -21,7 +21,8 @@ export class RequestOptionAdapter {
             headers: RecordService.formatHeaders(record),
             body: record.body,
             strictSSL: reqStrictSSL,
-            followRedirect: reqFollowRedirect
+            followRedirect: reqFollowRedirect,
+            time: true
         };
     }
 
