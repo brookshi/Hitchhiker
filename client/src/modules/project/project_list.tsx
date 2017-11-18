@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Tooltip, Button, Modal } from 'antd';
+import { Menu, Tooltip, Button } from 'antd';
 import { SelectParam } from 'antd/lib/menu';
 import ProjectItem from './project_item';
 import ProjectDataDialog from './project_data_dialog';
@@ -9,7 +9,7 @@ import { StringUtil } from '../../utils/string_util';
 import { DtoUser } from '../../../../api/interfaces/dto_user';
 import { ProjectFiles } from '../../../../api/interfaces/dto_project_data';
 import { newProjectName } from '../../common/constants';
-import Editor from '../../components/editor';
+import ScriptDialog from '../../components/script_dialog';
 import { ProjectFileTypes, ProjectFileType } from '../../common/custom_type';
 import * as _ from 'lodash';
 
@@ -48,8 +48,6 @@ interface ProjectListState {
 
     currentOperatedProject?: string;
 
-    globalFunc: string;
-
     projectFileType: ProjectFileType;
 }
 
@@ -72,7 +70,6 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
         this.state = {
             isGlobalFuncDlgOpen: false,
             isProjectFileDlgOpen: false,
-            globalFunc: '',
             projectFileType: ProjectFileTypes.data
         };
     }
@@ -110,31 +107,26 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
         this.props.createProject(newProject);
     }
 
-    private saveGlobalFunc = () => {
-        const { currentOperatedProject, globalFunc } = this.state;
+    private saveGlobalFunc = (code: string) => {
+        const { currentOperatedProject } = this.state;
         if (!currentOperatedProject) {
             return;
         }
-        this.props.saveGlobalFunc(currentOperatedProject, globalFunc);
-        this.setState({ ...this.state, isGlobalFuncDlgOpen: false, globalFunc: '' });
+        this.props.saveGlobalFunc(currentOperatedProject, code);
+        this.setState({ ...this.state, isGlobalFuncDlgOpen: false });
     }
 
     private get globalFuncDialog() {
-        const { isGlobalFuncDlgOpen } = this.state;
-        const project = this.getProject(this.state.currentOperatedProject || '');
+        const { isGlobalFuncDlgOpen, currentOperatedProject } = this.state;
+        const project = this.getProject(currentOperatedProject || '');
         return (
-            <Modal
+            <ScriptDialog
                 title={`${project ? project.name + ': ' : ''}Global Function of Tests`}
-                visible={isGlobalFuncDlgOpen}
-                maskClosable={false}
-                okText="Save"
-                width={800}
-                cancelText="Cancel"
+                isOpen={isGlobalFuncDlgOpen}
                 onOk={this.saveGlobalFunc}
-                onCancel={() => this.setState({ ...this.state, isGlobalFuncDlgOpen: false, globalFunc: '' })}
-            >
-                <Editor type="javascript" height={600} fixHeight={true} value={this.state.globalFunc} onChange={v => this.setState({ ...this.state, globalFunc: v })} />
-            </Modal>
+                value={this.getProjectGlobalFunc(currentOperatedProject || '')}
+                onCancel={() => this.setState({ ...this.state, isGlobalFuncDlgOpen: false })}
+            />
         );
     }
 
@@ -185,7 +177,6 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
                                             editGlobalFunc={id => this.setState({
                                                 ...this.state,
                                                 currentOperatedProject: id,
-                                                globalFunc: this.getProjectGlobalFunc(id),
                                                 isGlobalFuncDlgOpen: true
                                             })}
                                             viewProjectLibs={id => this.setState({ ...this.state, currentOperatedProject: id, isProjectFileDlgOpen: true, projectFileType: ProjectFileTypes.lib })}

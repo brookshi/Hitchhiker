@@ -17,6 +17,9 @@ export class Collection {
     records: Record[];
 
     @Column({ nullable: true })
+    commonPreScript: string;
+
+    @Column({ nullable: true })
     description: string;
 
     @JoinColumn()

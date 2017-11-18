@@ -18,8 +18,9 @@ import { ProjectSelectedDialogMode, ProjectSelectedDialogType } from '../../../c
 import { getProjectsIdNameStateSelector, getDisplayCollectionSelector } from './selector';
 import { newCollectionName, allProject } from '../../../common/constants';
 import RecordTimeline from '../../../components/record_timeline';
-import './style/index.less';
 import { ShowTimelineType, CloseTimelineType } from '../../../action/ui';
+import ScriptDialog from '../../../components/script_dialog';
+import './style/index.less';
 
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
@@ -85,6 +86,10 @@ interface CollectionListState {
     newCollectionName: string;
 
     shareCollectionId: string;
+
+    isScriptDlgOpen: boolean;
+
+    currentOperatedCollection?: DtoCollection;
 }
 
 class CollectionList extends React.Component<CollectionListProps, CollectionListState> {
@@ -99,7 +104,8 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             projectSelectedDlgMode: ProjectSelectedDialogType.create,
             isProjectSelectedDlgOpen: false,
             newCollectionName: newCollectionName,
-            shareCollectionId: ''
+            shareCollectionId: '',
+            isScriptDlgOpen: false
         };
     }
 
@@ -137,15 +143,13 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
 
     private changeFolderName = (folder: DtoRecord, name: string) => {
         if (name.trim() !== '' && name !== folder.name) {
-            folder.name = name;
-            this.props.updateRecord(folder);
+            this.props.updateRecord({ ...folder, name });
         }
     }
 
     private changeCollectionName = (collection: DtoCollection, name: string) => {
         if (name.trim() !== '' && name !== collection.name) {
-            collection.name = name;
-            this.props.updateCollection(collection);
+            this.props.updateCollection({ ...collection, name });
         }
     }
 
@@ -188,6 +192,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         const collection: DtoCollection = {
             id: StringUtil.generateUID(),
             name: this.state.newCollectionName,
+            commonPreScript: '',
             projectId: this.state.selectedProjectInDlg,
             description: ''
         };
@@ -257,6 +262,22 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                 visible={isTimelineDlgOpen}
                 record={timelineRecord}
                 onClose={closeTimeLine}
+            />
+        );
+    }
+
+    private get commonPreScriptDialog() {
+        const { isScriptDlgOpen, currentOperatedCollection } = this.state;
+        if (!currentOperatedCollection) {
+            return;
+        }
+        return (
+            <ScriptDialog
+                title={`${currentOperatedCollection.name} Common Pre Request Script`}
+                isOpen={isScriptDlgOpen}
+                onOk={code => this.props.updateCollection({ ...currentOperatedCollection, commonPreScript: code })}
+                value={currentOperatedCollection.commonPreScript}
+                onCancel={() => this.setState({ ...this.state, isScriptDlgOpen: false })}
             />
         );
     }
@@ -343,6 +364,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                                                     moveToCollection={this.moveToCollection}
                                                     createRecord={this.createRecord}
                                                     shareCollection={id => this.setState({ ...this.state, isProjectSelectedDlgOpen: true, projectSelectedDlgMode: ProjectSelectedDialogType.share, shareCollectionId: id })}
+                                                    editPreRequestScript={() => this.setState({ ...this.state, isScriptDlgOpen: true, currentOperatedCollection: c })}
                                                 />
                                             )}>
                                             {
@@ -360,6 +382,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                 </div>
                 {this.projectSelectedDialog}
                 {this.timelineDialog}
+                {this.commonPreScriptDialog}
             </div>
         );
     }

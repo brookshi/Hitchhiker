@@ -6,6 +6,8 @@ export interface DtoCollection {
 
     name: string;
 
+    commonPreScript: string;
+
     projectId: string;
 
     description: string;

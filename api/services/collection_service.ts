@@ -29,6 +29,7 @@ export class CollectionService {
         const collection = new Collection();
         collection.id = dtoCollection.id || StringUtil.generateUID();
         collection.name = dtoCollection.name;
+        collection.commonPreScript = dtoCollection.commonPreScript;
         collection.description = dtoCollection.description;
         collection.project = new Project();
         collection.project.id = dtoCollection.projectId;
