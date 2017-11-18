@@ -22,7 +22,8 @@ export class RequestOptionAdapter {
             body: record.body,
             strictSSL: reqStrictSSL,
             followRedirect: reqFollowRedirect,
-            time: true
+            time: true,
+            timeout: Setting.instance.requestTimeout
         };
     }
 

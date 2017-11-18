@@ -139,6 +139,10 @@ export class Setting {
         return this.getValidBoolean(process.env.HITCHHIKER_APP_INVITE_DIRECTLY, this.app.inviteMemberDirectly);
     }
 
+    get requestTimeout() {
+        return this.getValidNum(process.env.HITCHHIKER_APP_SCRIPT_TIMEOUT, this.app.requestTimeout);
+    }
+
     private getValidNum(envVar: any, spare: number) {
         return envVar === undefined ? spare : parseInt(envVar);
     }

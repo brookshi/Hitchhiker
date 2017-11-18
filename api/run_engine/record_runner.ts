@@ -18,8 +18,6 @@ type BatchRunResult = RunResult | _.Dictionary<RunResult>;
 
 export class RecordRunner {
 
-    private static RequestTimeout = 30 * 60 * 1000;
-
     static async runRecords(rs: Record[], environmentId: string, needOrder: boolean = false, orderRecordIds: string = '', applyCookies?: boolean, trace?: (msg: string) => void): Promise<Array<RunResult | _.Dictionary<RunResult>>> {
         const runResults: Array<RunResult | _.Dictionary<RunResult>> = [];
         const vid = StringUtil.generateUID();
@@ -247,7 +245,7 @@ export class RecordRunner {
 
     private static request(option: request.Options, serverRes?: ServerResponse, needPipe?: boolean): Promise<{ err: any, response: request.RequestResponse, body: any }> {
         return new Promise<{ err: any, response: request.RequestResponse, body: any }>((resolve, reject) => {
-            const req = request({ ...option, timeout: RecordRunner.RequestTimeout }, (err, res, body) => {
+            const req = request(option, (err, res, body) => {
                 resolve({ err: err, response: res, body: body });
             });
             if (needPipe) {
