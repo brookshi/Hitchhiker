@@ -28,6 +28,10 @@ interface CollectionItemProps {
     shareCollection(collectionId: string);
 
     editPreRequestScript();
+
+    editReqStrictSSL();
+
+    editReqFollowRedirect();
 }
 
 interface CollectionItemState {
@@ -59,11 +63,15 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
     public shouldComponentUpdate(nextProps: CollectionItemProps, nextState: CollectionItemState) {
         return this.props.collection.id !== nextProps.collection.id ||
             this.props.collection.name !== nextProps.collection.name ||
+            this.props.collection.reqFollowRedirect !== nextProps.collection.reqFollowRedirect ||
+            this.props.collection.reqStrictSSL !== nextProps.collection.reqStrictSSL ||
             this.props.recordCount !== nextProps.recordCount ||
             this.state.isDragOver !== nextState.isDragOver;
     }
 
     private getMenu = () => {
+        const { reqFollowRedirect, reqStrictSSL } = this.props.collection;
+        const checkStyle = { float: 'right', marginRight: 8 };
         return (
             <Menu className="collection_item_menu" onClick={this.onClickMenu}>
                 <Menu.Item key="edit">
@@ -80,6 +88,18 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
                 </Menu.Item>*/}
                 <Menu.Item key="editPreRequestScript">
                     <Icon type="code-o" /> Common Pre Request Script
+                </Menu.Item>
+                <Menu.Item key="editReqStrictSSL">
+                    <span>
+                        <Icon type="safety" /> Request Strict SSL
+                        <span style={checkStyle}>{reqStrictSSL ? <Icon type="check" /> : ''}</span>
+                    </span>
+                </Menu.Item>
+                <Menu.Item key="editReqFollowRedirect">
+                    <span>
+                        <Icon type="fork" /> Request Follow Redirect
+                        <span style={checkStyle}>{reqFollowRedirect ? <Icon type="check" /> : ''}</span>
+                    </span>
                 </Menu.Item>
                 <Menu.Item key="delete">
                     <Icon type="delete" /> Delete
@@ -107,6 +127,10 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
     createRecord = () => this.props.createRecord({ ...getDefaultRecord(false), collectionId: this.props.collection.id, id: StringUtil.generateUID() });
 
     editPreRequestScript = () => this.props.editPreRequestScript();
+
+    editReqStrictSSL = () => this.props.editReqStrictSSL();
+
+    editReqFollowRedirect = () => this.props.editReqFollowRedirect();
 
     private checkTransferFlag = (e, flag) => {
         return e.dataTransfer.types.indexOf(flag) > -1;

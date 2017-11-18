@@ -30,6 +30,8 @@ export class CollectionService {
         collection.id = dtoCollection.id || StringUtil.generateUID();
         collection.name = dtoCollection.name;
         collection.commonPreScript = dtoCollection.commonPreScript;
+        collection.reqStrictSSL = dtoCollection.reqStrictSSL;
+        collection.reqFollowRedirect = dtoCollection.reqFollowRedirect;
         collection.description = dtoCollection.description;
         collection.project = new Project();
         collection.project.id = dtoCollection.projectId;
@@ -58,7 +60,13 @@ export class CollectionService {
         await connection.getRepository(Collection)
             .createQueryBuilder('collection')
             .where('id=:id', { id: dtoCollection.id })
-            .update({ name: dtoCollection.name, description: dtoCollection.description, commonPreScript: dtoCollection.commonPreScript })
+            .update({
+                name: dtoCollection.name,
+                description: dtoCollection.description,
+                commonPreScript: dtoCollection.commonPreScript,
+                reqStrictSSL: dtoCollection.reqStrictSSL,
+                reqFollowRedirect: dtoCollection.reqFollowRedirect
+            })
             .execute();
         return { success: true, message: Message.collectionUpdateSuccess };
     }

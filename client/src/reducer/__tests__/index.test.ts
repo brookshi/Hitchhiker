@@ -286,7 +286,7 @@ test('fetch local data success', () => {
         projectState: { ...defaultState.projectState, activeProject: 'pid_123' },
         environmentState: { ...defaultState.environmentState, activeEnv: 'eid_123' },
         scheduleState: { ...defaultState.scheduleState, activeSchedule: 'sid_123' }
-    }
+    };
 
     expect(multipleStateReducer(oldState, { type: FetchLocalDataSuccessType, value: localData })).toEqual(expectState);
 });

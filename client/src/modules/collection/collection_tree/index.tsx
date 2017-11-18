@@ -282,7 +282,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         }
         return (
             <ScriptDialog
-                title={`${currentOperatedCollection.name} Common Pre Request Script`}
+                title={`${currentOperatedCollection.name} - Common Pre Request Script`}
                 isOpen={isScriptDlgOpen}
                 onOk={this.saveCommonPreScript}
                 value={currentOperatedCollection.commonPreScript || ''}
@@ -326,69 +326,83 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         );
     }
 
-    render() {
+    private get collectionMenu() {
         const { collections, records, activeKey, openKeys, deleteCollection, openKeysChanged, activeRecord } = this.props;
 
         return (
-            <div className="collection-panel">
-                <div className="small-toolbar">
-                    <span>Project:</span>
-                    <span>
-                        <Dropdown overlay={this.getProjectMenu()} trigger={['click']} style={{ width: 200 }}>
-                            <a className="ant-dropdown-link" href="#">
-                                {this.getCurrentProject().name} <Icon type="down" />
-                            </a>
-                        </Dropdown>
-                    </span>
-                    <Tooltip mouseEnterDelay={1} placement="bottom" title="create collection">
-                        <Button className="icon-btn" type="primary" icon="folder-add" onClick={this.addCollection} />
-                    </Tooltip>
-                </div>
-                <div className="collection-tree-container">
-                    <PerfectScrollbar>
-                        <Menu
-                            className="collection-tree"
-                            onOpenChange={openKeysChanged}
-                            mode="inline"
-                            inlineIndent={0}
-                            openKeys={openKeys}
-                            selectedKeys={[activeKey]}
-                            onSelect={param => activeRecord(param.item.props.data)}
-                        >
-                            {
-                                collections.map(c => {
-                                    const recordCount = _.values(records[c.id]).filter(r => r.category === RecordCategory.record).length;
-                                    let sortRecords = _.chain(records[c.id]).values<DtoRecord>().sortBy(['category', 'name']).value();
+            <div className="collection-tree-container">
+                <PerfectScrollbar>
+                    <Menu
+                        className="collection-tree"
+                        onOpenChange={openKeysChanged}
+                        mode="inline"
+                        inlineIndent={0}
+                        openKeys={openKeys}
+                        selectedKeys={[activeKey]}
+                        onSelect={param => activeRecord(param.item.props.data)}
+                    >
+                        {
+                            collections.map(c => {
+                                const recordCount = _.values(records[c.id]).filter(r => r.category === RecordCategory.record).length;
+                                let sortRecords = _.chain(records[c.id]).values<DtoRecord>().sortBy(['category', 'name']).value();
 
-                                    return (
-                                        <SubMenu
-                                            className={`${c.id !== collections[0].id ? 'collection-separator-line' : ''} collection-item`}
-                                            key={c.id}
-                                            title={(
-                                                <CollectionItem
-                                                    collection={{ ...c }}
-                                                    recordCount={recordCount}
-                                                    onNameChanged={(name) => this.changeCollectionName(c, name)}
-                                                    deleteCollection={() => deleteCollection(c.id)}
-                                                    moveToCollection={this.moveToCollection}
-                                                    createRecord={this.createRecord}
-                                                    shareCollection={id => this.setState({ ...this.state, isProjectSelectedDlgOpen: true, projectSelectedDlgMode: ProjectSelectedDialogType.share, shareCollectionId: id })}
-                                                    editPreRequestScript={() => this.setState({ ...this.state, isScriptDlgOpen: true, currentOperatedCollection: c })}
-                                                />
-                                            )}>
-                                            {
-                                                sortRecords.length === 0 ?
-                                                    <div style={{ height: 20 }} /> :
-                                                    this.loopRecords(sortRecords, c.id)
-                                            }
-                                        </SubMenu>
-                                    );
-                                })
-                            }
-                        </Menu>
-                        {collections.length === 0 ? '' : <div className="collection-tree-bottom" />}
-                    </PerfectScrollbar>
-                </div>
+                                return (
+                                    <SubMenu
+                                        className={`${c.id !== collections[0].id ? 'collection-separator-line' : ''} collection-item`}
+                                        key={c.id}
+                                        title={(
+                                            <CollectionItem
+                                                collection={{ ...c }}
+                                                recordCount={recordCount}
+                                                onNameChanged={(name) => this.changeCollectionName(c, name)}
+                                                deleteCollection={() => deleteCollection(c.id)}
+                                                moveToCollection={this.moveToCollection}
+                                                createRecord={this.createRecord}
+                                                shareCollection={id => this.setState({ ...this.state, isProjectSelectedDlgOpen: true, projectSelectedDlgMode: ProjectSelectedDialogType.share, shareCollectionId: id })}
+                                                editPreRequestScript={() => this.setState({ ...this.state, isScriptDlgOpen: true, currentOperatedCollection: c })}
+                                                editReqStrictSSL={() => this.props.updateCollection({ ...c, reqStrictSSL: !c.reqStrictSSL })}
+                                                editReqFollowRedirect={() => this.props.updateCollection({ ...c, reqFollowRedirect: !c.reqFollowRedirect })}
+                                            />
+                                        )}>
+                                        {
+                                            sortRecords.length === 0 ?
+                                                <div style={{ height: 20 }} /> :
+                                                this.loopRecords(sortRecords, c.id)
+                                        }
+                                    </SubMenu>
+                                );
+                            })
+                        }
+                    </Menu>
+                    {collections.length === 0 ? '' : <div className="collection-tree-bottom" />}
+                </PerfectScrollbar>
+            </div>
+        );
+    }
+
+    private get collectionHeader() {
+        return (
+            <div className="small-toolbar">
+                <span>Project:</span>
+                <span>
+                    <Dropdown overlay={this.getProjectMenu()} trigger={['click']} style={{ width: 200 }}>
+                        <a className="ant-dropdown-link" href="#">
+                            {this.getCurrentProject().name} <Icon type="down" />
+                        </a>
+                    </Dropdown>
+                </span>
+                <Tooltip mouseEnterDelay={1} placement="bottom" title="create collection">
+                    <Button className="icon-btn" type="primary" icon="folder-add" onClick={this.addCollection} />
+                </Tooltip>
+            </div>
+        );
+    }
+
+    render() {
+        return (
+            <div className="collection-panel">
+                {this.collectionHeader}
+                {this.collectionMenu}
                 {this.projectSelectedDialog}
                 {this.timelineDialog}
                 {this.commonPreScriptDialog}

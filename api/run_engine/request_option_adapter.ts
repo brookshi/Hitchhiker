@@ -14,11 +14,14 @@ export class RequestOptionAdapter {
         if (userId) {
             await RequestOptionAdapter.applyLocalhost(record, userId);
         }
+        const { reqStrictSSL, reqFollowRedirect } = record.collection || { reqStrictSSL: false, reqFollowRedirect: false };
         return {
             url: StringUtil.fixedEncodeURI(record.url),
             method: record.method,
             headers: RecordService.formatHeaders(record),
-            body: record.body
+            body: record.body,
+            strictSSL: reqStrictSSL,
+            followRedirect: reqFollowRedirect
         };
     }
 

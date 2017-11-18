@@ -8,6 +8,10 @@ export interface DtoCollection {
 
     commonPreScript: string;
 
+    reqStrictSSL?: boolean;
+
+    reqFollowRedirect?: boolean;
+
     projectId: string;
 
     description: string;

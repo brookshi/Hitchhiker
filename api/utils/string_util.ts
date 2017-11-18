@@ -104,8 +104,8 @@ export class StringUtil {
         }
     }
 
-    static fixedEncodeURIComponent(url) {
-        return encodeURIComponent(url).replace(/[!'()*]/g, function (c) {
+    static fixedEncodeURIComponent(url: string) {
+        return encodeURIComponent(url).replace(/[!'()*]/g, c => {
             return '%' + c.charCodeAt(0).toString(16);
         });
     }

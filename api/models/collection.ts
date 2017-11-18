@@ -19,6 +19,12 @@ export class Collection {
     @Column({ nullable: true })
     commonPreScript: string;
 
+    @Column({ default: false })
+    reqStrictSSL: boolean;
+
+    @Column({ default: false })
+    reqFollowRedirect: boolean;
+
     @Column({ nullable: true })
     description: string;
 
