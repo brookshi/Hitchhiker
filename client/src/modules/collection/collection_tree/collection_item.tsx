@@ -65,7 +65,7 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
 
     private getMenu = () => {
         return (
-            <Menu className="item_menu" onClick={this.onClickMenu}>
+            <Menu className="collection_item_menu" onClick={this.onClickMenu}>
                 <Menu.Item key="edit">
                     <Icon type="edit" /> Rename
                 </Menu.Item>
@@ -79,7 +79,7 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
                     <Icon type="share-alt" /> Share
                 </Menu.Item>*/}
                 <Menu.Item key="editPreRequestScript">
-                    <Icon type="code-o" /> Pre Request Script for all requests
+                    <Icon type="code-o" /> Common Pre Request Script
                 </Menu.Item>
                 <Menu.Item key="delete">
                     <Icon type="delete" /> Delete

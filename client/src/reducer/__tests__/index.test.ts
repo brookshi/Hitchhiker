@@ -14,9 +14,9 @@ import { allParameter } from '../../common/constants';
 import { ConflictType } from '../../common/conflict_type';
 
 const defaultRecordState = { name: '', isRequesting: false, isChanged: false, record: {}, parameter: allParameter, conflictType: ConflictType.none };
-const c1 = { id: 'cid_123', name: 'c1', projectId: 'pid_123', description: '' };
-const c2 = { id: 'cid_456', name: 'c2', projectId: 'pid_123', description: '' };
-const c3 = { id: 'cid_789', name: 'c3', projectId: 'pid_789', description: '' };
+const c1 = { id: 'cid_123', name: 'c1', commonPreScript: '', projectId: 'pid_123', description: '' };
+const c2 = { id: 'cid_456', name: 'c2', commonPreScript: '', projectId: 'pid_123', description: '' };
+const c3 = { id: 'cid_789', name: 'c3', commonPreScript: '', projectId: 'pid_789', description: '' };
 const r1 = { id: 'rid_123', collectionId: 'cid_123', category: RecordCategory.record, parameterType: ParameterType.ManyToMany, name: 'r1', headers: [] };
 const r2 = { id: 'rid_456', collectionId: 'cid_456', category: RecordCategory.record, parameterType: ParameterType.ManyToMany, name: 'r2' };
 const r3 = { id: 'rid_789', collectionId: 'cid_789', category: RecordCategory.record, parameterType: ParameterType.ManyToMany, name: 'r3' };

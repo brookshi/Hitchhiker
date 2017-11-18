@@ -3,7 +3,7 @@ import { LoginSuccessType } from '../../action/user';
 import { actionCreator } from '../../action/index';
 import { environmentState } from '../environment';
 import { SaveEnvironmentType, QuitProjectType, DisbandProjectType, DelEnvironmentType, SwitchEnvType, EditEnvType, EditEnvCompletedType } from '../../action/project';
-import { noEnvironment } from "../../common/constants";
+import { noEnvironment } from '../../common/constants';
 
 test('login success', () => {
 

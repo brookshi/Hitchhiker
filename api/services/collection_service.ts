@@ -58,7 +58,7 @@ export class CollectionService {
         await connection.getRepository(Collection)
             .createQueryBuilder('collection')
             .where('id=:id', { id: dtoCollection.id })
-            .update({ name: dtoCollection.name, description: dtoCollection.description })
+            .update({ name: dtoCollection.name, description: dtoCollection.description, commonPreScript: dtoCollection.commonPreScript })
             .execute();
         return { success: true, message: Message.collectionUpdateSuccess };
     }

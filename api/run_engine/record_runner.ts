@@ -11,7 +11,8 @@ import { UserVariableManager } from '../services/user_variable_manager';
 import { ResObject } from '../common/res_object';
 import { VariableService } from '../services/variable_service';
 import { EnvironmentService } from '../services/environment_service';
-import { HeaderService } from "../services/header_service";
+import { HeaderService } from '../services/header_service';
+import { CollectionService } from "../services/collection_service";
 
 type BatchRunResult = RunResult | _.Dictionary<RunResult>;
 
@@ -42,12 +43,12 @@ export class RecordRunner {
         for (let record of records) {
             const paramArr = StringUtil.parseParameters(record.parameters, record.parameterType);
             if (paramArr.length === 0) {
-                runResults.push(await RecordRunner.runRecordWithVW(record, environmentId, envName, undefined, vid, '', undefined, trace));
+                runResults.push(await RecordRunner.runRecordWithVW(record, record.collection.commonPreScript, environmentId, envName, undefined, vid, '', undefined, trace));
             } else {
                 // TODO: sync or async ?
                 for (let param of paramArr) {
                     record = RecordRunner.applyReqParameterToRecord(record, param);
-                    const runResult = await RecordRunner.runRecordWithVW(record, environmentId, envName, undefined, vid, param, undefined, trace);
+                    const runResult = await RecordRunner.runRecordWithVW(record, record.collection.commonPreScript, environmentId, envName, undefined, vid, param, undefined, trace);
                     runResults.push({ [runResult.param]: runResult });
                 }
             }
@@ -59,12 +60,12 @@ export class RecordRunner {
             const paramArr = StringUtil.parseParameters(r.parameters, r.parameterType);
             let result;
             if (paramArr.length === 0) {
-                result = await RecordRunner.runRecordWithVW(r, environmentId, envName, undefined, vid, '');
+                result = await RecordRunner.runRecordWithVW(r, r.collection.commonPreScript, environmentId, envName, undefined, vid, '');
                 runResults.push(result);
             } else {
                 await Promise.all(paramArr.map(async (p) => {
                     const record = RecordRunner.applyReqParameterToRecord(r, p);
-                    result = await RecordRunner.runRecordWithVW(record, environmentId, envName, undefined, vid, p);
+                    result = await RecordRunner.runRecordWithVW(record, r.collection.commonPreScript, environmentId, envName, undefined, vid, p);
                     result.param = StringUtil.toString(p);
                     runResults.push({ [result.param]: result });
                 }));
@@ -77,20 +78,26 @@ export class RecordRunner {
 
     static async runRecordFromClient(record: Record, environmentId: string, userId: string, serverRes?: ServerResponse): Promise<RunResult> {
         const env = await EnvironmentService.get(environmentId);
-        return await RecordRunner.runRecordWithVW(record, environmentId, env ? env.name : '', userId, undefined, '', serverRes);
+        let commonPreScript = '';
+        if (record.collection && record.collection.id) {
+            const collection = await CollectionService.getById(record.collection.id);
+            commonPreScript = collection ? collection.commonPreScript : '';
+        }
+        return await RecordRunner.runRecordWithVW(record, commonPreScript, environmentId, env ? env.name : '', userId, undefined, '', serverRes);
     }
 
-    private static async runRecordWithVW(record: Record, environmentId: string, envName: string, uid: string, vid: string, param: any, serverRes?: ServerResponse, trace?: (msg: string) => void) {
+    private static async runRecordWithVW(record: Record, commonPreScript: string, environmentId: string, envName: string, uid: string, vid: string, param: any, serverRes?: ServerResponse, trace?: (msg: string) => void) {
 
         let prescriptResult: ResObject = { success: true, message: '' };
         let variables: any = UserVariableManager.getVariables(uid || vid, environmentId);
         const cookies: _.Dictionary<string> = UserVariableManager.getCookies(uid || vid, environmentId);
 
         const start = process.hrtime();
-        if (record.prescript) {
-            const prescriptWithVar = await VariableService.applyVariable(environmentId, record.prescript);
+        if (commonPreScript || record.prescript) {
+            const prescriptWithVar = await VariableService.applyVariable(environmentId, record.prescript || '');
+            const commonPreScriptWithVar = await VariableService.applyVariable(environmentId, commonPreScript || '');
             const { globalFunction, id: pid } = (await ProjectService.getProjectByCollectionId(record.collection.id)) || { globalFunction: '', id: '' };
-            prescriptResult = await ScriptRunner.prerequest(pid, uid || vid, environmentId, envName, globalFunction, prescriptWithVar, record);
+            prescriptResult = await ScriptRunner.prerequest(pid, uid || vid, environmentId, envName, globalFunction, commonPreScriptWithVar, prescriptWithVar, record);
             if (prescriptResult.success) {
                 record = { ...record, ...prescriptResult.result, headers: [] };
                 _.keys(prescriptResult.result.headers).forEach(k => {

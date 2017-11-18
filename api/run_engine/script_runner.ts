@@ -13,14 +13,18 @@ const { NodeVM: safeVM } = require('vm2');
 
 export class ScriptRunner {
 
-    static async prerequest(projectId: string, vid: string, envId: string, envName: string, globalFunc: string, code: string, record: Record): Promise<ResObject> {
+    static async prerequest(projectId: string, vid: string, envId: string, envName: string, globalFunc: string, commonPreScriptWithVar: string, code: string, record: Record): Promise<ResObject> {
         let hitchhiker: Sandbox, res: ResObject;
         try {
             hitchhiker = new Sandbox(projectId, vid, envId, envName, record);
         } catch (ex) {
             res = { success: false, message: ex };
         }
-        res = await ScriptRunner.run({ hitchhiker, hh: hitchhiker }, globalFunc, code);
+        const script = `
+            ${commonPreScriptWithVar}
+            ${code}
+        `;
+        res = await ScriptRunner.run({ hitchhiker, hh: hitchhiker }, globalFunc, script);
         res.result = hitchhiker.request;
         return res;
     }

@@ -213,6 +213,15 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         console.log('share');
     }
 
+    private saveCommonPreScript = (code: string) => {
+        const { currentOperatedCollection } = this.state;
+        if (!currentOperatedCollection) {
+            return;
+        }
+        this.props.updateCollection({ ...currentOperatedCollection, commonPreScript: code });
+        this.setState({ ...this.state, isScriptDlgOpen: false });
+    }
+
     private loopRecords = (data: DtoRecord[], cid: string, inFolder: boolean = false) => {
         const { openKeys, records, deleteRecord, showTimeLine } = this.props;
 
@@ -275,8 +284,8 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             <ScriptDialog
                 title={`${currentOperatedCollection.name} Common Pre Request Script`}
                 isOpen={isScriptDlgOpen}
-                onOk={code => this.props.updateCollection({ ...currentOperatedCollection, commonPreScript: code })}
-                value={currentOperatedCollection.commonPreScript}
+                onOk={this.saveCommonPreScript}
+                value={currentOperatedCollection.commonPreScript || ''}
                 onCancel={() => this.setState({ ...this.state, isScriptDlgOpen: false })}
             />
         );

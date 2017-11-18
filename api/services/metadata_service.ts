@@ -69,7 +69,7 @@ export class MetadataService {
 
     static async convertPostmanCollectionV1(owner: User, projectId: string, data: PostmanCollectionV1): Promise<Collection> {
         let sort = await RecordService.getMaxSort();
-        const dtoCollection = { ...data, projectId: projectId, id: StringUtil.generateUID() };
+        const dtoCollection = { ...data, commonPreScript: '', projectId: projectId, id: StringUtil.generateUID() };
         const collection = CollectionService.fromDto(dtoCollection);
 
         collection.owner = owner;

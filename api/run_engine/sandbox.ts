@@ -67,7 +67,7 @@ export class Sandbox {
         }
         let libPath = this._allProjectJsFiles[lib].path;
         if (!fs.existsSync(libPath)) {
-            throw new Error(`[${libPath}] doesnot exist.`);
+            throw new Error(`[${libPath}] does not exist.`);
         }
         const stat = fs.statSync(libPath);
         if (stat.isDirectory()) {
