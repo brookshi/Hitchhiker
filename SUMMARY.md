@@ -24,7 +24,7 @@
   * [Category](doc/Variable/Category.md)
     * [Environment Variable](doc/Variable/Env_Var.md)
     * [Parameter Variable](doc/Variable/Param_Var.md)
-    * [Dynamic Variable](doc/Variable/Dynamic_Var.md)
+    * [Runtime Variable](doc/Variable/Dynamic_Var.md)
   * [Variable Transfer Workflow](doc/Variable/Var_WF.md)
 * [Script](doc/Script/README.md)
   * [Pre Request Script](doc/Script/Pre_Script.md)
