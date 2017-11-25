@@ -1,1 +1,0 @@
-After installation is done, you can access http://ip:port in your browser 

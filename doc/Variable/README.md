@@ -10,6 +10,6 @@ All `{{key}}` will be replace to `Value` of the variable before or after sending
 
 Hitchhiker have three types of variable.
 
-1. [Environment variable]()
-2. [Parameter variable]()
-3. [Runtime variable]()
+1. [Environment variable](Env_Var.md)
+2. [Parameter variable](Param_Var.md)
+3. [Runtime variable](Dynamic_Var.md)

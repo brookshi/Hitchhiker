@@ -9,3 +9,15 @@ Project,
 Schedule,
 
 Stress Test
+
+Follow these steps below to get familiar with Hitchhiker:
+
+1. [Create a Project](Create_Project.md)
+
+2. [Create a Collection](Create_Collection.md)
+
+3. [Create a Request and Send](Create_Request.md)
+
+4. [Use Environment Variable](Use_Env_Var.md)
+
+5. [Use Parameters](Use_Param.md)
