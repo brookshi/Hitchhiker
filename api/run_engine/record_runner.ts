@@ -255,7 +255,7 @@ export class RecordRunner {
     }
 
     private static async handleRes(res: request.RequestResponse, err: Error, record: Record, pid: string, vid: string, envId: string, envName: string, globalFunc: string, pipeRes?: ServerResponse, needPipe?: boolean): Promise<RunResult> {
-        const testRst = !err && record.test ? (await ScriptRunner.test(pid, vid, envId, envName, res, globalFunc, record.test, res.timingPhases.total >> 0)) : { tests: {}, variables: {}, export: {} };
+        const testRst = !err && record.test ? (await ScriptRunner.test(pid, vid, envId, envName, res, globalFunc, record.test)) : { tests: {}, variables: {}, export: {} };
         const pRes: Partial<request.RequestResponse> = res || {};
         const finalRes: RunResult = {
             id: record.id,
@@ -266,7 +266,7 @@ export class RecordRunner {
             tests: testRst.tests,
             variables: {},
             export: testRst.export,
-            elapsed: res.timingPhases.total >> 0,
+            elapsed: pRes.timingPhases.total >> 0,
             headers: pRes.headers || {},
             cookies: pRes.headers ? pRes.headers['set-cookie'] : [],
             status: pRes.statusCode,

@@ -1,10 +1,4 @@
 {
-    "key": {
-        "id": "gQfRTfM5mFj8xVfp",
-        "secret": "qNrumDMKjbn1mVRfwscuAwNMcWf0hj",
-        "account": "admin@hitchhiker-api.com",
-        "replyToAddress": false
-    },
     "templates": {
         "register": {
             "title": {

@@ -29,7 +29,7 @@ export class ScriptRunner {
         return res;
     }
 
-    static async test(projectId: string, vid: string, envId: string, envName: string, res: request.RequestResponse, globalFunc: string, code: string, elapsed: number): Promise<{ tests: _.Dictionary<boolean>, export: {} }> {
+    static async test(projectId: string, vid: string, envId: string, envName: string, res: request.RequestResponse, globalFunc: string, code: string): Promise<{ tests: _.Dictionary<boolean>, export: {} }> {
         let hitchhiker, tests;
         try {
             hitchhiker = new Sandbox(projectId, vid, envId, envName);
@@ -44,7 +44,7 @@ export class ScriptRunner {
         const $variables$: any = hitchhiker.variables;
         const $export$ = hitchhiker.export;
 
-        const sandbox = { hitchhiker, hh: hitchhiker, $variables$, $export$, tests, ...ScriptRunner.getInitResObj(res, elapsed) };
+        const sandbox = { hitchhiker, hh: hitchhiker, $variables$, $export$, tests, ...ScriptRunner.getInitResObj(res) };
 
         const rst = await ScriptRunner.run(sandbox, globalFunc, code);
         if (!rst.success) {
@@ -88,7 +88,7 @@ export class ScriptRunner {
         return Promise.resolve({ success, message });
     }
 
-    private static getInitResObj(res: request.RequestResponse, elapsed: number) {
+    private static getInitResObj(res: request.RequestResponse) {
         let responseObj = {};
         try {
             responseObj = JSON.parse(res.body); // TODO: more response type, xml, protobuf, zip, chunk...
@@ -100,7 +100,7 @@ export class ScriptRunner {
             responseCode: { code: res.statusCode, name: res.statusMessage },
             responseObj,
             responseHeaders: res.headers,
-            responseTime: elapsed
+            responseTime: res.timingPhases.total >> 0
         };
     }
 }
