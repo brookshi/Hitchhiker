@@ -19,4 +19,4 @@ Custom data file refer to: [Custom Data File](custom-data-file.md).
 Below is workflow of Hitchhiker's request included script and variable.
 
 
-![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/script/request_wf.png)
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/script/reuqest_wf.png)

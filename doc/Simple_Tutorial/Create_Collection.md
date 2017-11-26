@@ -15,7 +15,7 @@ Create a Collection:
 
 3. Enter name `Sample Collection` and select Project `SampleAPI` that we create previously.
 
-
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/collection_create.png)
 
 After this collection is created, each of project's member can get it with their account.
 

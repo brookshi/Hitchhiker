@@ -4,7 +4,7 @@ Hitchhiker has four modules(the other two (Document, Mock) are in plan):
 
 Collection, Project, Schedule, Stress Test
 
-
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/modules.png)
 
 Follow these steps below to get familiar with Hitchhiker:
 

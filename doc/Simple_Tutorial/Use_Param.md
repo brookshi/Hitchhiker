@@ -17,9 +17,11 @@ For example: there are two parameter `A` and `B`:
 
 You will have 4 request if select `Many to Many`： `13, 14, 23, 24`:
 
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/param_many.png)
 
 And have 2 for `One to One`：`13, 24`:
 
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/param_one.png)
 
 Parameters is a JSON object, you must write it using this format as below:
 ``` json
@@ -37,12 +39,20 @@ Let's edit `Sample Request` to using Parameters.
 
 2. Change body to `{ "Desc": "{{param}}" }`.
 
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/param_body.png)
+
 3. Select Parameters tab of request.
 
 4. Enter `{ "param": [ "Test A", "Test B" ] }`.
 
 5. Hit Save button.
 
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/param_save.png)
+
 Now you can see Hitchhiker generate two requests for these two params.
 
 Hit Send button to test one or all of them.
+
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/param_send_all.png)
+
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/param_send_one.png)

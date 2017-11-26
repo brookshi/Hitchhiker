@@ -14,6 +14,8 @@ Back to Project module to create two environment.
 
 4. Click OK button.
 
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/env_create.png)
+
 We get a environment row in the table, click `Duplicate` button to get a copy and then click `edit` button to edit it.
 
 1. Change name to `UAT`
@@ -21,6 +23,8 @@ We get a environment row in the table, click `Duplicate` button to get a copy an
 2. Change variable value: `uat`.
 
 3. Click OK button.
+
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/env_create_2.png)
 
 #### Use environment
 
@@ -32,6 +36,10 @@ That's the syntax of using variable, wrap variable's key with `{{}}`, and Hitchh
 
 OK. We can test it now. Select QA environment on the right top drop down and hit Send button, we will get response like this:
 
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/env_qa.png)
+
 Change environment to UAT and hit Send button, the response will be:
+
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/env_uat.png)
 
 It's clear, `{{env}}` has been replaced to the value of variable that we defined in Environment.
