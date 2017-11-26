@@ -1,7 +1,6 @@
 # Summary
 
 * [Introduction](README.md)
-* [Introduction](readme.md)
 * [1. Introduction](doc/introduction.md)
 * [2. Installation](doc/installation/README.md)
   * [2.1 Docker](doc/installation/docker-en.md)
@@ -35,8 +34,7 @@
   * [7.2 Stress Node](doc/Stress/Node.md)
   * [7.3 Run](doc/Stress/Run.md)
 * [8. Data Sync](doc/other.md)
-* 9. [Import](doc/import.md)
+* [9. Import](doc/import.md)
 * [Change Log](change_log.md)
 * [To Do](doc/TODO.md)
-* 9. [Import](doc/import.md)
 
