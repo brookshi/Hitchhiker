@@ -1,5 +1,4 @@
-
-#### app setting reference to：[app setting](app-setting.md), environment variable could be set in pm2.json
+Hitchhiker setting refer to: [Configuration](configuration.md), environment variable could be set in pm2.json
 
 1. install nodejs 7.60+, recommend use LTS (8.9), update npm to latest`npm install npm -g`
 

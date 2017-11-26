@@ -1,8 +1,8 @@
 ## dependencies: docker, docker-compose
 
-#### app setting reference to: [app setting](app-setting.md), environment variable could be set in docker-compose.yml.
+Hitchhiker setting refer to: [Configuration](configuration.md), environment variable could be set in docker-compose.yml.
 
-### Below is a sample:
+### Steps:
 ``` bash
 
 # create folder
