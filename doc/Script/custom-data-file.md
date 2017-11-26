@@ -2,6 +2,7 @@ As mention in [Script API](Script API.md), Hitchhiker support prepared file data
 
 In Project's menu, there is a item named Project Data, it will pop a data manager dialog like below:
 
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/script/script_data.png)
 
 You could upload your test case data file directly by hit Upload button.
 

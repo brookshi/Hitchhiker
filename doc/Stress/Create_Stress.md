@@ -2,6 +2,8 @@ Go to Stress test Module and click `create stress test` button.
 
 Pop a new stress test dialog:
 
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/stress/stress_create.png)
+
 **Name**: name of this stress test.
 **Collection**: select a collection which you want to run.
 **Requests**: Filter and Sort requests.

@@ -2,4 +2,6 @@ Global Function is defined in Project which you can get it in all Collection/Req
 
 Usually, it's used to write some common function such as util.
 
-Script API reference to: [Script API](Script API.md).
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/script/global_func.png)
+
+Script API reference to: [Script API](API.md).

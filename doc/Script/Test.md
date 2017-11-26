@@ -1,6 +1,7 @@
 Test script allows you write test case in it, you can verify the response is correctly.
 
-Test script will be executed after the request is back, in script, you can get some build-in variable: 
+Test script will be executed after the request is back, in Test script, you can get some build-in variable: 
+
 ``` javascript
 `responseBody`: the response's body
 `responseObj`：json object of this response's body
@@ -18,3 +19,5 @@ tests["status code is 200"] = responseCode.code === 200;
 ```
 
 You also can save response as a file to server, then can load this file in another request.
+
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/script/script_test.png)

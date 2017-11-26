@@ -1,6 +1,5 @@
 # Summary
 
-* [ReadMe](readme.md)
 * [1. Introduction](doc/introduction.md)
 * [2. Installation](doc/installation/README.md)
   * [2.1 Docker](doc/installation/docker-en.md)

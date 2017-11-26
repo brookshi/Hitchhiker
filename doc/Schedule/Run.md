@@ -4,11 +4,13 @@ Schedule will auto run as its period setting, and will send emails to peoples th
 Collection run result will be display automatically in the grid like this:
 
 A row in this grid is a collection run result with columns: 
+
 * Pass:  Are all requests run success and pass test cases.
 * Duration: Total duration of this run.
 * Description: Description like how many success, how many failed.
 
 A record has a sub table include all requests' run result with columns:
+
 * Param: request's parameter if have.
 * Pass: is request's test case pass.
 * Duration: duration of a request run.
@@ -18,11 +20,14 @@ A record has a sub table include all requests' run result with columns:
   
 If this schedule have a comparison environment, a request will have two rows for the two environments.
 
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/schedule/schedule_run.png)
+
 #### Schedule Menu
 
 If you want run this collection manually.
 Move mouse to menu icon of Schedule item, a menu will pop up like this:
 
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/schedule/schedule_menu.png)
 
 * Run Now: used to run this collection immediately,and will receive real-time messages of request (base on WebSocket).
 * Edit: modify setting of schedule.
