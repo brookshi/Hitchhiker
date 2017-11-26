@@ -2,9 +2,11 @@
 
 Hitchhiker Api is a Restful Api integrated testing tool that support Schedule, Response comparsion, Stress Test, support upload js file to hook request, easy to deploy it in your local server. It make easier to manage Api with your team.
 
-[中文 Read Me](README_cn.md)
-
 Go to [http://www.hitchhiker-api.com](http://www.hitchhiker-api.com) for test，use `try without login`. (Demo doesn't support stress test)
+
+[Document](https://brookshi.gitbooks.io/hitchhiker/doc/introduction.html)
+
+[中文文档](https://brookshi.gitbooks.io/hitchhiker/doc/introduction.html)
 
 [Change log](change_log.md)
 
@@ -52,20 +54,6 @@ security | Strong，deploy in local | Weak, data will upload to server
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/parameters.gif' width='800'/>
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/schedule.png' width='800'/>
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/stresstest.gif' width='800'/>
-
-## Deploy
-
-Recommend use docker，it's easy and quickly，refer to [deploy with docker](doc/howtoinstall-docker-en.md)
-
-Or you can deploy base on source code without docker, it's easy too.
-
-linux: [deploy to linux](doc/howtoinstall-linux-en.md)
-
-windows: [deploy to win](doc/howtoinstall-win-en.md)
-
-## How to use
-
-refer to [How to use](doc/howtouse-en.md)
 
 ## Browser
 

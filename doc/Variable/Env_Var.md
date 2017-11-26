@@ -1,4 +1,4 @@
-Environment variable could be defined in Project's environment, usually, Environment variable is used to set url's host, query string and headers.
+Environment variable could be defined in Project's environment, usually, Environment variable is used to in url's host, query string and headers.
 
 For example:
 We have three environment for our API: QA, Stage, Product. Each of environment have different domain name:
@@ -16,6 +16,4 @@ Duplicate it and do the same thing for Stage and Product.
 Now we get three environments, we can use it in one request.
 Create a request with url: `{{host}}/get`, select environment and hit Send button.
 
-`{{host}}` will be replaced by the variable's value of selected environment. So if select QA, request's url will be `http://api-qa.sample.com/
-`, and Stage will be `http://api-stg.sample.com/
-`.
+`{{host}}` will be replaced by the variable's value of selected environment. So if select QA, request's url will be `http://api-qa.sample.com/`, and Stage will be `http://api-stg.sample.com/`.

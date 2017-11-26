@@ -2,9 +2,11 @@
 
 Hitchhiker 是一款开源的 Restful Api 测试工具，支持Schedule, 数据对比，压力测试，支持上传脚本定制请求，可以轻松部署到本地，和你的team成员一起管理Api。
 
-[English Read Me](README_en.md)
-
 访问 [http://www.hitchhiker-api.com](http://www.hitchhiker-api.com) 测试，可以点击 `try without login`, 另外，为了免备案，服务器在海外的，所以速度上可能会有点慢，请谅解。(在线演示不支持压力测试)
+
+[Document](https://brookshi.gitbooks.io/hitchhiker/doc/introduction.html)
+
+[中文文档](https://brookshi.gitbooks.io/hitchhiker/doc/introduction.html)
 
 [更新日志](change_log.md)
 
@@ -54,22 +56,6 @@ Api Mock | ✘ | ✔
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/parameters.gif' width='800'/>
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/schedule.png' width='800'/>
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/stresstest.gif' width='800'/>
-
-[go for more](https://github.com/brookshi/images/tree/master/Hitchhiker)
-
-## 部署
-
-首推使用 docker 部署，简单快捷，具体操作参考 [deploy with docker](doc/howtoinstall-docker-cn.md)
-
-如果没有docker环境也可以使用源码部署，也很简单
-
-linux 请参考 [deploy to linux](doc/howtoinstall-linux-cn.md)
-
-windows 请参考 [deploy to win](doc/howtoinstall-win-cn.md)
-
-## 使用
-
-参考 [使用说明](doc/howtouse-cn.md)
 
 ## 浏览器
 

@@ -1,5 +1,20 @@
+Hitchhiker setting refer to: [Configuration](configuration.md), environment variable could be set in pm2.json
 
-#### app setting reference to：[app setting](app-setting.md), environment variable could be set in pm2.json
+```json
+{
+    "apps": [{
+        "name": "hitchhiker",
+        "script": "./build/index.js",
+        "watch": false,
+        "env": {
+            "HITCHHIKER_APP_HOST": "myhost"
+            # Set environment variable here
+        }
+    }]
+}
+```
+
+#### Deploy step by step
 
 1. install nodejs 7.60+, recommend use LTS (8.9), update npm to latest`npm install npm -g`
 

@@ -1,8 +1,34 @@
-## dependencies: docker, docker-compose
+**dependencies: docker, docker-compose**
 
-#### app setting reference to: [app setting](app-setting.md), environment variable could be set in docker-compose.yml.
+Hitchhiker setting refer to: [Configuration](configuration.md), environment variable could be set in docker-compose.yml.
 
-### Below is a sample:
+```yaml
+version: '2'
+services:
+  hitchhiker:
+    image: brookshi/hitchhiker:v0.4.2
+    container_name: hitchhiker
+    environment:
+      - HITCHHIKER_DB_HOST=hitchhiker-mysql
+      - HITCHHIKER_APP_HOST=http://localhost:8080/
+      # set environment variable here
+    ports:
+      - "8080:8080"
+      - "11010:11010"
+    links:
+      - hitchhiker-mysql:hitchhiker-mysql
+  hitchhiker-mysql:
+    image: mysql:5.7
+    container_name: hitchhiker-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=hitchhiker888
+      - MYSQL_DATABASE=hitchhiker-prod
+    volumes:
+      - ./hitchhiker-mysql.cnf:/etc/mysql/conf.d/hitchhiker.cnf
+      - /my/hitchhiker/sqldata:/var/lib/mysql
+```
+
+#### Deploy step by step:
 ``` bash
 
 # create folder
