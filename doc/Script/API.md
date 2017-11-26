@@ -9,7 +9,7 @@ Require function allows you to import some build-in js lib listed below:
 4. **lodash**:  [popular javaScript utility lib](https://lodash.com/)
 5. **crypto-js**:  [crypto lib](https://github.com/brix/crypto-js)
 
-Of course, these build-in libs cann't meet all user's demand. Hitchhiker also support custom js lib, yo u can upload js lib which you want in Project with zip format (ref to [Custom js lib](Custom JS Lib.md)), then you can require this js lib in script, that's to say, you can do whatever you want in script, such as read data from DB.
+Of course, these build-in libs cann't meet all user's demand. Hitchhiker also support custom js lib, yo u can upload js lib which you want in Project with zip format (ref to [Custom js lib](custom-javascript-lib.md), then you can require this js lib in script, that's to say, you can do whatever you want in script, such as read data from DB.
 
 ```js
 const request = hitchhiker.require('request');

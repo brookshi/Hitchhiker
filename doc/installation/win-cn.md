@@ -1,5 +1,20 @@
+系统的参数可以参考：[配置文件](configuration-cn.md), 环境变量可以写到pm2.json里
 
-#### 系统的参数可以参考：[app setting](app-setting.md), 环境变量可以写到pm2.json里
+```json
+{
+    "apps": [{
+        "name": "hitchhiker",
+        "script": "./build/index.js",
+        "watch": false,
+        "env": {
+            "HITCHHIKER_APP_HOST": "myhost"
+            # 在这里写入环境变量
+        }
+    }]
+}
+```
+
+#### 参考使用下面命令，一步一步部署:
 
 1. 安装nodejs 7.60+, 推荐用最新LTS版本（8.9），并更新npm到最新`npm install npm -g`
 

@@ -1,4 +1,4 @@
-As mention in [Script API](Script API.md), Hitchhiker support prepared file data for test case.
+As mention in [Script API](API.md), Hitchhiker support prepared file data for test case.
 
 In Project's menu, there is a item named Project Data, it will pop a data manager dialog like below:
 

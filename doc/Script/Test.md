@@ -18,6 +18,8 @@ tests["value is correct"] = responseObj.value === 100;
 tests["status code is 200"] = responseCode.code === 200;
 ```
 
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/script/test_result.png)
+
 You also can save response as a file to server, then can load this file in another request.
 
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/script/script_test.png)
