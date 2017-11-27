@@ -1,11 +1,11 @@
 # Summary
 
-* [Introduction](../README.md)
+* [Introduction](README.md)
 * [1. Introduction](introduction.md)
 * [2. Installation](installation/README.md)
-  * [2.1 Docker](installation/docker-en.md)
-  * [2.2 Linux](installation/linux-en.md)
-  * [2.3 Windows](installation/win-en.md)
+  * [2.1 Docker](installation/docker.md)
+  * [2.2 Linux](installation/linux.md)
+  * [2.3 Windows](installation/win.md)
   * [2.4 Configuration](installation/configuration.md)
   * [2.5 Custom Mail Interface](installation/Mail_Interface.md)
 * [3. Simple Tutorial](Simple_Tutorial/README.md)
