@@ -4,4 +4,4 @@ Common Pre Request Script 是Collection级别的，在Collection的菜单里可�
 
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/script/script_common_pre_script.png)
 
-脚本API参考: [脚本API](API-cn.md).
+脚本API参考: [脚本API](API.md).

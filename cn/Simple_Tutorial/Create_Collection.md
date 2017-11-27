@@ -24,7 +24,7 @@ Collection创建好后，同Project的成员都可以看到这个新创建的Col
 
 1. 创建文件夹
 
-2. Common Pre Request Script, 参考 [脚本](../Script/Common_Pre_Script-cn.md)
+2. Common Pre Request Script, 参考 [脚本](../Script/Common_Pre_Script.md)
 
 3. Request Strict SSL: 勾上的话，这个Collection下的所有请求都会验证SSL证书
 

@@ -1,4 +1,4 @@
-如 [脚本API](API-cn.md) 所提，Hitchhiker支持上传自定义的js脚本库。
+如 [脚本API](API.md) 所提，Hitchhiker支持上传自定义的js脚本库。
 
 在Project的菜单有一项叫`Project Lib`，单击它会弹出一个js库管理对话框：
 

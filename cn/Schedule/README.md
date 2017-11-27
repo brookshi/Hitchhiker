@@ -4,6 +4,6 @@ Hitchhiker 支持这种以Collection为单位的Schedule，你可以借此轻松
 
 按照下面步骤来运行一个Schedule:
 
-1. [创建一个Schedule](Create_Schedule-cn.md)
+1. [创建一个Schedule](Create_Schedule.md)
 
-2. [运行Schedule](Run-cn.md)
+2. [运行Schedule](Run.md)

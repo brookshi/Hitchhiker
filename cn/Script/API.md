@@ -9,7 +9,7 @@
 4. **lodash**:  [js常用工具库](https://lodash.com/)
 5. **crypto-js**:  [加解密相关](https://github.com/brix/crypto-js)
 
-当然，这些内置的库不能满足所有人的需求，Hitchhiker支持自定义脚本库，你可以上传任何zip格式的js库到Project里 (参考 [自定义脚本库](custom-javascript-lib-cn.md), 然后就可以在脚本里通过`require`来引用并使用这个库，也就是说，任何nodejs下的库都可以在这里使用，即便是操作数据库。
+当然，这些内置的库不能满足所有人的需求，Hitchhiker支持自定义脚本库，你可以上传任何zip格式的js库到Project里 (参考 [自定义脚本库](custom-javascript-lib.md), 然后就可以在脚本里通过`require`来引用并使用这个库，也就是说，任何nodejs下的库都可以在这里使用，即便是操作数据库。
 
 ```js
 const request = hitchhiker.require('request');

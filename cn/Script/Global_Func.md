@@ -4,4 +4,4 @@ Global Function 可以在Project里定义，然后在这个Project下的所有Co
 
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/script/global_func.png)
 
-脚本API参考: [脚本API](API-cn.md).
+脚本API参考: [脚本API](API.md).

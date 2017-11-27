@@ -1,4 +1,4 @@
-如 [脚本API](API-cn.md) 所提，Hitchhiker支持读取上传上来的数据文件。
+如 [脚本API](API.md) 所提，Hitchhiker支持读取上传上来的数据文件。
 
 在Project的菜单有一项叫`Project Data`，单击它会弹出一个数据管理对话框：
 

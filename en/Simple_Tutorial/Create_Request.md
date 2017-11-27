@@ -2,10 +2,11 @@
 
 Two way to create a new Request.
 
-1. Click menu item `Create reuqest` of Collection, this is the recommend way to create a new Request, The new request will auto save to the current Collection and can access Environment variable for current Project.
+* Click menu item `Create reuqest` of Collection, this is the recommend way to create a new Request, The new request will auto save to the current Collection and can access Environment variable for current Project.
+
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/request_create_1.png)
 
-2. Click + button on the right of tab bar.
+* Click + button on the right of tab bar.
 
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/request_create_2.png)
 

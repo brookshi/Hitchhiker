@@ -2,10 +2,12 @@
 
 可以有两次方式来创建Request。
 
-1. 单击Collection的菜单项`Create reuqest`来创建，这也是推荐的方式，因为创建出来的Request已经保存下来，可以使用到Project下的环境变量。
+* 单击Collection的菜单项`Create reuqest`来创建，这也是推荐的方式，因为创建出来的Request已经保存下来，可以使用到Project下的环境变量。
+
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/request_create_1.png)
 
-2. 单击tab右边的 `+` 按钮
+* 单击tab右边的 `+` 按钮
+
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/request_create_2.png)
 
 下面来一步一步创建一个可以使用的Request到`Sample Collection`下面：

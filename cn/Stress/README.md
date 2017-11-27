@@ -4,8 +4,8 @@ Hitchhiker 支持分布式的压力测试， 你可以在部署 [Hitchhiker-Node
 
 下面来一步步创建一个Stress Test:
 
-1. [创建一个Stress Test](Create_Stress-cn.md).
+1. [创建一个Stress Test](Create_Stress.md).
 
-2. [运行一个压力点](Node-cn.md).
+2. [运行一个压力点](Node.md).
 
-3. [运行](Run-cn.md).
+3. [运行](Run.md).

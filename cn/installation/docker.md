@@ -1,6 +1,6 @@
 **确保你的机器上安装有docker及docker-compose**
 
-系统的参数可以参考：[配置文件](configuration-cn.md), 环境变量可以写到docker-compose.yml里
+系统的参数可以参考：[配置文件](configuration.md), 环境变量可以写到docker-compose.yml里
 
 ```yaml
 version: '2'

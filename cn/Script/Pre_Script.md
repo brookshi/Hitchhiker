@@ -4,4 +4,4 @@ Pre Request Script是定义在Request里，会在Request请求发送前运行，
 
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/script/script_pre_script.png)
 
-脚本API参考: [脚本API](API-cn.md).
+脚本API参考: [脚本API](API.md).

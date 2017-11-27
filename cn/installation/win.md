@@ -1,4 +1,4 @@
-系统的参数可以参考：[配置文件](configuration-cn.md), 环境变量可以写到pm2.json里
+系统的参数可以参考：[配置文件](configuration.md), 环境变量可以写到pm2.json里
 
 ```json
 {

@@ -1,120 +1,89 @@
-# 0.4.2 2017-11-18
+#### 0.4.2 2017-11-18
 
-## Bugs:
-* #50 stress test exception, error setInterval
+**Bugs:**
 
-
-# 0.4.1 2017-11-15
-
-## Bugs:
-* #40 post data more than 1M will cause exception: Payload Too Large
+* \#50 stress test exception, error setInterval
 
 
-# 0.4 2017-11-13
+#### 0.4.1 2017-11-15
+
+**Bugs:**
+
+* \#40 post data more than 1M will cause exception: Payload Too Large
+
+
+#### 0.4 2017-11-13
+
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/pre_request_script.PNG)
 
-## Features:
-* add pre request script.
-* #29 project folder system, upload js lib or data to project and then use it in script.
-* #22 schedule support run in hour or minute.
-* #34 email custom notification interface.
-* #24 expose schedule run now interface for external applications.
+**Features:**
 
-# Bugs:
-* #24 schedule sort request invalid.
+* add pre request script.
+* \#29 project folder system, upload js lib or data to project and then use it in script.
+* \#22 schedule support run in hour or minute.
+* \#34 email custom notification interface.
+* \#24 expose schedule run now interface for external applications.
+
+**Bugs:**
+
+* \#24 schedule sort request invalid.
 * sync may override user data
 * env edit dialog will be clear when sync data
 
-## Features:
-* 增加 pre request script。
-* #29 项目文件夹系统，支持上传js或数据文件到文件夹并可以在脚本里使用它们。
-* #22 schedule支持以小时或分钟为单位。
-* #34 支持自定义邮件发送接口。
-* #24 开放schedule的run now接口以便其他程序调用。
 
-# Bugs:
-* #24 schedule的顺序执行无效
-* sync有时会覆盖用户已经更改的数据
-* sync时环境变量编辑对应框里的内容会被清掉
+#### 0.3 2017-10-30
 
-
-# 0.3 2017-10-30
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/sync.gif)
 
-## Features:
+**Features:**
+
 * support data sync automatically.
 
-# Bugs:
+**Bugs:**
+
 * url doesn't support chinese.
 
-## Features:
-* 支持数据自动同步更新
 
-# Bugs:
-* 修正url不支持中文
+#### 0.2 2017-10-15
 
-
-# 0.2 2017-10-15
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/stresstest.gif)
 
-## Features:
+**Features:**
+
 * support Stress Test.
 
 * Support change port while using source code to deploy.
 
-# Bugs:
+**Bugs:**
+
 * Schedule run empty collection exception.
 
-## Features:
-* 支持压力测试
 
-* 支持在源码部署时改端口
-
-# Bugs:
-* 修正Schedule跑空Collection时的异常
-
-# 0.1.3 2017-09-24
+#### 0.1.3 2017-09-24
 
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/parameters.gif)
 
-## Features:
+**Features:**
+
 * request parameterization, include ManytoMany and OnetoOne, now you can use a request to handle multple situation like various query string, body.
 
 * handle data by using $export$(data) for schedule comparing
 
-* #13 send request with common header like 'accept' etc.. which is defined in appconfig.json
+* \#13 send request with common header like 'accept' etc.. which is defined in appconfig.json
 
-## Bugs:
+**Bugs:**
+
 * handle undefined value of test
 
 * should not include cookie header if local cookie is empty
 
 * origin request will miss headers after Save As request 
 
-## Features:
-* 参数化请求，可以使用随机组合的`ManytoMany`或者一对一组合的`OnetoOne`。 请求通常有很多参数，比如query string, body等，这些参数可能会有不止一个值，每个都要覆盖的话需要写很多request，比如一个request有三个可变的参数，每个参数又有3个值，随机组合下来会有`3*3*3=27个request`，这很麻烦，其实它们之前只是一点不同，现在可以使用参数来帮你做这个事，只需要把可变的参数写在parameter里面，系统会自动构建出request。
 
-* 做schedule对比数据前可以先处理返回的response，再用处理后的数据进行比对，在test里使用 $export$(data) 来导出需要比对的数据。
+#### 0.1.2 2017-09-09
 
-* #13 请求的默认headers，这些header可以在根目录下的appconfig.json里配置，默认定义的是这些：
-``` json
-"defaultHeaders": [
-    "Accept:*/*",
-    "User-Agent:Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36",
-    "Cache-Control:no-cache"
-]
-```
+**Features:**
 
-## Bugs:
-* 没有处理test返回undefined的情况，改为返回失败
-
-* 如果request不包含cookie且本地也没有cookie时发了空的cookie header，改为不发cookie header
-
-* Save As request时原request会受到影响
-
-# 0.1.2 2017-09-09
-
-## Features:
 * could clear local cache
 
 * request's headers auto complete
@@ -125,20 +94,11 @@
 
 * adjust ui style
 
-## Features:
-* 添加清除本地Cache功能
 
-* request的header提示及自动完成
+#### 0.1.1 2017-08-26
 
-* 可以收藏常用的request header，方便下次使用
+**Features:**
 
-* 可以在Project里定义tests的全局函数，方便其下的Request直接使用
-
-* 略微调整UI
-
-# 0.1.1 2017-08-26
-
-## Features:
 * Request history
 
 * Localhost mapping
@@ -151,7 +111,8 @@
 
 * Try without login
 
-## Bugs:
+**Bugs:**
+
 * Miss Headers sometimes after duplicating Request
 
 * Schedule edit dialog should only display environments of selected Collection
@@ -160,27 +121,5 @@
 
 * Folder can't expand if filter project
 
-## Features:
-* Request历史记录
 
-* 成员可以添加Localhost映射
-
-* 在Collection/Folder的菜单里创建Request
-
-* Schedule可以选择是否要对某个Request做match
-
-* Schedule的结果在Request前面加上Folder
-
-* 免登录试用
-
-## Bugs:
-* 复制Request后源Request的headers有时会丢失
-
-* Schedule编辑对话框应该只能选择当前Collection的环境
-
-* 跑空Schedule会出错
-
-* 选择了Project的话Folder不能展开
-
-
-# 0.1.0 2017-07-24
+#### 0.1.0 2017-07-24

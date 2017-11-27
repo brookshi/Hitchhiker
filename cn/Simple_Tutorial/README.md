@@ -8,12 +8,12 @@ Collection, Project, Schedule, Stress Test
 
 可以通过完成下面步骤来熟悉Hitchhiker:
 
-1. [创建一个Project](Create_Project-cn.md)
+1. [创建一个Project](Create_Project.md)
 
-2. [创建一个Collection](Create_Collection-cn.md)
+2. [创建一个Collection](Create_Collection.md)
 
-3. [创建一个Request并发送请求](Create_Request-cn.md)
+3. [创建一个Request并发送请求](Create_Request.md)
 
-4. [使用环境变量](Use_Env_Var-cn.md)
+4. [使用环境变量](Use_Env_Var.md)
 
-5. [使用Parameters](Use_Param-cn.md)
+5. [使用Parameters](Use_Param.md)
