@@ -9,4 +9,4 @@ Hitchhiker 有很多参数可以在部署时设置，参考：[配置文件](con
 
 3. [Windows](win.md)
 
-Hitchhiker 会在邀请Project成员或跑Schedule时发送邮件，用的是一个外部的邮箱系统，但是用户的服务器经常不能访问外网，所以Hitchhiker 提供了一个自定义的Mail接口，具体参考：[自定义邮箱接口](Mail_interface.md)。
+Hitchhiker 会在邀请Project成员或跑Schedule时发送邮件，用的是一个外部的邮箱系统，但是用户的服务器经常不能访问外网，所以Hitchhiker 提供了一个自定义的Mail接口，具体参考：[自定义邮箱接口](Mail_Interface.md)。
