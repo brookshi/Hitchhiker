@@ -1,4 +1,4 @@
 # Languages
 
-* [中文版](doc/cn/)
-* [English](doc/en/)
+* [中文版](cn/)
+* [English](en/)
