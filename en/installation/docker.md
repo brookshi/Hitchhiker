@@ -6,7 +6,7 @@ Hitchhiker setting refer to: [Configuration](configuration.md), environment vari
 version: '2'
 services:
   hitchhiker:
-    image: brookshi/hitchhiker:v0.4.2
+    image: brookshi/hitchhiker:v0.5
     container_name: hitchhiker
     environment:
       - HITCHHIKER_DB_HOST=hitchhiker-mysql

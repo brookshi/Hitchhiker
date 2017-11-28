@@ -1,3 +1,15 @@
+#### 0.5 2017-11-28
+
+**Features:**
+
+* \#41 New property `request` for Script included url, body, headers, method, new method `setRequest(request)` to change request before sent.
+* \#41 Common Pre Request Script for Collection，this script will apply to all requests of this Collection.
+* \#42 New config setting `inviteMemberDirectly` used to set if need email to invite members to Project, default is true (without email)。
+* \#43 New document in gitboook： https://brookshi.gitbooks.io/hitchhiker/content/en/introduction.html
+* \#44 New option `Request Follow Redirect` for Collection used to follow redirect if response status is 3xx, default is false.
+* \#51 New option `Request Strict SSL` for Colllection used to check SSL cert, default is false.
+
+
 #### 0.4.2 2017-11-18
 
 **Bugs:**

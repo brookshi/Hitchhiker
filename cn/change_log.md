@@ -1,3 +1,15 @@
+#### 0.5 2017-11-28
+
+**Features:**
+
+* \#41 Script 增加属性request来得到请求的信息，增加方法setRequest(request)来对请求进行修改。
+* \#41 在Collection下增加Common Pre Request Script，这里可以对Collection下的所有request起作用。
+* \#42 增加配置 inviteMemberDirectly 来设置邀请Project成员时是否需要通过邮件，true即直接加到Project里，默认为true。
+* \#43 使用gitbook重新组织了文档： https://brookshi.gitbooks.io/hitchhiker/content/cn/introduction.html
+* \#44 在Collection下增加option: Request Follow Redirect，决定这个Collection下的请求是否需要在状态码为3xx时继续跳转，默认为false。
+* \#51 在Collection下增加option: Request Strict SSL，决定这个Collection下的请求是否验证SSL证书是否合法，默认为false。
+
+
 #### 0.4.2 2017-11-18
 
 **Bugs:**
