@@ -6,7 +6,7 @@ Go to [http://www.hitchhiker-api.com](http://www.hitchhiker-api.com) for test，
 
 [Document](https://brookshi.gitbooks.io/hitchhiker/doc/introduction.html)
 
-[中文文档](https://brookshi.gitbooks.io/hitchhiker/doc/introduction.html)
+[中文文档](http://doc.hitchhiker-api.com/cn/installation/)
 
 [Change log](change_log.md)
 

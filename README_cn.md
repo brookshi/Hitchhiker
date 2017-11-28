@@ -6,9 +6,9 @@ Hitchhiker 是一款开源的 Restful Api 测试工具，支持Schedule, 数据�
 
 [Document](https://brookshi.gitbooks.io/hitchhiker/doc/introduction.html)
 
-[中文文档](https://brookshi.gitbooks.io/hitchhiker/doc/introduction.html)
+[中文文档](http://doc.hitchhiker-api.com/cn/installation/)
 
-[更新日志](change_log.md)
+[更新日志](http://doc.hitchhiker-api.com/cn/change_log.html)
 
 ## 功能
 
