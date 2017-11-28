@@ -266,7 +266,7 @@ export class RecordRunner {
             tests: testRst.tests,
             variables: {},
             export: testRst.export,
-            elapsed: pRes.timingPhases.total >> 0,
+            elapsed: pRes.timingPhases ? pRes.timingPhases.total >> 0 : 0,
             headers: pRes.headers || {},
             cookies: pRes.headers ? pRes.headers['set-cookie'] : [],
             status: pRes.statusCode,
