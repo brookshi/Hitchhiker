@@ -16,7 +16,7 @@ export class Collection {
     })
     records: Record[];
 
-    @Column({ nullable: true })
+    @Column('text', { nullable: true })
     commonPreScript: string;
 
     @Column({ default: false })
