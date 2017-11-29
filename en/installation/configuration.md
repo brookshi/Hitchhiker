@@ -51,3 +51,13 @@ when type of variable is boolean, use 1 for true and 0 for false.
     }
 }
 ```
+
+Setting for database:
+
+```json
+HITCHHIKER_DB_HOST: database host
+HITCHHIKER_DB_PORT: database port
+HITCHHIKER_DB_USERNAME： database username
+MYSQL_ROOT_PASSWORD: database password
+MYSQL_DATABASE： database name
+```

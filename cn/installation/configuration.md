@@ -49,3 +49,13 @@ Hitchhiker的很多设置可以在appconfig.json里设置，也有对应的环�
     }
 }
 ```
+
+另外还有DB的一些设置如下：
+
+```json
+HITCHHIKER_DB_HOST: Database Server的ip
+HITCHHIKER_DB_PORT: Database 的端口
+HITCHHIKER_DB_USERNAME： Database的用户名
+MYSQL_ROOT_PASSWORD: Database的密码
+MYSQL_DATABASE： Database库名
+```
