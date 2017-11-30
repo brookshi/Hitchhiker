@@ -1,5 +1,6 @@
 import { StringUtil } from '../utils/string_util';
 import { User } from '../models/user';
+import { Record } from '../models/record';
 import { ConnectionManager } from './connection_manager';
 import { Message } from '../common/message';
 import { ResObject } from '../common/res_object';
@@ -16,6 +17,7 @@ import { RecordRunner } from '../run_engine/record_runner';
 import { ProjectService } from './project_service';
 import { EnvironmentService } from './environment_service';
 import { noEnvironment } from '../common/stress_type';
+import { ScriptTransform } from '../utils/script_transform';
 
 export class StressService {
 
@@ -123,19 +125,10 @@ export class StressService {
         if (_.keys(records).length === 0) {
             return { success: false, message: Message.stressNoRecords };
         }
-        const envVariables = {};
-        if (stress.environmentId && stress.environmentId !== noEnvironment) {
-            const env = await EnvironmentService.get(stress.environmentId, true);
-            if (env) {
-                env.variables.forEach(v => {
-                    if (v.isActive) {
-                        envVariables[v.key] = v.value;
-                    }
-                });
-            }
-        }
+        const envVariables = await EnvironmentService.getVariables(stress.environmentId);
         const { globalFunction } = (await ProjectService.getProjectByCollectionId(stress.collectionId)) || { globalFunction: '' };
         const requestBodyList = new Array<RequestBody>();
+
         stress.requests.forEach(i => {
             let record = records[i];
             const paramArr = StringUtil.parseParameters(record.parameters, record.parameterType);
@@ -143,13 +136,26 @@ export class StressService {
 
             if (paramArr.length === 0) {
                 record.headers.forEach(h => { if (h.isActive) { headers[h.key] = h.value; } });
-                requestBodyList.push(<any>{ ...record, headers, test: (globalFunction || '') + record.test });
+                requestBodyList.push(<any>{
+                    ...record,
+                    headers,
+                    prescript: StressService.mergeScript(globalFunction, record, true),
+                    test: StressService.mergeScript(globalFunction, record, false)
+                });
             } else {
                 for (let p of paramArr) {
                     let newRecord = RecordRunner.applyReqParameterToRecord(record, p);
                     newRecord.headers.forEach(h => { if (h.isActive) { headers[h.key] = h.value; } });
                     const param = StringUtil.toString(p);
-                    requestBodyList.push(<any>{ ...newRecord, param, id: `${record.id}${param}`, name: `${newRecord.name}\n${param}`, headers, test: (globalFunction || '') + newRecord.test });
+                    requestBodyList.push(<any>{
+                        ...newRecord,
+                        param,
+                        id: `${record.id}${param}`,
+                        name: `${newRecord.name}\n${param}`,
+                        headers,
+                        prescript: StressService.mergeScript(globalFunction, record, true),
+                        test: StressService.mergeScript(globalFunction, record, false)
+                    });
                 }
             }
         });
@@ -169,5 +175,20 @@ export class StressService {
                 name: stress.name
             }
         };
+    }
+
+    private static mergeScript(globalFunction: string, record: Record, isPre: boolean): string {
+        return ScriptTransform.do(isPre ? (
+            `
+                ${globalFunction || ''}
+                ${record.collection.commonPreScript || ''}
+                ${record.prescript || ''}
+            `
+        ) : (
+                `
+                ${globalFunction || ''}
+                ${record.test || ''}
+            `
+            ));
     }
 }

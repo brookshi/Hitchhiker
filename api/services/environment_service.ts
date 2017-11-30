@@ -7,6 +7,7 @@ import { StringUtil } from '../utils/string_util';
 import { DtoEnvironment } from '../interfaces/dto_environment';
 import { VariableService } from './variable_service';
 import { Project } from '../models/project';
+import { noEnvironment } from '../common/stress_type';
 
 export class EnvironmentService {
 
@@ -105,5 +106,20 @@ export class EnvironmentService {
         }
 
         return { success: true, message: Message.envDeleteSuccess };
+    }
+
+    static async getVariables(envId: string): Promise<_.Dictionary<string>> {
+        const envVariables = {};
+        if (envId && envId !== noEnvironment) {
+            const env = await EnvironmentService.get(envId, true);
+            if (env) {
+                env.variables.forEach(v => {
+                    if (v.isActive) {
+                        envVariables[v.key] = v.value;
+                    }
+                });
+            }
+        }
+        return envVariables;
     }
 }
