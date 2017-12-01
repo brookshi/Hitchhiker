@@ -109,6 +109,21 @@
     ✔ sync will override @done (11/12/2017, 10:53:17 PM)
     ✔ env edit dialog will be clear when sync data @done (11/11/2017, 11:12:31 AM)
 0.5:
+    ✔ #41 New property `request` for Script included url, body, headers, method, new method `setRequest(request)` to change request before sent. @done (12/1/2017, 12:56:33 PM)
+    ✔ #41 Common Pre Request Script for Collection，this script will apply to all requests of this Collection. @done (12/1/2017, 12:56:34 PM)
+    ✔ #42 New config setting `inviteMemberDirectly` used to set if need email to invite members to Project, default is true (without email)。 @done (12/1/2017, 12:56:35 PM)
+    ✔ #43 New document in gitboook： https://brookshi.gitbooks.io/hitchhiker/content/en/introduction.html @done (12/1/2017, 12:56:36 PM)
+    ✔ #44 New option `Request Follow Redirect` for Collection used to follow redirect if response status is 3xx, default is false. @done (12/1/2017, 12:56:37 PM)
+    ✔ #51 New option `Request Strict SSL` for Colllection used to check SSL cert, default is false. @done (12/1/2017, 12:56:37 PM)
+0.6:
+    ☐ Stress test support ES6 and js lib, data.
+    ☐ Test & Global function support Environment
+    ☐ #47 display image if response header include 'image/*'
+
+backlog:
+    ☐ import from curl
+    ☐ generate code for request
+
     ☐ form data, text, binary body type
     ☐ import postman env
     ☐ convert variable function while importing postman collection
@@ -118,22 +133,22 @@
     ☐ body type
     ☐ project share collection/env for own
     ☐ stop running stress test
-0.6:
+
     ☐ variable highlight
     ☐ save all tabs, close all tabs, close all but active.
     ☐ Me project should be removable
     ☐ improve mail
-0.7.0:
+
     ☐ data mock
     ☐ test result detail
     ☐ hot key
-0.8.0:
+
     ☐ api document
     ☐ record auth
-0.9.0:
+
     ☐ project permission
 
-backlog:
+
     ☐ import from fiddler package
 
 4a0a4b0cb56b86075a895be24d8eba06

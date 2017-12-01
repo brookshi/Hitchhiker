@@ -23,6 +23,10 @@ export interface TestCase {
 
     envVariables: _.Dictionary<string>;
 
+    libFiles: _.Dictionary<string>;
+
+    dataFiles: _.Dictionary<string>;
+
     repeat: number;
 
     concurrencyCount: number;
