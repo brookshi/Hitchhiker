@@ -107,13 +107,19 @@ function tryTriggerStart(request?: StressRequest) {
     }
     currentStressRequest = request;
     Log.info('stress - send msg to workers');
-    sendMsgToWorkers(request);
+    sendMsgToWorkers({ type: StressMessageType.fileStart, fileData: request.fileData });
 }
 
 function sendMsgToWorkers(request: Partial<StressRequest>) {
     if (request.type === StressMessageType.task) {
         const allocableRequests = getAllocableRequest(request);
         _.keys(allocableRequests).forEach(k => workers[k].socket.send(JSON.stringify(allocableRequests[k])));
+    } else if (request.type === StressMessageType.fileStart) {
+        _.values(workers).forEach(w => {
+            w.socket.send(JSON.stringify({ type: request.type }));
+            w.socket.send(request.fileData);
+            w.socket.send(new Buffer([36, 36, 36]));
+        });
     } else {
         _.values(workers).forEach(w => w.socket.send(JSON.stringify(request)));
     }
@@ -229,6 +235,9 @@ function workerUpdated(addr: string, status: WorkerStatus) {
                 sendMsgToUser(StressMessageType.runResult, currentStressRequest, buildStressRunResult());
             }, Setting.instance.stressUpdateInterval);
         }
+    } else if (status === WorkerStatus.fileReady) {
+        Log.info(`stress - all workers file ready`);
+        sendMsgToWorkers(currentStressRequest);
     } else if (status === WorkerStatus.finish) {
         workers[addr].status = WorkerStatus.idle;
         if (!_.values(workers).some(w => w.status !== WorkerStatus.finish && w.status !== WorkerStatus.idle)) {

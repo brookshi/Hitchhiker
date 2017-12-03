@@ -178,7 +178,7 @@ export class StressService {
     }
 
     private static mergeScript(globalFunction: string, record: Record, isPre: boolean): string {
-        return ScriptTransform.do(isPre ? (
+        return ScriptTransform.toES5(isPre ? (
             `
                 ${globalFunction || ''}
                 ${record.collection.commonPreScript || ''}

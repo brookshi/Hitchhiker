@@ -15,6 +15,8 @@ export interface StressRequest extends StressUser {
     stressName: string;
 
     testCase: TestCase;
+
+    fileData: Buffer;
 }
 
 export interface TestCase {
@@ -22,10 +24,6 @@ export interface TestCase {
     requestBodyList?: RequestBody[];
 
     envVariables: _.Dictionary<string>;
-
-    libFiles: _.Dictionary<string>;
-
-    dataFiles: _.Dictionary<string>;
 
     repeat: number;
 

@@ -9,6 +9,7 @@ import { StringUtil } from '../utils/string_util';
 import { StressMessageType } from '../common/stress_type';
 import { RecordService } from './record_service';
 import { StressService } from './stress_service';
+import { ScriptTransform } from '../utils/script_transform';
 
 export class StressTestWSService extends WebSocketHandler {
 
@@ -56,6 +57,7 @@ export class StressTestWSService extends WebSocketHandler {
                 return;
             }
             info.testCase = data.result.testCase;
+            info.fileData = ScriptTransform.zipAll();
             info.stressName = data.result.name;
             ChildProcessManager.instance.sendStressTask(info);
         } else if (info.type === StressMessageType.stop) {

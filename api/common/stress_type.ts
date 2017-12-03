@@ -10,7 +10,9 @@ export enum WorkerStatus {
 
     finish = 3,
 
-    down = 4
+    down = 4,
+
+    fileReady = 5,
 }
 
 export enum StressMessageType {
@@ -27,17 +29,21 @@ export enum StressMessageType {
 
     status = 5,
 
-    init = 6,
+    fileStart = 6,
 
-    close = 7,
+    fileFinish = 7,
 
-    wait = 8,
+    init,
 
-    error = 9,
+    close,
 
-    finish = 10,
+    wait,
 
-    noWorker = 11
+    error,
+
+    finish,
+
+    noWorker
 }
 
 // type StressFaildType = 'noRes' | 'm500' | 'testFailed' | 'timeout';

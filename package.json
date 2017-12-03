@@ -27,6 +27,7 @@
     "ws": "^3.0.0"
   },
   "devDependencies": {
+    "@types/adm-zip": "^0.4.31",
     "@types/fs-extra": "^4.0.4",
     "@types/koa": "^2.0.39",
     "@types/koa-static": "^2.0.22",
