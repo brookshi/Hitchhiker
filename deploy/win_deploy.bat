@@ -9,6 +9,7 @@ git clone -b release https://github.com/brookshi/Hitchhiker.git
 cd hitchhiker
 call npm install -g pm2 yarn gulp-cli typescript@2.3.3 pm2-windows-service
 call npm install gulp -D
+call npm link typescript
 call npm install
 cd client
 call npm install

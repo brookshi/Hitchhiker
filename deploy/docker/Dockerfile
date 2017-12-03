@@ -12,6 +12,7 @@ WORKDIR /usr/src/Hitchhiker
 # npm install -g
 RUN npm install -g pm2 yarn gulp-cli typescript@2.3.3 
 RUN npm install gulp -D
+RUN npm link typescript
 
 # npm install
 RUN npm install
