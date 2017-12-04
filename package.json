@@ -6,6 +6,7 @@
   "dependencies": {
     "@types/uuid": "^2.0.29",
     "adm-zip": "^0.4.7",
+    "archiver": "^2.1.0",
     "fs-extra": "^4.0.2",
     "koa": "^2.0.0-alpha.7",
     "koa-bodyparser": "^3.2.0",
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "@types/adm-zip": "^0.4.31",
+    "@types/archiver": "^2.0.1",
     "@types/fs-extra": "^4.0.4",
     "@types/koa": "^2.0.39",
     "@types/koa-static": "^2.0.22",

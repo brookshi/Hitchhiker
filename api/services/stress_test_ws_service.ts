@@ -57,7 +57,7 @@ export class StressTestWSService extends WebSocketHandler {
                 return;
             }
             info.testCase = data.result.testCase;
-            info.fileData = ScriptTransform.zipAll();
+            info.fileData = await ScriptTransform.zipAll();
             info.stressName = data.result.name;
             ChildProcessManager.instance.sendStressTask(info);
         } else if (info.type === StressMessageType.stop) {
