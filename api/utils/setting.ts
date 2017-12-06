@@ -95,6 +95,10 @@ export class Setting {
         return this.getValidNum(process.env.HITCHHIKER_STRESS_COUNT, this._setting.stress.storeMaxCount);
     }
 
+    get stressHost() {
+        return `ws://${this.appHost.replace(/^http(s?):\/\//g, '')}stressnode`;
+    }
+
     get stressPort() {
         return this.isDev ? 11011 : (this.getValidNum(process.env.HITCHHIKER_STRESS_PORT, this._setting.stress.stressPort));
     }
