@@ -16,14 +16,7 @@ function createWS(): WS {
 
 ws.on('open', function open() {
     Log.info('connect success');
-    const msg: StressMessage = {
-        status: WorkerStatus.idle,
-        type: StressMessageType.hardware,
-        runResult: null,
-        cpuNum: OS.cpus().length
-    };
-
-    send(msg);
+    send(createMsg(WorkerStatus.idle, StressMessageType.hardware, null, OS.cpus().length));
 });
 
 ws.on('message', data => {
@@ -47,16 +40,16 @@ function handMsg(msg: StressRequest) {
         case StressMessageType.task:
             testCase = msg.testCase;
             send(createMsg(WorkerStatus.ready, StressMessageType.status));
-            Log.info("status: ready");
+            Log.info('status: ready');
             break;
         case StressMessageType.start:
-            Log.info("status: start");
+            Log.info('status: start');
             send(createMsg(WorkerStatus.working, StressMessageType.status));
             //c.testCase.Run();
             //c.finish();
             break;
         case StressMessageType.finish:
-            Log.info("status: file finish");
+            Log.info('status: file finish');
             send(createMsg(WorkerStatus.fileReady, StressMessageType.status));
             break;
         case StressMessageType.stop:
