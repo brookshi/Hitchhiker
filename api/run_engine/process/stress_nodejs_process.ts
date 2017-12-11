@@ -1,10 +1,13 @@
 import { Setting } from '../../utils/setting';
 import * as WS from 'ws';
 import * as OS from 'os';
+import * as path from 'path';
 import { Log } from '../../utils/log';
 import { StressMessage, TestCase, StressRequest } from '../../interfaces/dto_stress_setting';
 import { WorkerStatus, StressMessageType } from '../../common/stress_type';
 import { RunResult } from '../../interfaces/dto_run_result';
+import { ChildProcessManager } from './child_process_manager';
+import { StressNodejsProcessHandler } from './stress_nodejs_process_handler';
 
 const restartDelay: number = 10 * 1000;
 
@@ -35,6 +38,8 @@ function send(msg: StressMessage) {
 }
 
 let testCase: TestCase;
+const processManager = ChildProcessManager.create('stress_nodejs', { count: OS.cpus().length, entry: path.join(__dirname, '../stress_nodejs_runner.js'), handlerCtor: StressNodejsProcessHandler });
+
 function handMsg(msg: StressRequest) {
     switch (msg.type) {
         case StressMessageType.task:
@@ -58,6 +63,14 @@ function handMsg(msg: StressRequest) {
             break;
         //c.finish()
     }
+}
+
+function run(testCase: TestCase) {
+    processManager.init();
+}
+
+function finish() {
+    processManager.closeAll();
 }
 
 function trace(rst: RunResult) {

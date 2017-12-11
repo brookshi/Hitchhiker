@@ -22,7 +22,7 @@ export class StressTestWSService extends WebSocketHandler {
     }
 
     private get processHandler() {
-        return ChildProcessManager.instance.getHandler('stress') as StressProcessHandler;
+        return ChildProcessManager.default.getHandler('stress') as StressProcessHandler;
     }
 
     init() {

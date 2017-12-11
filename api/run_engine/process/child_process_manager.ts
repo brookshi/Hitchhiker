@@ -19,13 +19,15 @@ interface ProcessInfo {
 
 export class ChildProcessManager {
 
-    static instance = new ChildProcessManager();
+    static default = new ChildProcessManager();
 
     private constructor() { }
 
     private limit = 10;
 
     private retryTimes = 0;
+
+    private autoRetry = true;
 
     private processHandlerMapping: _.Dictionary<BaseProcessHandler | BaseProcessHandler[]> = {};
 
@@ -34,7 +36,17 @@ export class ChildProcessManager {
         ['stress']: { entry: `${__dirname}/stress_process.js`, count: 1, handlerCtor: StressProcessHandler }
     };
 
+    static create(key: string, info: ProcessInfo) {
+        const manager = new ChildProcessManager();
+        manager.processConfigs = {
+            [key]: info
+        };
+        manager.autoRetry = false;
+        return manager;
+    }
+
     init() {
+        this.processHandlerMapping = {};
         _.keys(this.processConfigs).forEach(c => this.createChildProcess(c));
         process.on('exit', () => _.values(this.processHandlerMapping).forEach(p => {
             if (p instanceof Array) {
@@ -62,6 +74,10 @@ export class ChildProcessManager {
         });
 
         process.on('exit', () => {
+            if (!this.autoRetry) {
+                Log.info(`${moduleName} process exit.`);
+                return;
+            }
             if (this.retryTimes === this.limit) {
                 Log.error(`${moduleName} process exit ${this.limit} times, stop it.`);
                 return;
@@ -72,6 +88,16 @@ export class ChildProcessManager {
         });
 
         handler.afterProcessCreated();
+    }
+
+    closeAll() {
+        _.values(this.processHandlerMapping).forEach(p => {
+            if (p instanceof Array) {
+                p.forEach(cp => cp.process.kill());
+            } else {
+                p.process.kill();
+            }
+        });
     }
 
     getHandler(type: 'schedule' | 'stress') {

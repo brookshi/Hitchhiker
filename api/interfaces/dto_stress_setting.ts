@@ -1,4 +1,5 @@
 import { RunResult } from './dto_run_result';
+import { Record } from '../models/record';
 import { StressMessageType, WorkerStatus } from '../common/stress_type';
 
 export interface StressUser {
@@ -20,6 +21,8 @@ export interface StressRequest extends StressUser {
 }
 
 export interface TestCase {
+
+    records: Record[];
 
     requestBodyList?: RequestBody[];
 

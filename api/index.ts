@@ -15,7 +15,7 @@ Setting.instance.init();
 
 ProjectDataService.instance.init();
 
-ChildProcessManager.instance.init();
+ChildProcessManager.default.init();
 
 app.use(Middleware(app));
 
