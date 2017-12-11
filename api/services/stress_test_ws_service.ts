@@ -4,12 +4,13 @@ import { ScheduleRunner } from '../run_engine/schedule_runner';
 import { WebSocketHandler } from './base/web_socket_handler';
 import { Log } from '../utils/log';
 import { StressRequest, StressResponse } from '../interfaces/dto_stress_setting';
-import { ChildProcessManager } from '../run_engine/child_process_manager';
+import { ChildProcessManager } from '../run_engine/process/child_process_manager';
 import { StringUtil } from '../utils/string_util';
 import { StressMessageType } from '../common/stress_type';
 import { RecordService } from './record_service';
 import { StressService } from './stress_service';
 import { ScriptTransform } from '../utils/script_transform';
+import { StressProcessHandler } from '../run_engine/process/stress_process_handler';
 
 export class StressTestWSService extends WebSocketHandler {
 
@@ -20,8 +21,12 @@ export class StressTestWSService extends WebSocketHandler {
         this.id = StringUtil.generateShortId();
     }
 
+    private get processHandler() {
+        return ChildProcessManager.instance.getHandler('stress') as StressProcessHandler;
+    }
+
     init() {
-        ChildProcessManager.instance.initStressUser(this.id, data => this.handleMsg(data));
+        this.processHandler.initStressUser(this.id, data => this.handleMsg(data));
     }
 
     onReceive(data: string) {
@@ -39,7 +44,7 @@ export class StressTestWSService extends WebSocketHandler {
 
     onClose() {
         Log.info('Stress Test - client close');
-        ChildProcessManager.instance.closeStressUser(this.id);
+        this.processHandler.closeStressUser(this.id);
         this.close();
     }
 
@@ -59,9 +64,9 @@ export class StressTestWSService extends WebSocketHandler {
             info.testCase = data.result.testCase;
             info.fileData = await ScriptTransform.zipAll();
             info.stressName = data.result.name;
-            ChildProcessManager.instance.sendStressTask(info);
+            this.processHandler.sendStressTask(info);
         } else if (info.type === StressMessageType.stop) {
-            ChildProcessManager.instance.stopStressTask(this.id);
+            this.processHandler.stopStressTask(this.id);
         }
     }
 

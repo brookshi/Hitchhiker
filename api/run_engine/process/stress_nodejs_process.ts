@@ -1,10 +1,10 @@
-import { Setting } from '../utils/setting';
+import { Setting } from '../../utils/setting';
 import * as WS from 'ws';
 import * as OS from 'os';
-import { Log } from '../utils/log';
-import { StressMessage, TestCase, StressRequest } from '../interfaces/dto_stress_setting';
-import { WorkerStatus, StressMessageType } from '../common/stress_type';
-import { RunResult } from '../interfaces/dto_run_result';
+import { Log } from '../../utils/log';
+import { StressMessage, TestCase, StressRequest } from '../../interfaces/dto_stress_setting';
+import { WorkerStatus, StressMessageType } from '../../common/stress_type';
+import { RunResult } from '../../interfaces/dto_run_result';
 
 const restartDelay: number = 10 * 1000;
 
