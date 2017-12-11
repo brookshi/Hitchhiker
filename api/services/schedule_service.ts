@@ -128,7 +128,7 @@ export class ScheduleService {
     static checkScheduleNeedRun(schedule: Schedule): boolean {
         const now = new Date();
         if (schedule.timer === TimerType.Day) {
-            const isRunFinish = new Date(schedule.lastRunDate + ' UTC').toDateString() === new Date().toDateString();
+            const isRunFinish = schedule.lastRunDate && new Date(schedule.lastRunDate + ' UTC').toDateString() === new Date().toDateString();
             if (isRunFinish) {
                 return false;
             }
@@ -138,9 +138,9 @@ export class ScheduleService {
             const scheduleHour = schedule.hour < 0 ? 24 + schedule.hour : schedule.hour;
             return isPeriodRight && scheduleHour === now.getUTCHours();
         } else if (schedule.timer === TimerType.Hour) {
-            return DateUtil.diff(DateUtil.getUTCDate(), schedule.lastRunDate) >= schedule.hour;
+            return !schedule.lastRunDate || DateUtil.diff(DateUtil.getUTCDate(), schedule.lastRunDate) >= schedule.hour;
         } else if (schedule.timer === TimerType.Minute) {
-            return DateUtil.diff(DateUtil.getUTCDate(), schedule.lastRunDate, 'm') >= schedule.hour;
+            return !schedule.lastRunDate || DateUtil.diff(DateUtil.getUTCDate(), schedule.lastRunDate, 'm') >= schedule.hour;
         }
         return false;
     }
