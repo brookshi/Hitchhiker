@@ -88,6 +88,8 @@ export class RecordRunner {
         let prescriptResult: ResObject = { success: true, message: '' };
         let variables: any = UserVariableManager.getVariables(uid || vid, environmentId);
         const cookies: _.Dictionary<string> = UserVariableManager.getCookies(uid || vid, environmentId);
+        record = await VariableService.applyVariableForRecord(environmentId, record);
+
         const commonPreScript = record.collection ? record.collection.commonPreScript : '';
         if (commonPreScript || record.prescript) {
             const data = await RecordRunner.runPreScript(record, commonPreScript, environmentId, envName, uid, vid);
@@ -115,10 +117,11 @@ export class RecordRunner {
     }
 
     private static async runPreScript(record: Record, commonPreScript: string, environmentId: string, envName: string, uid: string, vid: string): Promise<{ prescriptResult: ResObject, record: Record }> {
-        const prescriptWithVar = await VariableService.applyVariable(environmentId, record.prescript || '');
         const commonPreScriptWithVar = await VariableService.applyVariable(environmentId, commonPreScript || '');
         const { globalFunction, id: pid } = (await ProjectService.getProjectByCollectionId(record.collection.id)) || { globalFunction: '', id: '' };
-        const prescriptResult = await ScriptRunner.prerequest(pid, uid || vid, environmentId, envName, globalFunction, commonPreScriptWithVar, prescriptWithVar, record);
+        const globalFunctionWithVar = await VariableService.applyVariable(environmentId, globalFunction || '');
+
+        const prescriptResult = await ScriptRunner.prerequest(pid, uid || vid, environmentId, envName, globalFunctionWithVar, commonPreScriptWithVar, record.prescript, record);
         if (prescriptResult.success) {
             record = { ...record, ...prescriptResult.result, headers: [] };
             _.keys(prescriptResult.result.headers).forEach(k => {
@@ -236,7 +239,9 @@ export class RecordRunner {
     private static async runRecord(option: request.Options, envId: string, envName: string, record: Record, prescriptResult: ResObject, userId?: string, vid?: string, serverRes?: ServerResponse, needPipe?: boolean): Promise<RunResult> {
         const res = await RecordRunner.request(option, serverRes, needPipe);
         const { globalFunction, id: pid } = (await ProjectService.getProjectByCollectionId(record.collection.id)) || { globalFunction: '', id: '' };
-        var rst = await RecordRunner.handleRes(res.response, res.err, record, pid, userId || vid, envId, envName, globalFunction || '', serverRes, needPipe);
+        const globalFunctionWithVar = await VariableService.applyVariable(envId, globalFunction || '');
+
+        const rst = await RecordRunner.handleRes(res.response, res.err, record, pid, userId || vid, envId, envName, globalFunctionWithVar || '', serverRes, needPipe);
         if (!prescriptResult.success) {
             rst.tests[prescriptResult.message] = false;
         }

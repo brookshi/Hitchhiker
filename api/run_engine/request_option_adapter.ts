@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 
 export class RequestOptionAdapter {
     static async fromRecord(envId: string, record: Record, userId?: string): Promise<Options> {
-        record = await VariableService.applyVariableForRecord(envId, RequestOptionAdapter.applyDefaultHeaders(record));
+        record = RequestOptionAdapter.applyDefaultHeaders(record);
         if (userId) {
             await RequestOptionAdapter.applyLocalhost(record, userId);
         }
