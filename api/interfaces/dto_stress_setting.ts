@@ -24,6 +24,8 @@ export interface TestCase {
 
     records: Record[];
 
+    envId: string;
+
     requestBodyList?: RequestBody[];
 
     envVariables: _.Dictionary<string>;

@@ -14,7 +14,7 @@ interface ProcessInfo {
 
     entry: string;
 
-    handlerCtor: { new(): BaseProcessHandler };
+    handlerCtor: { new (): BaseProcessHandler };
 }
 
 export class ChildProcessManager {
@@ -100,7 +100,7 @@ export class ChildProcessManager {
         });
     }
 
-    getHandler(type: 'schedule' | 'stress') {
+    getHandler(type: 'schedule' | 'stress' | 'stress_nodejs') {
         return this.processHandlerMapping[type];
     }
 }

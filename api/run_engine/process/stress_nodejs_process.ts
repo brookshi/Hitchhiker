@@ -8,8 +8,11 @@ import { WorkerStatus, StressMessageType } from '../../common/stress_type';
 import { RunResult } from '../../interfaces/dto_run_result';
 import { ChildProcessManager } from './child_process_manager';
 import { StressNodejsProcessHandler } from './stress_nodejs_process_handler';
+import { MathUtil } from '../../utils/math_util';
 
 const restartDelay: number = 10 * 1000;
+
+Log.init();
 
 let ws = createWS();
 
@@ -50,23 +53,32 @@ function handMsg(msg: StressRequest) {
         case StressMessageType.start:
             Log.info('status: start');
             send(createMsg(WorkerStatus.working, StressMessageType.status));
-            //c.testCase.Run();
-            //c.finish();
+            run();
             break;
         case StressMessageType.finish:
             Log.info('status: file finish');
             send(createMsg(WorkerStatus.fileReady, StressMessageType.status));
             break;
         case StressMessageType.stop:
+            finish();
             break;
         default:
             break;
-        //c.finish()
     }
 }
 
-function run(testCase: TestCase) {
+function run() {
     processManager.init();
+    const taskForProcessArr = MathUtil.distribute(testCase.concurrencyCount, OS.cpus().length);
+    const handler = processManager.getHandler('stress_nodejs');
+    if (handler instanceof Array) {
+        handler.forEach((h, i) => {
+            h.process.send({
+                type: StressMessageType.task,
+                testCase: { ...testCase, concurrencyCount: taskForProcessArr[i] }
+            });
+        });
+    }
 }
 
 function finish() {
