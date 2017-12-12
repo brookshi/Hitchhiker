@@ -7,43 +7,52 @@ import { StressMessage, TestCase, StressRequest } from '../../interfaces/dto_str
 import { WorkerStatus, StressMessageType } from '../../common/stress_type';
 import { RunResult } from '../../interfaces/dto_run_result';
 import { ChildProcessManager } from './child_process_manager';
-import { StressNodejsProcessHandler } from './stress_nodejs_process_handler';
 import { MathUtil } from '../../utils/math_util';
+import { StressNodejsRunnerHandler } from './stress_nodejs_runner_handler';
+import { BaseProcessHandler } from './base_process_handler';
 
 const restartDelay: number = 10 * 1000;
 
 Log.init();
 
+process.on('uncaughtException', (err) => {
+    Log.error(err);
+});
+
 let ws = createWS();
+
+let testCase: TestCase;
+
+const processManager = ChildProcessManager.create('stress_nodejs_runner', { count: OS.cpus().length, entry: path.join(__dirname, '../stress_nodejs_runner.js'), handlerCtor: StressNodejsRunnerHandler });
+
+runForHandlers((h, i) => h.call = handleChildProcessMsg);
 
 function createWS(): WS {
     return new WS(Setting.instance.stressHost);
 }
 
 ws.on('open', function open() {
-    Log.info('connect success');
+    Log.info('nodejs stress process: connect success');
     send(createMsg(WorkerStatus.idle, StressMessageType.hardware, null, OS.cpus().length));
 });
 
 ws.on('message', data => {
-    Log.info(`receive case: ${data}`);
-    const obj = JSON.parse(data.toString()) as StressMessage;
+    Log.info(`nodejs stress process: receive case: ${data}`);
+    const msg = JSON.parse(data.toString()) as StressRequest;
+    handleMsg(msg);
 });
 
 ws.on('close', (code, msg) => {
-    Log.error(`nodejs runner close ${code}: ${msg}`);
+    Log.error(`nodejs stress process: close ${code}: ${msg}`);
     setTimeout(() => ws = createWS(), restartDelay);
 });
 
 function send(msg: StressMessage) {
-    Log.info(`send message with type ${msg.type} and status: ${msg.status}`);
+    Log.info(`nodejs stress process: send message with type ${msg.type} and status: ${msg.status}`);
     ws.send(msg);
 }
 
-let testCase: TestCase;
-const processManager = ChildProcessManager.create('stress_nodejs', { count: OS.cpus().length, entry: path.join(__dirname, '../stress_nodejs_runner.js'), handlerCtor: StressNodejsProcessHandler });
-
-function handMsg(msg: StressRequest) {
+function handleMsg(msg: StressRequest) {
     switch (msg.type) {
         case StressMessageType.task:
             testCase = msg.testCase;
@@ -57,7 +66,7 @@ function handMsg(msg: StressRequest) {
             break;
         case StressMessageType.finish:
             Log.info('status: file finish');
-            send(createMsg(WorkerStatus.fileReady, StressMessageType.status));
+            finish();
             break;
         case StressMessageType.stop:
             finish();
@@ -67,21 +76,42 @@ function handMsg(msg: StressRequest) {
     }
 }
 
-function run() {
-    processManager.init();
-    const taskForProcessArr = MathUtil.distribute(testCase.concurrencyCount, OS.cpus().length);
-    const handler = processManager.getHandler('stress_nodejs');
-    if (handler instanceof Array) {
-        handler.forEach((h, i) => {
-            h.process.send({
-                type: StressMessageType.task,
-                testCase: { ...testCase, concurrencyCount: taskForProcessArr[i] }
-            });
-        });
+function handleChildProcessMsg(data: any) {
+    if (data === 'ready') { }
+    else if (data === 'finish' || data === 'error') {
+        let isAllFinish = true;
+        runForHandlers((h, i) => isAllFinish = isAllFinish && (h as StressNodejsRunnerHandler).isFinish);
+        if (isAllFinish) {
+            finish();
+        }
+    } else {
+        trace(JSON.parse(data));
     }
 }
 
+function runForHandlers(call: (h: BaseProcessHandler, i: number) => void) {
+    const handler = processManager.getHandler('stress_nodejs_runner');
+    if (handler instanceof Array) {
+        handler.forEach(call);
+    } else {
+        call(handler, 0);
+    }
+}
+
+function run() {
+    processManager.init();
+    const taskForProcessArr = MathUtil.distribute(testCase.concurrencyCount, OS.cpus().length);
+    const handler = processManager.getHandler('stress_nodejs_runner');
+    runForHandlers((h, i) => {
+        h.process.send({
+            type: StressMessageType.task,
+            testCase: { ...testCase, concurrencyCount: taskForProcessArr[i] }
+        });
+    });
+}
+
 function finish() {
+    send(createMsg(WorkerStatus.finish, StressMessageType.status));
     processManager.closeAll();
 }
 

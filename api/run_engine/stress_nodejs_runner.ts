@@ -7,6 +7,11 @@ Log.init();
 
 let testCase: TestCase;
 
+process.on('uncaughtException', (err) => {
+    Log.error(err);
+    process.send('error');
+});
+
 process.on('message', (msg: StressRequest) => {
     if (msg.type === StressMessageType.start) {
         run();
@@ -16,6 +21,7 @@ process.on('message', (msg: StressRequest) => {
     }
 });
 
-function run() {
-    RecordRunner.runRecords(testCase.records, testCase.envId, true, 'placeholder', true, msg => process.send(msg));
+async function run() {
+    await RecordRunner.runRecords(testCase.records, testCase.envId, true, 'placeholder', true, msg => process.send(msg));
+    process.send('finish');
 }

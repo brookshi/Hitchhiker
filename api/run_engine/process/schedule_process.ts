@@ -5,6 +5,10 @@ import { ScheduleRunner } from '../schedule_runner';
 
 Log.init();
 
+process.on('uncaughtException', (err) => {
+    Log.error(err);
+});
+
 process.on('message', (msg) => {
     if (msg === 'start') {
         startScheduleProcess();
