@@ -116,9 +116,13 @@
     ✔ #44 New option `Request Follow Redirect` for Collection used to follow redirect if response status is 3xx, default is false. @done (12/1/2017, 12:56:37 PM)
     ✔ #51 New option `Request Strict SSL` for Colllection used to check SSL cert, default is false. @done (12/1/2017, 12:56:37 PM)
 0.6:
-    ☐ Stress test support ES6 and js lib, data.
+    ☐ #45 Stress test support ES6 and js lib, data.
     ✔ Test & Global function support Environment @done (12/11/2017, 1:34:05 PM)
     ☐ #47 display image if response header include 'image/*'
+    ☐ #62 global function miss if send request
+    ☐ #59 exception caused by image data of schedule record
+    ☐ #55 failed to construct WebSocket
+    ☐ schedule record timer take 1 min error
 
 backlog:
     ☐ import from curl

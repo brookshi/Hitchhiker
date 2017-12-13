@@ -96,7 +96,7 @@ export class Setting {
     }
 
     get stressHost() {
-        return `ws://${this.appHost.replace(/^http(s?):\/\//g, '')}stressnode`;
+        return `${this.appHost.replace(/^http(s?):\/\//g, 'ws://').replace(/(?:)\d+/, this.stressPort)}`;
     }
 
     get stressPort() {

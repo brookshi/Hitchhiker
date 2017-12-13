@@ -23,7 +23,11 @@ let ws = createWS();
 
 let testCase: TestCase;
 
+let willReceiveFile: boolean = false;
+
 const processManager = ChildProcessManager.create('stress_nodejs_runner', { count: OS.cpus().length, entry: path.join(__dirname, '../stress_nodejs_runner.js'), handlerCtor: StressNodejsRunnerHandler });
+
+processManager.init();
 
 runForHandlers((h, i) => h.call = handleChildProcessMsg);
 
@@ -32,24 +36,32 @@ function createWS(): WS {
 }
 
 ws.on('open', function open() {
-    Log.info('nodejs stress process: connect success');
+    Log.info('nodejs stress process - connect success');
     send(createMsg(WorkerStatus.idle, StressMessageType.hardware, null, OS.cpus().length));
 });
 
 ws.on('message', data => {
-    Log.info(`nodejs stress process: receive case: ${data}`);
-    const msg = JSON.parse(data.toString()) as StressRequest;
-    handleMsg(msg);
+    if (willReceiveFile) {
+        // save files
+        if (data instanceof Buffer && data.length === 3 && data[0] === 36) {
+            willReceiveFile = false;
+            send(createMsg(WorkerStatus.fileReady, StressMessageType.status));
+        }
+    } else {
+        const msg = JSON.parse(data.toString()) as StressRequest;
+        Log.info(`nodejs stress process - receive case ${msg.type}`);
+        handleMsg(msg);
+    }
 });
 
 ws.on('close', (code, msg) => {
-    Log.error(`nodejs stress process: close ${code}: ${msg}`);
+    Log.error(`nodejs stress process - close ${code}: ${msg}`);
     setTimeout(() => ws = createWS(), restartDelay);
 });
 
 function send(msg: StressMessage) {
-    Log.info(`nodejs stress process: send message with type ${msg.type} and status: ${msg.status}`);
-    ws.send(msg);
+    Log.info(`nodejs stress process - send message with type ${msg.type} and status: ${msg.status}`);
+    ws.send(JSON.stringify(msg));
 }
 
 function handleMsg(msg: StressRequest) {
@@ -57,15 +69,19 @@ function handleMsg(msg: StressRequest) {
         case StressMessageType.task:
             testCase = msg.testCase;
             send(createMsg(WorkerStatus.ready, StressMessageType.status));
-            Log.info('status: ready');
+            Log.info('nodejs stress process - status: ready');
             break;
         case StressMessageType.start:
-            Log.info('status: start');
+            Log.info('nodejs stress process - status: start');
             send(createMsg(WorkerStatus.working, StressMessageType.status));
             run();
             break;
+        case StressMessageType.fileStart:
+            Log.info('nodejs stress process - status: file start');
+            willReceiveFile = true;
+            break;
         case StressMessageType.finish:
-            Log.info('status: file finish');
+            Log.info('nodejs stress process - status: file finish');
             finish();
             break;
         case StressMessageType.stop:

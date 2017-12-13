@@ -164,6 +164,8 @@ export class StressService {
             message: '',
             result: {
                 testCase: <TestCase>{
+                    envId: stress.environmentId,
+                    records: _.values(records),
                     repeat: stress.repeat,
                     concurrencyCount: stress.concurrencyCount,
                     qps: stress.qps,
