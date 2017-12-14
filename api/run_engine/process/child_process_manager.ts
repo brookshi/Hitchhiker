@@ -16,7 +16,7 @@ interface ProcessInfo {
 
     entry: string;
 
-    handlerCtor: { new (): BaseProcessHandler };
+    handlerCtor: { new(): BaseProcessHandler };
 }
 
 export class ChildProcessManager {
@@ -51,7 +51,7 @@ export class ChildProcessManager {
 
     init() {
         this.processHandlerMapping = {};
-        _.keys(this.processConfigs).forEach(c => this.createChildProcess(c));
+        _.keys(this.processConfigs).forEach(c => _.times(this.processConfigs[c].count, n => this.createChildProcess(c)));
         process.on('exit', () => _.values(this.processHandlerMapping).forEach(p => {
             if (p instanceof Array) {
                 p.forEach(cp => cp.process.kill());

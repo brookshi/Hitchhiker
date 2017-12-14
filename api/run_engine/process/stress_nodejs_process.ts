@@ -19,7 +19,7 @@ process.on('uncaughtException', (err) => {
     Log.error(err);
 });
 
-let ws = createWS();
+let ws;
 
 let testCase: TestCase;
 
@@ -27,33 +27,50 @@ let willReceiveFile: boolean = false;
 
 const processManager = ChildProcessManager.create('stress_nodejs_runner', { count: OS.cpus().length, entry: path.join(__dirname, '../stress_nodejs_runner.js'), handlerCtor: StressNodejsRunnerHandler });
 
+processManager.init();
+
+runForHandlers((h, i) => h.call = handleChildProcessMsg);
+
 function createWS(): WS {
     return new WS(Setting.instance.stressHost);
 }
 
-ws.on('open', function open() {
-    Log.info('nodejs stress process - connect success');
-    send(createMsg(WorkerStatus.idle, StressMessageType.hardware, null, OS.cpus().length));
-});
+const connect = function () {
 
-ws.on('message', data => {
-    if (willReceiveFile) {
-        // save files
-        if (data instanceof Buffer && data.length === 3 && data[0] === 36) {
-            willReceiveFile = false;
-            send(createMsg(WorkerStatus.fileReady, StressMessageType.status));
+    ws = createWS();
+
+    ws.on('open', function open() {
+        Log.info('nodejs stress process - connect success');
+        send(createMsg(WorkerStatus.idle, StressMessageType.hardware, null, OS.cpus().length));
+    });
+
+    ws.on('message', data => {
+        if (willReceiveFile) {
+            // save files
+            if (data instanceof Buffer && data.length === 3 && data[0] === 36) {
+                willReceiveFile = false;
+                send(createMsg(WorkerStatus.fileReady, StressMessageType.status));
+            }
+        } else {
+            const msg = JSON.parse(data.toString()) as StressRequest;
+            Log.info(`nodejs stress process - receive case ${msg.type}`);
+            handleMsg(msg);
         }
-    } else {
-        const msg = JSON.parse(data.toString()) as StressRequest;
-        Log.info(`nodejs stress process - receive case ${msg.type}`);
-        handleMsg(msg);
-    }
-});
+    });
 
-ws.on('close', (code, msg) => {
-    Log.error(`nodejs stress process - close ${code}: ${msg}`);
-    setTimeout(() => ws = createWS(), restartDelay);
-});
+    ws.on('close', (code, msg) => {
+        Log.error(`nodejs stress process - close ${code}: ${msg}`);
+        Log.info('will retry.');
+        ws = null;
+        setTimeout(connect, restartDelay);
+    });
+
+    ws.on('error', err => {
+        Log.error(`nodejs stress process - error: ${err}`);
+    });
+};
+
+connect();
 
 function send(msg: StressMessage) {
     Log.info(`nodejs stress process - send message with type ${msg.type} and status: ${msg.status}`);
@@ -114,10 +131,6 @@ function runForHandlers(call: (h: BaseProcessHandler, i: number) => void) {
 }
 
 function run() {
-    processManager.init();
-    Log.info('==> init');
-    runForHandlers((h, i) => h.call = handleChildProcessMsg);
-    Log.info('==> run 1');
     const taskForProcessArr = MathUtil.distribute(testCase.concurrencyCount, OS.cpus().length);
     Log.info(`==> split task: ${JSON.stringify(taskForProcessArr)}`);
     runForHandlers((h, i) => {

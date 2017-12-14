@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { TestCase, StressRequest } from '../interfaces/dto_stress_setting';
 import { Log } from '../utils/log';
 import { RecordRunner } from './record_runner';
