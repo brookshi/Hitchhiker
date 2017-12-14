@@ -27,10 +27,6 @@ let willReceiveFile: boolean = false;
 
 const processManager = ChildProcessManager.create('stress_nodejs_runner', { count: OS.cpus().length, entry: path.join(__dirname, '../stress_nodejs_runner.js'), handlerCtor: StressNodejsRunnerHandler });
 
-processManager.init();
-
-runForHandlers((h, i) => h.call = handleChildProcessMsg);
-
 function createWS(): WS {
     return new WS(Setting.instance.stressHost);
 }
@@ -81,7 +77,7 @@ function handleMsg(msg: StressRequest) {
             willReceiveFile = true;
             break;
         case StressMessageType.finish:
-            Log.info('nodejs stress process - status: file finish');
+            Log.info('nodejs stress process - status: finish');
             finish();
             break;
         case StressMessageType.stop:
@@ -93,14 +89,17 @@ function handleMsg(msg: StressRequest) {
 }
 
 function handleChildProcessMsg(data: any) {
-    if (data === 'ready') { }
-    else if (data === 'finish' || data === 'error') {
+    if (data === 'ready') {
+        Log.info('nodejs stress process - worker status: ready');
+    } else if (data === 'finish' || data === 'error') {
+        Log.info(`nodejs stress process - worker status: ${data}`);
         let isAllFinish = true;
         runForHandlers((h, i) => isAllFinish = isAllFinish && (h as StressNodejsRunnerHandler).isFinish);
         if (isAllFinish) {
             finish();
         }
     } else {
+        Log.info(`nodejs stress process - worker trace`);
         trace(JSON.parse(data));
     }
 }
@@ -116,9 +115,13 @@ function runForHandlers(call: (h: BaseProcessHandler, i: number) => void) {
 
 function run() {
     processManager.init();
+    Log.info('==> init');
+    runForHandlers((h, i) => h.call = handleChildProcessMsg);
+    Log.info('==> run 1');
     const taskForProcessArr = MathUtil.distribute(testCase.concurrencyCount, OS.cpus().length);
-    const handler = processManager.getHandler('stress_nodejs_runner');
+    Log.info(`==> split task: ${JSON.stringify(taskForProcessArr)}`);
     runForHandlers((h, i) => {
+        Log.info(`==> run process: ${h.process.pid}`);
         h.process.send({
             type: StressMessageType.task,
             testCase: { ...testCase, concurrencyCount: taskForProcessArr[i] }
@@ -128,7 +131,7 @@ function run() {
 
 function finish() {
     send(createMsg(WorkerStatus.finish, StressMessageType.status));
-    processManager.closeAll();
+    //processManager.closeAll();
 }
 
 function trace(rst: RunResult) {

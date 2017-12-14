@@ -8,7 +8,7 @@ export class StressNodejsRunnerHandler extends BaseProcessHandler {
 
     handleMessage(msg: any) {
         if (msg === 'ready') {
-            process.send({ type: StressMessageType.start });
+            this.process.send({ type: StressMessageType.start });
         } else if (msg === 'finish' || msg === 'error') {
             this.isFinish = true;
         }

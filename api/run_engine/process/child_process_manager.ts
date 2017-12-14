@@ -16,7 +16,7 @@ interface ProcessInfo {
 
     entry: string;
 
-    handlerCtor: { new(): BaseProcessHandler };
+    handlerCtor: { new (): BaseProcessHandler };
 }
 
 export class ChildProcessManager {
@@ -41,6 +41,7 @@ export class ChildProcessManager {
 
     static create(key: string, info: ProcessInfo) {
         const manager = new ChildProcessManager();
+        Log.info(`create process manager for ${info.entry}`);
         manager.processConfigs = {
             [key]: info
         };
@@ -76,16 +77,16 @@ export class ChildProcessManager {
             handler.handleMessage(msg);
         });
 
-        process.on('exit', () => {
+        process.on('exit', (code, signal) => {
             if (!this.autoRetry) {
-                Log.info(`${moduleName} process exit.`);
+                Log.info(`${moduleName} process exit - code:${code}, signal:${signal}.`);
                 return;
             }
             if (this.retryTimes === this.limit) {
                 Log.error(`${moduleName} process exit ${this.limit} times, stop it.`);
                 return;
             }
-            Log.warn(`${moduleName} exit!`);
+            Log.warn(`${moduleName} exit - code:${code}, signal:${signal}!`);
             this.retryTimes++;
             this.createChildProcess(moduleName);
         });

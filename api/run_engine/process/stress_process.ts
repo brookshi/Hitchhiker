@@ -45,7 +45,7 @@ process.on('uncaughtException', (err) => {
 });
 
 process.on('message', (msg: StressRequest) => {
-    Log.info(`stress - user message: ${JSON.stringify(msg)}`);
+    Log.info(`stress - user message`);
     switch (msg.type) {
         case StressMessageType.init:
             Log.info('stress - user init');
@@ -85,7 +85,7 @@ function getCurrentRequestTotalCount() {
 }
 
 function tryTriggerStart(request?: StressRequest) {
-    Log.info(`stress - tryTriggerStart: ${JSON.stringify(request || '')}`);
+    Log.info(`stress - tryTriggerStart`);
     if (_.keys(workers).length === 0) {
         Log.info('no worker, drop task');
         sendMsgToUser(StressMessageType.noWorker, request, 'There is no valid Hitchhiker-Node, please run a Hitchhiker-Node first.');
