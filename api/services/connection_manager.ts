@@ -15,7 +15,7 @@ export class ConnectionManager {
         password: process.env.MYSQL_ROOT_PASSWORD || Setting.instance.db.password,
         type: 'mysql',
         logging: {
-            logger: (level: string, message: any) => Log[!Log[level] ? 'debug' : level](message),
+            logger: (level: string, message: any) => { },//Log[!Log[level] ? 'debug' : level](message),
             logQueries: true,
             logSchemaCreation: true,
             logFailedQueryError: true,

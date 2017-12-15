@@ -147,11 +147,11 @@ export class StressService {
                     let newRecord = RecordRunner.applyReqParameterToRecord(record, p);
                     newRecord.headers.forEach(h => { if (h.isActive) { headers[h.key] = h.value; } });
                     const param = StringUtil.toString(p);
+                    newRecord.id = `${record.id}${param}`;
+                    newRecord.name = `${newRecord.name}\n${param}`;
                     requestBodyList.push(<any>{
                         ...newRecord,
                         param,
-                        id: `${record.id}${param}`,
-                        name: `${newRecord.name}\n${param}`,
                         headers,
                         prescript: StressService.mergeScript(globalFunction, record, true),
                         test: StressService.mergeScript(globalFunction, record, false)

@@ -13,6 +13,7 @@ import { VariableService } from '../services/variable_service';
 import { EnvironmentService } from '../services/environment_service';
 import { HeaderService } from '../services/header_service';
 import { CollectionService } from '../services/collection_service';
+import { Duration } from "../interfaces/dto_stress_setting";
 
 type BatchRunResult = RunResult | _.Dictionary<RunResult>;
 
@@ -272,6 +273,7 @@ export class RecordRunner {
             variables: {},
             export: testRst.export,
             elapsed: pRes.timingPhases ? pRes.timingPhases.total >> 0 : 0,
+            duration: RecordRunner.generateDuration(pRes),
             headers: pRes.headers || {},
             cookies: pRes.headers ? pRes.headers['set-cookie'] : [],
             status: pRes.statusCode,
@@ -284,5 +286,15 @@ export class RecordRunner {
         }
 
         return finalRes;
+    }
+
+    private static generateDuration(pRes: Partial<request.RequestResponse>): Duration {
+        const timingPhases = pRes.timingPhases || { wait: 0, dns: 0, total: 0 };
+        const { wait, dns, total } = timingPhases;
+        return {
+            connect: wait,
+            dns,
+            request: total - wait - dns
+        }
     }
 }

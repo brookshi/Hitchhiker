@@ -29,9 +29,14 @@ process.on('message', (msg: StressRequest) => {
 
 async function run() {
     if (testCase.concurrencyCount >= 1) {
-        await Promise.all(_.times(testCase.concurrencyCount, () =>
-            RecordRunner.runRecords(testCase.records, testCase.envId, true, 'placeholder', true, msg => process.send(msg))));
+        await Promise.all(_.times(testCase.concurrencyCount, runRecordRepeat));
     }
     Log.info(`worker ${process.pid}: finish`);
     process.send('finish');
+}
+
+async function runRecordRepeat() {
+    for (let i = 0; i < testCase.repeat; i++) {
+        await RecordRunner.runRecords(testCase.records, testCase.envId, true, 'placeholder', true, msg => process.send(msg));
+    }
 }

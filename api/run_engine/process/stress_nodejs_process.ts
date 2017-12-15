@@ -32,7 +32,7 @@ processManager.init();
 runForHandlers((h, i) => h.call = handleChildProcessMsg);
 
 function createWS(): WS {
-    return new WS(Setting.instance.stressHost);
+    return new WS(Setting.instance.stressHost, { perMessageDeflate: false });
 }
 
 const connect = function () {
@@ -73,7 +73,7 @@ const connect = function () {
 connect();
 
 function send(msg: StressMessage) {
-    Log.info(`nodejs stress process - send message with type ${msg.type} and status: ${msg.status}`);
+    Log.info(`nodejs stress process - send message with type ${msg.type} and status: ${msg.status}, msg: ${JSON.stringify(msg)}`);
     ws.send(JSON.stringify(msg));
 }
 
@@ -132,9 +132,9 @@ function runForHandlers(call: (h: BaseProcessHandler, i: number) => void) {
 
 function run() {
     const taskForProcessArr = MathUtil.distribute(testCase.concurrencyCount, OS.cpus().length);
-    Log.info(`==> split task: ${JSON.stringify(taskForProcessArr)}`);
+    Log.info(`nodejs stress process - split task: ${JSON.stringify(taskForProcessArr)}`);
     runForHandlers((h, i) => {
-        Log.info(`==> run process: ${h.process.pid}`);
+        Log.info(`nodejs stress process - run process: ${h.process.pid}`);
         h.process.send({
             type: StressMessageType.task,
             testCase: { ...testCase, concurrencyCount: taskForProcessArr[i] }
@@ -144,7 +144,12 @@ function run() {
 
 function finish() {
     send(createMsg(WorkerStatus.finish, StressMessageType.status));
-    //processManager.closeAll();
+    resetHandlerStatus();
+}
+
+function resetHandlerStatus() {
+    Log.info(`nodejs stress process - reset handlers status`);
+    runForHandlers((h, i) => (h as StressNodejsRunnerHandler).isFinish = false);
 }
 
 function trace(rst: RunResult) {

@@ -179,7 +179,7 @@ function startStressProcess() {
         Log.info(`stress - worker connected: ${addr}`);
 
         socket.on('message', data => {
-            Log.info(`stress - data from ${addr}`);
+            Log.info(`stress - data from ${addr}, data: ${data.toString()}`);
             const obj = JSON.parse(data.toString()) as StressMessage;
             switch (obj.type) {
                 case StressMessageType.hardware:
@@ -281,6 +281,9 @@ async function storeStressRecord(runResult: StressRunResult): Promise<void> {
 function workerTrace(runResult: RunResult) {
     const id = runResult.id;
     stressReqDuration[id] = stressReqDuration[id] || { durations: [] };
+    if (!runResult.duration) {
+        Log.error(`worker trace miss duration: ${id}`);
+    }
     stressReqDuration[id].durations.push(runResult.duration);
 
     const failedType = getFailedType(runResult);
@@ -293,7 +296,7 @@ function workerTrace(runResult: RunResult) {
 function getFailedType(runResult: RunResult) {
     if (runResult.status >= 500) {
         return StressFailedType.m500;
-    } else if (runResult.error.message) {
+    } else if (runResult.error && runResult.error.message) {
         return StressFailedType.noRes;
     } else if (_.values(runResult.tests).some(v => !v)) {
         return StressFailedType.testFailed;
