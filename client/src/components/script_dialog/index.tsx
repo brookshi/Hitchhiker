@@ -29,6 +29,10 @@ class ScriptDialog extends React.Component<ScriptDialogProps, ScriptDialogState>
         };
     }
 
+    public componentWillReceiveProps(nextProps: ScriptDialogProps) {
+        this.setState({ ...this.state, code: nextProps.value });
+    }
+
     public render() {
 
         const { title, isOpen, onOk, onCancel } = this.props;
