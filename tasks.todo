@@ -121,7 +121,7 @@
     ✔ #47 display image if response header include 'image/*' @done (12/16/2017, 9:37:25 PM)
     ✔ #62 global function miss if send request @done (12/16/2017, 5:22:03 PM)
     ✔ #59 exception caused by image data of schedule record @done (12/16/2017, 9:37:27 PM)
-    ☐ #55 failed to construct WebSocket
+    ✔ #55 failed to construct WebSocket @done (12/16/2017, 10:04:11 PM)
     ☐ schedule record timer take 1 min error
     ✔ name will be reset if change method @done (12/16/2017, 6:03:13 PM)
 

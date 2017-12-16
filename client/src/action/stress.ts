@@ -54,6 +54,8 @@ export class StressWS {
         };
         this.socket.onclose = (ev: CloseEvent) => {
             console.error('socket closed, stress test server error');
+            console.log('will try to reconnect in 3s');
+            setTimeout(() => this.initStressWS(this.dispatch), 3000);
         };
         this.socket.onerror = (ev: Event) => {
             console.error('stress test server error', ev);
