@@ -3,12 +3,12 @@ import { ChildProcess } from 'child_process';
 import { StressMessageType } from '../../common/stress_type';
 import { Log } from '../../utils/log';
 
-export class StressNodejsRunnerHandler extends BaseProcessHandler {
+export class StressNodejsWorkerHandler extends BaseProcessHandler {
 
     isFinish: boolean;
 
     handleMessage(msg: any) {
-        Log.info(`stress nodejs runner handle msg: ${msg}`);
+        Log.info(`stress nodejs worker handle msg: ${msg}`);
         if (msg === 'ready') {
             this.process.send({ type: StressMessageType.start });
         } else if (msg === 'finish' || msg === 'error') {
@@ -21,6 +21,6 @@ export class StressNodejsRunnerHandler extends BaseProcessHandler {
     }
 
     afterProcessCreated() {
-        Log.info(`stress nodejs runner process created`);
+        Log.info(`stress nodejs worker process created`);
     }
 }

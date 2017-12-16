@@ -15,7 +15,7 @@ import { StressService } from '../../services/stress_service';
 
 type WorkerInfoEx = WorkerInfo & { socket: WS };
 
-const goDurationRate = 1000000;
+const goDurationRate = Setting.instance.stressType === 'go' ? 1000000 : 1;
 
 const workers: _.Dictionary<WorkerInfoEx> = {};
 
@@ -117,7 +117,9 @@ function sendMsgToWorkers(request: Partial<StressRequest>) {
     } else if (request.type === StressMessageType.fileStart) {
         _.values(workers).forEach(w => {
             w.socket.send(JSON.stringify({ type: request.type }));
-            w.socket.send(request.fileData);
+            if (request.fileData && request.fileData.length > 0) {
+                w.socket.send(request.fileData);
+            }
             w.socket.send(new Buffer([36, 36, 36]));
         });
     } else {

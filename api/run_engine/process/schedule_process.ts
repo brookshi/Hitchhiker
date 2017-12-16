@@ -11,7 +11,7 @@ process.on('uncaughtException', (err) => {
 
 process.on('message', (msg) => {
     if (msg === 'start') {
-        //startScheduleProcess();
+        startScheduleProcess();
     }
 });
 

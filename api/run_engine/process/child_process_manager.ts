@@ -104,7 +104,7 @@ export class ChildProcessManager {
         });
     }
 
-    getHandler(type: 'schedule' | 'stress' | 'stress_nodejs' | 'stress_nodejs_runner') {
+    getHandler(type: 'schedule' | 'stress' | 'stress_nodejs' | 'stress_nodejs_worker') {
         return this.processHandlerMapping[type];
     }
 }

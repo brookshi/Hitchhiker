@@ -7,6 +7,7 @@ import { BodyType } from '../common/string_type';
 import { ParameterType } from '../common/parameter_type';
 import { RecordDoc } from './record_doc';
 import { RecordHistory } from './record_history';
+import { ServerResponse } from 'http';
 
 @Entity()
 export class Record {
@@ -82,4 +83,23 @@ export class Record {
     updateDate: Date;
 
     children: Record[] = [];
+}
+
+export class RecordEx extends Record {
+
+    envId: string;
+
+    envName: string;
+
+    pid: string;
+
+    vid: string;
+
+    uid?: string;
+
+    param: any;
+
+    serverRes?: ServerResponse;
+
+    trace?: (msg: string) => void;
 }

@@ -8,7 +8,7 @@ import { WorkerStatus, StressMessageType } from '../../common/stress_type';
 import { RunResult } from '../../interfaces/dto_run_result';
 import { ChildProcessManager } from './child_process_manager';
 import { MathUtil } from '../../utils/math_util';
-import { StressNodejsRunnerHandler } from './stress_nodejs_runner_handler';
+import { StressNodejsWorkerHandler } from './stress_nodejs_worker_handler';
 import { BaseProcessHandler } from './base_process_handler';
 
 const restartDelay: number = 10 * 1000;
@@ -25,7 +25,7 @@ let testCase: TestCase;
 
 let willReceiveFile: boolean = false;
 
-const processManager = ChildProcessManager.create('stress_nodejs_runner', { count: OS.cpus().length, entry: path.join(__dirname, '../stress_nodejs_runner.js'), handlerCtor: StressNodejsRunnerHandler });
+const processManager = ChildProcessManager.create('stress_nodejs_worker', { count: OS.cpus().length, entry: path.join(__dirname, './stress_nodejs_worker.js'), handlerCtor: StressNodejsWorkerHandler });
 
 processManager.init();
 
@@ -111,7 +111,7 @@ function handleChildProcessMsg(data: any) {
     } else if (data === 'finish' || data === 'error') {
         Log.info(`nodejs stress process - worker status: ${data}`);
         let isAllFinish = true;
-        runForHandlers((h, i) => isAllFinish = isAllFinish && (h as StressNodejsRunnerHandler).isFinish);
+        runForHandlers((h, i) => isAllFinish = isAllFinish && (h as StressNodejsWorkerHandler).isFinish);
         if (isAllFinish) {
             finish();
         }
@@ -122,7 +122,7 @@ function handleChildProcessMsg(data: any) {
 }
 
 function runForHandlers(call: (h: BaseProcessHandler, i: number) => void) {
-    const handler = processManager.getHandler('stress_nodejs_runner');
+    const handler = processManager.getHandler('stress_nodejs_worker');
     if (handler instanceof Array) {
         handler.forEach(call);
     } else {
@@ -149,7 +149,7 @@ function finish() {
 
 function resetHandlerStatus() {
     Log.info(`nodejs stress process - reset handlers status`);
-    runForHandlers((h, i) => (h as StressNodejsRunnerHandler).isFinish = false);
+    runForHandlers((h, i) => (h as StressNodejsWorkerHandler).isFinish = false);
 }
 
 function trace(rst: RunResult) {

@@ -1,4 +1,4 @@
-import { Record } from '../models/record';
+import { Record, RecordEx } from '../models/record';
 import { ConnectionManager } from './connection_manager';
 import { ObjectLiteral } from 'typeorm/common/ObjectLiteral';
 import * as _ from 'lodash';
@@ -14,6 +14,9 @@ import { RecordHistory } from '../models/record_history';
 import { EntityManager } from 'typeorm';
 import { User } from '../models/user';
 import { UserService } from './user_service';
+import { ProjectService } from './project_service';
+import { EnvironmentService } from './environment_service';
+import { VariableService } from './variable_service';
 
 export class RecordService {
     private static _sort: number = 0;
@@ -281,5 +284,47 @@ export class RecordService {
             .where('targetId=:rid', { rid })
             .delete()
             .execute();
+    }
+
+    static async combineScript(record: Record): Promise<Record> {
+        const { globalFunction } = (await ProjectService.getProjectByCollectionId(record.collection.id)) || { globalFunction: '' };
+        const commonPreScript = record.collection ? record.collection.commonPreScript : '';
+
+        const prescript = `
+            ${globalFunction || ''};
+            ${commonPreScript || ''};
+            ${record.prescript || ''};
+        `;
+
+        const test = `
+            ${globalFunction || ''};
+            ${record.test || ''};
+        `;
+
+        return {
+            ...record,
+            prescript,
+            test
+        };
+    }
+
+    static async prepareRecordsForRun(records: Record[], envId: string, orderIds?: string, trace?: (msg: string) => void): Promise<RecordEx[]> {
+        const vid = StringUtil.generateUID();
+        const env = await EnvironmentService.get(envId, false);
+        const envName = env ? env.name : '';
+
+        let recordExs: RecordEx[] = [];
+
+        for (let r of records) {
+            let newRecord = { ...(await RecordService.combineScript(r)) };
+            const { id: pid } = (await ProjectService.getProjectByCollectionId(r.collection.id)) || { id: '' };
+            newRecord = await VariableService.applyVariableForRecord(envId, newRecord);
+            recordExs.push({ ...newRecord, pid, envId, envName, vid, param: '', trace });
+        }
+
+        recordExs = _.sortBy(recordExs, 'name');
+        const recordDict = _.keyBy(recordExs, 'id');
+        const orderRecords = (orderIds || '').split(';').map(i => i.substr(0, i.length - 2)).filter(r => recordDict[r]).map(r => recordDict[r]);
+        return _.unionBy(orderRecords, recordExs, 'id');
     }
 }

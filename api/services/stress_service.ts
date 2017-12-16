@@ -165,7 +165,7 @@ export class StressService {
             result: {
                 testCase: <TestCase>{
                     envId: stress.environmentId,
-                    records: _.values(records),
+                    records: await RecordService.prepareRecordsForRun(_.values(records), stress.environmentId, stress.requests.join(';')),
                     repeat: stress.repeat,
                     concurrencyCount: stress.concurrencyCount,
                     qps: stress.qps,

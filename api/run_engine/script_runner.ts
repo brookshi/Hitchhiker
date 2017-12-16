@@ -8,31 +8,30 @@ import { Sandbox } from './sandbox';
 import * as freeVM from 'vm';
 import { ResObject } from '../common/res_object';
 import { Log } from '../utils/log';
-import { Record } from '../models/record';
+import { Record, RecordEx } from '../models/record';
 const { NodeVM: safeVM } = require('vm2');
 
 export class ScriptRunner {
 
-    static async prerequest(projectId: string, vid: string, envId: string, envName: string, globalFunc: string, commonPreScriptWithVar: string, code: string, record: Record): Promise<ResObject> {
+    static async prerequest(record: RecordEx): Promise<ResObject> {
+        const { pid, vid, uid, envId, envName, prescript } = record;
         let hitchhiker: Sandbox, res: ResObject;
         try {
-            hitchhiker = new Sandbox(projectId, vid, envId, envName, record);
+            hitchhiker = new Sandbox(pid, uid || vid, envId, envName, record);
         } catch (ex) {
             res = { success: false, message: ex };
         }
-        const script = `
-            ${commonPreScriptWithVar}
-            ${code}
-        `;
-        res = await ScriptRunner.run({ hitchhiker, hh: hitchhiker }, globalFunc, script);
+
+        res = await ScriptRunner.run({ hitchhiker, hh: hitchhiker }, prescript);
         res.result = hitchhiker.request;
         return res;
     }
 
-    static async test(projectId: string, vid: string, envId: string, envName: string, res: request.RequestResponse, globalFunc: string, code: string): Promise<{ tests: _.Dictionary<boolean>, export: {} }> {
+    static async test(record: RecordEx, res: request.RequestResponse): Promise<{ tests: _.Dictionary<boolean>, export: {} }> {
+        const { pid, vid, uid, envId, envName, test } = record;
         let hitchhiker, tests;
         try {
-            hitchhiker = new Sandbox(projectId, vid, envId, envName);
+            hitchhiker = new Sandbox(pid, uid || vid, envId, envName);
         } catch (ex) {
             tests = {};
             tests[ex] = false;
@@ -46,7 +45,7 @@ export class ScriptRunner {
 
         const sandbox = { hitchhiker, hh: hitchhiker, $variables$, $export$, tests, ...ScriptRunner.getInitResObj(res) };
 
-        const rst = await ScriptRunner.run(sandbox, globalFunc, code);
+        const rst = await ScriptRunner.run(sandbox, test);
         if (!rst.success) {
             tests[rst.message] = false;
         }
@@ -54,13 +53,12 @@ export class ScriptRunner {
         return { tests, export: hitchhiker.exportObj.content };
     }
 
-    private static run(sandbox: any, globalFunc: string, code: string): Promise<ResObject> {
+    private static run(sandbox: any, code: string): Promise<ResObject> {
         let success = true, message = '';
         try {
             code = `module.exports = function(callback) { 
                     void async function() { 
                         try{
-                            ${globalFunc || ''};
                             ${code || ''};
                             callback();
                         }catch(err){

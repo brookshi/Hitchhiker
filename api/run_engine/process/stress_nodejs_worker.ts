@@ -1,8 +1,8 @@
 import 'reflect-metadata';
-import { TestCase, StressRequest } from '../interfaces/dto_stress_setting';
-import { Log } from '../utils/log';
-import { RecordRunner } from './record_runner';
-import { StressMessageType } from '../common/stress_type';
+import { TestCase, StressRequest } from '../../interfaces/dto_stress_setting';
+import { Log } from '../../utils/log';
+import { RecordRunner } from '../record_runner';
+import { StressMessageType } from '../../common/stress_type';
 import * as _ from 'lodash';
 
 Log.init();
@@ -23,6 +23,7 @@ process.on('message', (msg: StressRequest) => {
     } else if (msg.type === StressMessageType.task) {
         Log.info(`worker ${process.pid}: receive case`);
         testCase = msg.testCase;
+        testCase.records.forEach(r => r.trace = d => process.send(d));
         process.send('ready');
     }
 });
@@ -37,6 +38,6 @@ async function run() {
 
 async function runRecordRepeat() {
     for (let i = 0; i < testCase.repeat; i++) {
-        await RecordRunner.runRecords(testCase.records, testCase.envId, true, 'placeholder', true, msg => process.send(msg));
+        await RecordRunner.runRecordExs(testCase.records, true);
     }
 }

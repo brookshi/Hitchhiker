@@ -1,4 +1,4 @@
-import { Record } from '../models/record';
+import { Record, RecordEx } from '../models/record';
 import { Options } from 'request';
 import { VariableService } from '../services/variable_service';
 import { RecordService } from '../services/record_service';
@@ -9,10 +9,10 @@ import { Header } from '../models/header';
 import * as _ from 'lodash';
 
 export class RequestOptionAdapter {
-    static async fromRecord(envId: string, record: Record, userId?: string): Promise<Options> {
+    static async fromRecord(record: RecordEx): Promise<Options> {
         record = RequestOptionAdapter.applyDefaultHeaders(record);
-        if (userId) {
-            await RequestOptionAdapter.applyLocalhost(record, userId);
+        if (record.uid) {
+            await RequestOptionAdapter.applyLocalhost(record, record.uid);
         }
         const { reqStrictSSL, reqFollowRedirect } = record.collection || { reqStrictSSL: false, reqFollowRedirect: false };
         return {
@@ -27,7 +27,7 @@ export class RequestOptionAdapter {
         };
     }
 
-    static async applyLocalhost(record: Record, userId: string): Promise<any> {
+    static async applyLocalhost(record: RecordEx, userId: string): Promise<any> {
         const regex = /^(http:\/\/|https:\/\/)?localhost(:|\/)/g;
         if (!regex.test(record.url)) {
             return;
@@ -37,7 +37,7 @@ export class RequestOptionAdapter {
         return;
     }
 
-    static applyDefaultHeaders = (record: Record) => {
+    static applyDefaultHeaders = (record: RecordEx) => {
         const defaultHeaders = StringUtil.stringToKeyValues(Setting.instance.defaultHeaders) as Header[];
         defaultHeaders.forEach(h => h.isActive = true);
         return {

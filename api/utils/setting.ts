@@ -91,6 +91,10 @@ export class Setting {
         return this.getValidBoolean(process.env.HITCHHIKER_SCHEDULE_MAILFORFAIL, this.schedule.mailOnlyForFail);
     }
 
+    get stressType() {
+        return process.env.HITCHHIKER_STRESS_TYPE || this._setting.stress.type;
+    }
+
     get stressMaxCount() {
         return this.getValidNum(process.env.HITCHHIKER_STRESS_COUNT, this._setting.stress.storeMaxCount);
     }
