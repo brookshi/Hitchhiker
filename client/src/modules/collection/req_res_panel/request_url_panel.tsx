@@ -75,9 +75,9 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
 
     private getMethods = (defaultValue?: string) => {
         const value = (defaultValue || HttpMethod.GET).toUpperCase();
-        const { record, changeRecord } = this.props;
+        const { changeRecord } = this.props;
         return (
-            <Select value={value} dropdownMenuStyle={{ maxHeight: 300 }} onChange={e => changeRecord({ ...record, method: e.toString() })} style={{ width: 100 }}>
+            <Select value={value} dropdownMenuStyle={{ maxHeight: 300 }} onChange={e => changeRecord({ ...this.props.record, method: e.toString() })} style={{ width: 100 }}>
                 {
                     Object.keys(HttpMethod).map(k =>
                         <Option key={k} value={k}>{k}</Option>)
