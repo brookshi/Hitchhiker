@@ -118,9 +118,9 @@
 0.6:
     ✔ #45 Stress test support ES6 and js lib, data. @done (12/16/2017, 3:26:11 PM)
     ✔ Test & Global function support Environment @done (12/11/2017, 1:34:05 PM)
-    ☐ #47 display image if response header include 'image/*'
+    ✔ #47 display image if response header include 'image/*' @done (12/16/2017, 9:37:25 PM)
     ✔ #62 global function miss if send request @done (12/16/2017, 5:22:03 PM)
-    ☐ #59 exception caused by image data of schedule record
+    ✔ #59 exception caused by image data of schedule record @done (12/16/2017, 9:37:27 PM)
     ☐ #55 failed to construct WebSocket
     ☐ schedule record timer take 1 min error
     ✔ name will be reset if change method @done (12/16/2017, 6:03:13 PM)

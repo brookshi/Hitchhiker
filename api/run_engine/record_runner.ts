@@ -254,12 +254,13 @@ export class RecordRunner {
         const { envId, serverRes } = record;
         const testRst = !err && record.test ? (await ScriptRunner.test(record, res)) : { tests: {}, variables: {}, export: {} };
         const pRes: Partial<request.RequestResponse> = res || {};
+        const isImg = pRes.headers && pRes.headers['content-type'] && pRes.headers['content-type'].indexOf('image/') >= 0;
         const finalRes: RunResult = {
             id: record.id,
             envId,
             host: pRes.request ? pRes.request.host : StringUtil.getHostFromUrl(record.url),
             error: err ? { message: err.message, stack: err.stack } : undefined,
-            body: pRes.body,
+            body: isImg ? (record.method === 'GET' ? record.url : 'Body is a image') : pRes.body,
             tests: testRst.tests,
             variables: {},
             export: testRst.export,

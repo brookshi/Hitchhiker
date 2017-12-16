@@ -111,7 +111,7 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
     }
 
     private get normalResponsePanel() {
-        const { res, selectResTab, activeKey } = this.props;
+        const { res, selectResTab, activeKey, height } = this.props;
         if (!this.isRunResult(res)) {
             return <div />;
         }
@@ -132,6 +132,7 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
         const testKeys = Object.keys(tests);
         const successTestLen = Object.keys(tests).filter(t => tests[t]).length;
         const testsTag = testKeys.length > 0 ? `${successTestLen}/${Object.keys(tests).length}` : '';
+        const isImg = res.headers && res.headers['content-type'] && res.headers['content-type'].indexOf('image/') >= 0;
 
         return (
             <Tabs
@@ -142,7 +143,7 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
                 animated={false}
                 tabBarExtraContent={this.getExtraContent()}>
                 <TabPane tab="Content" key="content">
-                    <Editor type="json" value={value} height={this.props.height} readOnly={true} />
+                    {isImg ? <img src={value} /> : <Editor type="json" value={value} height={height} readOnly={true} />}
                 </TabPane>
                 <TabPane className="display-tab-panel" tab={nameWithTag('Headers', Object.keys(headers).length.toString())} key="headers">
                     {
