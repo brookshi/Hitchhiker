@@ -78,18 +78,20 @@ export class RecordRunner {
         }));
     }
 
-    static async getParametersWithVariables(record): Promise<string> {
+    static async getParametersWithVariables(record: RecordEx): Promise<string> {
         const { uid, vid, envId } = record;
         const variables: any = UserVariableManager.getVariables(uid || vid, envId);
         return await RecordRunner.applyVariables(record.parameters, variables);
     }
 
     static async runRecordFromClient(record: Record, envId: string, uid: string, serverRes?: ServerResponse): Promise<RunResult> {
-        const env = await EnvironmentService.get(envId);
         if (record.collection && record.collection.id) {
             record.collection = await CollectionService.getById(record.collection.id);
         }
-        return await RecordRunner.runRecordWithVW({ ...record, envId, envName: env.name, uid, vid: '', param: '', serverRes });
+        const recordExs = await RecordService.prepareRecordsForRun([record], envId);
+        recordExs[0].serverRes = serverRes;
+        recordExs[0].uid = uid;
+        return await RecordRunner.runRecordWithVW(recordExs[0]);
     }
 
     private static async runRecordWithVW(record: RecordEx) {
