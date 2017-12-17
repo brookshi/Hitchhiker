@@ -86,7 +86,7 @@ export class ProjectService {
         const user = await UserService.getUserById(ownerId, true);
         project.members.push(user);
 
-        await connection.getRepository(Project).persist(project);
+        await connection.getRepository(Project).save(project);
 
         return { success: true, message: Message.projectSaveSuccess };
     }
@@ -99,7 +99,7 @@ export class ProjectService {
         project.isMe = true;
         project.members.push(owner);
 
-        return await connection.getRepository(Project).persist(project);
+        return await connection.getRepository(Project).save(project);
     }
 
     static async updateProject(dtoProject: DtoProject): Promise<ResObject> {
@@ -116,7 +116,7 @@ export class ProjectService {
 
     static async save(project: Project): Promise<ResObject> {
         const connection = await ConnectionManager.getInstance();
-        await connection.getRepository(Project).persist(project);
+        await connection.getRepository(Project).save(project);
 
         return { success: true, message: Message.projectSaveSuccess };
     }
@@ -148,7 +148,7 @@ export class ProjectService {
         mapping.project = ProjectService.create(projectId);
 
         const connection = await ConnectionManager.getInstance();
-        await connection.getRepository(LocalhostMapping).persist(mapping);
+        await connection.getRepository(LocalhostMapping).save(mapping);
 
         return { success: true, message: Message.createLocalhostMappingSuccess };
     }

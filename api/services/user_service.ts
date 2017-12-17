@@ -24,7 +24,7 @@ export class UserService {
 
     static async save(user: User) {
         const connection = await ConnectionManager.getInstance();
-        await connection.getRepository(User).persist(user);
+        await connection.getRepository(User).save(user);
     }
 
     static async checkUser(email: string, pwd: string): Promise<ResObject> {

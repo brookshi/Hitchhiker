@@ -43,14 +43,16 @@ export class RecordRunner {
 
     private static async runRecordSeries(records: RecordEx[], runResults: BatchRunResult[]) {
         for (let record of records) {
-            const paramArr = StringUtil.parseParameters(record.parameters, record.parameterType);
+            const parameters = await RecordRunner.getParametersWithVariables(record);
+            const paramArr = StringUtil.parseParameters(parameters, record.parameterType);
             if (paramArr.length === 0) {
                 runResults.push(await RecordRunner.runRecordWithVW(record));
             } else {
                 // TODO: sync or async ?
                 for (let param of paramArr) {
-                    record = RecordRunner.applyReqParameterToRecord(record, param) as RecordEx;
-                    const runResult = await RecordRunner.runRecordWithVW(record);
+                    let recordEx = RecordRunner.applyReqParameterToRecord(record, param) as RecordEx;
+                    recordEx = { ...recordEx, param };
+                    const runResult = await RecordRunner.runRecordWithVW(recordEx);
                     runResults.push({ [runResult.param]: runResult });
                 }
             }
@@ -59,20 +61,27 @@ export class RecordRunner {
 
     private static async runRecordParallel(rs: RecordEx[], runResults: BatchRunResult[]) {
         await Promise.all(rs.map(async (r) => {
-            const paramArr = StringUtil.parseParameters(r.parameters, r.parameterType);
+            const parameters = await RecordRunner.getParametersWithVariables(r);
+            const paramArr = StringUtil.parseParameters(parameters, r.parameterType);
             let result;
             if (paramArr.length === 0) {
                 result = await RecordRunner.runRecordWithVW(r);
                 runResults.push(result);
             } else {
                 await Promise.all(paramArr.map(async (p) => {
-                    const record = RecordRunner.applyReqParameterToRecord(r, p) as RecordEx;
+                    let record = RecordRunner.applyReqParameterToRecord(r, p) as RecordEx;
+                    record = { ...record, param: p };
                     result = await RecordRunner.runRecordWithVW(record);
-                    result.param = StringUtil.toString(p);
                     runResults.push({ [result.param]: result });
                 }));
             }
         }));
+    }
+
+    static async getParametersWithVariables(record): Promise<string> {
+        const { uid, vid, envId } = record;
+        const variables: any = UserVariableManager.getVariables(uid || vid, envId);
+        return await RecordRunner.applyVariables(record.parameters, variables);
     }
 
     static async runRecordFromClient(record: Record, envId: string, uid: string, serverRes?: ServerResponse): Promise<RunResult> {

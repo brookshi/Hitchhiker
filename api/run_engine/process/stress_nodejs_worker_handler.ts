@@ -8,7 +8,7 @@ export class StressNodejsWorkerHandler extends BaseProcessHandler {
     isFinish: boolean;
 
     handleMessage(msg: any) {
-        Log.info(`stress nodejs worker handle msg: ${msg}`);
+        Log.info(`stress nodejs worker handle msg`);
         if (msg === 'ready') {
             this.process.send({ type: StressMessageType.start });
         } else if (msg === 'finish' || msg === 'error') {

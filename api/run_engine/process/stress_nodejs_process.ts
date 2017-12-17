@@ -73,7 +73,7 @@ const connect = function () {
 connect();
 
 function send(msg: StressMessage) {
-    Log.info(`nodejs stress process - send message with type ${msg.type} and status: ${msg.status}, msg: ${JSON.stringify(msg)}`);
+    Log.info(`nodejs stress process - send message with type ${msg.type} and status: ${msg.status}`);
     ws.send(JSON.stringify(msg));
 }
 

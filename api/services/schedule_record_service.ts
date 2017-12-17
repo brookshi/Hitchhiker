@@ -12,7 +12,7 @@ export class ScheduleRecordService {
 
     static async create(record: ScheduleRecord): Promise<ScheduleRecord> {
         const connection = await ConnectionManager.getInstance();
-        return await connection.getRepository(ScheduleRecord).persist(record);
+        return await connection.getRepository(ScheduleRecord).save(record);
     }
 
     static async clearRedundantRecords(scheduleId: string) {

@@ -12,10 +12,11 @@ import { StressRecord } from '../../models/stress_record';
 import { Stress } from '../../models/stress';
 import { StressFailedInfo } from '../../models/stress_failed_info';
 import { StressService } from '../../services/stress_service';
+import { StringUtil } from '../../utils/string_util';
 
 type WorkerInfoEx = WorkerInfo & { socket: WS };
 
-const goDurationRate = Setting.instance.stressType === 'go' ? 1000000 : 1;
+const goDurationRate = isGoNode() ? 1000000 : 1;
 
 const workers: _.Dictionary<WorkerInfoEx> = {};
 
@@ -73,6 +74,10 @@ process.on('message', (msg: StressRequest) => {
             break;
     }
 });
+
+function isGoNode() {
+    return Setting.instance.stressType === 'go';
+}
 
 function initUser(user: StressUser) {
     users[user.id] = user;
@@ -181,7 +186,7 @@ function startStressProcess() {
         Log.info(`stress - worker connected: ${addr}`);
 
         socket.on('message', data => {
-            Log.info(`stress - data from ${addr}, data: ${data.toString()}`);
+            Log.info(`stress - data from ${addr}`);
             const obj = JSON.parse(data.toString()) as StressMessage;
             switch (obj.type) {
                 case StressMessageType.hardware:
@@ -281,6 +286,9 @@ async function storeStressRecord(runResult: StressRunResult): Promise<void> {
 }
 
 function workerTrace(runResult: RunResult) {
+    if (!isGoNode()) {
+        runResult.id += StringUtil.toString(runResult.param);
+    }
     const id = runResult.id;
     stressReqDuration[id] = stressReqDuration[id] || { durations: [] };
     if (!runResult.duration) {

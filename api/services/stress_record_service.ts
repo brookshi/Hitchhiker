@@ -13,8 +13,8 @@ export class StressRecordService {
 
     static async create(record: StressRecord, info: StressFailedInfo): Promise<StressRecord> {
         const connection = await ConnectionManager.getInstance();
-        const result = await connection.getRepository(StressRecord).persist(record);
-        await connection.getRepository(StressFailedInfo).persist({ id: result.id, info: JSON.stringify(info) });
+        const result = await connection.getRepository(StressRecord).save(record);
+        await connection.getRepository(StressFailedInfo).save({ id: result.id, info: JSON.stringify(info) });
         return result;
     }
 

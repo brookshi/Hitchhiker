@@ -23,7 +23,7 @@ export class EnvironmentService {
 
     static async save(env: Environment) {
         const connection = await ConnectionManager.getInstance();
-        await connection.getRepository(Environment).persist(env);
+        await connection.getRepository(Environment).save(env);
     }
 
     static formatVariables(env: Environment): { [key: string]: string } {

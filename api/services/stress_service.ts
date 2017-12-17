@@ -48,7 +48,7 @@ export class StressService {
 
     static async save(stress: Stress): Promise<any> {
         const connection = await ConnectionManager.getInstance();
-        await connection.getRepository(Stress).persist(stress);
+        await connection.getRepository(Stress).save(stress);
     }
 
     static async getById(id: string): Promise<Stress> {

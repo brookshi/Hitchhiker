@@ -14,7 +14,7 @@ export class CollectionService {
 
     static async save(collection: Collection) {
         const connection = await ConnectionManager.getInstance();
-        await connection.getRepository(Collection).persist(collection);
+        await connection.getRepository(Collection).save(collection);
     }
 
     static clone(collection: Collection): Collection {
