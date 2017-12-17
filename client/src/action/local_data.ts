@@ -29,8 +29,10 @@ export function* storeLocalData() {
     yield takeLatest(StoreLocalDataType, function* (action: any) {
         try {
             yield delay(1000);
-            yield call(LocalStore.setState, action.value.userId, action.value.state);
+            const state = action.value.state;
+            yield call(LocalStore.setState, action.value.userId, { ...state, uiState: { ...state.uiState, syncState: { syncCount: 0, syncItems: [] } } });
         } catch (err) {
+            console.log(action.value.state);
             console.error(err);
         }
     });
