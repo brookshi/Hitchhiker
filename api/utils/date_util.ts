@@ -6,9 +6,9 @@ export class DateUtil {
 
     static readonly DAY = 24 * DateUtil.HOUR;
 
-    static diff(start: Date, end: Date, unit: 'h' | 'm' = 'h'): number {
-        const timeDiff = Math.abs(end.getTime() - start.getTime());
-        return Math.ceil(timeDiff / (unit === 'h' ? DateUtil.HOUR : DateUtil.MINUTE));
+    static diff(start: Date, end: Date, unit: 'h' | 'm' = 'h', offset: number = 0): number {
+        const timeDiff = Math.abs(end.getTime() - start.getTime() + offset);
+        return parseInt((timeDiff / (unit === 'h' ? DateUtil.HOUR : DateUtil.MINUTE)) + '');
     }
 
     static getUTCDate(date?: Date): Date {

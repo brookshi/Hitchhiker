@@ -257,6 +257,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
 
     public render() {
         const { isRunning, consoleRunResults, records, envNames, scheduleRecords, schedule } = this.props;
+        scheduleRecords.forEach(r => r.runDate = new Date(r.runDate));
 
         return (
             <div>
@@ -271,14 +272,14 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                     bordered={true}
                     size="middle"
                     rowKey="id"
-                    dataSource={_.chain(scheduleRecords).sortBy('createDate').reverse().value()}
+                    dataSource={_.chain(scheduleRecords).sortBy('runDate').reverse().value()}
                     expandedRowRender={this.expandedTable}
                     pagination={false}
                 >
                     <ScheduleRecordColumn
                         title="Run Date"
-                        dataIndex="createDate"
-                        render={(text, record) => new Date(record.createDate).toLocaleString()}
+                        dataIndex="runDate"
+                        render={(text, record) => new Date(record.runDate).toLocaleString()}
                     />
                     <ScheduleRecordColumn
                         title="Pass"

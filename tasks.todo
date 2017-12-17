@@ -122,7 +122,7 @@
     ✔ #62 global function miss if send request @done (12/16/2017, 5:22:03 PM)
     ✔ #59 exception caused by image data of schedule record @done (12/16/2017, 9:37:27 PM)
     ✔ #55 failed to construct WebSocket @done (12/16/2017, 10:04:11 PM)
-    ☐ schedule record timer take 1 min error
+    ✔ schedule record timer take 1 min error @done (12/16/2017, 10:41:33 PM)
     ✔ name will be reset if change method @done (12/16/2017, 6:03:13 PM)
 
 backlog:
@@ -144,6 +144,7 @@ backlog:
     ☐ save all tabs, close all tabs, close all but active.
     ☐ Me project should be removable
     ☐ improve mail
+    ☐ sub folder
 
     ☐ data mock
     ☐ test result detail

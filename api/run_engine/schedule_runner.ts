@@ -138,6 +138,7 @@ export class ScheduleRunner {
         scheduleRecord.result = { origin: originRunResults, compare: compareRunResults };
         scheduleRecord.isScheduleRun = isScheduleRun;
         scheduleRecord.duration = schedule.needOrder ? totalRunResults.map(r => r.elapsed).reduce((p, a) => p + a) : _.max(totalRunResults.map(r => r.elapsed));
+        scheduleRecord.runDate = schedule.lastRunDate;
 
         Log.info('clear redundant records');
         await ScheduleRecordService.clearRedundantRecords(schedule.id);

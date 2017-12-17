@@ -23,6 +23,9 @@ export class ScheduleRecord {
     @Column()
     isScheduleRun: boolean;
 
+    @Column()
+    runDate: Date;
+
     @CreateDateColumn()
     createDate: Date;
 }

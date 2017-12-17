@@ -46,7 +46,7 @@ export class ScheduleService {
 
     static async save(schedule: Schedule): Promise<any> {
         const connection = await ConnectionManager.getInstance();
-        await connection.getRepository(Schedule).persist(schedule);
+        await connection.getRepository(Schedule).save(schedule);
     }
 
     static async getById(id: string): Promise<Schedule> {
@@ -83,6 +83,13 @@ export class ScheduleService {
             if (s.lastRunDate) {
                 s.lastRunDate = new Date(s.lastRunDate + ' UTC');
             }
+            s.scheduleRecords.forEach(sr => {
+                if (new Date(sr.runDate).getFullYear() < 2000) {
+                    sr.runDate = sr.createDate;
+                } else {
+                    sr.runDate = new Date(sr.runDate + ' UTC');
+                }
+            });
         });
         return schedules;
     }
@@ -138,9 +145,10 @@ export class ScheduleService {
             const scheduleHour = schedule.hour < 0 ? 24 + schedule.hour : schedule.hour;
             return isPeriodRight && scheduleHour === now.getUTCHours();
         } else if (schedule.timer === TimerType.Hour) {
-            return !schedule.lastRunDate || DateUtil.diff(DateUtil.getUTCDate(), schedule.lastRunDate) >= schedule.hour;
+            return !schedule.lastRunDate || DateUtil.diff(schedule.lastRunDate, DateUtil.getUTCDate(), 'h', 3000) >= schedule.hour;
         } else if (schedule.timer === TimerType.Minute) {
-            return !schedule.lastRunDate || DateUtil.diff(DateUtil.getUTCDate(), schedule.lastRunDate, 'm') >= schedule.hour;
+            const diff = DateUtil.diff(schedule.lastRunDate, DateUtil.getUTCDate(), 'm', 3000);
+            return !schedule.lastRunDate || diff >= schedule.hour;
         }
         return false;
     }

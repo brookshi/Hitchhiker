@@ -14,5 +14,7 @@ export interface DtoScheduleRecord {
 
     isScheduleRun: boolean;
 
+    runDate: Date;
+
     createDate: Date;
 }
