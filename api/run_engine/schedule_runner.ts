@@ -63,7 +63,7 @@ export class ScheduleRunner {
         const record = await this.storeRunResult(originRunResults, compareRunResults, schedule, isScheduleRun);
 
         if (trace) {
-            trace(JSON.stringify({ isResult: true, ...record }));
+            trace(JSON.stringify({ isResult: true, ...record, runDate: new Date(record.runDate + ' UTC') }));
         }
 
         Log.info('send mails');
