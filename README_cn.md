@@ -27,10 +27,6 @@ Hitchhiker 是一款开源的 Restful Api 测试工具，支持Schedule, 数据�
 * 自动同步Team成员的Collection数据
 * Api文档 (计划中...)
 
-## 压力测试
-
-[Hitchhiker-Node](https://github.com/brookshi/Hitchhiker-Node)
-
 
 ## 对比Postman
 

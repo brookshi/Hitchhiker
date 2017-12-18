@@ -2,6 +2,10 @@
 
 系统的参数可以参考：[配置文件](configuration.md), 环境变量可以写到docker-compose.yml里
 
+如果docker hub访问不了或者速度太慢的话，可以使用阿里云的镜像 hitchhiker-cn：registry.cn-hangzhou.aliyuncs.com/brook/hitchhiker-cn
+
+参考：[https://dev.aliyun.com/list.html?namePrefix=hitchhiker-cn](https://dev.aliyun.com/list.html?namePrefix=hitchhiker-cn)
+
 ```yaml
 version: '2'
 services:

@@ -24,9 +24,6 @@ Go to [http://www.hitchhiker-api.com](http://www.hitchhiker-api.com) for test，
 * sync collection data of team automatically
 * Api Document (in future)
 
-## Stress Test
-
-[Hitchhiker-Node](https://github.com/brookshi/Hitchhiker-Node)
 
 ## Different with Postman
 
