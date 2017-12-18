@@ -26,13 +26,10 @@ Go to [http://www.hitchhiker-api.com](http://www.hitchhiker-api.com) for test，
 * sync collection data of team automatically
 * Api Document (in future)
 
-## Stress Test
-
-[Hitchhiker-Node](https://github.com/brookshi/Hitchhiker-Node)
 
 ## Different with Postman
 
-| | Hitchhiker | Postman 
+Func | Hitchhiker | Postman 
 ---------|----------|---------
 Collaboration | ✔, auto sync | Need Share，Pro support but not free
 Script | ✔ Powerful，could upload js lib | ✔ only can use built-in lib

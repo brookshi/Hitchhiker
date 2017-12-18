@@ -30,7 +30,7 @@ Hitchhiker 是一款开源的 Restful Api 测试工具，支持Schedule, 数据�
 
 ## 对比Postman
 
-| | Hitchhiker | Postman 
+Func  | Hitchhiker | Postman 
 ---------|----------|---------
 协作性 | ✔ | 通过Share，Pro收费 
 脚本 | ✔ 强，可以上传脚本 | ✔ 一般，只能用内置的脚本库 
@@ -57,6 +57,10 @@ Api Mock | ✘ | ✔
 
 只在Chrome(推荐)和Firefox下测试过，其他的暂不考虑。
 这个工具的用户应该是Developer或QA，没理由没有Chrome和Firefox中的一个。
+
+## 微信群
+
+<img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/hitchhiker_wx.jpg' width='400'/>
 
 ## Licence
 
