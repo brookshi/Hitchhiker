@@ -257,7 +257,9 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
 
     public render() {
         const { isRunning, consoleRunResults, records, envNames, scheduleRecords, schedule } = this.props;
-        scheduleRecords.forEach(r => r.runDate = new Date(r.runDate));
+        if (scheduleRecords) {
+            scheduleRecords.forEach(r => r.runDate = new Date(r.runDate));
+        }
 
         return (
             <div>
