@@ -40,6 +40,11 @@ Api Mock | ✘ | ✔
 Detail | Need improve | Strong 
 security | Strong，deploy in local | Weak, data will upload to server
 
+## 微信交流
+
+<img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/hitchhiker_wx.jpg' width='400'/>
+
+
 ## Display
 
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/collection.png' width='800'/>
