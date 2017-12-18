@@ -9,6 +9,7 @@ import { BaseProcessHandler } from './base_process_handler';
 import { ScheduleProcessHandler } from './schedule_process_handler';
 import { StressProcessHandler } from './stress_process_handler';
 import { StressNodejsProcessHandler } from './stress_nodejs_process_handler';
+import { Setting } from "../../utils/setting";
 
 interface ProcessInfo {
 
@@ -16,7 +17,7 @@ interface ProcessInfo {
 
     entry: string;
 
-    handlerCtor: { new(): BaseProcessHandler };
+    handlerCtor: { new (): BaseProcessHandler };
 }
 
 export class ChildProcessManager {
@@ -62,6 +63,9 @@ export class ChildProcessManager {
     }
 
     createChildProcess(moduleName: string) {
+        if (moduleName === 'stress_nodejs' && Setting.instance.stressType === 'none') {
+            return;
+        }
         const { handlerCtor, count, entry } = this.processConfigs[moduleName];
         const handler = new handlerCtor();
         if (count === 1) {
