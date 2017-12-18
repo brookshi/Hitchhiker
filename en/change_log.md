@@ -1,3 +1,21 @@
+#### 0.6 2017-12-18
+
+**Features:**
+
+* \#45 Stress test support ES6 and js lib, data.
+* improve request workflow, refer to: [workflow](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/script/reuqest_wf.png).
+* Test & Global function support Environment
+* \#47 display image if response header include 'image/*'
+
+**Bugs:**
+
+* \#62 global function miss if switch module.
+* \#59 exception caused by image data of schedule record.
+* \#55 failed to construct WebSocket for stress test.
+* schedule record timer take 1 min error.
+* name will be reset if change method.
+
+
 #### 0.5 2017-11-28
 
 **Features:**

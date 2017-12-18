@@ -1,3 +1,21 @@
+#### 0.6 2017-12-18
+
+**Features:**
+
+* \#45 重写压力测试，支持现有所有新特性，比如ES6, 自定义的js包
+* 重新整理请求流程，参考流程图：[workflow](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/script/reuqest_wf.png) 
+* 环境变量在所有脚本内都可用
+* \#47 如果response是图片的话就直接显示图片，而不是图片内容
+
+**Bugs:**
+
+* \#62 global function 里的内容在切换模块后会消失
+* \#59 schedule里的请求返回是图片时，会造成JSON.parse失败，导致异常，改了图片只保存链接，不保存内容
+* \#55 浏览器里压力测试的websocket有时会失败，加了重试
+* schedule的定时跑的记录会有1分钟左右的误差
+* 改请求的method时name会被重置
+
+
 #### 0.5 2017-11-28
 
 **Features:**
