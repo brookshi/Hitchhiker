@@ -11,6 +11,10 @@ let app = new Koa();
 
 Log.init();
 
+process.on('uncaughtException', (err) => {
+    Log.error(err);
+});
+
 Setting.instance.init();
 
 ProjectDataService.instance.init();
