@@ -135,12 +135,40 @@ export class Setting {
         return this.getValidNum(process.env.HITCHHIKER_SCRIPT_TIMEOUT, this.app.scriptTimeout);
     }
 
-    get isUseCustomMail() {
-        return this.getValidBoolean(process.env.HITCHHIKER_MAIL_CUSTOM, this.mail.custom);
+    get customMailType() {
+        return process.env.HITCHHIKER_MAIL_CUSTOM_TYPE || this.mail.customType;
     }
 
     get customMailApi() {
         return process.env.HITCHHIKER_MAIL_API || this.mail.customApi;
+    }
+
+    get customMailSmtpHost() {
+        return process.env.HITCHHIKER_MAIL_SMTP_HOST || this.mail.smtp.host;
+    }
+
+    get customMailSmtpPort() {
+        return this.getValidNum(process.env.HITCHHIKER_MAIL_SMTP_PORT, this.mail.smtp.port);
+    }
+
+    get customMailSmtpTLS() {
+        return this.getValidBoolean(process.env.HITCHHIKER_MAIL_SMTP_HOST, this.mail.smtp.tls);
+    }
+
+    get customMailSmtpUser() {
+        return process.env.HITCHHIKER_MAIL_SMTP_USER || this.mail.smtp.user;
+    }
+
+    get customMailSmtpNickname() {
+        return process.env.HITCHHIKER_MAIL_SMTP_NICKNAME || this.mail.smtp.nickname;
+    }
+
+    get customMailSmtpPass() {
+        return process.env.HITCHHIKER_MAIL_SMTP_PASS || this.mail.smtp.pass;
+    }
+
+    get customMailSmtpRejectUnauthorized() {
+        return this.getValidBoolean(process.env.HITCHHIKER_MAIL_SMTP_RU, this.mail.smtp.rejectUnauthorized);
     }
 
     get inviteMemberDirectly() {

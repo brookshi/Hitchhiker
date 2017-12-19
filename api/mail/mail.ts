@@ -8,16 +8,17 @@ import * as path from 'path';
 import { MailScheduleRecord, MailRunResult } from '../interfaces/dto_mail';
 import { Setting } from '../utils/setting';
 import { Log } from '../utils/log';
+import * as nodeMailer from 'nodemailer';
 
 export class Mail {
 
-    static sendForRegister(target: string, name: string, url: string, lang: string) {
+    static async sendForRegister(target: string, name: string, url: string, lang: string): Promise<any> {
         const type = 'register';
         const title = TemplateSetting.instance.templates[type].title[lang];
         let content = Mail.getContent(type, lang);
         const userName = name || target.substr(0, target.indexOf('@'));
         content = content.replace(/\{\{name\}\}/g, userName).replace(/\{\{url\}\}/g, url);
-        Mail.send(target, title, content);
+        return Mail.send(target, title, content);
     }
 
     static async sendForInviteToProject(target: string, inviter: string, project: string, accept: string, reject: string, lang: string): Promise<{ err: any, body: any }> {
@@ -44,18 +45,18 @@ export class Mail {
         return await Mail.send(target, title, content);
     }
 
-    static sendForAcceptInvitation(target: string, user: string, project: string, lang: string) {
+    static sendForAcceptInvitation(target: string, user: string, project: string, lang: string): Promise<any> {
         const type = 'acceptInvitation';
         const title = TemplateSetting.instance.templates[type].title[lang].replace(/\{\{user\}\}/g, user).replace(/\{\{project\}\}/g, project);
         let content = Mail.getContent(type, lang).replace(/\{\{user\}\}/g, user).replace(/\{\{project\}\}/g, project);
-        Mail.send(target, title, content);
+        return Mail.send(target, title, content);
     }
 
-    static sendForRejectInvitation(target: string, user: string, project: string, lang: string) {
+    static async sendForRejectInvitation(target: string, user: string, project: string, lang: string): Promise<any> {
         const type = 'rejectInvitation';
         const title = TemplateSetting.instance.templates[type].title[lang].replace(/\{\{user\}\}/g, user).replace(/\{\{project\}\}/g, project);
         let content = Mail.getContent(type, lang).replace(/\{\{user\}\}/g, user).replace(/\{\{project\}\}/g, project);
-        Mail.send(target, title, content);
+        return Mail.send(target, title, content);
     }
 
     static async sendForFindPwd(target: string, pwd: string, lang: string): Promise<{ err: any, body: any }> {
@@ -65,11 +66,11 @@ export class Mail {
         return await Mail.send(target, title, content);
     }
 
-    static sendUserInfo(target: string, pwd: string, project: string, lang: string) {
+    static sendUserInfo(target: string, pwd: string, project: string, lang: string): Promise<any> {
         const type = 'userInfo';
         const title = TemplateSetting.instance.templates[type].title[lang];
         let content = Mail.getContent(type, lang).replace(/\{\{project\}\}/g, project).replace(/\{\{password\}\}/g, pwd);
-        Mail.send(target, title, content);
+        return Mail.send(target, title, content);
     }
 
     static async sendForSchedule(target: string, lang: string, record: MailScheduleRecord): Promise<{ err: any, body: any }> {
@@ -95,6 +96,14 @@ export class Mail {
     }
 
     private static send(target: string, subject: string, content: string): Promise<any> {
+        if (Setting.instance.customMailType === 'api') {
+            return Mail.sendWithApi(target, subject, content);
+        } else {
+            return Mail.sendWithSmtp(target, subject, content);
+        }
+    }
+
+    private static sendWithApi(target: string, subject: string, content: string): Promise<any> {
         return new Promise<{ err: any, response: request.RequestResponse, body: any }>((resolve, reject) => {
             request({ method: 'post', url: Setting.instance.customMailApi, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ target, subject, content }) }, (err, response, body) => {
                 resolve({ err, response, body });
@@ -120,5 +129,37 @@ export class Mail {
         return encodeURIComponent(str).replace(/[!'()*]/g, c => {
             return '%' + c.charCodeAt(0).toString(16);
         });
+    }
+
+    static transporter = nodeMailer.createTransport({
+        pool: true,
+        host: Setting.instance.customMailSmtpHost,
+        port: Setting.instance.customMailSmtpPort,
+        secure: Setting.instance.customMailSmtpTLS,
+        auth: {
+            user: Setting.instance.customMailSmtpUser,
+            pass: Setting.instance.customMailSmtpPass
+        },
+        tls: {
+            rejectUnauthorized: Setting.instance.customMailSmtpRejectUnauthorized
+        }
+    });
+
+    private static async sendWithSmtp(target: string, subject: string, content: string): Promise<any> {
+        const mailOptions = {
+            from: Setting.instance.customMailSmtpNickname ? `"${Setting.instance.customMailSmtpNickname}" <${Setting.instance.customMailSmtpUser}>` : Setting.instance.customMailSmtpUser,
+            to: target.replace(';', ','),
+            subject,
+            html: content
+        };
+        return new Promise((resolve, reject) => Mail.transporter.sendMail(mailOptions, (err, info) => {
+            if (err) {
+                Log.error(err.message);
+                reject(err);
+            } else {
+                Log.info('send mail success');
+                resolve();
+            }
+        }));
     }
 }

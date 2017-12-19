@@ -44,7 +44,16 @@
     },
     "mail": {
         "host": "http://email.hitchhiker-api.com/api/mail/",
-        "custom": false,
-        "customApi": "http://"
+        "customType": "none",
+        "customApi": "http://",
+        "smtp": {
+            "host": "smtp.qq.com",
+            "port": 465,
+            "tls": true,
+            "user": "***@qq.com",
+            "pass": "****",
+            "nickname": "",
+            "rejectUnauthorized": false
+        }
     }
 }

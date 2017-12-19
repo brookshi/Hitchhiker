@@ -127,13 +127,14 @@
 0.7:
     ✔ #63 support console.log debug @done (12/19/2017, 7:03:08 PM)
     ☐ #57 runPreScript before parsing paraemters
-    ☐ #34 smtp service
+    ✔ #34 smtp service @done (12/20/2017, 1:04:38 AM)
     ☐ #30 support swagger import
     ☐ import from curl
     ☐ generate code for request
 
 backlog:
     ☐ distributed stress nodejs test
+    ☐ stress result export to excel
 
     ☐ form data, text, binary body type
     ☐ import postman env

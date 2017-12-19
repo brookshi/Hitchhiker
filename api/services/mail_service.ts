@@ -10,22 +10,20 @@ export class MailService {
     static registerMail(user: User) {
         const url = `${Setting.instance.appApi}user/regconfirm?id=${user.id}&token=${TokenService.buildRegToken()}`;
         const mailReqUrl = `${Setting.instance.mail.host}register?target=${user.email}&name=${user.name}&url=${encodeURIComponent(url)}&lang=${Setting.instance.appLanguage}`;
-        if (Setting.instance.isUseCustomMail) {
-            Mail.sendForRegister(user.email, user.name, url, Setting.instance.appLanguage);
-        } else {
-            MailService.sendMail(mailReqUrl);
-        }
+        MailService.sendMailByConfig(
+            () => Mail.sendForRegister(user.email, user.name, url, Setting.instance.appLanguage),
+            () => MailService.sendMail(mailReqUrl)
+        );
     }
 
     static async inviterMail(target: string, inviter: User): Promise<{ err: any, body: any }> {
         const url = `${Setting.instance.appHost}`;
         const mailReqUrl = `${Setting.instance.mail.host}invite?target=${target}&inviter=${inviter.name}&inviteremail=${inviter.email}&url=${encodeURIComponent(url)}&lang=${Setting.instance.appLanguage}`;
 
-        if (Setting.instance.isUseCustomMail) {
-            return await Mail.sendForInvite(target, `${inviter.name}<${inviter.email}>`, url, Setting.instance.appLanguage);
-        } else {
-            return await MailService.sendMail(mailReqUrl);
-        }
+        return await MailService.sendMailByConfig(
+            () => Mail.sendForInvite(target, `${inviter.name}<${inviter.email}>`, url, Setting.instance.appLanguage),
+            () => MailService.sendMail(mailReqUrl)
+        );
     }
 
     static async projectInviterMail(targetEmail: string, inviter: User, project: Project): Promise<{ err: any, body: any }> {
@@ -35,49 +33,59 @@ export class MailService {
 
         const mailReqUrl = `${Setting.instance.mail.host}inviteToProject?target=${targetEmail}&inviter=${inviter.name}&inviteremail=${inviter.email}&project=${project.name}&accept=${encodeURIComponent(acceptUrl)}&reject=${encodeURIComponent(rejectUrl)}&lang=${Setting.instance.appLanguage}`;
 
-        if (Setting.instance.isUseCustomMail) {
-            return await Mail.sendForInviteToProject(targetEmail, `${inviter.name}<${inviter.email}>`, project.name, acceptUrl, rejectUrl, Setting.instance.appLanguage);
-        } else {
-            return await MailService.sendMail(mailReqUrl);
-        }
+        return await MailService.sendMailByConfig(
+            () => Mail.sendForInviteToProject(targetEmail, `${inviter.name}<${inviter.email}>`, project.name, acceptUrl, rejectUrl, Setting.instance.appLanguage),
+            () => MailService.sendMail(mailReqUrl)
+        );
     }
 
     static rejectProjectMail(inviterEmail: string, userEmail: string, project: string) {
         const mailReqUrl = `${Setting.instance.mail.host}rejectinvite?target=${inviterEmail}&useremail=${userEmail}&project=${project}&lang=${Setting.instance.appLanguage}`;
-        if (Setting.instance.isUseCustomMail) {
-            Mail.sendForRejectInvitation(inviterEmail, userEmail, project, Setting.instance.appLanguage);
-        } else {
-            MailService.sendMail(mailReqUrl);
-        }
+        MailService.sendMailByConfig(
+            () => Mail.sendForRejectInvitation(inviterEmail, userEmail, project, Setting.instance.appLanguage),
+            () => MailService.sendMail(mailReqUrl)
+        );
     }
 
     static joinProjectMail(inviterEmail: string, userEmail: string, project: string) {
         const joinProjectMailUrl = `${Setting.instance.mail.host}acceptinvite?target=${inviterEmail}&useremail=${userEmail}&project=${project}&lang=${Setting.instance.appLanguage}`;
         const userInfoMailUrl = `${Setting.instance.mail.host}join?target=${userEmail}&password=${Setting.instance.app.defaultPassword}&project=${project}&lang=${Setting.instance.appLanguage}`;
-        if (Setting.instance.isUseCustomMail) {
-            Mail.sendForAcceptInvitation(inviterEmail, userEmail, project, Setting.instance.appLanguage);
-            Mail.sendUserInfo(userEmail, Setting.instance.app.defaultPassword, project, Setting.instance.appLanguage);
-        } else {
-            MailService.sendMail(joinProjectMailUrl);
-            MailService.sendMail(userInfoMailUrl);
-        }
+        MailService.sendMailByConfig(
+            () => {
+                return Promise.all([
+                    Mail.sendForAcceptInvitation(inviterEmail, userEmail, project, Setting.instance.appLanguage),
+                    Mail.sendUserInfo(userEmail, Setting.instance.app.defaultPassword, project, Setting.instance.appLanguage)
+                ]);
+            },
+            () => {
+                return Promise.all([
+                    MailService.sendMail(joinProjectMailUrl),
+                    MailService.sendMail(userInfoMailUrl)
+                ]);
+            });
     }
 
     static async findPwdMail(target: string, pwd: string): Promise<{ err: any, body: any }> {
         const mailReqUrl = `${Setting.instance.mail.host}findpwd?target=${target}&pwd=${pwd}&lang=${Setting.instance.appLanguage}`;
-        if (Setting.instance.isUseCustomMail) {
-            return await Mail.sendForFindPwd(target, pwd, Setting.instance.appLanguage);
-        } else {
-            return await MailService.sendMail(mailReqUrl);
-        }
+        return await MailService.sendMailByConfig(
+            () => Mail.sendForFindPwd(target, pwd, Setting.instance.appLanguage),
+            () => MailService.sendMail(mailReqUrl)
+        );
     }
 
     static async scheduleMail(targets: string[], body: any) {
         const mailReqUrl = `${Setting.instance.mail.host}schedule?targets=${targets.join(';')}&lang=${Setting.instance.appLanguage}`;
-        if (Setting.instance.isUseCustomMail) {
-            return await Mail.sendForSchedule(targets.join(';'), Setting.instance.appLanguage, body);
+        return await MailService.sendMailByConfig(
+            () => Mail.sendForSchedule(targets.join(';'), Setting.instance.appLanguage, body),
+            () => MailService.postMail(mailReqUrl, body)
+        );
+    }
+
+    private static async sendMailByConfig(customSend: () => Promise<any>, defaultSend: () => Promise<any>): Promise<any> {
+        if (Setting.instance.customMailType === 'none') {
+            await defaultSend();
         } else {
-            return await MailService.postMail(mailReqUrl, body);
+            await customSend();
         }
     }
 
