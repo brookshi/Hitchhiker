@@ -124,11 +124,16 @@
     ✔ #55 failed to construct WebSocket @done (12/16/2017, 10:04:11 PM)
     ✔ schedule record timer take 1 min error @done (12/16/2017, 10:41:33 PM)
     ✔ name will be reset if change method @done (12/16/2017, 6:03:13 PM)
+0.7:
+    ✔ #63 support console.log debug @done (12/19/2017, 7:03:08 PM)
+    ☐ #57 runPreScript before parsing paraemters
+    ☐ #34 smtp service
+    ☐ #30 support swagger import
+    ☐ import from curl
+    ☐ generate code for request
 
 backlog:
     ☐ distributed stress nodejs test
-    ☐ import from curl
-    ☐ generate code for request
 
     ☐ form data, text, binary body type
     ☐ import postman env

@@ -126,13 +126,14 @@ export class RecordRunner {
     private static async runPreScript(record: RecordEx): Promise<{ prescriptResult: ResObject, record: RecordEx }> {
         const { envId, envName, prescript, uid, vid, pid } = record;
         const prescriptResult = await ScriptRunner.prerequest(record);
+        const { request } = prescriptResult.result;
         if (prescriptResult.success) {
-            record = { ...record, ...prescriptResult.result, headers: [] };
-            _.keys(prescriptResult.result.headers).forEach(k => {
+            record = { ...record, ...request, headers: [] };
+            _.keys(request.headers).forEach(k => {
                 record.headers.push(HeaderService.fromDto({
                     isActive: true,
                     key: k,
-                    value: prescriptResult.result.headers[k]
+                    value: request.headers[k]
                 }));
             });
         }
@@ -244,6 +245,9 @@ export class RecordRunner {
         const option = await RequestOptionAdapter.fromRecord(record);
         const res = await RecordRunner.request(option, record.serverRes, needPipe);
         const rst = await RecordRunner.handleRes(res.response, res.err, record, needPipe);
+        if (prescriptResult.result.consoleMsgQueue) {
+            rst.consoleMsgQueue = [...prescriptResult.result.consoleMsgQueue, ...rst.consoleMsgQueue];
+        }
         if (!prescriptResult.success) {
             rst.tests[prescriptResult.message] = false;
         }
@@ -263,7 +267,7 @@ export class RecordRunner {
 
     private static async handleRes(res: request.RequestResponse, err: Error, record: RecordEx, needPipe?: boolean): Promise<RunResult> {
         const { envId, serverRes } = record;
-        const testRst = !err && record.test ? (await ScriptRunner.test(record, res)) : { tests: {}, variables: {}, export: {} };
+        const testRst = !err && record.test ? (await ScriptRunner.test(record, res)) : { tests: {}, variables: {}, export: {}, consoleMsgQueue: [] };
         const pRes: Partial<request.RequestResponse> = res || {};
         const isImg = pRes.headers && pRes.headers['content-type'] && pRes.headers['content-type'].indexOf('image/') >= 0;
         const finalRes: RunResult = {
@@ -280,7 +284,8 @@ export class RecordRunner {
             headers: pRes.headers || {},
             cookies: pRes.headers ? pRes.headers['set-cookie'] : [],
             status: pRes.statusCode,
-            statusMessage: pRes.statusMessage
+            statusMessage: pRes.statusMessage,
+            consoleMsgQueue: testRst.consoleMsgQueue
         };
         if (needPipe) {
             const headers = pRes.headers;
