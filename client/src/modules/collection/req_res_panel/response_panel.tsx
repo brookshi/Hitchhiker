@@ -125,7 +125,7 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
         const contentTypeValue = headers['content-type'];
         if (typeof contentTypeValue === 'string') {
             contentType = contentTypeValue;
-        } else if (contentTypeValue.length > 0) {
+        } else if (contentTypeValue && contentTypeValue.length > 0) {
             contentType = contentTypeValue[0];
         }
         const value = StringUtil.beautify(body, contentType);
