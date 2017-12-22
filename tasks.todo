@@ -131,6 +131,10 @@
     ☐ #30 support swagger import
     ☐ import from curl
     ☐ generate code for request
+    ☐ common pre script save error, strict ssl null
+    ☐ schedule save failed when check and uncheck compare
+    ☐ beauty body(json/xml)
+    ☐ import postman json failed - headers may be null
 
 backlog:
     ☐ distributed stress nodejs test
