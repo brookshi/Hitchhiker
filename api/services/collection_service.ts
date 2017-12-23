@@ -64,8 +64,8 @@ export class CollectionService {
                 name: dtoCollection.name,
                 description: dtoCollection.description,
                 commonPreScript: dtoCollection.commonPreScript,
-                reqStrictSSL: dtoCollection.reqStrictSSL,
-                reqFollowRedirect: dtoCollection.reqFollowRedirect
+                reqStrictSSL: !!dtoCollection.reqStrictSSL,
+                reqFollowRedirect: !!dtoCollection.reqFollowRedirect
             })
             .execute();
         return { success: true, message: Message.collectionUpdateSuccess };
