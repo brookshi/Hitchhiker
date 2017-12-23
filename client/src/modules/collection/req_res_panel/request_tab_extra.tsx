@@ -72,6 +72,13 @@ class RequestTabExtra extends React.Component<RequestTabExtraProps, RequestTabEx
         changeRecord({ ...record, bodyType, headers });
     }
 
+    private onBeautifyBody = () => {
+        let bodyType = this.currentBodyType();
+        bodyType = bodyType === 'application/json' ? 'json' : bodyType;
+        const { record, changeRecord } = this.props;
+        changeRecord({ ...record, body: StringUtil.beautify(record.body || '', bodyType) });
+    }
+
     private currentBodyType = () => this.props.record.bodyType || defaultBodyType;
 
     private onSelectSnippet = (e) => {
@@ -95,11 +102,14 @@ class RequestTabExtra extends React.Component<RequestTabExtraProps, RequestTabEx
         switch (activeTabKey) {
             case 'body': {
                 return (
-                    <Dropdown overlay={this.getBodyTypeMenu()} trigger={['click']} style={{ width: 200 }}>
-                        <a className="ant-dropdown-link" href="#">
-                            {this.currentBodyType()} <Icon type="down" />
-                        </a>
-                    </Dropdown>
+                    <span>
+                        <Button className="tab-extra-button" style={{ marginRight: 12 }} onClick={this.onBeautifyBody}>Beautify</Button>
+                        <Dropdown overlay={this.getBodyTypeMenu()} trigger={['click']} style={{ width: 200 }}>
+                            <a className="ant-dropdown-link" href="#">
+                                {this.currentBodyType()} <Icon type="down" />
+                            </a>
+                        </Dropdown>
+                    </span>
                 );
             }
             case 'test': {

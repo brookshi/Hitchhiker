@@ -133,13 +133,16 @@
     ☐ generate code for request
     ☐ common pre script save error, strict ssl null
     ☐ schedule save failed when check and uncheck compare
-    ☐ beauty body(json/xml)
+    ✔ beauty body(json/xml) @done (12/23/2017, 3:40:26 PM)
     ☐ import postman json failed - headers may be null
+    ☐ schedule compare display diff
 
 backlog:
+    ☐ schedule filter
+    ☐ schedule request filter
     ☐ distributed stress nodejs test
     ☐ stress result export to excel
-
+    ☐ test function base on UI
     ☐ form data, text, binary body type
     ☐ import postman env
     ☐ convert variable function while importing postman collection
@@ -149,6 +152,11 @@ backlog:
     ☐ body type
     ☐ project share collection/env for own
     ☐ stop running stress test
+    ☐ login user email case sensitive in linux mysql
+    ☐ remove post body variable warning
+    ☐ resize request panel and response panel height 
+    ☐ response history
+    ☐ response timeline
 
     ☐ variable highlight
     ☐ save all tabs, close all tabs, close all but active.
@@ -159,6 +167,7 @@ backlog:
     ☐ data mock
     ☐ test result detail
     ☐ hot key
+    ☐ export
 
     ☐ api document
     ☐ record auth
