@@ -121,13 +121,7 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
         tests = tests || [];
         headers = headers || [];
 
-        let contentType = 'json';
-        const contentTypeValue = headers['content-type'];
-        if (typeof contentTypeValue === 'string') {
-            contentType = contentTypeValue;
-        } else if (contentTypeValue && contentTypeValue.length > 0) {
-            contentType = contentTypeValue[0];
-        }
+        let contentType = StringUtil.getContentTypeFromHeaders(headers);
         const value = StringUtil.beautify(body, contentType);
         const testKeys = Object.keys(tests);
         const successTestLen = Object.keys(tests).filter(t => tests[t]).length;

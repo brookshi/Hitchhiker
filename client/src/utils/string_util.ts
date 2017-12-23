@@ -120,6 +120,17 @@ export class StringUtil {
         }
     }
 
+    static getContentTypeFromHeaders(headers: { [key: string]: string | string[] }, defaultValue: string = 'json'): string {
+        let contentType = defaultValue;
+        const contentTypeValue = headers['content-type'];
+        if (typeof contentTypeValue === 'string') {
+            contentType = contentTypeValue;
+        } else if (contentTypeValue && contentTypeValue.length > 0) {
+            contentType = contentTypeValue[0];
+        }
+        return contentType;
+    }
+
     static verifyParameters(parameters: string, parameterType: ParameterType): { isValid: boolean, count: number, msg: string } {
         if (parameters === '') {
             return { isValid: false, count: 0, msg: '' };

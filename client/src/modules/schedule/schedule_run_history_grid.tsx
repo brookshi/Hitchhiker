@@ -11,6 +11,7 @@ import Editor from '../../components/editor';
 import ScheduleRunConsole from './schedule_run_console';
 import './style/index.less';
 import { DtoSchedule } from '../../../../api/interfaces/dto_schedule';
+import DiffDialog from '../../components/diff_dialog';
 
 type DisplayRunResult = RunResult & { key: string, isOrigin: boolean, compareResult: string, rowSpan: number };
 
@@ -33,7 +34,18 @@ interface ScheduleRunHistoryGridProps {
     consoleRunResults: RunResult[];
 }
 
-interface ScheduleRunHistoryGridState { }
+interface ScheduleRunHistoryGridState {
+
+    isDiffDlgOpen: boolean;
+
+    diffOriginTitle: string;
+
+    diffOriginContent: string;
+
+    diffTargetTitle: string;
+
+    diffTargetContent: string;
+}
 
 class ScheduleRecordTable extends Table<DtoScheduleRecord> { }
 
@@ -44,6 +56,17 @@ class RunResultTable extends Table<DisplayRunResult> { }
 class RunResultColumn extends Table.Column<DisplayRunResult> { }
 
 class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps, ScheduleRunHistoryGridState> {
+
+    constructor(props: ScheduleRunHistoryGridProps) {
+        super(props);
+        this.state = {
+            isDiffDlgOpen: false,
+            diffOriginTitle: '',
+            diffOriginContent: '',
+            diffTargetTitle: '',
+            diffTargetContent: ''
+        };
+    }
 
     private expandedTable = (record: DtoScheduleRecord) => {
         const displayRunResults = new Array<DisplayRunResult>();
@@ -100,7 +123,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                 <RunResultColumn
                     title="Environment"
                     dataIndex="envId"
-                    render={(text, runResult) => `${!runResult.envId || runResult.envId === noEnvironment ? noEnvironment : (this.props.envNames[runResult.envId] || unknownName)}`}
+                    render={(text, runResult) => this.getEnvName(runResult.envId)}
                 />
                 <RunResultColumn title="Headers" dataIndex="headers" render={this.getHeadersDisplay} />
                 <RunResultColumn title="Body" dataIndex="body" render={this.getBodyDisplay} />
@@ -111,7 +134,30 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                             title="Compare"
                             dataIndex="compareResult"
                             key="compareResult"
-                            render={(text, runResult) => ({ children: <span className={runResult.compareResult !== notMatch ? 'schedule-success' : 'schedule-failed'}>{runResult.compareResult}</span>, props: { rowSpan: runResult.rowSpan } })}
+                            render={(text, runResult) => ({
+                                children: (
+                                    <div>
+                                        <div className={runResult.compareResult !== notMatch ? 'schedule-success' : 'schedule-failed'}>{runResult.compareResult}</div>
+                                        {
+                                            runResult.isOrigin && runResult.compareResult === notMatch ? (
+                                                <Button className="tab-extra-button" ghost={true} onClick={() => {
+                                                    const compareRunResult = displayRunResults.find(r => r.key === `${runResult.key}c`);
+                                                    if (!compareRunResult) { return; }
+                                                    const contentType = StringUtil.getContentTypeFromHeaders(runResult.headers);
+                                                    this.setState({
+                                                        ...this.state,
+                                                        isDiffDlgOpen: true,
+                                                        diffOriginTitle: `${this.getRecordDisplayName(runResult.id)}(${this.getEnvName(runResult.envId)})`,
+                                                        diffOriginContent: this.getDiffContent(runResult.export, runResult.body, contentType),
+                                                        diffTargetTitle: `${this.getRecordDisplayName(compareRunResult.id)}(${this.getEnvName(compareRunResult.envId)})`,
+                                                        diffTargetContent: this.getDiffContent(compareRunResult.export, compareRunResult.body, contentType),
+                                                    });
+                                                }}>View Diff</Button>
+                                            ) : ''
+                                        }
+                                    </div>
+                                ), props: { rowSpan: runResult.rowSpan }
+                            })}
                         />
                     )
                 }
@@ -127,6 +173,22 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
         return originRst.body === compareRst.body;
     }
 
+    private getDiffContent(exportObj: any, body: string, contentType: string): string {
+        let result = exportObj;
+        if (exportObj === defaultExport) {
+            result = body;
+        }
+        if (typeof exportObj === 'object') {
+            try {
+                result = JSON.stringify(exportObj);
+            } finally {
+                result = body;
+            }
+        }
+        const type = (contentType || '').includes('json') ? 'json' : ((contentType || '').includes('xml') ? 'xml' : '');
+        return StringUtil.beautify(result, type);
+    }
+
     private getRecordDisplayName = (id: string) => {
         const record = this.props.records[id];
         if (!record) {
@@ -134,6 +196,10 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
         }
         const folder = record.pid ? this.props.records[record.pid] : undefined;
         return folder ? `${folder.name}/${record.name}` : record.name;
+    }
+
+    private getEnvName = (envId: string) => {
+        return !envId || envId === noEnvironment ? noEnvironment : (this.props.envNames[envId] || unknownName);
     }
 
     private getCellDisplay = (value: string) => {
@@ -257,6 +323,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
 
     public render() {
         const { isRunning, consoleRunResults, records, envNames, scheduleRecords, schedule } = this.props;
+        const { isDiffDlgOpen, diffOriginContent, diffOriginTitle, diffTargetContent, diffTargetTitle } = this.state;
         if (scheduleRecords) {
             scheduleRecords.forEach(r => r.runDate = new Date(r.runDate));
         }
@@ -299,6 +366,15 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                         render={(text, record) => this.getScheduleDescription(record, schedule)}
                     />
                 </ScheduleRecordTable>
+                <DiffDialog
+                    title="Diff View"
+                    isOpen={isDiffDlgOpen}
+                    originContent={diffOriginContent}
+                    originTitle={diffOriginTitle}
+                    targetContent={diffTargetContent}
+                    targetTitle={diffTargetTitle}
+                    onClose={() => this.setState({ ...this.state, isDiffDlgOpen: false })}
+                />
             </div>
         );
     }
