@@ -283,7 +283,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
     }
 
     private onOk = () => {
-        this.props.form.validateFields((err, values) => {
+        this.props.form.validateFields({ force: true }, (err, values) => {
             if (err) {
                 return;
             }
