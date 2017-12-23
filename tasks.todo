@@ -136,7 +136,7 @@
     ✔ beauty body(json/xml) @done (12/23/2017, 3:40:26 PM)
     ✔ import postman json failed - headers may be null @done (12/23/2017, 4:20:21 PM)
     ✔ schedule compare display diff @done (12/23/2017, 11:15:18 PM)
-    ☐ beautify xml response
+    ✔ beautify xml response @done (12/23/2017, 11:26:06 PM)
 
 backlog:
     ☐ schedule filter

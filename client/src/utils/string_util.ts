@@ -77,6 +77,10 @@ export class StringUtil {
         }
     }
 
+    static getEditorType(value: string, header: string) {
+        return StringUtil.isJson(value) ? 'json' : (header && header.indexOf('xml') > -1 ? 'xml' : 'text');
+    }
+
     static isNumberString(str: string): boolean {
         const pattern = /^\d+$/;
         return pattern.test(str);
