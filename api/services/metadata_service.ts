@@ -140,7 +140,7 @@ export class MetadataService {
             return headers.map((h, i) => ({ ...h, id: StringUtil.generateUID(), sort: i }));
         }
         let rst = new Array<DtoHeader>();
-        const headerArr = headers.split('\n');
+        const headerArr = headers && typeof headers === 'string' ? headers.split('\n') : [];
         if (!headerArr) {
             return rst;
         }

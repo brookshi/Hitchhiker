@@ -132,9 +132,9 @@
     ☐ import from curl
     ☐ generate code for request
     ☐ common pre script save error, strict ssl null
-    ☐ schedule save failed when check and uncheck compare
+    ✔ schedule save failed when check and uncheck compare @done (12/23/2017, 4:17:49 PM)
     ✔ beauty body(json/xml) @done (12/23/2017, 3:40:26 PM)
-    ☐ import postman json failed - headers may be null
+    ✔ import postman json failed - headers may be null @done (12/23/2017, 4:20:21 PM)
     ☐ schedule compare display diff
 
 backlog:
