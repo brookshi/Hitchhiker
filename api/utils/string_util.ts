@@ -5,6 +5,7 @@ import * as shortId from 'shortid';
 import * as URL from 'url';
 import { ParameterType } from '../common/parameter_type';
 import * as _ from 'lodash';
+import { DtoHeader } from '../interfaces/dto_header';
 
 export class StringUtil {
 
@@ -185,5 +186,19 @@ export class StringUtil {
         } else {
             return obj ? obj.toString() : '';
         }
+    }
+
+    static stringToHeaders(str: string): Array<DtoHeader> {
+        return (str || '').split('\n').map(k => {
+            let [key, ...values] = k.split(':');
+            const value: string | undefined = values.length === 0 ? undefined : values.join(':');
+            const isActive = !key.startsWith('//');
+
+            if (!isActive) {
+                key = key.substr(2);
+            }
+
+            return { isActive, key, value };
+        });
     }
 }

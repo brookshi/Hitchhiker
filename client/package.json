@@ -23,7 +23,9 @@
     "redux-saga": "0.15.3",
     "reflect-metadata": "0.1.10",
     "reselect": "3.0.1",
+    "shellwords": "^0.1.1",
     "shortid": "2.2.8",
+    "url-regex": "^4.1.1",
     "uuid": "3.0.1"
   },
   "devDependencies": {
@@ -34,6 +36,7 @@
     "@types/react-dom": "0.14.23",
     "@types/react-redux": "4.4.41",
     "@types/reflect-metadata": "0.0.5",
+    "@types/url-regex": "^4.0.0",
     "app-root-path": "^2.0.1",
     "autoprefixer": "6.7.2",
     "babel-core": "^6.24.1",

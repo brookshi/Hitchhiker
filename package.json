@@ -26,7 +26,8 @@
     "uuid": "^3.0.1",
     "vm2": "^3.4.6",
     "webapi-router": "^1.1.4",
-    "ws": "^3.0.0"
+    "ws": "^3.0.0",
+    "yargs": "^8.0.2"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.4.31",
@@ -42,6 +43,7 @@
     "@types/request": "^2.0.8",
     "@types/shortid": "^0.0.28",
     "@types/ws": "^3.0.0",
+    "@types/yargs": "^10.0.0",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-replace": "^0.6.1",
