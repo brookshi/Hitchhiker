@@ -9,6 +9,7 @@
     "diff2html": "2.3.2",
     "echarts": "3.7.2",
     "echarts-for-react": "2.0.0",
+    "httpsnippet": "^1.16.5",
     "less": "2.7.2",
     "localforage": "1.5.0",
     "react": "15.5.4",
