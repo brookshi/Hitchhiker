@@ -14,3 +14,5 @@ export const CodeSnippetType = {
     shell: { name: 'Shell', types: ['curl', 'httpie', 'wget'] },
     swift: { name: 'Swift (NSURL)', types: ['nsurlsession'] }
 };
+
+export type CodeSnippetLang = 'c' | 'clojure' | 'c#' | 'go' | 'java' | 'javascript' | 'node' | 'objc' | 'ocaml' | 'php' | 'python' | 'ruby' | 'shell' | 'swift';

@@ -137,6 +137,8 @@
     ✔ import postman json failed - headers may be null @done (12/23/2017, 4:20:21 PM)
     ✔ schedule compare display diff @done (12/23/2017, 11:15:18 PM)
     ✔ beautify xml response @done (12/23/2017, 11:26:06 PM)
+    ☐ exception caused by schedule record with empty result
+    ☐ not stop when find password failed
 
 backlog:
     ☐ schedule filter

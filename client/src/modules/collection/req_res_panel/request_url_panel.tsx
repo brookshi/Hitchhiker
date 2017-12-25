@@ -12,6 +12,7 @@ import { StringUtil } from '../../../utils/string_util';
 import { TreeData } from 'antd/lib/tree-select/interface';
 import * as _ from 'lodash';
 import { DtoHeader } from '../../../../../api/interfaces/dto_header';
+import CodeSnippetDialog from '../../../components/code_snippet_dialog';
 
 const DButton = Dropdown.Button as any;
 const Option = Select.Option;
@@ -51,6 +52,8 @@ interface RequestUrlPanelState {
     isSaveAsDlgOpen: boolean;
 
     selectedFolderId?: string;
+
+    isCodeSnippetDlgOpen: boolean;
 }
 
 class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPanelState> {
@@ -59,7 +62,8 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         super(props);
         this.state = {
             isSaveAsDlgOpen: false,
-            isSaveDlgOpen: false
+            isSaveDlgOpen: false,
+            isCodeSnippetDlgOpen: false
         };
     }
 
@@ -94,10 +98,18 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         return false;
     }
 
-    private onSaveAs = () => {
+    private onClick = (e) => {
+        this[e.key]();
+    }
+
+    saveAs = () => {
         if (this.canSave()) {
             this.setState({ ...this.state, isSaveAsDlgOpen: true });
         }
+    }
+
+    codeSnippet = () => {
+        this.setState({ ...this.state, isCodeSnippetDlgOpen: true });
     }
 
     private onSave = () => {
@@ -198,8 +210,9 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         const { record, isRequesting, collectionTreeData } = this.props;
 
         const menu = (
-            <Menu onClick={this.onSaveAs}>
-                <Menu.Item key="save_as">Save As</Menu.Item>
+            <Menu onClick={this.onClick}>
+                <Menu.Item key="saveAs">Save As</Menu.Item>
+                <Menu.Item key="codeSnippet">Code</Menu.Item>
             </Menu>
         );
 
@@ -244,6 +257,11 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
                         onChange={(e) => this.setState({ ...this.state, selectedFolderId: e })}
                         treeData={collectionTreeData} />
                 </Modal>
+                <CodeSnippetDialog
+                    record={record}
+                    isOpen={this.state.isCodeSnippetDlgOpen}
+                    onCancel={() => this.setState({ ...this.state, isCodeSnippetDlgOpen: false })}
+                />
             </div>
         );
     }
