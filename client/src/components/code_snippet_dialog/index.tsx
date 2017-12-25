@@ -1,11 +1,13 @@
 import React from 'react';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
-import { Modal, Menu, Dropdown, Button, Icon } from 'antd';
+import { Modal, Menu, Dropdown, Button, Icon, message } from 'antd';
 import Editor from '../editor';
 import { HAR } from '../../common/har';
 import { CodeSnippetLang, CodeSnippetType } from '../../common/code_snippet_type';
 import HTTPSnippet from 'httpsnippet';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import * as _ from 'lodash';
+import './style/index.less';
 
 interface CodeSnippetDialogProps {
 
@@ -38,16 +40,21 @@ class CodeSnippetDialog extends React.Component<CodeSnippetDialogProps, CodeSnip
 
     private getMenu = () => {
         return (
-            <Menu>
+            <Menu onClick={this.selectLanguage}>
                 {
-                    _.keys(CodeSnippetType).map(k => CodeSnippetType[k].types.length > 0 ? (
+                    _.keys(CodeSnippetType).map(k => CodeSnippetType[k].types.length > 1 ? (
                         <Menu.SubMenu title={CodeSnippetType[k].name}>
-                            {CodeSnippetType[k].types.map(t => <Menu.Item>{t}</Menu.Item>)}
+                            {CodeSnippetType[k].types.map(t => <Menu.Item key={`${k};${t}`}>{t}</Menu.Item>)}
                         </Menu.SubMenu>
-                    ) : <Menu.Item>{CodeSnippetType[k].name}</Menu.Item>)
+                    ) : <Menu.Item key={`${k};${CodeSnippetType[k].types[0]}`}>{CodeSnippetType[k].name}</Menu.Item>)
                 }
             </Menu>
         );
+    }
+
+    private selectLanguage = (e) => {
+        const [language, type] = e.key.split(';');
+        this.refresh(this.props.record, language, type);
     }
 
     public componentDidMount() {
@@ -64,7 +71,7 @@ class CodeSnippetDialog extends React.Component<CodeSnippetDialogProps, CodeSnip
         const har = new HAR(record);
         const snippet = new HTTPSnippet(har);
         const code = snippet.convert(language, type);
-        this.setState({ ...this.state, code });
+        this.setState({ ...this.state, language, type, code });
     }
 
     public render() {
@@ -76,19 +83,24 @@ class CodeSnippetDialog extends React.Component<CodeSnippetDialogProps, CodeSnip
                 title="Code Snippets"
                 visible={isOpen}
                 maskClosable={true}
-                width={600}
+                width={800}
                 onCancel={onCancel}
                 footer={null}
             >
                 <div>
-                    <div style={{ height: 30 }}>
+                    <div className="codesnippet-toolbar">
                         <Dropdown overlay={this.getMenu()}>
-                            <Button style={{ marginLeft: 8 }}>
-                                {`${this.state.language} - ${this.state.type}`} <Icon type="down" />
+                            <Button className="codesnippet-dropdownbtn">
+                                {`${this.state.language} - ${this.state.type}`} <Icon className="codesnippet-dropdownicon" type="down" />
                             </Button>
                         </Dropdown>
+                        <CopyToClipboard className="codesnippet-copy" text={code} onCopy={() => message.success('code copied!', 3)}>
+                            <Button type="primary" icon="copy" >
+                                Copy to Clipboard
+                            </Button>
+                        </CopyToClipboard>
                     </div>
-                    <Editor type="javascript" height={600} fixHeight={true} value={code} />
+                    <Editor type="javascript" height={600} fixHeight={true} value={code} disableValidate={true} />
                 </div>
             </Modal>
         );

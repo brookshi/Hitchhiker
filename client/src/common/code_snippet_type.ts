@@ -1,7 +1,6 @@
 export const CodeSnippetType = {
     c: { name: 'C (LibCurl)', types: ['libcurl'] },
-    clojure: { name: 'Clojure (CljHttp)', types: ['clj-http'] },
-    'c#': { name: 'C# (RestSharp)', types: ['restsharp'] },
+    csharp: { name: 'C# (RestSharp)', types: ['restsharp'] },
     go: { name: 'Go', types: ['native'] },
     java: { name: 'Java', types: ['okhttp', 'unirest'] },
     javascript: { name: 'Javascript', types: ['jquery', 'xhr'] },
@@ -15,4 +14,4 @@ export const CodeSnippetType = {
     swift: { name: 'Swift (NSURL)', types: ['nsurlsession'] }
 };
 
-export type CodeSnippetLang = 'c' | 'clojure' | 'c#' | 'go' | 'java' | 'javascript' | 'node' | 'objc' | 'ocaml' | 'php' | 'python' | 'ruby' | 'shell' | 'swift';
+export type CodeSnippetLang = 'c' | 'csharp' | 'go' | 'java' | 'javascript' | 'node' | 'objc' | 'ocaml' | 'php' | 'python' | 'ruby' | 'shell' | 'swift';

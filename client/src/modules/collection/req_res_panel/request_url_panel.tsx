@@ -212,7 +212,7 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         const menu = (
             <Menu onClick={this.onClick}>
                 <Menu.Item key="saveAs">Save As</Menu.Item>
-                <Menu.Item key="codeSnippet">Code</Menu.Item>
+                <Menu.Item key="codeSnippet">Generate Code Snippet</Menu.Item>
             </Menu>
         );
 

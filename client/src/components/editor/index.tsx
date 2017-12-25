@@ -26,6 +26,8 @@ interface EditorProps {
     onChange?: (value: string) => void;
 
     fixHeight?: boolean;
+
+    disableValidate?: boolean;
 }
 
 interface EditorState { }
@@ -33,6 +35,14 @@ interface EditorState { }
 class Editor extends React.Component<EditorProps, EditorState> {
 
     private offsetHeight = -1;
+
+    private editorEle;
+
+    public componentDidMount() {
+        if (this.editorEle && this.props.disableValidate) {
+            this.editorEle.editor.getSession().setUseWorker(false);
+        }
+    }
 
     public render() {
         this.offsetHeight = this.offsetHeight === 1 ? -1 : this.offsetHeight + 1;
@@ -73,7 +83,7 @@ class Editor extends React.Component<EditorProps, EditorState> {
         }
 
         return (
-            <AceEditor {...props} />
+            <AceEditor ref={ele => this.editorEle = ele} {...props} />
         );
     }
 }
