@@ -9,7 +9,7 @@ import { LogoutType, ChangePasswordType } from '../../action/user';
 import ChangePasswordDialog from './change_password_dialog';
 import { Password } from '../../../../api/interfaces/password';
 import { getProjectsIdNameStateSelector } from '../collection/collection_tree/selector';
-import { ImportPostmanDataType } from '../../action/collection';
+import { ImportDataType } from '../../action/collection';
 
 const Dragger = Upload.Dragger;
 
@@ -163,7 +163,7 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
                 />
                 <Modal
                     visible={this.state.isImportDlgOpen}
-                    title="Import data from Postman V1 JSON"
+                    title="Import Postman V1 or Swagger V2 JSON"
                     width={500}
                     closable={true}
                     onCancel={() => this.setState({ ...this.state, isImportDlgOpen: false })}
@@ -187,7 +187,7 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
                             <p className="ant-upload-drag-icon">
                                 <Icon type="inbox" />
                             </p>
-                            <p className="ant-upload-text">Click or drag Postman json file to this area to import</p>
+                            <p className="ant-upload-text">Click or drag json file to this area</p>
                         </Dragger>
                     </div>
                 </Modal>
@@ -218,7 +218,7 @@ const mapDispatchToProps = (dispatch: Dispatch<HeaderPanelProps>): HeaderPanelDi
     return {
         logout: (userId, needClearCache) => dispatch(actionCreator(LogoutType, { userId, needClearCache })),
         onChangePassword: (password) => dispatch(actionCreator(ChangePasswordType, password)),
-        importPostman: (projectId, data) => dispatch(actionCreator(ImportPostmanDataType, { projectId, data })),
+        importPostman: (projectId, data) => dispatch(actionCreator(ImportDataType, { projectId, data })),
         resetSyncMsg: () => dispatch(actionCreator(ResetSyncMsgType))
     };
 };

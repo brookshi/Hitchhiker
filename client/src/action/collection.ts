@@ -13,7 +13,7 @@ export const SelectedProjectChangedType = 'select project';
 
 export const CollectionOpenKeysType = 'open/close collection';
 
-export const ImportPostmanDataType = 'import postman data';
+export const ImportDataType = 'import data';
 
 export function* deleteCollection() {
     yield takeEvery(DeleteCollectionType, function* (action: any) {
@@ -37,9 +37,9 @@ export function* saveCollection() {
     });
 }
 
-export function* importPostman() {
-    yield takeEvery(ImportPostmanDataType, function* (action: any) {
-        const channelAction = syncAction({ type: ImportPostmanDataType, method: HttpMethod.POST, url: Urls.getUrl(`collection/postman/${action.value.projectId}`), body: action.value.data, successAction: () => actionCreator(ReloadType) });
+export function* importData() {
+    yield takeEvery(ImportDataType, function* (action: any) {
+        const channelAction = syncAction({ type: ImportDataType, method: HttpMethod.POST, url: Urls.getUrl(`collection/${action.value.projectId}`), body: action.value.data, successAction: () => actionCreator(ReloadType) });
         yield put(channelAction);
     });
 }

@@ -128,7 +128,7 @@
     ✔ #63 support console.log debug @done (12/19/2017, 7:03:08 PM)
     ☐ #57 runPreScript before parsing parameters
     ✔ #34 smtp service @done (12/20/2017, 1:04:38 AM)
-    ☐ #30 support swagger import
+    ✔ #30 support swagger import @done (12/27/2017, 12:02:59 AM)
     ✔ new request from curl @done (12/24/2017, 8:39:01 PM)
     ✔ generate code for request @done (12/26/2017, 12:31:28 PM)
     ✔ common pre script save error, strict ssl null @done (12/23/2017, 11:32:31 PM)

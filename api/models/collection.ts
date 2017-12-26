@@ -16,7 +16,7 @@ export class Collection {
     })
     records: Record[];
 
-    @Column('text', { nullable: true })
+    @Column('mediumtext', { nullable: true })
     commonPreScript: string;
 
     @Column({ default: false })
@@ -25,7 +25,7 @@ export class Collection {
     @Column({ default: false })
     reqFollowRedirect: boolean;
 
-    @Column({ nullable: true })
+    @Column('text', { nullable: true })
     description: string;
 
     @JoinColumn()

@@ -10,7 +10,7 @@ import { EnvironmentService } from '../services/environment_service';
 import * as _ from 'lodash';
 import { RecordService } from '../services/record_service';
 import { DtoRecord } from '../interfaces/dto_record';
-import { ImporterFactory } from '../services/base/request_import';
+import { Importer } from '../services/base/request_import';
 import { ImportType } from '../common/string_type';
 
 export default class CollectionController extends BaseController {
@@ -52,10 +52,10 @@ export default class CollectionController extends BaseController {
         return await CollectionService.shareCollection(collectionId, projectId);
     }
 
-    @POST('/collection/:type/:projectid')
-    async importFromPostman(ctx: Koa.Context, @PathParam('type') type: ImportType, @PathParam('projectid') projectId: string, @BodyParam info: any): Promise<ResObject> {
+    @POST('/collection/:projectid')
+    async importFromPostman(ctx: Koa.Context, @PathParam('projectid') projectId: string, @BodyParam info: any): Promise<ResObject> {
         const user = SessionService.getUser(ctx);
-        await ImporterFactory.get(type).import(info, projectId, user);
+        await Importer.do(info, projectId, user);
         return { success: true, message: Message.importPostmanSuccess };
     }
 }

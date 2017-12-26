@@ -14,7 +14,12 @@ export interface RequestsImport {
     import(data: any, projectId: string, user: User): Promise<void>;
 }
 
-export class ImporterFactory {
+export class Importer {
+
+    static async do(data: any, projectId: string, user: User): Promise<void> {
+        const type = Importer.getType(data);
+        await Importer.get(type).import(data, projectId, user);
+    }
 
     static get(type: ImportType): RequestsImport {
         switch (type) {
@@ -24,6 +29,14 @@ export class ImporterFactory {
                 return new PostmanImport();
             default:
                 throw new Error(`not support this type: ${type}`);
+        }
+    }
+
+    static getType(data: any): ImportType {
+        if (data.swagger) {
+            return 'swagger';
+        } else {
+            return 'postman';
         }
     }
 }

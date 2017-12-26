@@ -41,18 +41,22 @@ export class SwaggerImport implements RequestsImport {
 
     private createRecords(swaggerData: any, collectionId: string, sort: number): Record[] {
         const folders: _.Dictionary<Record> = {};
+        const records: Record[] = [];
         _.keys(swaggerData.paths).forEach(path => {
-            path = path.substr(1);
-            if (path.includes('/')) {
-                path = path.substr(0, path.indexOf('/'));
+            let pathName = path.substr(1);
+            if (pathName.includes('/')) {
+                pathName = pathName.substr(0, pathName.indexOf('/'));
             }
-            if (folders[path]) {
-                folders[path] = this.createFolder(path, collectionId, ++sort);
+            if (!folders[pathName]) {
+                folders[pathName] = this.createFolder(pathName, collectionId, ++sort);
+                records.push(folders[pathName]);
             }
 
-            folders[path].children = this.createRecordsForFolder(path, swaggerData.paths[path], folders[path].id, collectionId, ++sort);
+            const folderRecords = this.createRecordsForFolder(path, swaggerData.paths[path], swaggerData.schemes, folders[pathName].id, collectionId, sort);
+            sort += folderRecords.length + 1;
+            records.push(...folderRecords);
         });
-        return _.values(folders);
+        return records;
     }
 
     private createFolder(name: string, collectionId: string, sort: number): Record {
@@ -66,31 +70,31 @@ export class SwaggerImport implements RequestsImport {
         });
     }
 
-    private createRecordsForFolder(path: string, methodDatas: any, folderId: string, collectionId: string, sort: number): Record[] {
+    private createRecordsForFolder(path: string, methodDatas: any, schemes: any, folderId: string, collectionId: string, sort: number): Record[] {
         return _.keys(methodDatas).map(method => {
             const methodData = methodDatas[method];
             return RecordService.fromDto({
                 id: StringUtil.generateUID(),
-                name: methodData.summary,
+                name: methodData.summary || methodData.operationId || '',
                 collectionId,
                 pid: folderId,
                 category: RecordCategory.record,
                 parameterType: ParameterType.ManyToMany,
-                url: this.parseUrl(path, methodData),
+                url: this.parseUrl(path, methodData, schemes),
                 method: method.toUpperCase(),
                 headers: this.parseHeaders(methodData),
                 body: this.parseFormData(methodData),
-                sort
+                sort: ++sort
             });
         });
     }
 
-    private parseUrl(path: string, methodData: any): string {
+    private parseUrl(path: string, methodData: any, schemes: any): string {
         path = path.replace('{', ':').replace('}', '');
-        let url = `${this.baseUrl}${path}`;
+        let url = `${schemes.length > 0 ? schemes[0] : 'http'}://${this.baseUrl}${path}`;
 
         if (methodData.parameters) {
-            methodData.parameters.filter(p => p.in === 'query').foreach(p => {
+            methodData.parameters.filter(p => p.in === 'query').forEach(p => {
                 url = `${url}${url.includes('?') ? '&' : '?'}${p.name}={{${p.name}}}`;
             });
         }
@@ -101,7 +105,7 @@ export class SwaggerImport implements RequestsImport {
     private parseFormData(methodData: any): string {
         let formDatas: string[] = [];
         if (methodData.parameters) {
-            methodData.parameters.filter(p => p.in === 'formData').foreach(p => {
+            methodData.parameters.filter(p => p.in === 'formData').forEach(p => {
                 formDatas.push(`${p.name}={{${p.name}}}`);
             });
         }
@@ -110,15 +114,16 @@ export class SwaggerImport implements RequestsImport {
 
     private parseHeaders(methodData: any): Header[] {
         const headers: DtoHeader[] = [];
+        let sort = 0;
         if (methodData.consumes) {
-            headers.push({ key: 'Content-Type', value: methodData.consumes[0], isActive: true });
+            headers.push({ key: 'Content-Type', value: methodData.consumes[0], isActive: true, sort: ++sort });
         }
         if (methodData.produces) {
-            headers.push({ key: 'Accept', value: methodData.produces.join(', '), isActive: true });
+            headers.push({ key: 'Accept', value: methodData.produces.join(', '), isActive: true, sort: ++sort });
         }
         if (methodData.parameters) {
-            methodData.parameters.filter(p => p.in === 'header').foreach(h => {
-                headers.push({ key: h.name, value: `{{${h.name}}}`, isActive: true });
+            methodData.parameters.filter(p => p.in === 'header').forEach((h, i) => {
+                headers.push({ key: h.name, value: `{{${h.name}}}`, isActive: true, sort: i + sort + 1 });
             });
         }
         return headers.map(h => HeaderService.fromDto(h));

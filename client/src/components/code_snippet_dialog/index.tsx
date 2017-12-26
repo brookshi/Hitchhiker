@@ -69,8 +69,14 @@ class CodeSnippetDialog extends React.Component<CodeSnippetDialogProps, CodeSnip
 
     private refresh(record: DtoRecord, language: CodeSnippetLang, type: string) {
         const har = new HAR(record);
-        const snippet = new HTTPSnippet(har);
-        const code = snippet.convert(language, type);
+        let code = '';
+        try {
+            const snippet = new HTTPSnippet(har);
+            code = snippet.convert(language, type);
+        } catch (ex) {
+            console.error(ex);
+            code = JSON.stringify(ex);
+        }
         this.setState({ ...this.state, language, type, code });
     }
 
