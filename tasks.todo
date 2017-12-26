@@ -130,7 +130,7 @@
     ✔ #34 smtp service @done (12/20/2017, 1:04:38 AM)
     ☐ #30 support swagger import
     ✔ new request from curl @done (12/24/2017, 8:39:01 PM)
-    ☐ generate code for request
+    ✔ generate code for request @done (12/26/2017, 12:31:28 PM)
     ✔ common pre script save error, strict ssl null @done (12/23/2017, 11:32:31 PM)
     ✔ schedule save failed when check and uncheck compare @done (12/23/2017, 4:17:49 PM)
     ✔ beauty body(json/xml) @done (12/23/2017, 3:40:26 PM)
