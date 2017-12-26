@@ -1,12 +1,12 @@
 import { CollectionService } from './collection_service';
 import { User } from '../models/user';
-import { MetadataService } from './metadata_service';
 import { ProjectService } from './project_service';
 import { EnvironmentService } from './environment_service';
 import { DtoEnvironment } from '../interfaces/dto_environment';
 import { Setting } from '../utils/setting';
 import { StringUtil } from '../utils/string_util';
 import { RecordService } from './record_service';
+import { PostmanImport } from './importer/postman_import';
 
 export class SampleService {
 
@@ -23,7 +23,7 @@ export class SampleService {
 
         SampleService.init();
 
-        const collection = await MetadataService.convertPostmanCollectionV1(owner, projectId, SampleService.sampleCollection);
+        const collection = await new PostmanImport().parsePostmanCollectionV1(owner, projectId, SampleService.sampleCollection);
 
         await CollectionService.save(collection);
 
