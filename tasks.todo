@@ -137,12 +137,19 @@
     ✔ import postman json failed - headers may be null @done (12/23/2017, 4:20:21 PM)
     ✔ schedule compare display diff @done (12/23/2017, 11:15:18 PM)
     ✔ beautify xml response @done (12/23/2017, 11:26:06 PM)
-    ☐ exception caused by schedule record with empty result
+    ✔ exception caused by schedule record with empty result @done (12/27/2017, 6:33:59 PM)
+    ✔ request's duration miss waiting connect @done (12/27/2017, 6:50:10 PM)
     ✔ not stop when find password failed @done (12/27/2017, 12:46:12 PM)
+0.8: 
+    ☐ auth
+    ☐ #67 stop stress test
+    ☐ #64 run all schedule
+    ☐ schedule record filter
+    ☐ schedule request filter
 
 backlog:
-    ☐ schedule filter
-    ☐ schedule request filter
+    ☐ schedule statistics mode
+    ☐ edit global function in collection module
     ☐ distributed stress nodejs test
     ☐ stress result export to excel
     ☐ test function base on UI
@@ -154,7 +161,6 @@ backlog:
     ☐ project share collection/env
     ☐ body type
     ☐ project share collection/env for own
-    ☐ stop running stress test
     ☐ login user email case sensitive in linux mysql
     ☐ remove post body variable warning
     ☐ resize request panel and response panel height 
@@ -164,7 +170,6 @@ backlog:
     ☐ variable highlight
     ☐ save all tabs, close all tabs, close all but active.
     ☐ Me project should be removable
-    ☐ improve mail
     ☐ sub folder
 
     ☐ data mock
@@ -173,7 +178,6 @@ backlog:
     ☐ export
 
     ☐ api document
-    ☐ record auth
 
     ☐ project permission
 

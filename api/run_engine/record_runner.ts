@@ -243,8 +243,10 @@ export class RecordRunner {
 
     private static async runRecord(record: RecordEx, prescriptResult: ResObject, needPipe?: boolean): Promise<RunResult> {
         const option = await RequestOptionAdapter.fromRecord(record);
+        const start = process.hrtime();
         const res = await RecordRunner.request(option, record.serverRes, needPipe);
-        const rst = await RecordRunner.handleRes(res.response, res.err, record, needPipe);
+        const elapsed = process.hrtime(start)[0] * 1000 + _.toInteger(process.hrtime(start)[1] / 1000000);
+        const rst = await RecordRunner.handleRes(res.response, elapsed, res.err, record, needPipe);
         if (prescriptResult.result.consoleMsgQueue) {
             rst.consoleMsgQueue = [...prescriptResult.result.consoleMsgQueue, ...rst.consoleMsgQueue];
         }
@@ -265,7 +267,7 @@ export class RecordRunner {
         });
     }
 
-    private static async handleRes(res: request.RequestResponse, err: Error, record: RecordEx, needPipe?: boolean): Promise<RunResult> {
+    private static async handleRes(res: request.RequestResponse, elapsed: number, err: Error, record: RecordEx, needPipe?: boolean): Promise<RunResult> {
         const { envId, serverRes } = record;
         const testRst = !err && record.test ? (await ScriptRunner.test(record, res)) : { tests: {}, variables: {}, export: {}, consoleMsgQueue: [] };
         const pRes: Partial<request.RequestResponse> = res || {};
@@ -279,8 +281,8 @@ export class RecordRunner {
             tests: testRst.tests,
             variables: {},
             export: testRst.export,
-            elapsed: pRes.timingPhases ? pRes.timingPhases.total >> 0 : 0,
-            duration: RecordRunner.generateDuration(pRes),
+            elapsed: pRes.timingPhases ? pRes.timingPhases.total >> 0 : elapsed,
+            duration: RecordRunner.generateDuration(pRes, elapsed),
             headers: pRes.headers || {},
             cookies: pRes.headers ? pRes.headers['set-cookie'] : [],
             status: pRes.statusCode,
@@ -296,8 +298,8 @@ export class RecordRunner {
         return finalRes;
     }
 
-    private static generateDuration(pRes: Partial<request.RequestResponse>): Duration {
-        const timingPhases = pRes.timingPhases || { wait: 0, dns: 0, total: 0 };
+    private static generateDuration(pRes: Partial<request.RequestResponse>, elapsed: number): Duration {
+        const timingPhases = pRes.timingPhases || { wait: 0, dns: 0, total: elapsed };
         const { wait, dns, total } = timingPhases;
         return {
             connect: wait,
