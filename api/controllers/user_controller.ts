@@ -100,9 +100,10 @@ export default class UserController extends BaseController {
             return checkRst;
         }
 
-        await MailService.findPwdMail(email, newPwd);
+        let rst: ResObject = { success: true, message: Message.findPwdSuccess };
+        await MailService.findPwdMail(email, newPwd).catch(err => rst = { success: false, message: err.message });
 
-        return { success: true, message: Message.findPwdSuccess };
+        return rst;
     }
 
     @GET('/user/regconfirm')

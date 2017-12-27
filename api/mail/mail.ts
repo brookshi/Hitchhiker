@@ -146,8 +146,9 @@ export class Mail {
     });
 
     private static async sendWithSmtp(target: string, subject: string, content: string): Promise<any> {
+        const from = Setting.instance.customMailSmtpFrom || Setting.instance.customMailSmtpUser;
         const mailOptions = {
-            from: Setting.instance.customMailSmtpNickname ? `"${Setting.instance.customMailSmtpNickname}" <${Setting.instance.customMailSmtpUser}>` : Setting.instance.customMailSmtpUser,
+            from: Setting.instance.customMailSmtpNickname ? `"${Setting.instance.customMailSmtpNickname}" <${from}>` : from,
             to: target.replace(';', ','),
             subject,
             html: content

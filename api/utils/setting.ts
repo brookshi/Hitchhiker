@@ -159,6 +159,10 @@ export class Setting {
         return process.env.HITCHHIKER_MAIL_SMTP_USER || this.mail.smtp.user;
     }
 
+    get customMailSmtpFrom() {
+        return process.env.HITCHHIKER_MAIL_SMTP_From || this.mail.smtp.from;
+    }
+
     get customMailSmtpNickname() {
         return process.env.HITCHHIKER_MAIL_SMTP_NICKNAME || this.mail.smtp.nickname;
     }

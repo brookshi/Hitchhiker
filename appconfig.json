@@ -52,6 +52,7 @@
             "tls": true,
             "user": "***@qq.com",
             "pass": "****",
+            "from": "",
             "nickname": "",
             "rejectUnauthorized": false
         }
