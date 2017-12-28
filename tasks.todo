@@ -140,6 +140,7 @@
     ✔ exception caused by schedule record with empty result @done (12/27/2017, 6:33:59 PM)
     ✔ request's duration miss waiting connect @done (12/27/2017, 6:50:10 PM)
     ✔ not stop when find password failed @done (12/27/2017, 12:46:12 PM)
+    ✔ remove error annotate of variable in script/parameters @done (12/29/2017, 12:14:32 AM)
 0.8: 
     ☐ auth
     ☐ #67 stop stress test

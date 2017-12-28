@@ -44,6 +44,28 @@ class Editor extends React.Component<EditorProps, EditorState> {
         }
     }
 
+    private onAnnotatesChange = (annotates: Array<any>) => {
+        if (!this.editorEle) {
+            return;
+        }
+        const session = this.editorEle.editor.getSession();
+        session.setAnnotations(annotates.filter(a => !this.needIgnoreErrorForVariable(session, a)));
+    }
+
+    private needIgnoreErrorForVariable = (session: any, annotate: any) => {
+        const isBadStrError = annotate.type === 'error' && annotate.text === 'Bad string';
+        if (!isBadStrError) {
+            return false;
+        }
+        const lines = session.getDocument().$lines;
+        const isLocateToVar = lines.length > annotate.row &&
+            lines[annotate.row].length > annotate.column &&
+            lines[annotate.row][Math.max(0, annotate.column - 1)] === '{' &&
+            /\{\{.*\}\}/g.test(lines[annotate.row]);
+
+        return isLocateToVar;
+    }
+
     public render() {
         this.offsetHeight = this.offsetHeight === 1 ? -1 : this.offsetHeight + 1;
         const { type, value, height, width, readOnly, onChange } = this.props;
@@ -83,7 +105,7 @@ class Editor extends React.Component<EditorProps, EditorState> {
         }
 
         return (
-            <AceEditor ref={ele => this.editorEle = ele} {...props} />
+            <AceEditor ref={ele => this.editorEle = ele} {...props} onValidate={this.onAnnotatesChange} />
         );
     }
 }
