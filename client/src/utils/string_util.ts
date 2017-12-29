@@ -139,6 +139,9 @@ export class StringUtil {
         if (parameters === '') {
             return { isValid: false, count: 0, msg: '' };
         }
+        if (/^\{\{.*\}\}$/g.test(parameters)) {
+            return { isValid: true, count: 0, msg: 'Variable parameters. ' };
+        }
         let paramObj;
         let count = 0;
         try {
@@ -195,8 +198,8 @@ export class StringUtil {
     }
 
     static getUniqParamArr(parameters: string | undefined, parameterType: ParameterType): Array<any> {
-        const { isValid } = StringUtil.verifyParameters(parameters || '', parameterType);
-        let paramArr = isValid ? StringUtil.getParameterArr(JSON.parse(parameters || ''), parameterType) : new Array<any>();
+        const { isValid, count } = StringUtil.verifyParameters(parameters || '', parameterType);
+        let paramArr = isValid && count > 0 ? StringUtil.getParameterArr(JSON.parse(parameters || ''), parameterType) : new Array<any>();
         const paramDict = _.keyBy(paramArr, p => StringUtil.toString(p));
         return _.values(paramDict);
     }
