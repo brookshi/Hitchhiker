@@ -22,6 +22,12 @@ If this schedule have a comparison environment, a request will have two rows for
 
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/schedule/schedule_run.png)
 
+#### Schedule comparision diff
+
+If you choose environment comparision, then a `view diff` button is avaliable if the responses do not match.
+
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/schedule/schedule_diff.png)
+
 #### Schedule Menu
 
 If you want run this collection manually.

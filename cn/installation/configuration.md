@@ -20,7 +20,8 @@ Hitchhiker的很多设置可以在appconfig.json里设置，也有对应的环�
         ],
         "scriptTimeout": 60000, // 脚本执行时间（毫秒） HITCHHIKER_SCRIPT_TIMEOUT
         "safeVM": false,  // 是否使用安全脚本，如require  HITCHHIKER_SAFE_VM
-        "enableUpload": true  // 是否支持上传脚本和数据， HITCHHIKER_ENABLE_UPLOAD
+        "enableUpload": true,  // 是否支持上传脚本和数据， HITCHHIKER_ENABLE_UPLOAD
+        "inviteMemberDirectly": true // 不通过邮件验证来邀请成员， HITCHHIKER_APP_INVITE_DIRECTLY
     },
     "db": {  
         "host": "localhost",  // mysql 的host,  HITCHHIKER_DB_HOST
@@ -45,8 +46,18 @@ Hitchhiker的很多设置可以在appconfig.json里设置，也有对应的环�
     },
     "mail": {
         "host": "http://email.hitchhiker-api.com/api/mail/",  // mail默认接口
-        "custom": false,  // 是否需要自定义mail接口  HITCHHIKER_MAIL_CUSTOM
-        "customApi": "http://"  // 自定义的mail接口, Hitchhiker会post {target, subject, content}到这个接口  HITCHHIKER_MAIL_API
+        "custom": "none",  // 是否需要自定义mail，可以使用 "api" 或 "smtp",  HITCHHIKER_MAIL_CUSTOM
+        "customApi": "http://",  // custom为"api"时会使用这个mail接口, Hitchhiker会post {target, subject, content}到这个接口  HITCHHIKER_MAIL_API
+        "smtp": {  // custom为"smtp"时使用这块，下面是qq的一个例子作为参考，注意：有的公司内部邮件不需要用户名或密码验证则 user和pass需要空掉不写，否则会报错
+            "host": "smtp.qq.com", // HITCHHIKER_MAIL_SMTP_HOST
+            "port": 465,  // HITCHHIKER_MAIL_SMTP_PORT
+            "tls": true,  // 是否需要走tls加密， HITCHHIKER_MAIL_SMTP_TLS
+            "user": "***@qq.com",  // smtp用户名： HITCHHIKER_MAIL_SMTP_USER
+            "pass": "****",  // smtp密码： HITCHHIKER_MAIL_SMTP_PASS
+            "from": "",  // 发邮件的邮箱，默认空会使用user， HITCHHIKER_MAIL_SMTP_From
+            "nickname": "",  //  昵称：  HITCHHIKER_MAIL_SMTP_NICKNAME
+            "rejectUnauthorized": false  // 证书验证不通过时是否报错：  HITCHHIKER_MAIL_SMTP_RU
+        }
     }
 }
 ```

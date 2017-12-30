@@ -1,6 +1,6 @@
 #### Create request
 
-Two way to create a new Request.
+Three way to create a new Request.
 
 * Click menu item `Create reuqest` of Collection, this is the recommend way to create a new Request, The new request will auto save to the current Collection and can access Environment variable for current Project.
 
@@ -10,9 +10,13 @@ Two way to create a new Request.
 
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/request_create_2.png)
 
+* Import a cURL string as a new request
+
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/request_create_4.png)
+
 Let's create a new Request and save it to Collection `Sample Collection`.
 
-1. Move mouse to the ... of Collection.
+1. Move mouse to the icon `...` of Collection.
 
 2. Click `Create request` menu item.
 
@@ -41,3 +45,9 @@ As we say, Hitchhiker support collaboration development with team, sometimes, fo
 Then we can use history function of Request, click menu item `history` of request, you can view diff history of this `Request`.
 
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/request_history.png)
+
+#### Generate code for request
+
+Hitchhiker support generate code like python, go, c#, java... for request.
+
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/request_code.png)

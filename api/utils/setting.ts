@@ -152,7 +152,7 @@ export class Setting {
     }
 
     get customMailSmtpTLS() {
-        return this.getValidBoolean(process.env.HITCHHIKER_MAIL_SMTP_HOST, this.mail.smtp.tls);
+        return this.getValidBoolean(process.env.HITCHHIKER_MAIL_SMTP_TLS, this.mail.smtp.tls);
     }
 
     get customMailSmtpUser() {

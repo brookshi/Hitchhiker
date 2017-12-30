@@ -135,6 +135,16 @@ Remove a file from server.
  
  hitchhiker.setRequest({...hitchhiker.request, url});
  ```
+
+#### console
+support console
+
+```js
+console.log('test');
+console.info('test');
+console.warn('test');
+console.error('test');
+```
  
  #### export
  

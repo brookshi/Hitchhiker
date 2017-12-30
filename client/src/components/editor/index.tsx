@@ -45,11 +45,14 @@ class Editor extends React.Component<EditorProps, EditorState> {
     }
 
     private onAnnotatesChange = (annotates: Array<any>) => {
-        if (!this.editorEle) {
+        if (!this.editorEle || this.props.disableValidate) {
             return;
         }
         const session = this.editorEle.editor.getSession();
-        session.setAnnotations(annotates.filter(a => !this.needIgnoreErrorForVariable(session, a)));
+        const validAnnotates = annotates.filter(a => !this.needIgnoreErrorForVariable(session, a));
+        if (validAnnotates.length !== annotates.length) {
+            session.setAnnotations(validAnnotates);
+        }
     }
 
     private needIgnoreErrorForVariable = (session: any, annotate: any) => {
