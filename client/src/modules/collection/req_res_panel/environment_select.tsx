@@ -93,13 +93,14 @@ class EnvironmentSelect extends React.Component<EnvironmentSelectProps, Environm
                             conflictType: ConflictType.none
                         };
                         this.props.addTab(recordState);
+                        this.setState({ ...this.state, isImportDlgOpen: false });
                     } catch (err) {
                         message.warning(err.toString());
                     }
-                }}
+                } }
                 value=""
                 onCancel={() => this.setState({ ...this.state, isImportDlgOpen: false })}
-            />
+                />
         );
     }
 

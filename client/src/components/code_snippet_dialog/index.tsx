@@ -43,7 +43,7 @@ class CodeSnippetDialog extends React.Component<CodeSnippetDialogProps, CodeSnip
             <Menu onClick={this.selectLanguage}>
                 {
                     _.keys(CodeSnippetType).map(k => CodeSnippetType[k].types.length > 1 ? (
-                        <Menu.SubMenu title={CodeSnippetType[k].name}>
+                        <Menu.SubMenu key={CodeSnippetType[k].name} title={CodeSnippetType[k].name}>
                             {CodeSnippetType[k].types.map(t => <Menu.Item key={`${k};${t}`}>{t}</Menu.Item>)}
                         </Menu.SubMenu>
                     ) : <Menu.Item key={`${k};${CodeSnippetType[k].types[0]}`}>{CodeSnippetType[k].name}</Menu.Item>)
@@ -74,7 +74,6 @@ class CodeSnippetDialog extends React.Component<CodeSnippetDialogProps, CodeSnip
             const snippet = new HTTPSnippet(har);
             code = snippet.convert(language, type);
         } catch (ex) {
-            console.error(ex);
             code = JSON.stringify(ex);
         }
         this.setState({ ...this.state, language, type, code });
@@ -92,7 +91,7 @@ class CodeSnippetDialog extends React.Component<CodeSnippetDialogProps, CodeSnip
                 width={800}
                 onCancel={onCancel}
                 footer={null}
-            >
+                >
                 <div>
                     <div className="codesnippet-toolbar">
                         <Dropdown overlay={this.getMenu()}>
