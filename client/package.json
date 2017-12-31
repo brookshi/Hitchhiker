@@ -26,7 +26,6 @@
     "reselect": "3.0.1",
     "shellwords": "0.1.1",
     "shortid": "2.2.8",
-    "url-regex": "4.1.1",
     "uuid": "3.0.1"
   },
   "devDependencies": {

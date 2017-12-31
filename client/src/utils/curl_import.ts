@@ -1,7 +1,6 @@
 import { StringUtil } from './string_util';
 import { DtoRecord } from '../../../api/interfaces/dto_record';
 import * as words from 'shellwords';
-import urlRegex from 'url-regex';
 import { getDefaultRecord } from '../state/collection';
 
 export class CurlImport {
@@ -19,7 +18,7 @@ export class CurlImport {
         const headers = result.headers || [];
         let state = '';
         args.forEach((arg: any) => {
-            if (urlRegex({ exact: true }).test(arg)) {
+            if (StringUtil.urlRegex().test(arg)) {
                 result.url = arg;
                 state = '';
             } else if (arg === '-I' || arg === '--head') {

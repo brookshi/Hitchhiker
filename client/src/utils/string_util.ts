@@ -11,6 +11,21 @@ export class StringUtil {
         return `${uuid.v1()}-${shortId.generate()}`;
     }
 
+    static urlRegex(): RegExp {
+        const protocol = `(?:(?:[a-z]+:)?//)`;
+        const auth = '(?:\\S+(?::\\S*)?@)?';
+        const ipv4 = '(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])){3}';
+        const ip = new RegExp('^' + ipv4 + '$').source;
+        const host = '(?:(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)';
+        const domain = '(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)*';
+        const tld = `(?:\\.(?:[a-z\\u00a1-\\uffff]{2,}))\\.?`;
+        const port = '(?::\\d{2,5})?';
+        const path = '(?:[/?#][^\\s"]*)?';
+        const regex = `(?:${protocol}|www\\.)${auth}(?:localhost|${ip}|${host}${domain}${tld})${port}${path}`;
+
+        return new RegExp(`(?:^${regex}$)`, 'i');
+    }
+
     static upperFirstAlphabet(word: string): string {
         if (!word) {
             return word;
