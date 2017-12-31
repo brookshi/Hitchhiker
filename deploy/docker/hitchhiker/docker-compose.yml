@@ -1,7 +1,7 @@
 version: '2'
 services:
   hitchhiker:
-    image: brookshi/hitchhiker:v0.6
+    image: brookshi/hitchhiker:v0.7
     container_name: hitchhiker
     environment:
       - HITCHHIKER_DB_HOST=hitchhiker-mysql

@@ -1,12 +1,13 @@
 **dependencies: docker, docker-compose**
 
 Hitchhiker setting refer to: [Configuration](configuration.md), environment variable could be set in docker-compose.yml.
+If you want to use another port, should replace all 8080.
 
 ```yaml
 version: '2'
 services:
   hitchhiker:
-    image: brookshi/hitchhiker:v0.6
+    image: brookshi/hitchhiker:v0.7
     container_name: hitchhiker
     environment:
       - HITCHHIKER_DB_HOST=hitchhiker-mysql
