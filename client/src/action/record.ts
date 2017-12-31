@@ -4,6 +4,7 @@ import { HttpMethod } from '../common/http_method';
 import { syncAction, actionCreator, SessionInvalidType } from './index';
 import { Urls } from '../utils/urls';
 import * as _ from 'lodash';
+import { RunResult } from '../../../api/interfaces/dto_run_result';
 
 export const AddTabType = 'add tab';
 
@@ -53,7 +54,7 @@ export function* sendRequest() {
         if (!action.value.record.id) {
             record = _.values<any>(value.record)[0];
         }
-        let runResult: any = {};
+        let runResult: Partial<RunResult> = {};
         if (isParamReq) {
             yield all(Object.keys(value.record).map(k => put(actionCreator(SendRequestForParamType, { param: k, content: { environment: action.value.environment, record: { ...value.record[k], history: [] } } }))));
         } else {
@@ -66,6 +67,9 @@ export function* sendRequest() {
                     return;
                 }
                 runResult = yield res.json();
+                if (runResult.consoleMsgQueue) {
+                    runResult.consoleMsgQueue.forEach(m => console[m.type] && console[m.type](m.message));
+                }
             } catch (err) {
                 runResult.error = { message: err.message, stack: err.stack };
             }
@@ -77,7 +81,7 @@ export function* sendRequest() {
 export function* sendRequestForParam() {
     yield takeEvery(SendRequestForParamType, function* (action: any) {
         const value = action.value;
-        let runResult: any = {};
+        let runResult: Partial<RunResult> = {};
         try {
             const res = yield call(RequestManager.post, Urls.getUrl(`record/run`), { ...value.content, record: { ...value.content.record, history: [] } });
             if (res.status === 403) {
@@ -87,6 +91,9 @@ export function* sendRequestForParam() {
                 return;
             }
             runResult = yield res.json();
+            if (runResult.consoleMsgQueue) {
+                runResult.consoleMsgQueue.forEach(m => console[m.type] && console[m.type](m.message));
+            }
         } catch (err) {
             runResult.error = { message: err.message, stack: err.stack };
         }

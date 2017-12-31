@@ -23,6 +23,12 @@ Schedule会按照period的设置自动来跑，并且在跑完后发送邮件给
 
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/schedule/schedule_run.png)
 
+#### Schedule 对比结果Diff
+
+如果Schedule勾选了环境对比，并且跑的时候两个环境的对比不一致的话可以看到Match那一列会多出一个按钮：`view diff`，点击可以以Diff方式查看两者的不同。
+
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/schedule/schedule_diff.png)
+
 #### Schedule 菜单
 
 有时我们需要手动来跑Schedule，这时可以在Schedule的菜单里选择Run Now。

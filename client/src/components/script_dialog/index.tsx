@@ -10,6 +10,8 @@ interface ScriptDialogProps {
 
     value: string;
 
+    editorType?: 'json' | 'xml' | 'javascript' | 'text';
+
     onOk(code: string);
 
     onCancel();
@@ -37,7 +39,7 @@ class ScriptDialog extends React.Component<ScriptDialogProps, ScriptDialogState>
 
     public render() {
 
-        const { title, isOpen, onOk, onCancel } = this.props;
+        const { title, editorType, isOpen, onOk, onCancel } = this.props;
 
         return (
             <Modal
@@ -50,7 +52,7 @@ class ScriptDialog extends React.Component<ScriptDialogProps, ScriptDialogState>
                 onOk={() => onOk(this.state.code)}
                 onCancel={onCancel}
             >
-                <Editor type="javascript" height={600} fixHeight={true} value={this.state.code} onChange={v => this.setState({ ...this.state, code: v })} />
+                <Editor type={editorType || 'javascript'} height={600} fixHeight={true} value={this.state.code} onChange={v => this.setState({ ...this.state, code: v })} />
             </Modal>
         );
     }

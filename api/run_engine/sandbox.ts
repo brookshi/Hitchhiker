@@ -8,6 +8,7 @@ import { ProjectDataService } from '../services/project_data_service';
 import { ProjectData } from '../interfaces/dto_project_data';
 import { ProjectFolderType } from '../common/string_type';
 import { Record } from '../models/record';
+import { ConsoleMsg } from '../interfaces/dto_res';
 
 class SandboxRequest {
 
@@ -20,11 +21,38 @@ class SandboxRequest {
     body: string;
 }
 
+class Console {
+
+    msgQueue: Array<ConsoleMsg> = [];
+
+    private write(type: string, msg: string) {
+        this.msgQueue.push({ type, message: msg });
+    }
+
+    log(msg: string) {
+        this.write('log', msg);
+    }
+
+    info(msg: string) {
+        this.write('info', msg);
+    }
+
+    warn(msg: string) {
+        this.write('warn', msg);
+    }
+
+    error(msg: string) {
+        this.write('error', msg);
+    }
+}
+
 export class Sandbox {
 
     static defaultExport: any = 'export:impossiblethis:tropxe';
 
     private _allProjectJsFiles: _.Dictionary<ProjectData> = {};
+
+    console: Console = new Console();
 
     tests: _.Dictionary<boolean> = {};
 

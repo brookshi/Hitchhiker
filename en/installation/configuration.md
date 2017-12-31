@@ -22,7 +22,8 @@ when type of variable is boolean, use 1 for true and 0 for false.
         ],
         "scriptTimeout": 60000, // script timeout (ms), HITCHHIKER_SCRIPT_TIMEOUT
         "safeVM": false,  // run script in safe VM, eg: require,  HITCHHIKER_SAFE_VM
-        "enableUpload": true  // enable upload js lib or data, HITCHHIKER_ENABLE_UPLOAD
+        "enableUpload": true,  // enable upload js lib or data, HITCHHIKER_ENABLE_UPLOAD
+        "inviteMemberDirectly": true // invite member without mail verification,  HITCHHIKER_APP_INVITE_DIRECTLY
     },
     "db": {  
         "host": "localhost",  // host of mysql, HITCHHIKER_DB_HOST
@@ -46,8 +47,18 @@ when type of variable is boolean, use 1 for true and 0 for false.
     },
     "mail": {
         "host": "http://email.hitchhiker-api.com/api/mail/",  // mail default interface
-        "custom": false,  // need custom mail interface, HITCHHIKER_MAIL_CUSTOM
-        "customApi": "http://"  // custom mail interface, Hitchhiker will post {target, subject, content} to this interface  HITCHHIKER_MAIL_API
+        "custom": "none",  // custom mail: support "api" or "smtp", HITCHHIKER_MAIL_CUSTOM
+        "customApi": "http://",  // if custom is "api", this custom mail interface will be available, Hitchhiker will post {target, subject, content} to this interface  HITCHHIKER_MAIL_API
+        "smtp": {  // if custom is "smtp", hitchhiker will use this smtp config, Note: some company use its internal mail host without user and pass, this config MUST empty user and pass too.
+            "host": "smtp.qq.com", // HITCHHIKER_MAIL_SMTP_HOST
+            "port": 465,  // HITCHHIKER_MAIL_SMTP_PORT
+            "tls": true,  // need TLS or not， HITCHHIKER_MAIL_SMTP_TLS
+            "user": "***@qq.com",  // smtp user： HITCHHIKER_MAIL_SMTP_USER
+            "pass": "****",  // smtp password： HITCHHIKER_MAIL_SMTP_PASS
+            "from": "",  // default use user， HITCHHIKER_MAIL_SMTP_From
+            "nickname": "",  //  HITCHHIKER_MAIL_SMTP_NICKNAME
+            "rejectUnauthorized": false  //  HITCHHIKER_MAIL_SMTP_RU
+        }
     }
 }
 ```

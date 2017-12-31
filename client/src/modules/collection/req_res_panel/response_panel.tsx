@@ -121,13 +121,7 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
         tests = tests || [];
         headers = headers || [];
 
-        let contentType = 'json';
-        const contentTypeValue = headers['content-type'];
-        if (typeof contentTypeValue === 'string') {
-            contentType = contentTypeValue;
-        } else if (contentTypeValue.length > 0) {
-            contentType = contentTypeValue[0];
-        }
+        const contentType = StringUtil.getContentTypeFromHeaders(headers);
         const value = StringUtil.beautify(body, contentType);
         const testKeys = Object.keys(tests);
         const successTestLen = Object.keys(tests).filter(t => tests[t]).length;
@@ -143,7 +137,7 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
                 animated={false}
                 tabBarExtraContent={this.getExtraContent()}>
                 <TabPane tab="Content" key="content">
-                    {isImg ? <img src={value} /> : <Editor type="json" value={value} height={height} readOnly={true} />}
+                    {isImg ? <img src={value} /> : <Editor type={StringUtil.getEditorType(body, contentType)} value={value} height={height} readOnly={true} />}
                 </TabPane>
                 <TabPane className="display-tab-panel" tab={nameWithTag('Headers', Object.keys(headers).length.toString())} key="headers">
                     {

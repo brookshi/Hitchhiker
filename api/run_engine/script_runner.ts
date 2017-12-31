@@ -9,6 +9,7 @@ import * as freeVM from 'vm';
 import { ResObject } from '../common/res_object';
 import { Log } from '../utils/log';
 import { Record, RecordEx } from '../models/record';
+import { ConsoleMsg } from '../interfaces/dto_res';
 const { NodeVM: safeVM } = require('vm2');
 
 export class ScriptRunner {
@@ -22,12 +23,12 @@ export class ScriptRunner {
             res = { success: false, message: ex };
         }
 
-        res = await ScriptRunner.run({ hitchhiker, hh: hitchhiker }, prescript);
-        res.result = hitchhiker.request;
+        res = await ScriptRunner.run({ hitchhiker, hh: hitchhiker, console: hitchhiker.console }, prescript);
+        res.result = { request: hitchhiker.request, consoleMsgQueue: hitchhiker.console.msgQueue };
         return res;
     }
 
-    static async test(record: RecordEx, res: request.RequestResponse): Promise<{ tests: _.Dictionary<boolean>, export: {} }> {
+    static async test(record: RecordEx, res: request.RequestResponse): Promise<{ tests: _.Dictionary<boolean>, export: {}, consoleMsgQueue: Array<ConsoleMsg> }> {
         const { pid, vid, uid, envId, envName, test } = record;
         let hitchhiker, tests;
         try {
@@ -37,20 +38,20 @@ export class ScriptRunner {
             tests[ex] = false;
         }
         if (!hitchhiker) {
-            return { tests, export: undefined };
+            return { tests, export: undefined, consoleMsgQueue: hitchhiker.console.msgQueue };
         }
         tests = hitchhiker.tests;
         const $variables$: any = hitchhiker.variables;
         const $export$ = hitchhiker.export;
 
-        const sandbox = { hitchhiker, hh: hitchhiker, $variables$, $export$, tests, ...ScriptRunner.getInitResObj(res) };
+        const sandbox = { hitchhiker, hh: hitchhiker, $variables$, $export$, tests, console: hitchhiker.console, ...ScriptRunner.getInitResObj(res) };
 
         const rst = await ScriptRunner.run(sandbox, test);
         if (!rst.success) {
             tests[rst.message] = false;
         }
         _.keys(tests).forEach(k => tests[k] = !!tests[k]);
-        return { tests, export: hitchhiker.exportObj.content };
+        return { tests, export: hitchhiker.exportObj.content, consoleMsgQueue: hitchhiker.console.msgQueue };
     }
 
     private static run(sandbox: any, code: string): Promise<ResObject> {

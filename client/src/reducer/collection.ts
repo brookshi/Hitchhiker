@@ -208,7 +208,7 @@ export function recordWithResState(state: DisplayRecordsState = displayRecordsDe
             return { ...state, responseState: newResState };
         }
         case AddTabType: {
-            const newRecordState = getNewRecordState();
+            const newRecordState = action.value || getNewRecordState();
             return {
                 ...state,
                 recordStates: {

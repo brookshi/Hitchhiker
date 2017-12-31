@@ -5,12 +5,13 @@ import { ResObject } from '../common/res_object';
 import * as Koa from 'koa';
 import { DtoCollection, DtoCollectionWithRecord } from '../interfaces/dto_collection';
 import { SessionService } from '../services/session_service';
-import { MetadataService } from '../services/metadata_service';
 import { Message } from '../common/message';
 import { EnvironmentService } from '../services/environment_service';
 import * as _ from 'lodash';
 import { RecordService } from '../services/record_service';
 import { DtoRecord } from '../interfaces/dto_record';
+import { Importer } from '../services/base/request_import';
+import { ImportType } from '../common/string_type';
 
 export default class CollectionController extends BaseController {
 
@@ -51,14 +52,10 @@ export default class CollectionController extends BaseController {
         return await CollectionService.shareCollection(collectionId, projectId);
     }
 
-    @POST('/collection/postman/:projectid')
+    @POST('/collection/:projectid')
     async importFromPostman(ctx: Koa.Context, @PathParam('projectid') projectId: string, @BodyParam info: any): Promise<ResObject> {
         const user = SessionService.getUser(ctx);
-        const collections = await MetadataService.convertPostmanCollection(user, projectId, info);
-        const environments = await MetadataService.convertPostmanEnvV1(user, projectId, info);
-        await Promise.all(collections.map(c => CollectionService.save(c)));
-        await Promise.all(_.flatten(collections.map(c => c.records)).map(r => RecordService.saveRecordHistory(RecordService.createRecordHistory(r, user))));
-        await Promise.all(environments.map(e => EnvironmentService.save(e)));
+        await Importer.do(info, projectId, user);
         return { success: true, message: Message.importPostmanSuccess };
     }
 }

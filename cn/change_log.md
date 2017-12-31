@@ -1,3 +1,25 @@
+#### 0.7 2017-12-31
+
+**Features:**
+
+* \#63 支持在脚本里写console.log(info, warn, error)来调试代码
+* \#57 Parameters可以做为一个变量存在，以便在运行时动态生成Parameters
+* \#34 支持自定义SMTP来发送邮件
+* \#30 支持导入Swagger
+* 支持以cURL来新建request
+* 支持为request生成java, python, go, c#等语言的请求代码
+* 支持美化body
+* 支持xml response的美化
+* 可以以diff方式查看Schedule的对比结果
+
+**Bugs:**
+
+* 新Collection的Common pre script保存不了
+* Schedule在勾上保存然后取消勾时会保存不了
+* 导入Postman json时出错，有header为null
+* 请求如果没响应时，请求返回的时间会为0
+* 去消body或脚本里使用变量时编辑框的语法错误提示
+
 #### 0.6 2017-12-18
 
 **Features:**

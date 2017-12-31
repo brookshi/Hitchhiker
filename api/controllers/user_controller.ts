@@ -100,10 +100,10 @@ export default class UserController extends BaseController {
             return checkRst;
         }
 
-        const mailRst = await MailService.findPwdMail(email, newPwd);
-        const success = !mailRst.err;
+        let rst: ResObject = { success: true, message: Message.findPwdSuccess };
+        await MailService.findPwdMail(email, newPwd).catch(err => rst = { success: false, message: err.message });
 
-        return { success: success, message: success ? Message.findPwdSuccess : `send new password email failed: ${mailRst.err.toString()}` };
+        return rst;
     }
 
     @GET('/user/regconfirm')

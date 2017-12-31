@@ -132,6 +132,16 @@ url = `${url}?sign=${sign}`;
 hitchhiker.setRequest({...hitchhiker.request, url});
 ```
 
+#### console
+支持使用console来打印信息
+
+```js
+console.log('test');
+console.info('test');
+console.warn('test');
+console.error('test');
+```
+
 #### export
 导出在Schedule做数据对比时的数据
 

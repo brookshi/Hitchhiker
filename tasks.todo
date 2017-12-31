@@ -124,12 +124,40 @@
     ✔ #55 failed to construct WebSocket @done (12/16/2017, 10:04:11 PM)
     ✔ schedule record timer take 1 min error @done (12/16/2017, 10:41:33 PM)
     ✔ name will be reset if change method @done (12/16/2017, 6:03:13 PM)
+0.7:
+    ✔ #63 support console.log debug @done (12/19/2017, 7:03:08 PM)
+    ✔ #57 parameters could be a parameter @done (12/30/2017, 12:27:42 PM)
+    ✔ #34 smtp service @done (12/20/2017, 1:04:38 AM)
+    ✔ #30 support swagger import @done (12/27/2017, 12:02:59 AM)
+    ✔ new request from curl @done (12/24/2017, 8:39:01 PM)
+    ✔ generate code for request @done (12/26/2017, 12:31:28 PM)
+    ✔ beauty body(json/xml) @done (12/23/2017, 3:40:26 PM)
+    ✔ beautify xml response @done (12/23/2017, 11:26:06 PM)
+    ✔ schedule compare display diff @done (12/23/2017, 11:15:18 PM)
+    ✔ common pre script save error for new collection, strict ssl null @done (12/23/2017, 11:32:31 PM)
+    ✔ schedule save failed when check and uncheck compare @done (12/23/2017, 4:17:49 PM)
+    ✔ import postman json failed - headers may be null @done (12/23/2017, 4:20:21 PM)
+    ✔ request's duration miss waiting connect @done (12/27/2017, 6:50:10 PM)
+    ✔ not stop when find password failed @done (12/27/2017, 12:46:12 PM)
+    ✔ remove error annotate of variable in script/parameters @done (12/29/2017, 12:14:32 AM)
+0.8: 
+    ☐ schedule statistics mode
+    ☐ #67 stop stress test
+    ☐ #64 run all schedule
+    ☐ schedule record filter
+    ☐ schedule request filter
+
+0.9:
+    ☐ test function base on UI
+    ☐ pre script, header, auth, test in Collection/folder level
+    ☐ edit global function in collection module
 
 backlog:
+    ☐ auth
+    ☐ response timeline
+    ☐ resize request panel and response panel height 
     ☐ distributed stress nodejs test
-    ☐ import from curl
-    ☐ generate code for request
-
+    ☐ stress result export to excel
     ☐ form data, text, binary body type
     ☐ import postman env
     ☐ convert variable function while importing postman collection
@@ -138,20 +166,19 @@ backlog:
     ☐ project share collection/env
     ☐ body type
     ☐ project share collection/env for own
-    ☐ stop running stress test
+    ☐ login user email case sensitive in linux mysql
 
     ☐ variable highlight
     ☐ save all tabs, close all tabs, close all but active.
     ☐ Me project should be removable
-    ☐ improve mail
     ☐ sub folder
 
     ☐ data mock
     ☐ test result detail
     ☐ hot key
+    ☐ export
 
     ☐ api document
-    ☐ record auth
 
     ☐ project permission
 

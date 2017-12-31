@@ -77,6 +77,10 @@ export class StringUtil {
         }
     }
 
+    static getEditorType(value: string, header: string) {
+        return StringUtil.isJson(value) ? 'json' : (header && header.indexOf('xml') > -1 ? 'xml' : 'text');
+    }
+
     static isNumberString(str: string): boolean {
         const pattern = /^\d+$/;
         return pattern.test(str);
@@ -120,9 +124,23 @@ export class StringUtil {
         }
     }
 
+    static getContentTypeFromHeaders(headers: { [key: string]: string | string[] }, defaultValue: string = 'json'): string {
+        let contentType = defaultValue;
+        const contentTypeValue = headers['content-type'];
+        if (typeof contentTypeValue === 'string') {
+            contentType = contentTypeValue;
+        } else if (contentTypeValue && contentTypeValue.length > 0) {
+            contentType = contentTypeValue[0];
+        }
+        return contentType;
+    }
+
     static verifyParameters(parameters: string, parameterType: ParameterType): { isValid: boolean, count: number, msg: string } {
         if (parameters === '') {
             return { isValid: false, count: 0, msg: '' };
+        }
+        if (/^\{\{.*\}\}$/g.test(parameters)) {
+            return { isValid: true, count: 0, msg: 'Variable parameters. ' };
         }
         let paramObj;
         let count = 0;
@@ -180,8 +198,8 @@ export class StringUtil {
     }
 
     static getUniqParamArr(parameters: string | undefined, parameterType: ParameterType): Array<any> {
-        const { isValid } = StringUtil.verifyParameters(parameters || '', parameterType);
-        let paramArr = isValid ? StringUtil.getParameterArr(JSON.parse(parameters || ''), parameterType) : new Array<any>();
+        const { isValid, count } = StringUtil.verifyParameters(parameters || '', parameterType);
+        let paramArr = isValid && count > 0 ? StringUtil.getParameterArr(JSON.parse(parameters || ''), parameterType) : new Array<any>();
         const paramDict = _.keyBy(paramArr, p => StringUtil.toString(p));
         return _.values(paramDict);
     }

@@ -1,6 +1,6 @@
 #### 创建Request
 
-可以有两次方式来创建Request。
+可以有三次方式来创建Request。
 
 * 单击Collection的菜单项`Create reuqest`来创建，这也是推荐的方式，因为创建出来的Request已经保存下来，可以使用到Project下的环境变量。
 
@@ -9,6 +9,10 @@
 * 单击tab右边的 `+` 按钮
 
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/request_create_2.png)
+
+* 导入一个cURL，这个对于快速调试非常有用，在chrome的控制台Network里右键请求copy as cUrl(bash)再导入这里来就可以跑了
+
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/request_create_4.png)
 
 下面来一步一步创建一个可以使用的Request到`Sample Collection`下面：
 
@@ -41,3 +45,9 @@ Request创建好了，单击Send按钮来测试下吧。
 单击Request的菜单项 `history`，会弹出一个页面，里面以diff的方式展示了每次Request修改的具体信息。
 
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/request_history.png)
+
+#### 为Request生成代码
+
+Hitchhiker 支持为Request生成一系列语言的请求代码，如： python, go, c#, java 等
+
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/request_code.png)

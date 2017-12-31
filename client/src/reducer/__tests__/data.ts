@@ -45,7 +45,8 @@ export const defaultRunResult = {
     elapsed: 100,
     headers: { ['key1']: 'value1' },
     cookies: ['ck1=ck2;'],
-    host: 'hitchhiker-api.com'
+    host: 'hitchhiker-api.com',
+    consoleMsgQueue: []
 };
 
 export const defaultStress = {

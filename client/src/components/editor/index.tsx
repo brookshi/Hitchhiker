@@ -26,6 +26,8 @@ interface EditorProps {
     onChange?: (value: string) => void;
 
     fixHeight?: boolean;
+
+    disableValidate?: boolean;
 }
 
 interface EditorState { }
@@ -33,6 +35,39 @@ interface EditorState { }
 class Editor extends React.Component<EditorProps, EditorState> {
 
     private offsetHeight = -1;
+
+    private editorEle;
+
+    public componentDidMount() {
+        if (this.editorEle && this.props.disableValidate) {
+            this.editorEle.editor.getSession().setUseWorker(false);
+        }
+    }
+
+    private onAnnotatesChange = (annotates: Array<any>) => {
+        if (!this.editorEle || this.props.disableValidate) {
+            return;
+        }
+        const session = this.editorEle.editor.getSession();
+        const validAnnotates = annotates.filter(a => !this.needIgnoreErrorForVariable(session, a));
+        if (validAnnotates.length !== annotates.length) {
+            session.setAnnotations(validAnnotates);
+        }
+    }
+
+    private needIgnoreErrorForVariable = (session: any, annotate: any) => {
+        const isBadStrError = annotate.type === 'error' && annotate.text === 'Bad string';
+        if (!isBadStrError) {
+            return false;
+        }
+        const lines = session.getDocument().$lines;
+        const isLocateToVar = lines.length > annotate.row &&
+            lines[annotate.row].length > annotate.column &&
+            lines[annotate.row][Math.max(0, annotate.column - 1)] === '{' &&
+            /\{\{.*\}\}/g.test(lines[annotate.row]);
+
+        return isLocateToVar;
+    }
 
     public render() {
         this.offsetHeight = this.offsetHeight === 1 ? -1 : this.offsetHeight + 1;
@@ -73,7 +108,7 @@ class Editor extends React.Component<EditorProps, EditorState> {
         }
 
         return (
-            <AceEditor {...props} />
+            <AceEditor ref={ele => this.editorEle = ele} {...props} onValidate={this.onAnnotatesChange} />
         );
     }
 }

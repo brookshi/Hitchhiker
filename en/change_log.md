@@ -1,3 +1,27 @@
+#### 0.7 2017-12-31
+
+**Features:**
+
+* \#63 support console.log debug in script.
+* \#57 parameters could be a variable.
+* \#34 support custom smtp mail interface.
+* \#30 support swagger import.
+* new request from cURL.
+* generate code of java, python, go, c#... for request.
+* beauty body(json/xml).
+* beautify xml response.
+* view diff of schedule comparision result.
+
+**Bugs:**
+
+* common pre script save error for new collection, strict ssl null.
+* schedule save failed when check and uncheck compare.
+* import postman json failed - headers may be null.
+* request's duration miss waiting connect.
+* not stop when find password failed.
+* remove error annotate of variable in script/parameters.
+
+
 #### 0.6 2017-12-18
 
 **Features:**
