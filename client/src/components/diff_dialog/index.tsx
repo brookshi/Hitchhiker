@@ -31,7 +31,7 @@ class DiffDialog extends React.Component<DiffDialogProps, DiffDialogState> {
     public render() {
 
         const { title, isOpen, onClose, originTitle, targetTitle, originContent, targetContent } = this.props;
-        const diffContent = JsDiff.createTwoFilesPatch(originTitle, targetTitle, originContent, targetContent, '', '');
+        const diffContent = JsDiff.createTwoFilesPatch(originTitle || '', targetTitle || '', originContent || '', targetContent || '', '', '');
         const diffHtml = Diff2Html.getPrettyHtml(diffContent, { inputFormat: 'diff', outputFormat: 'side-by-side', matching: 'lines' });
 
         return (
@@ -45,7 +45,7 @@ class DiffDialog extends React.Component<DiffDialogProps, DiffDialogState> {
                 cancelText="Cancel"
                 onCancel={onClose}
                 footer={null}
-            >
+                >
                 <div dangerouslySetInnerHTML={{ __html: diffHtml }} style={{ height: '100%' }} />
             </Modal>
         );
