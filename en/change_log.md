@@ -11,6 +11,7 @@
 * beauty body(json/xml).
 * beautify xml response.
 * view diff of schedule comparision result.
+* remove error annotate of variable in script/parameters.
 
 **Bugs:**
 
@@ -19,7 +20,6 @@
 * import postman json failed - headers may be null.
 * request's duration miss waiting connect.
 * not stop when find password failed.
-* remove error annotate of variable in script/parameters.
 
 
 #### 0.6 2017-12-18
