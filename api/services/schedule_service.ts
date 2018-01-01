@@ -12,6 +12,7 @@ import { ScheduleRecord } from '../models/schedule_record';
 import { Period, TimerType } from '../interfaces/period';
 import { DateUtil } from '../utils/date_util';
 import { Log } from '../utils/log';
+import { Setting } from '../utils/setting';
 
 export class ScheduleService {
 
@@ -73,11 +74,13 @@ export class ScheduleService {
         });
         const whereStr = whereStrings.length > 1 ? '(' + whereStrings.join(' OR ') + ')' : whereStrings[0];
 
-        var schedules = await connection.getRepository(Schedule)
+        const schedules = await connection.getRepository(Schedule)
             .createQueryBuilder('schedule')
-            .leftJoinAndSelect('schedule.scheduleRecords', 'record')
+            .leftJoinAndSelect('schedule.scheduleRecords', 'record', '', { limit: Setting.instance.schedulePageSize })
             .where(whereStr, parameters)
             .getMany();
+
+        await Promise.all(schedules.map(s => ScheduleRecordService.get(s.id, 0).then(data => [s.scheduleRecords, s.recordCount] = data)));
 
         schedules.forEach(s => {
             if (s.lastRunDate) {

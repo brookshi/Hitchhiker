@@ -18,6 +18,8 @@ export interface UserData {
 
     schedules: _.Dictionary<DtoSchedule>;
 
+    schedulePageSize: number;
+
     stresses: _.Dictionary<DtoStress>;
 
     projectFiles: ProjectFiles;

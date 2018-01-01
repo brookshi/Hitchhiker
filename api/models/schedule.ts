@@ -62,4 +62,6 @@ export class Schedule {
 
     @UpdateDateColumn()
     updateDate: Date;
+
+    recordCount: number;
 }

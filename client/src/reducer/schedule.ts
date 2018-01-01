@@ -3,11 +3,13 @@ import * as _ from 'lodash';
 import { ScheduleState, scheduleDefaultValue } from '../state/schedule';
 import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType, RunScheduleType, RunScheduleFulfillType, ScheduleChunkDataType } from '../action/schedule';
 import { DtoSchedule } from '../../../api/interfaces/dto_schedule';
+import { GlobalVar } from '../utils/global_var';
 
 export function scheduleState(state: ScheduleState = scheduleDefaultValue, action: any): ScheduleState {
     switch (action.type) {
         case LoginSuccessType:
         case SyncUserDataSuccessType: {
+            GlobalVar.instance.schedulePageSize = action.value.result.schedulePageSize;
             const schedules = action.value.result.schedules as _.Dictionary<DtoSchedule>;
             const scheduleIds = _.keys(schedules);
             const activeSchedule = state.activeSchedule || (scheduleIds.length > 0 ? (scheduleIds[0] || '') : '');

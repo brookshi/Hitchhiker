@@ -1,4 +1,4 @@
-import { takeEvery, put, call, take } from 'redux-saga/effects';
+import { takeEvery, put, call, take, takeLatest } from 'redux-saga/effects';
 import { syncAction, actionCreator } from './index';
 import { HttpMethod } from '../common/http_method';
 import { eventChannel, END } from 'redux-saga';
@@ -11,6 +11,8 @@ export const DeleteScheduleType = 'delete schedule';
 export const ActiveScheduleType = 'active schedule';
 
 export const RunScheduleType = 'run schedule';
+
+export const GetScheduleRecordsInPageType = 'get schedule records in page';
 
 export const ScheduleChunkDataType = 'schedule chunk data';
 
@@ -37,6 +39,13 @@ export function* runSchedule() {
             const msgAction = yield take(wsChannel);
             yield put(msgAction);
         }
+    });
+}
+
+export function* getScheduleRecordsInPage() {
+    yield takeLatest(GetScheduleRecordsInPageType, function* (action: any) {
+        const channelAction = syncAction({ type: GetScheduleRecordsInPageType, method: HttpMethod.GET, url: Urls.getUrl(`schedule/page/${action.value}`) });
+        yield put(channelAction);
     });
 }
 

@@ -18,7 +18,8 @@ export const defaultSchedule = {
     suspend: false,
     scheduleRecords: [],
     ownerId: '',
-    lastRunDate: new Date(2017, 8, 5)
+    lastRunDate: new Date(2017, 8, 5),
+    recordCount: 0
 };
 
 export const defaultUser = {
@@ -73,6 +74,6 @@ export const defaultStressRunResult = {
     reqProgress: [],
     stressReqDuration: {},
     stressFailedResult: {}
-}
+};
 
 test('move record');

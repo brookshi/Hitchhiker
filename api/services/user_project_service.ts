@@ -59,9 +59,10 @@ export class UserProjectService {
         const projects = _.keyBy(user.projects, 'id');
         user.projects = undefined;
 
-        const schedules = _.keyBy((await ScheduleService.getByUserId(user.id)).map(s => ScheduleService.toDto(s)), 'id');
+        const schedules = await ScheduleService.getByUserId(user.id);
+        const scheduleDict = _.keyBy(schedules.map(s => ScheduleService.toDto(s)), 'id');
 
-        const stresses = _.keyBy((await StressService.getByUserId(user.id)).map(s => StressService.toDto(s)), 'id');
+        const stressDict = _.keyBy((await StressService.getByUserId(user.id)).map(s => StressService.toDto(s)), 'id');
 
         const projectFiles: ProjectFiles = {
             globalJS: ProjectDataService.instance._gJsFiles,
@@ -78,8 +79,9 @@ export class UserProjectService {
             user,
             projects,
             environments,
-            schedules,
-            stresses,
+            schedules: scheduleDict,
+            schedulePageSize: Setting.instance.schedulePageSize,
+            stresses: stressDict,
             projectFiles,
             defaultHeaders: Setting.instance.defaultHeaders,
             syncInterval: Setting.instance.syncInterval,

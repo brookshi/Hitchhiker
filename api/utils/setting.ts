@@ -83,8 +83,16 @@ export class Setting {
         return this.getValidNum(process.env.HITCHHIKER_SCHEDULE_DURATION, this.schedule.duration);
     }
 
-    get scheduleMaxCount() {
-        return this.getValidNum(process.env.HITCHHIKER_SCHEDULE_COUNT, this.schedule.storeMaxCount);
+    get scheduleStoreUnit() {
+        return process.env.HITCHHIKER_SCHEDULE_STORE_UNIT || this.schedule.storeUnit;
+    }
+
+    get scheduleStoreLimit() {
+        return this.getValidNum(process.env.HITCHHIKER_SCHEDULE_STORE_LIMIT, this.schedule.storeLimit);
+    }
+
+    get schedulePageSize() {
+        return this.getValidNum(process.env.HITCHHIKER_SCHEDULE_PAGESIZE, this.schedule.pageSize);
     }
 
     get scheduleMailOnlyForFail() {

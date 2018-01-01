@@ -2,7 +2,7 @@ import { scheduleDefaultValue } from '../../state/schedule';
 import { scheduleState } from '../schedule';
 import { LoginSuccessType } from '../../action/user';
 import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType, RunScheduleType, ScheduleChunkDataType, RunScheduleFulfillType } from '../../action/schedule';
-import { defaultSchedule } from "./data";
+import { defaultSchedule } from './data';
 
 test('login success', () => {
 

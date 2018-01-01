@@ -37,4 +37,6 @@ export interface DtoSchedule {
     ownerId: string;
 
     lastRunDate?: Date;
+
+    recordCount: number;
 }
