@@ -1,4 +1,5 @@
 import { DtoSchedule } from '../../../api/interfaces/dto_schedule';
+import { DtoScheduleRecord } from '../../../api/interfaces/dto_schedule_record';
 import { RunResult } from '../../../api/interfaces/dto_run_result';
 
 export interface ScheduleState {
@@ -8,6 +9,17 @@ export interface ScheduleState {
     activeSchedule: string;
 
     runState: _.Dictionary<ScheduleRunState>;
+
+    scheduleRecordsInPages: _.Dictionary<ScheduleRecordsInPage>;
+}
+
+export interface ScheduleRecordsInPage {
+
+    isLoading: boolean;
+
+    records: DtoScheduleRecord[];
+
+    pageNum: number;
 }
 
 export interface ScheduleRunState {
@@ -20,5 +32,6 @@ export interface ScheduleRunState {
 export const scheduleDefaultValue: ScheduleState = {
     schedules: {},
     activeSchedule: '',
-    runState: {}
+    runState: {},
+    scheduleRecordsInPages: {}
 };

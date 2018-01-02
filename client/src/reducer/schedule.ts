@@ -1,7 +1,7 @@
 import { LoginSuccessType, SyncUserDataSuccessType } from '../action/user';
 import * as _ from 'lodash';
 import { ScheduleState, scheduleDefaultValue } from '../state/schedule';
-import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType, RunScheduleType, RunScheduleFulfillType, ScheduleChunkDataType } from '../action/schedule';
+import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType, RunScheduleType, RunScheduleFulfillType, ScheduleChunkDataType, GetScheduleRecordsInPageFulfillType, GetScheduleRecordsInPageType } from '../action/schedule';
 import { DtoSchedule } from '../../../api/interfaces/dto_schedule';
 import { GlobalVar } from '../utils/global_var';
 
@@ -76,6 +76,20 @@ export function scheduleState(state: ScheduleState = scheduleDefaultValue, actio
                         isRunning: false, consoleRunResults: []
                     }
                 }
+            };
+        }
+        case GetScheduleRecordsInPageType: {
+            const { id, pageNum } = action.value;
+            return {
+                ...state,
+                scheduleRecordsInPages: { ...state.scheduleRecordsInPages, [id]: { records: state.scheduleRecordsInPages[id] ? state.scheduleRecordsInPages[id].records : undefined, isLoading: true, pageNum } }
+            };
+        }
+        case GetScheduleRecordsInPageFulfillType: {
+            const { id, records } = action.value;
+            return {
+                ...state,
+                scheduleRecordsInPages: { ...state.scheduleRecordsInPages, [id]: { records, isLoading: false, pageNum: state.scheduleRecordsInPages[id].pageNum } }
             };
         }
         default:

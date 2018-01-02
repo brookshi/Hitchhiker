@@ -1,8 +1,10 @@
 import { takeEvery, put, call, take, takeLatest } from 'redux-saga/effects';
-import { syncAction, actionCreator } from './index';
+import { syncAction, actionCreator, SessionInvalidType } from './index';
 import { HttpMethod } from '../common/http_method';
 import { eventChannel, END } from 'redux-saga';
 import { Urls } from '../utils/urls';
+import RequestManager from '../utils/request_manager';
+import message from 'antd/lib/message';
 
 export const SaveScheduleType = 'save schedule';
 
@@ -13,6 +15,8 @@ export const ActiveScheduleType = 'active schedule';
 export const RunScheduleType = 'run schedule';
 
 export const GetScheduleRecordsInPageType = 'get schedule records in page';
+
+export const GetScheduleRecordsInPageFulfillType = 'get schedule records fulfill in page';
 
 export const ScheduleChunkDataType = 'schedule chunk data';
 
@@ -44,8 +48,17 @@ export function* runSchedule() {
 
 export function* getScheduleRecordsInPage() {
     yield takeLatest(GetScheduleRecordsInPageType, function* (action: any) {
-        const channelAction = syncAction({ type: GetScheduleRecordsInPageType, method: HttpMethod.GET, url: Urls.getUrl(`schedule/page/${action.value}`) });
-        yield put(channelAction);
+        const { id, pageNum } = action.value;
+        const res = yield call(RequestManager.get, Urls.getUrl(`schedule/${id}/records?pagenum=${pageNum - 1}`));
+        if (res.status === 403) {
+            yield put(actionCreator(SessionInvalidType));
+        }
+        const data = yield res.json();
+        if (data && data.success === false) {
+            message.warning(data.message);
+            return;
+        }
+        yield put(actionCreator(GetScheduleRecordsInPageFulfillType, { id, records: data.result }));
     });
 }
 

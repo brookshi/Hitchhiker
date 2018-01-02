@@ -1,6 +1,6 @@
 import { DtoError } from './dto_error';
 import { Duration } from './dto_stress_setting';
-import { ConsoleMsg } from "./dto_res";
+import { ConsoleMsg } from './dto_res';
 
 export interface RunResult {
 

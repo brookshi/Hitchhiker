@@ -22,11 +22,12 @@ export class ScheduleRecordService {
             .offset(Setting.instance.schedulePageSize * page)
             .limit(Setting.instance.schedulePageSize)
             .where('record.schedule=:id', { id: scheduleId })
+            .orderBy('record.createDate', 'DESC')
             .getManyAndCount();
     }
 
     static async clearRedundantRecords(scheduleId: string) {
-        const {scheduleStoreLimit, scheduleStoreUnit } = Setting.instance;
+        const { scheduleStoreLimit, scheduleStoreUnit } = Setting.instance;
         const connection = await ConnectionManager.getInstance();
 
         const query = await connection.getRepository(ScheduleRecord)

@@ -13,6 +13,7 @@ import './style/index.less';
 import { DtoSchedule } from '../../../../api/interfaces/dto_schedule';
 import DiffDialog from '../../components/diff_dialog';
 import { GlobalVar } from '../../utils/global_var';
+import { ScheduleRecordsInPage } from '../../state/schedule';
 
 type DisplayRunResult = RunResult & { key: string, isOrigin: boolean, compareResult: string, rowSpan: number };
 
@@ -20,7 +21,7 @@ interface ScheduleRunHistoryGridProps {
 
     schedule: DtoSchedule;
 
-    scheduleRecords: DtoScheduleRecord[];
+    scheduleRecordsInPage: ScheduleRecordsInPage;
 
     envName: string;
 
@@ -33,6 +34,8 @@ interface ScheduleRunHistoryGridProps {
     isRunning: boolean;
 
     consoleRunResults: RunResult[];
+
+    getScheduleRecordsInPage(id: string, page: number);
 }
 
 interface ScheduleRunHistoryGridState {
@@ -101,31 +104,31 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                 rowKey="key"
                 dataSource={displayRunResults}
                 pagination={false}
-                >
+            >
                 <RunResultColumn
                     title="Name"
                     dataIndex="id"
                     render={(text, runResult) => ({ children: this.getRecordDisplayName(runResult.id), props: { rowSpan: runResult.rowSpan } })}
-                    />
+                />
                 <RunResultColumn
                     title="Param"
                     dataIndex="param"
-                    />
+                />
                 <RunResultColumn
                     title="Pass"
                     dataIndex="success"
                     render={(text, runResult) => <Tag color={this.isSuccess(runResult) ? successColor : failColor}>{this.isSuccess(runResult) ? pass : fail}</Tag>}
-                    />
+                />
                 <RunResultColumn
                     title="Duration"
                     dataIndex="duration"
                     render={(text, runResult) => `${runResult.elapsed / 1000} s`}
-                    />
+                />
                 <RunResultColumn
                     title="Environment"
                     dataIndex="envId"
                     render={(text, runResult) => this.getEnvName(runResult.envId)}
-                    />
+                />
                 <RunResultColumn title="Headers" dataIndex="headers" render={this.getHeadersDisplay} />
                 <RunResultColumn title="Body" dataIndex="body" render={this.getBodyDisplay} />
                 <RunResultColumn title="Tests" dataIndex="tests" render={this.getTestsDisplay} />
@@ -153,13 +156,13 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                                                         diffTargetTitle: `${this.getRecordDisplayName(compareRunResult.id)}(${this.getEnvName(compareRunResult.envId)})`,
                                                         diffTargetContent: this.getDiffContent(compareRunResult.export, compareRunResult.body, contentType),
                                                     });
-                                                } }>View Diff</Button>
+                                                }}>View Diff</Button>
                                             ) : ''
                                         }
                                     </div>
                                 ), props: { rowSpan: runResult.rowSpan }
                             })}
-                            />
+                        />
                     )
                 }
             </RunResultTable>
@@ -222,7 +225,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                             style={{ marginLeft: 8 }}
                             type="primary"
                             icon="copy"
-                            />
+                        />
                     </CopyToClipboard>
                 ) : ''}
             </span>
@@ -244,7 +247,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                             style={{ marginLeft: 8 }}
                             type="primary"
                             icon="copy"
-                            />
+                        />
                     </CopyToClipboard>
                 ) : ''}
             </span>
@@ -322,9 +325,14 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
         return schedule.recordsOrder ? schedule.recordsOrder.split(';').filter(r => r.endsWith(':0')).map(r => r.substr(0, r.length - 2)) : [];
     }
 
+    private handleTableChange = (pagination, filters, sorter) => {
+        this.props.getScheduleRecordsInPage(this.props.schedule.id, pagination.current);
+    }
+
     public render() {
-        const { isRunning, consoleRunResults, records, envNames, scheduleRecords, schedule } = this.props;
+        const { isRunning, consoleRunResults, records, envNames, scheduleRecordsInPage, schedule } = this.props;
         const { isDiffDlgOpen, diffOriginContent, diffOriginTitle, diffTargetContent, diffTargetTitle } = this.state;
+        let scheduleRecords = scheduleRecordsInPage ? scheduleRecordsInPage.records || schedule.scheduleRecords : schedule.scheduleRecords;
         if (scheduleRecords) {
             scheduleRecords.forEach(r => r.runDate = new Date(r.runDate));
         }
@@ -336,7 +344,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                     runResults={consoleRunResults}
                     records={records}
                     envNames={envNames}
-                    />
+                />
                 <ScheduleRecordTable
                     className="schedule-table"
                     bordered={true}
@@ -344,28 +352,30 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                     rowKey="id"
                     dataSource={_.chain(scheduleRecords).sortBy('runDate').reverse().value()}
                     expandedRowRender={this.expandedTable}
-                    pagination={{ pageSize: GlobalVar.instance.schedulePageSize, total: schedule.recordCount }}
-                    >
+                    pagination={{ pageSize: GlobalVar.instance.schedulePageSize, total: schedule.recordCount, current: scheduleRecordsInPage ? scheduleRecordsInPage.pageNum : 1 }}
+                    loading={scheduleRecordsInPage ? scheduleRecordsInPage.isLoading : false}
+                    onChange={this.handleTableChange}
+                >
                     <ScheduleRecordColumn
                         title="Run Date"
                         dataIndex="runDate"
                         render={(text, record) => new Date(record.runDate).toLocaleString()}
-                        />
+                    />
                     <ScheduleRecordColumn
                         title="Pass"
                         dataIndex="success"
                         render={(text, record) => <Tag color={record.success ? successColor : failColor}>{record.success ? pass : fail}</Tag>}
-                        />
+                    />
                     <ScheduleRecordColumn
                         title="Duration"
                         dataIndex="duration"
                         render={(text, record) => `${record.duration / 1000} s`}
-                        />
+                    />
                     <ScheduleRecordColumn
                         title="Description"
                         dataIndex="description"
                         render={(text, record) => this.getScheduleDescription(record, schedule)}
-                        />
+                    />
                 </ScheduleRecordTable>
                 <DiffDialog
                     title="Diff View"
@@ -375,7 +385,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                     targetContent={diffTargetContent}
                     targetTitle={diffTargetTitle}
                     onClose={() => this.setState({ ...this.state, isDiffDlgOpen: false })}
-                    />
+                />
             </div>
         );
     }

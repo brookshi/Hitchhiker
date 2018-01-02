@@ -10,11 +10,11 @@ import { actionCreator } from '../../action/index';
 import { Layout } from 'antd';
 import Splitter from '../../components/splitter';
 import { UpdateLeftPanelType, ResizeLeftPanelType } from '../../action/ui';
-import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType, RunScheduleType } from '../../action/schedule';
+import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType, RunScheduleType, GetScheduleRecordsInPageType } from '../../action/schedule';
 import ScheduleRunHistoryGrid from './schedule_run_history_grid';
 import { noEnvironment, unknownName } from '../../common/constants';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
-import { ScheduleRunState } from '../../state/schedule';
+import { ScheduleRunState, ScheduleRecordsInPage } from '../../state/schedule';
 import { DtoCollection } from '../../../../api/interfaces/dto_collection';
 
 const { Content, Sider } = Layout;
@@ -38,6 +38,8 @@ interface ScheduleStateProps {
     records: _.Dictionary<DtoRecord>;
 
     runState: _.Dictionary<ScheduleRunState>;
+
+    scheduleRecordsInPages: _.Dictionary<ScheduleRecordsInPage>;
 }
 
 interface ScheduleDispatchProps {
@@ -55,6 +57,8 @@ interface ScheduleDispatchProps {
     deleteSchedule(scheduleId: string);
 
     runSchedule(scheduleId: string);
+
+    getScheduleRecordsInPage(id: string, page: number);
 }
 
 type ScheduleProps = ScheduleStateProps & ScheduleDispatchProps;
@@ -78,7 +82,7 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
     }
 
     public render() {
-        const { collapsed, leftPanelWidth, collapsedLeftPanel, createSchedule, selectSchedule, runState, updateSchedule, deleteSchedule, user, activeSchedule, collections, environments, records, schedules, runSchedule } = this.props;
+        const { collapsed, leftPanelWidth, collapsedLeftPanel, createSchedule, selectSchedule, runState, updateSchedule, deleteSchedule, user, activeSchedule, collections, environments, records, schedules, runSchedule, scheduleRecordsInPages, getScheduleRecordsInPage } = this.props;
         const schedule = schedules[activeSchedule] || {};
         const envName = this.getEnvName(schedule.environmentId);
         const compareEnvName = this.getEnvName(schedule.compareEnvironmentId);
@@ -111,13 +115,14 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
                 <Content className="schedule-content">
                     <ScheduleRunHistoryGrid
                         schedule={schedule}
-                        scheduleRecords={schedule.scheduleRecords}
+                        scheduleRecordsInPage={scheduleRecordsInPages[activeSchedule]}
                         envName={envName}
                         compareEnvName={compareEnvName}
                         envNames={this.getEnvNames()}
                         records={records}
                         isRunning={runState[activeSchedule] ? runState[activeSchedule].isRunning : false}
                         consoleRunResults={runState[activeSchedule] ? runState[activeSchedule].consoleRunResults : []}
+                        getScheduleRecordsInPage={getScheduleRecordsInPage}
                     />
                 </Content>
             </Layout>
@@ -127,7 +132,7 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
 
 const mapStateToProps = (state: State): ScheduleStateProps => {
     const { leftPanelWidth, collapsed } = state.uiState.appUIState;
-    const { schedules, activeSchedule, runState } = state.scheduleState;
+    const { schedules, activeSchedule, runState, scheduleRecordsInPages } = state.scheduleState;
     const records = _.chain(state.collectionState.collectionsInfo.records).values<_.Dictionary<DtoRecord>>().value();
     return {
         leftPanelWidth,
@@ -138,7 +143,8 @@ const mapStateToProps = (state: State): ScheduleStateProps => {
         environments: state.environmentState.environments,
         schedules,
         records: records.length === 0 ? {} : records.reduce((p, c) => ({ ...p, ...c })),
-        runState
+        runState,
+        scheduleRecordsInPages
     };
 };
 
@@ -150,7 +156,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): ScheduleDispatchProps => {
         selectSchedule: (scheduleId) => dispatch(actionCreator(ActiveScheduleType, scheduleId)),
         collapsedLeftPanel: (collapsed) => dispatch(actionCreator(UpdateLeftPanelType, collapsed)),
         resizeLeftPanel: (width) => dispatch(actionCreator(ResizeLeftPanelType, width)),
-        runSchedule: (scheduleId) => dispatch(actionCreator(RunScheduleType, scheduleId))
+        runSchedule: (scheduleId) => dispatch(actionCreator(RunScheduleType, scheduleId)),
+        getScheduleRecordsInPage: (id, pageNum) => dispatch(actionCreator(GetScheduleRecordsInPageType, { id, pageNum }))
     };
 };
 
