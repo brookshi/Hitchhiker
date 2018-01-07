@@ -6,7 +6,7 @@ import { saveProject, quitProject, disbandProject, removeUser, inviteMember, sav
 import { deleteCollection, saveCollection, importData } from './collection';
 import { login, logout, register, findPassword, getUserInfo, changePassword, tempUse, syncUserData } from './user';
 import { storeLocalData, fetchLocalData } from './local_data';
-import { deleteSchedule, saveSchedule, runSchedule, getScheduleRecordsInPage } from './schedule';
+import { deleteSchedule, saveSchedule, runSchedule } from './schedule';
 import { saveStress, deleteStress, runStress } from './stress';
 
 export const SyncType = 'sync';
@@ -60,7 +60,6 @@ export function* rootSaga() {
         spawn(delEnvironment),
         spawn(saveSchedule),
         spawn(deleteSchedule),
-        spawn(getScheduleRecordsInPage),
         spawn(runSchedule),
         spawn(saveStress),
         spawn(deleteStress),

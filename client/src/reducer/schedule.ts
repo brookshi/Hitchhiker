@@ -1,7 +1,7 @@
 import { LoginSuccessType, SyncUserDataSuccessType } from '../action/user';
 import * as _ from 'lodash';
 import { ScheduleState, scheduleDefaultValue } from '../state/schedule';
-import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType, RunScheduleType, RunScheduleFulfillType, ScheduleChunkDataType, GetScheduleRecordsInPageFulfillType, GetScheduleRecordsInPageType } from '../action/schedule';
+import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType, RunScheduleType, RunScheduleFulfillType, ScheduleChunkDataType, SetScheduleRecordsModeType, SetScheduleRecordsPageType } from '../action/schedule';
 import { DtoSchedule } from '../../../api/interfaces/dto_schedule';
 import { GlobalVar } from '../utils/global_var';
 
@@ -78,18 +78,18 @@ export function scheduleState(state: ScheduleState = scheduleDefaultValue, actio
                 }
             };
         }
-        case GetScheduleRecordsInPageType: {
+        case SetScheduleRecordsPageType: {
             const { id, pageNum } = action.value;
             return {
                 ...state,
-                scheduleRecordsInPages: { ...state.scheduleRecordsInPages, [id]: { records: state.scheduleRecordsInPages[id] ? state.scheduleRecordsInPages[id].records : undefined, isLoading: true, pageNum } }
+                scheduleRecordsInfo: { ...state.scheduleRecordsInfo, [id]: { ...state.scheduleRecordsInfo[id], pageNum } }
             };
         }
-        case GetScheduleRecordsInPageFulfillType: {
-            const { id, records } = action.value;
+        case SetScheduleRecordsModeType: {
+            const { id, mode } = action.value;
             return {
                 ...state,
-                scheduleRecordsInPages: { ...state.scheduleRecordsInPages, [id]: { records, isLoading: false, pageNum: state.scheduleRecordsInPages[id].pageNum } }
+                scheduleRecordsInfo: { ...state.scheduleRecordsInfo, [id]: { ...state.scheduleRecordsInfo[id], mode } }
             };
         }
         default:

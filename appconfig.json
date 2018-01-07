@@ -32,7 +32,7 @@
         "duration": 60,
         "storeUnit": "count",
         "storeLimit": 50,
-        "pageSize": 50,
+        "pageSize": 20,
         "mailOnlyForFail": true
     },
     "stress": {

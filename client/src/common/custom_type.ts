@@ -75,3 +75,12 @@ export class ProjectFileTypes {
 
     static data: ProjectFileType = 'data';
 }
+
+export type ScheduleRecordsDisplayMode = 'normal' | 'statistics';
+
+export class ScheduleRecordsDisplayType {
+
+    static normal: ScheduleRecordsDisplayMode = 'normal';
+
+    static statistics: ScheduleRecordsDisplayMode = 'statistics';
+}

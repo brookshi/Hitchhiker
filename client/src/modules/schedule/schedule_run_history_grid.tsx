@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Tag, Tooltip, Button, message } from 'antd';
+import { Table, Tag, Tooltip, Radio, Button, message } from 'antd';
 import { DtoScheduleRecord } from '../../../../api/interfaces/dto_schedule_record';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
 import * as _ from 'lodash';
@@ -12,8 +12,13 @@ import ScheduleRunConsole from './schedule_run_console';
 import './style/index.less';
 import { DtoSchedule } from '../../../../api/interfaces/dto_schedule';
 import DiffDialog from '../../components/diff_dialog';
+import { ScheduleRecordsInfo } from '../../state/schedule';
 import { GlobalVar } from '../../utils/global_var';
-import { ScheduleRecordsInPage } from '../../state/schedule';
+import { ScheduleRecordsDisplayMode, ScheduleRecordsDisplayType } from '../../common/custom_type';
+import { ScheduleStatistics } from '../../common/schedule_statistics';
+
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 type DisplayRunResult = RunResult & { key: string, isOrigin: boolean, compareResult: string, rowSpan: number };
 
@@ -21,7 +26,7 @@ interface ScheduleRunHistoryGridProps {
 
     schedule: DtoSchedule;
 
-    scheduleRecordsInPage: ScheduleRecordsInPage;
+    scheduleRecordsInfo: ScheduleRecordsInfo;
 
     envName: string;
 
@@ -35,7 +40,9 @@ interface ScheduleRunHistoryGridProps {
 
     consoleRunResults: RunResult[];
 
-    getScheduleRecordsInPage(id: string, page: number);
+    setScheduleRecordsPage(id: string, page: number);
+
+    setScheduleRecordsMode(id: string, mode: ScheduleRecordsDisplayMode);
 }
 
 interface ScheduleRunHistoryGridState {
@@ -54,6 +61,10 @@ interface ScheduleRunHistoryGridState {
 class ScheduleRecordTable extends Table<DtoScheduleRecord> { }
 
 class ScheduleRecordColumn extends Table.Column<DtoScheduleRecord> { }
+
+class ScheduleStatisticsTable extends Table<ScheduleStatistics> { }
+
+class ScheduleStatisticsColumn extends Table.Column<ScheduleStatistics> { }
 
 class RunResultTable extends Table<DisplayRunResult> { }
 
@@ -326,57 +337,176 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
     }
 
     private handleTableChange = (pagination, filters, sorter) => {
-        this.props.getScheduleRecordsInPage(this.props.schedule.id, pagination.current);
+        this.props.setScheduleRecordsPage(this.props.schedule.id, pagination.current);
+    }
+
+    private getNormalTable(scheduleRecords: DtoScheduleRecord[]) {
+        const { schedule, scheduleRecordsInfo } = this.props;
+        return (
+            <ScheduleRecordTable
+                className="schedule-table"
+                bordered={true}
+                size="middle"
+                rowKey="id"
+                dataSource={_.chain(scheduleRecords).sortBy('runDate').reverse().value()}
+                pagination={{ pageSize: GlobalVar.instance.schedulePageSize, total: scheduleRecords.length, current: scheduleRecordsInfo ? (scheduleRecordsInfo.pageNum || 1) : 1 }}
+                expandedRowRender={this.expandedTable}
+                onChange={this.handleTableChange}
+            >
+                <ScheduleRecordColumn
+                    title="Run Date"
+                    dataIndex="runDate"
+                    render={(text, record) => new Date(record.runDate).toLocaleString()}
+                />
+                <ScheduleRecordColumn
+                    title="Pass"
+                    dataIndex="success"
+                    render={(text, record) => <Tag color={record.success ? successColor : failColor}>{record.success ? pass : fail}</Tag>}
+                />
+                <ScheduleRecordColumn
+                    title="Duration"
+                    dataIndex="duration"
+                    render={(text, record) => `${record.duration / 1000} s`}
+                />
+                <ScheduleRecordColumn
+                    title="Description"
+                    dataIndex="description"
+                    render={(text, record) => this.getScheduleDescription(record, schedule)}
+                />
+            </ScheduleRecordTable>
+        );
+    }
+
+    private getStatisticsTable() {
+        const { schedule } = this.props;
+        let sortedStatisticsData: Array<ScheduleStatistics> = [];
+        const statisticsData = this.statistics();
+        schedule.recordsOrder.split(';').forEach(o => {
+            const [id] = o.split(':');
+            if (statisticsData[id]) {
+                sortedStatisticsData.push(statisticsData[id]);
+                Reflect.deleteProperty(statisticsData, id);
+            }
+        });
+        sortedStatisticsData = [...sortedStatisticsData, ..._.chain(statisticsData).values<ScheduleStatistics>().sortBy('name').value()];
+
+        return (
+            <ScheduleStatisticsTable
+                className="schedule-table"
+                bordered={true}
+                size="small"
+                rowKey="id"
+                dataSource={sortedStatisticsData}
+                pagination={false}
+            >
+                <ScheduleStatisticsColumn
+                    title="Name"
+                    dataIndex="name"
+                    render={(text, record) => `${record.name}${record.param ? ' - ' + record.param : ''}`}
+                />
+                <ScheduleStatisticsColumn
+                    title="Latest"
+                    dataIndex="lastStatus"
+                    render={(text, record) => <Tag color={record.lastStatus ? successColor : failColor}>{record.lastStatus ? pass : fail}</Tag>}
+                />
+                <ScheduleStatisticsColumn
+                    title="Success"
+                    dataIndex="successNum"
+                    render={(text, record) => <span className="schedule-success">{text}</span>}
+                />
+                <ScheduleStatisticsColumn
+                    title="Error"
+                    dataIndex="errorNum"
+                    render={(text, record) => <span className="schedule-failed">{text}</span>}
+                />
+                <ScheduleStatisticsColumn
+                    title="Total"
+                    dataIndex="total"
+                />
+                <ScheduleStatisticsColumn
+                    title="Min Time (ms)"
+                    dataIndex="minTime"
+                />
+                <ScheduleStatisticsColumn
+                    title="Max Time (ms)"
+                    dataIndex="maxTime"
+                />
+                <ScheduleStatisticsColumn
+                    title="Avg Time (ms)"
+                    dataIndex="averageTime"
+                />
+            </ScheduleStatisticsTable>
+        );
+    }
+
+    private statistics() {
+        const { schedule, records } = this.props;
+        let scheduleRecords = schedule.scheduleRecords || [];
+        if (scheduleRecords) {
+            scheduleRecords.forEach(r => r.runDate = new Date(r.runDate));
+        }
+        scheduleRecords = _.chain(scheduleRecords).sortBy('runDate').reverse().value();
+        const statisticsData: _.Dictionary<ScheduleStatistics> = {};
+        scheduleRecords.forEach((r, i) => {
+            const compareDict = _.keyBy(this.flattenRunResult(r.result.compare), o => `${o.id}${o.param || ''}`);
+            this.flattenRunResult(r.result.origin).forEach(o => {
+                const key = `${o.id}${o.param || ''}`;
+                statisticsData[key] = statisticsData[key] || {};
+                statisticsData[key].runResults = statisticsData[key].runResults || [];
+                statisticsData[key].runResults.push(o);
+                if (!statisticsData[key].id) {
+                    statisticsData[key].id = key;
+                    statisticsData[key].name = records[o.id] ? records[o.id].name : unknownName;
+                    statisticsData[key].param = o.param;
+                }
+                const needCompare = !!compareDict[key];
+                if (needCompare) {
+                    statisticsData[key].runResults.push(compareDict[key]);
+                }
+            });
+        });
+
+        _.values(statisticsData).forEach(r => {
+            const successNum = r.runResults.filter(o => this.isSuccess(o)).length;
+            const elapseds = r.runResults.map(o => o.elapsed);
+            r.errorNum = r.runResults.length - successNum;
+            r.successNum = successNum;
+            r.total = r.runResults.length;
+            r.maxTime = _.max(elapseds);
+            r.minTime = _.min(elapseds);
+            r.averageTime = Math.round(elapseds.reduce((p, c) => p + c, 0) / r.runResults.length);
+            r.lastStatus = this.isSuccess(r.runResults[0]);
+        });
+
+        return statisticsData;
     }
 
     public render() {
-        const { isRunning, consoleRunResults, records, envNames, scheduleRecordsInPage, schedule } = this.props;
+        const { isRunning, consoleRunResults, records, envNames, schedule, scheduleRecordsInfo, setScheduleRecordsMode } = this.props;
         const { isDiffDlgOpen, diffOriginContent, diffOriginTitle, diffTargetContent, diffTargetTitle } = this.state;
-        let scheduleRecords = scheduleRecordsInPage ? scheduleRecordsInPage.records || schedule.scheduleRecords : schedule.scheduleRecords;
+        let scheduleRecords = schedule.scheduleRecords || [];
         if (scheduleRecords) {
             scheduleRecords.forEach(r => r.runDate = new Date(r.runDate));
         }
 
+        const mode = scheduleRecordsInfo ? (scheduleRecordsInfo.mode || ScheduleRecordsDisplayType.normal) : ScheduleRecordsDisplayType.normal;
+
         return (
             <div>
+                <div>
+                    <span style={{ fontSize: 14 }}>View mode: </span>
+                    <RadioGroup defaultValue={mode} onChange={e => setScheduleRecordsMode(schedule.id, (e.target as any).value)}>
+                        <RadioButton value={ScheduleRecordsDisplayType.normal}>Normal</RadioButton>
+                        <RadioButton value={ScheduleRecordsDisplayType.statistics}>Statistics</RadioButton>
+                    </RadioGroup>
+                </div>
                 <ScheduleRunConsole
                     isRunning={isRunning}
                     runResults={consoleRunResults}
                     records={records}
                     envNames={envNames}
                 />
-                <ScheduleRecordTable
-                    className="schedule-table"
-                    bordered={true}
-                    size="middle"
-                    rowKey="id"
-                    dataSource={_.chain(scheduleRecords).sortBy('runDate').reverse().value()}
-                    expandedRowRender={this.expandedTable}
-                    pagination={{ pageSize: GlobalVar.instance.schedulePageSize, total: schedule.recordCount, current: scheduleRecordsInPage ? scheduleRecordsInPage.pageNum : 1 }}
-                    loading={scheduleRecordsInPage ? scheduleRecordsInPage.isLoading : false}
-                    onChange={this.handleTableChange}
-                >
-                    <ScheduleRecordColumn
-                        title="Run Date"
-                        dataIndex="runDate"
-                        render={(text, record) => new Date(record.runDate).toLocaleString()}
-                    />
-                    <ScheduleRecordColumn
-                        title="Pass"
-                        dataIndex="success"
-                        render={(text, record) => <Tag color={record.success ? successColor : failColor}>{record.success ? pass : fail}</Tag>}
-                    />
-                    <ScheduleRecordColumn
-                        title="Duration"
-                        dataIndex="duration"
-                        render={(text, record) => `${record.duration / 1000} s`}
-                    />
-                    <ScheduleRecordColumn
-                        title="Description"
-                        dataIndex="description"
-                        render={(text, record) => this.getScheduleDescription(record, schedule)}
-                    />
-                </ScheduleRecordTable>
+                {mode === 'normal' ? this.getNormalTable(scheduleRecords) : this.getStatisticsTable()}
                 <DiffDialog
                     title="Diff View"
                     isOpen={isDiffDlgOpen}

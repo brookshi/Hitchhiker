@@ -30,20 +30,20 @@ export class ScheduleRecordService {
         const { scheduleStoreLimit, scheduleStoreUnit } = Setting.instance;
         const connection = await ConnectionManager.getInstance();
 
-        const query = await connection.getRepository(ScheduleRecord)
+        const query = connection.getRepository(ScheduleRecord)
             .createQueryBuilder('record')
             .where('record.schedule=:id', { id: scheduleId })
             .orderBy('record.createDate', 'DESC');
 
         let records;
         if (scheduleStoreUnit === 'count') {
-            records = query.limit(scheduleStoreLimit).getMany();
+            records = await query.limit(scheduleStoreLimit).getMany();
             if (records.length < scheduleStoreLimit) {
                 return;
             }
         } else {
             const minDate = new Date().getTime() - (24 * 60 * 60 * 1000) * scheduleStoreLimit;
-            records = query.where('record.createDate>:date', { date: DateUtil.getUTCDate(new Date(minDate)) });
+            records = await query.where('record.createDate>:date', { date: DateUtil.getUTCDate(new Date(minDate)) }).getMany();
         }
 
         const lastDate = DateUtil.getUTCDate(records[records.length - 1].createDate);

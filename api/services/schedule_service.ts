@@ -76,11 +76,9 @@ export class ScheduleService {
 
         const schedules = await connection.getRepository(Schedule)
             .createQueryBuilder('schedule')
-            .leftJoinAndSelect('schedule.scheduleRecords', 'record', '', { limit: Setting.instance.schedulePageSize })
+            .leftJoinAndSelect('schedule.scheduleRecords', 'record')
             .where(whereStr, parameters)
             .getMany();
-
-        await Promise.all(schedules.map(s => ScheduleRecordService.get(s.id, 0).then(data => [s.scheduleRecords, s.recordCount] = data)));
 
         schedules.forEach(s => {
             if (s.lastRunDate) {

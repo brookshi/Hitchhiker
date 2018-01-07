@@ -146,6 +146,8 @@
     ☐ #64 run all schedule
     ☐ schedule record filter
     ☐ schedule request filter
+    ☐ package compiled app
+    ☐ change duplicated env will apply the change to origin env
 
 0.9:
     ☐ test function base on UI

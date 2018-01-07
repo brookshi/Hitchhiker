@@ -144,7 +144,7 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                             type="primary"
                             icon="file-add"
                             onClick={this.onCreateSchedule}
-                            />
+                        />
                     </Tooltip>
                 </div>
                 <PerfectScrollbar>
@@ -154,7 +154,7 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                         inlineIndent={0}
                         selectedKeys={[activeSchedule]}
                         onSelect={this.onSelectChanged}
-                        >
+                    >
                         {
                             schedules.filter(s => collections[s.collectionId]).map(t =>
                                 (
@@ -167,10 +167,10 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                                             isOwner={t.ownerId === user.id}
                                             delete={() => deleteSchedule(t.id)}
                                             edit={() => this.editSchedule(t)}
-                                            run={() => { console.log(`run schedule: ${t.id}`); runSchedule(t.id); } }
+                                            run={() => { console.log(`run schedule: ${t.id}`); runSchedule(t.id); }}
                                             suspend={() => updateSchedule({ ...t, suspend: !t.suspend })}
                                             isRunning={runState[t.id] ? runState[t.id].isRunning : false}
-                                            />
+                                        />
                                     </Menu.Item>
                                 )
                             )
@@ -187,7 +187,7 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                     render={() => this.setState({ ...this.state, isEditDlgRendered: true })}
                     onCancel={() => this.setState({ ...this.state, isEditDlgOpen: false })}
                     onOk={schedule => this.saveSchedule(schedule)}
-                    />
+                />
             </div>
         );
     }
