@@ -4,7 +4,7 @@ export interface ScheduleStatistics {
 
     id: string;
 
-    runResults: RunResult[];
+    runResults: Array<RunResult & { date: Date }>;
 
     name: string;
 

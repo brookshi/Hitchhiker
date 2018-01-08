@@ -18,6 +18,8 @@ export interface ScheduleRecordsInfo {
     pageNum: number;
 
     mode: ScheduleRecordsDisplayMode;
+
+    excludeNotExist: boolean;
 }
 
 export interface ScheduleRunState {

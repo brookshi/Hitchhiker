@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Tag, Tooltip, Radio, Button, message } from 'antd';
+import { Table, Tag, Tooltip, Radio, Button, message, Checkbox } from 'antd';
 import { DtoScheduleRecord } from '../../../../api/interfaces/dto_schedule_record';
 import { RunResult } from '../../../../api/interfaces/dto_run_result';
 import * as _ from 'lodash';
@@ -16,6 +16,17 @@ import { ScheduleRecordsInfo } from '../../state/schedule';
 import { GlobalVar } from '../../utils/global_var';
 import { ScheduleRecordsDisplayMode, ScheduleRecordsDisplayType } from '../../common/custom_type';
 import { ScheduleStatistics } from '../../common/schedule_statistics';
+import ReactEchartsCore from 'echarts-for-react/lib/core';
+import echarts from 'echarts/lib/echarts';
+import 'echarts/lib/chart/bar';
+import 'echarts/lib/chart/line';
+import 'echarts/lib/component/tooltip';
+import 'echarts/lib/component/singleAxis';
+import 'echarts/lib/component/dataZoom';
+import 'echarts/lib/component/grid';
+import 'echarts/lib/component/toolbox';
+import 'echarts/lib/component/markPoint';
+import 'echarts/lib/component/markLine';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -43,6 +54,8 @@ interface ScheduleRunHistoryGridProps {
     setScheduleRecordsPage(id: string, page: number);
 
     setScheduleRecordsMode(id: string, mode: ScheduleRecordsDisplayMode);
+
+    setScheduleRecordsExcludeNotExist(id: string, excludeNotExist: boolean);
 }
 
 interface ScheduleRunHistoryGridState {
@@ -111,7 +124,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
             <RunResultTable
                 className="schedule-sub-table"
                 bordered={true}
-                size="middle"
+                size="small"
                 rowKey="key"
                 dataSource={displayRunResults}
                 pagination={false}
@@ -346,7 +359,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
             <ScheduleRecordTable
                 className="schedule-table"
                 bordered={true}
-                size="middle"
+                size="small"
                 rowKey="id"
                 dataSource={_.chain(scheduleRecords).sortBy('runDate').reverse().value()}
                 pagination={{ pageSize: GlobalVar.instance.schedulePageSize, total: scheduleRecords.length, current: scheduleRecordsInfo ? (scheduleRecordsInfo.pageNum || 1) : 1 }}
@@ -378,7 +391,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
     }
 
     private getStatisticsTable() {
-        const { schedule } = this.props;
+        const { records, schedule, scheduleRecordsInfo } = this.props;
         let sortedStatisticsData: Array<ScheduleStatistics> = [];
         const statisticsData = this.statistics();
         schedule.recordsOrder.split(';').forEach(o => {
@@ -389,7 +402,9 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
             }
         });
         sortedStatisticsData = [...sortedStatisticsData, ..._.chain(statisticsData).values<ScheduleStatistics>().sortBy('name').value()];
-
+        if (scheduleRecordsInfo && scheduleRecordsInfo.excludeNotExist === false) {
+            sortedStatisticsData = sortedStatisticsData.filter(s => records[s.id]);
+        }
         return (
             <ScheduleStatisticsTable
                 className="schedule-table"
@@ -397,6 +412,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                 size="small"
                 rowKey="id"
                 dataSource={sortedStatisticsData}
+                expandedRowRender={d => this.getStatisticsDetail(d)}
                 pagination={false}
             >
                 <ScheduleStatisticsColumn
@@ -439,13 +455,74 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
         );
     }
 
+    private getStatisticsDetail(data: ScheduleStatistics) {
+        const option = {
+            color: ['#2EC7C9'],
+            tooltip: {},
+            toolbox: {
+                show: true,
+                feature: {
+                    magicType: {
+                        show: true,
+                        type: ['line', 'bar']
+                    }
+                }
+            },
+            grid: {
+                left: 8,
+                right: 8,
+                bottom: 55,
+                containLabel: true
+            },
+            xAxis: [{
+                type: 'category',
+                axisTick: { show: true },
+                splitArea: { show: false },
+                data: data.runResults.map(r => `${r.date.getMonth() + 1}/${r.date.getDate()} ${r.date.getHours()}:${r.date.getMinutes()}`)
+            }],
+            yAxis: [{
+                name: 'ms',
+                type: 'value',
+                axisTick: { show: false },
+                splitArea: { show: false },
+            }],
+            dataZoom: [{
+                show: true,
+                height: 20,
+                xAxisIndex: [0],
+                handleIcon: 'path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z',
+                handleSize: '110%'
+            }, {
+                type: 'inside'
+            }],
+            series: [{
+                name: 'Time',
+                type: 'bar',
+                data: data.runResults.map(r => ({
+                    value: r.elapsed,
+                    itemStyle: { normal: { color: this.isSuccess(r) ? '#2EC7C9' : '#FA827D' } },
+                    tooltip: {
+                        formatter: (p) => {
+                            const rst = data.runResults[p.dataIndex];
+                            return `<span class='${this.isSuccess(r) ? 'schedule-success' : 'schedule-failed'}'><div>Time: ${rst.date.toLocaleString()}</div>
+                        <div>Duration: ${rst.elapsed} ms</div></span>`;
+                        }
+                    }
+                })),
+                markPoint: { data: [{ type: 'max', name: 'Max' }, { type: 'min', name: 'Min' }] },
+                markLine: { data: [{ type: 'average', name: 'Average' }] }
+            }]
+        };
+        return <ReactEchartsCore echarts={echarts} style={{ height: 300 }} option={option} />;
+    }
+
     private statistics() {
         const { schedule, records } = this.props;
         let scheduleRecords = schedule.scheduleRecords || [];
         if (scheduleRecords) {
             scheduleRecords.forEach(r => r.runDate = new Date(r.runDate));
         }
-        scheduleRecords = _.chain(scheduleRecords).sortBy('runDate').reverse().value();
+        scheduleRecords = _.chain(scheduleRecords).sortBy('runDate').value();
         const statisticsData: _.Dictionary<ScheduleStatistics> = {};
         scheduleRecords.forEach((r, i) => {
             const compareDict = _.keyBy(this.flattenRunResult(r.result.compare), o => `${o.id}${o.param || ''}`);
@@ -453,15 +530,15 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                 const key = `${o.id}${o.param || ''}`;
                 statisticsData[key] = statisticsData[key] || {};
                 statisticsData[key].runResults = statisticsData[key].runResults || [];
-                statisticsData[key].runResults.push(o);
+                statisticsData[key].runResults.push({ ...o, date: r.runDate });
                 if (!statisticsData[key].id) {
-                    statisticsData[key].id = key;
+                    statisticsData[key].id = o.id;
                     statisticsData[key].name = records[o.id] ? records[o.id].name : unknownName;
                     statisticsData[key].param = o.param;
                 }
                 const needCompare = !!compareDict[key];
                 if (needCompare) {
-                    statisticsData[key].runResults.push(compareDict[key]);
+                    statisticsData[key].runResults.push({ ...compareDict[key], date: r.runDate });
                 }
             });
         });
@@ -475,30 +552,41 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
             r.maxTime = _.max(elapseds);
             r.minTime = _.min(elapseds);
             r.averageTime = Math.round(elapseds.reduce((p, c) => p + c, 0) / r.runResults.length);
-            r.lastStatus = this.isSuccess(r.runResults[0]);
+            r.lastStatus = this.isSuccess(r.runResults[r.runResults.length - 1]);
         });
 
         return statisticsData;
     }
 
     public render() {
-        const { isRunning, consoleRunResults, records, envNames, schedule, scheduleRecordsInfo, setScheduleRecordsMode } = this.props;
+        const { isRunning, consoleRunResults, records, envNames, schedule, scheduleRecordsInfo, setScheduleRecordsMode, setScheduleRecordsExcludeNotExist } = this.props;
         const { isDiffDlgOpen, diffOriginContent, diffOriginTitle, diffTargetContent, diffTargetTitle } = this.state;
         let scheduleRecords = schedule.scheduleRecords || [];
         if (scheduleRecords) {
             scheduleRecords.forEach(r => r.runDate = new Date(r.runDate));
         }
 
-        const mode = scheduleRecordsInfo ? (scheduleRecordsInfo.mode || ScheduleRecordsDisplayType.normal) : ScheduleRecordsDisplayType.normal;
+        let { mode, excludeNotExist } = (scheduleRecordsInfo || { mode: ScheduleRecordsDisplayType.normal, excludeNotExist: true });
+        mode = mode || ScheduleRecordsDisplayType.normal;
+        excludeNotExist = excludeNotExist === undefined ? true : excludeNotExist;
 
         return (
             <div>
                 <div>
-                    <span style={{ fontSize: 14 }}>View mode: </span>
-                    <RadioGroup defaultValue={mode} onChange={e => setScheduleRecordsMode(schedule.id, (e.target as any).value)}>
+                    <span style={{ fontSize: 13 }}>View mode: </span>
+                    <RadioGroup style={{ marginRight: 16 }} defaultValue={mode} value={mode} onChange={e => setScheduleRecordsMode(schedule.id, (e.target as any).value)}>
                         <RadioButton value={ScheduleRecordsDisplayType.normal}>Normal</RadioButton>
                         <RadioButton value={ScheduleRecordsDisplayType.statistics}>Statistics</RadioButton>
                     </RadioGroup>
+                    {
+                        mode === ScheduleRecordsDisplayType.statistics ? (
+                            <span>
+                                <Checkbox checked={excludeNotExist} onChange={e => setScheduleRecordsExcludeNotExist(schedule.id, (e.target as any).checked)}>
+                                    Exclude not exist
+                                </Checkbox>
+                            </span>
+                        ) : ''
+                    }
                 </div>
                 <ScheduleRunConsole
                     isRunning={isRunning}

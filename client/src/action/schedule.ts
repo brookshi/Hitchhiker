@@ -16,6 +16,8 @@ export const SetScheduleRecordsModeType = 'set schedule records display mode';
 
 export const SetScheduleRecordsPageType = 'set schedule records page';
 
+export const SetScheduleRecordsExcludeNotExistType = 'set schedule records statistics exclude not exist';
+
 export const ScheduleChunkDataType = 'schedule chunk data';
 
 export const RunScheduleFulfillType = 'run schedule completely';
