@@ -4,9 +4,13 @@ export interface ScheduleStatistics {
 
     id: string;
 
+    key: string;
+
     runResults: Array<RunResult & { date: Date }>;
 
     name: string;
+
+    env: string;
 
     param?: string;
 

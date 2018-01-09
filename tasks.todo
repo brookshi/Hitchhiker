@@ -141,7 +141,7 @@
     ✔ not stop when find password failed @done (12/27/2017, 12:46:12 PM)
     ✔ remove error annotate of variable in script/parameters @done (12/29/2017, 12:14:32 AM)
 0.8: 
-    ☐ schedule statistics mode
+    ✔ schedule statistics mode @done (1/9/2018, 6:57:58 PM)
     ☐ #67 stop stress test
     ☐ #64 run all schedule
     ☐ schedule record filter

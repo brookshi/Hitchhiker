@@ -394,23 +394,25 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
         const { records, schedule, scheduleRecordsInfo } = this.props;
         let sortedStatisticsData: Array<ScheduleStatistics> = [];
         const statisticsData = this.statistics();
+
         schedule.recordsOrder.split(';').forEach(o => {
             const [id] = o.split(':');
-            if (statisticsData[id]) {
-                sortedStatisticsData.push(statisticsData[id]);
-                Reflect.deleteProperty(statisticsData, id);
-            }
+            const requestsData = _.values(statisticsData).filter(s => s.id.startsWith(id));
+            sortedStatisticsData.push(...requestsData);
+            requestsData.forEach(r => Reflect.deleteProperty(statisticsData, r.key));
         });
         sortedStatisticsData = [...sortedStatisticsData, ..._.chain(statisticsData).values<ScheduleStatistics>().sortBy('name').value()];
-        if (scheduleRecordsInfo && scheduleRecordsInfo.excludeNotExist === false) {
-            sortedStatisticsData = sortedStatisticsData.filter(s => records[s.id]);
+
+        if (scheduleRecordsInfo && scheduleRecordsInfo.excludeNotExist !== false) {
+            sortedStatisticsData = sortedStatisticsData.filter(s => records[s.id] && records[s.id].collectionId === schedule.collectionId);
         }
+
         return (
             <ScheduleStatisticsTable
                 className="schedule-table"
                 bordered={true}
                 size="small"
-                rowKey="id"
+                rowKey="key"
                 dataSource={sortedStatisticsData}
                 expandedRowRender={d => this.getStatisticsDetail(d)}
                 pagination={false}
@@ -419,6 +421,10 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                     title="Name"
                     dataIndex="name"
                     render={(text, record) => `${record.name}${record.param ? ' - ' + record.param : ''}`}
+                />
+                <ScheduleStatisticsColumn
+                    title="Environment"
+                    dataIndex="env"
                 />
                 <ScheduleStatisticsColumn
                     title="Latest"
@@ -470,7 +476,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
             },
             grid: {
                 left: 8,
-                right: 8,
+                right: 32,
                 bottom: 55,
                 containLabel: true
             },
@@ -517,7 +523,8 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
     }
 
     private statistics() {
-        const { schedule, records } = this.props;
+        const { schedule } = this.props;
+        const envs = [schedule.environmentId, schedule.compareEnvironmentId];
         let scheduleRecords = schedule.scheduleRecords || [];
         if (scheduleRecords) {
             scheduleRecords.forEach(r => r.runDate = new Date(r.runDate));
@@ -525,22 +532,8 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
         scheduleRecords = _.chain(scheduleRecords).sortBy('runDate').value();
         const statisticsData: _.Dictionary<ScheduleStatistics> = {};
         scheduleRecords.forEach((r, i) => {
-            const compareDict = _.keyBy(this.flattenRunResult(r.result.compare), o => `${o.id}${o.param || ''}`);
-            this.flattenRunResult(r.result.origin).forEach(o => {
-                const key = `${o.id}${o.param || ''}`;
-                statisticsData[key] = statisticsData[key] || {};
-                statisticsData[key].runResults = statisticsData[key].runResults || [];
-                statisticsData[key].runResults.push({ ...o, date: r.runDate });
-                if (!statisticsData[key].id) {
-                    statisticsData[key].id = o.id;
-                    statisticsData[key].name = records[o.id] ? records[o.id].name : unknownName;
-                    statisticsData[key].param = o.param;
-                }
-                const needCompare = !!compareDict[key];
-                if (needCompare) {
-                    statisticsData[key].runResults.push({ ...compareDict[key], date: r.runDate });
-                }
-            });
+            this.insertToStatisticsData(envs, statisticsData, r.result.origin, r.runDate);
+            this.insertToStatisticsData(envs, statisticsData, r.result.compare, r.runDate);
         });
 
         _.values(statisticsData).forEach(r => {
@@ -556,6 +549,24 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
         });
 
         return statisticsData;
+    }
+
+    private insertToStatisticsData(envs: string[], statisticsData: _.Dictionary<ScheduleStatistics>, runResults: Array<RunResult | _.Dictionary<RunResult>>, runDate: Date) {
+        this.flattenRunResult(runResults).forEach(o => {
+            if (envs.find(e => e === o.envId) || this.props.scheduleRecordsInfo.excludeNotExist === false) {
+                const key = `${o.id}${o.param || ''}${o.envId || ''}`;
+                statisticsData[key] = statisticsData[key] || {};
+                statisticsData[key].runResults = statisticsData[key].runResults || [];
+                statisticsData[key].runResults.push({ ...o, date: runDate });
+                if (!statisticsData[key].id) {
+                    statisticsData[key].id = o.id;
+                    statisticsData[key].key = key;
+                    statisticsData[key].env = this.getEnvName(o.envId);
+                    statisticsData[key].name = this.getRecordDisplayName(o.id);
+                    statisticsData[key].param = o.param;
+                }
+            }
+        });
     }
 
     public render() {
@@ -582,7 +593,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                         mode === ScheduleRecordsDisplayType.statistics ? (
                             <span>
                                 <Checkbox checked={excludeNotExist} onChange={e => setScheduleRecordsExcludeNotExist(schedule.id, (e.target as any).checked)}>
-                                    Exclude not exist
+                                    Exclude depredated request
                                 </Checkbox>
                             </span>
                         ) : ''
