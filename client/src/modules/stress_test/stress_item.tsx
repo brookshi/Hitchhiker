@@ -18,6 +18,8 @@ interface StressItemProps {
     edit();
 
     run();
+
+    stop();
 }
 
 interface StressItemState { }
@@ -27,16 +29,24 @@ class StressItem extends React.Component<StressItemProps, StressItemState> {
     private itemWithMenu: ItemWithMenu;
 
     private getMenu = () => {
+        const { isOwner, isRunning } = this.props;
         return (
             <Menu className="item_menu" onClick={this.onClickMenu}>
                 <Menu.Item key="run">
                     <Icon type="play-circle-o" /> Run now
                 </Menu.Item>
+                {
+                    isRunning ? (
+                        <Menu.Item key="stop">
+                            <Icon type="minus-circle-o" /> Stop
+                        </Menu.Item>
+                    ) : ''
+                }
                 <Menu.Item key="edit">
                     <Icon type="edit" /> Edit
                 </Menu.Item>
                 {
-                    this.props.isOwner ? (
+                    isOwner ? (
                         <Menu.Item key="delete">
                             <Icon type="delete" /> Delete
                         </Menu.Item>
@@ -65,6 +75,10 @@ class StressItem extends React.Component<StressItemProps, StressItemState> {
 
     run = () => {
         this.props.run();
+    }
+
+    stop = () => {
+        this.props.stop();
     }
 
     public render() {

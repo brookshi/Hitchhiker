@@ -67,8 +67,11 @@ process.on('message', (msg: StressRequest) => {
             break;
         case StressMessageType.stop:
             Log.info('stress - user stop');
-            sendMsgToWorkers(msg);
-            currentStressRequest = undefined;
+            if (currentStressRequest.id !== msg.id) {
+                Log.error(`stress - cannot stop a idle stress task, current: ${currentStressRequest.id}, target: ${msg.id}.`);
+            } else {
+                sendMsgToWorkers(msg);
+            }
             break;
         default:
             break;
@@ -186,7 +189,7 @@ function startStressProcess() {
         Log.info(`stress - worker connected: ${addr}`);
 
         socket.on('message', data => {
-            Log.info(`stress - data from ${addr}`);
+            Log.info(`stress - data from ${addr}: ${JSON.stringify(data)}`);
             const obj = JSON.parse(data.toString()) as StressMessage;
             switch (obj.type) {
                 case StressMessageType.hardware:
@@ -286,6 +289,9 @@ async function storeStressRecord(runResult: StressRunResult): Promise<void> {
 }
 
 function workerTrace(runResult: RunResult) {
+    if (!currentStressRequest) {
+        return;
+    }
     if (!isGoNode()) {
         runResult.id += StringUtil.toString(runResult.param);
     }

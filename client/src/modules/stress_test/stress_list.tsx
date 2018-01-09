@@ -39,6 +39,8 @@ interface StressListProps {
     deleteStress(stressId: string);
 
     runStress(stressId: string);
+
+    stopStress(stressId: string);
 }
 
 interface StressListState {
@@ -117,7 +119,7 @@ class StressList extends React.Component<StressListProps, StressListState> {
     }
 
     public render() {
-        const { activeStress, currentRunStress, stresses, collections, environments, user, deleteStress, runStress } = this.props;
+        const { activeStress, currentRunStress, stresses, collections, environments, user, deleteStress, runStress, stopStress } = this.props;
         return (
             <div>
                 <div className="small-toolbar">
@@ -149,6 +151,7 @@ class StressList extends React.Component<StressListProps, StressListState> {
                                             delete={() => deleteStress(t.id)}
                                             edit={() => this.editStress(t)}
                                             run={() => runStress(t.id)}
+                                            stop={() => stopStress(t.id)}
                                             isRunning={currentRunStress === t.id}
                                         />
                                     </Menu.Item>

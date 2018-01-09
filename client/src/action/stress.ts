@@ -1,7 +1,7 @@
 import { Urls } from '../utils/urls';
 import { StressResponse } from '../../../api/interfaces/dto_stress_setting';
 import { StressMessageType } from '../common/stress_type';
-import { takeEvery, put } from 'redux-saga/effects';
+import { takeEvery, put, takeLatest } from 'redux-saga/effects';
 import { syncAction, actionCreator } from './index';
 import { HttpMethod } from '../common/http_method';
 import { Dispatch } from 'react-redux';
@@ -14,6 +14,8 @@ export const DeleteStressType = 'delete stress test';
 export const ActiveStressType = 'active stress test';
 
 export const RunStressType = 'run stress test';
+
+export const StopStressType = 'stop stress test';
 
 export const StressChunkDataType = 'stress test chunk data';
 
@@ -63,11 +65,25 @@ export class StressWS {
     }
 
     start(stressId: string) {
-        if (!this.socket || this.socket.readyState !== this.socket.OPEN) {
-            console.error('socket is closed, please refresh to connect');
+        if (!this.checkSocket()) {
             return;
         }
         this.socket.send(JSON.stringify({ type: StressMessageType.task, stressId }));
+    }
+
+    stop(stressId: string) {
+        if (!this.checkSocket()) {
+            return;
+        }
+        this.socket.send(JSON.stringify({ type: StressMessageType.stop, stressId }));
+    }
+
+    private checkSocket() {
+        if (!this.socket || this.socket.readyState !== this.socket.OPEN) {
+            console.error('socket is closed, please refresh to connect');
+            return false;
+        }
+        return true;
     }
 }
 
@@ -88,7 +104,13 @@ export function* deleteStress() {
 }
 
 export function* runStress() {
-    yield takeEvery(RunStressType, function* (action: any) {
+    yield takeLatest(RunStressType, function* (action: any) {
         StressWS.instance.start(action.value);
+    });
+}
+
+export function* stopStress() {
+    yield takeLatest(StopStressType, function* (action: any) {
+        StressWS.instance.stop(action.value);
     });
 }

@@ -25,14 +25,14 @@ export class RecordRunner {
         return await RecordRunner.runRecordExs(recordExs, needOrder);
     }
 
-    static async runRecordExs(rs: RecordEx[], needOrder: boolean): Promise<Array<RunResult | _.Dictionary<RunResult>>> {
+    static async runRecordExs(rs: RecordEx[], needOrder: boolean, checkNeedStop?: () => boolean): Promise<Array<RunResult | _.Dictionary<RunResult>>> {
         const runResults: Array<RunResult | _.Dictionary<RunResult>> = [];
         if (rs.length === 0) {
             return runResults;
         }
         const vid = rs[0].vid;
         if (needOrder) {
-            await RecordRunner.runRecordSeries(rs, runResults);
+            await RecordRunner.runRecordSeries(rs, runResults, checkNeedStop);
         } else {
             await RecordRunner.runRecordParallel(rs, runResults);
         }
@@ -41,8 +41,11 @@ export class RecordRunner {
         return runResults;
     }
 
-    private static async runRecordSeries(records: RecordEx[], runResults: BatchRunResult[]) {
+    private static async runRecordSeries(records: RecordEx[], runResults: BatchRunResult[], checkNeedStop?: () => boolean) {
         for (let record of records) {
+            if (checkNeedStop && checkNeedStop()) {
+                break;
+            }
             const parameters = await RecordRunner.getParametersWithVariables(record);
             const paramArr = StringUtil.parseParameters(parameters, record.parameterType);
             if (paramArr.length === 0) {
@@ -50,6 +53,9 @@ export class RecordRunner {
             } else {
                 // TODO: sync or async ?
                 for (let param of paramArr) {
+                    if (checkNeedStop && checkNeedStop()) {
+                        break;
+                    }
                     let recordEx = RecordRunner.applyReqParameterToRecord(record, param) as RecordEx;
                     recordEx = { ...recordEx, param };
                     const runResult = await RecordRunner.runRecordWithVW(recordEx);

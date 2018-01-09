@@ -98,7 +98,8 @@ function handleMsg(msg: StressRequest) {
             finish();
             break;
         case StressMessageType.stop:
-            finish();
+            Log.info('nodejs stress process - status: stop');
+            runForHandlers(h => h.process.send({ type: StressMessageType.stop }));
             break;
         default:
             break;

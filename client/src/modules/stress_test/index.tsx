@@ -15,7 +15,7 @@ import StressRunHistoryGrid from './stress_run_history_grid';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { DtoCollection } from '../../../../api/interfaces/dto_collection';
 import { StressRunResult } from '../../../../api/interfaces/dto_stress_setting';
-import { SaveStressType, DeleteStressType, ActiveStressType, RunStressType } from '../../action/stress';
+import { SaveStressType, DeleteStressType, ActiveStressType, RunStressType, StopStressType } from '../../action/stress';
 import StressWorkerStatus from './stress_worker_status';
 
 const { Content, Sider } = Layout;
@@ -58,6 +58,8 @@ interface StressDispatchProps {
     deleteStress(stressId: string);
 
     runStress(stressId: string);
+
+    stopStress(stressId: string);
 }
 
 type StressProps = StressStateProps & StressDispatchProps;
@@ -70,7 +72,7 @@ class StressTest extends React.Component<StressProps, StressState> {
         return _.chain(this.props.stresses).values<DtoStress>().sortBy('name').value();
     }
     public render() {
-        const { collapsed, leftPanelWidth, collapsedLeftPanel, createStress, selectStress, updateStress, deleteStress, user, activeStress, currentRunStressId, collections, environments, records, stresses, runStress, runState } = this.props;
+        const { collapsed, leftPanelWidth, collapsedLeftPanel, createStress, selectStress, updateStress, deleteStress, user, activeStress, currentRunStressId, collections, environments, records, stresses, runStress, runState, stopStress } = this.props;
         const stress = stresses[activeStress] || {};
 
         return (
@@ -94,6 +96,7 @@ class StressTest extends React.Component<StressProps, StressState> {
                         updateStress={updateStress}
                         deleteStress={deleteStress}
                         runStress={runStress}
+                        stopStress={stopStress}
                         records={records}
                     />
                 </Sider>
@@ -140,7 +143,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): StressDispatchProps => {
         selectStress: (stressId) => dispatch(actionCreator(ActiveStressType, stressId)),
         collapsedLeftPanel: (collapsed) => dispatch(actionCreator(UpdateLeftPanelType, collapsed)),
         resizeLeftPanel: (width) => dispatch(actionCreator(ResizeLeftPanelType, width)),
-        runStress: (stressId) => dispatch(actionCreator(RunStressType, stressId))
+        runStress: (stressId) => dispatch(actionCreator(RunStressType, stressId)),
+        stopStress: (stressId) => dispatch(actionCreator(StopStressType, stressId))
     };
 };
 
