@@ -324,7 +324,7 @@ export class RecordService {
 
         recordExs = _.sortBy(recordExs, 'name');
         const recordDict = _.keyBy(recordExs, 'id');
-        const orderRecords = (orderIds || '').split(';').map(i => i.substr(0, i.length - 2)).filter(r => recordDict[r]).map(r => recordDict[r]);
+        const orderRecords = (orderIds || '').split(';').map(i => i.includes(':') ? i.substr(0, i.length - 2) : i).filter(r => recordDict[r]).map(r => recordDict[r]);
         return _.unionBy(orderRecords, recordExs, 'id');
     }
 }
