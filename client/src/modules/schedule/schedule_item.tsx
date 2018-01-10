@@ -1,6 +1,6 @@
 import React from 'react';
 import ItemWithMenu from '../../components/item_with_menu';
-import { Menu, Icon, Popover } from 'antd';
+import { Menu, Icon, Popover, Checkbox } from 'antd';
 import { confirmDlg } from '../../components/confirm_dialog/index';
 import { DtoSchedule } from '../../../../api/interfaces/dto_schedule';
 import './style/index.less';
@@ -23,6 +23,8 @@ interface ScheduleItemProps {
 
     isRunning: boolean;
 
+    isChecked: boolean;
+
     delete();
 
     edit();
@@ -30,6 +32,8 @@ interface ScheduleItemProps {
     run();
 
     suspend();
+
+    onCheck(checked: boolean);
 }
 
 interface ScheduleItemState { }
@@ -104,12 +108,12 @@ class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState>
     }
 
     public render() {
-        const { schedule, isRunning } = this.props;
+        const { schedule, isRunning, isChecked, onCheck } = this.props;
         const { name, lastRunDate, suspend } = schedule;
 
         return (
             <Popover mouseEnterDelay={1.5} placement="bottom" title="Schedule information" content={this.scheduleInfo}>
-                {suspend ? <Icon className="schedule-item-suspend" type="pause-circle-o" /> : ''}
+                <Checkbox className="schedule-item-check" checked={isChecked} onChange={event => onCheck((event.target as any).checked)} />
                 <ItemWithMenu
                     ref={ele => this.itemWithMenu = ele}
                     icon={<Icon className="c-icon" type="schedule" />}
@@ -118,6 +122,7 @@ class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState>
                     subName={<div>{`Last run: ${lastRunDate ? new Date(lastRunDate).toLocaleString() : 'never run'}`}</div>}
                     menu={this.getMenu()}
                 />
+                {suspend ? <Icon className="schedule-item-suspend" type="pause-circle-o" /> : ''}
             </Popover>
         );
     }
