@@ -94,8 +94,8 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
     private duplicate = (env: DtoEnvironment) => {
         const envCopy = { ...env };
         envCopy.name = `${envCopy.name}.copy`;
-        envCopy.id = StringUtil.generateUID();
-        envCopy.variables.forEach(v => v.id = StringUtil.generateUID());
+        envCopy.id = StringUtil.generateUID(); 
+        envCopy.variables = envCopy.variables.map(v => ({...v, id: StringUtil.generateUID()}));
         this.props.createEnv(envCopy);
     }
 
