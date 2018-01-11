@@ -142,6 +142,14 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                     title="Pass"
                     dataIndex="success"
                     render={(text, runResult) => <Tag color={this.isSuccess(runResult) ? successColor : failColor}>{this.isSuccess(runResult) ? pass : fail}</Tag>}
+                    filters={[{
+                        text: 'PASS',
+                        value: 'true',
+                    }, {
+                        text: 'FAIL',
+                        value: 'false',
+                    }]}
+                    onFilter={(value, runResult) => this.isSuccess(runResult).toString() === value}
                 />
                 <RunResultColumn
                     title="Duration"
@@ -152,6 +160,8 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                     title="Environment"
                     dataIndex="envId"
                     render={(text, runResult) => this.getEnvName(runResult.envId)}
+                    filters={_.chain(displayRunResults).map(d => d.envId).uniq().map(d => ({ text: this.getEnvName(d), value: this.getEnvName(d) })).value()}
+                    onFilter={(value, runResult) => runResult.envId === value}
                 />
                 <RunResultColumn title="Headers" dataIndex="headers" render={this.getHeadersDisplay} />
                 <RunResultColumn title="Body" dataIndex="body" render={this.getBodyDisplay} />
@@ -425,11 +435,21 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                 <ScheduleStatisticsColumn
                     title="Environment"
                     dataIndex="env"
+                    filters={_.chain(sortedStatisticsData).map(d => d.env).uniq().map(d => ({ text: d, value: d })).value()}
+                    onFilter={(value, record) => record.env === value}
                 />
                 <ScheduleStatisticsColumn
                     title="Latest"
                     dataIndex="lastStatus"
                     render={(text, record) => <Tag color={record.lastStatus ? successColor : failColor}>{record.lastStatus ? pass : fail}</Tag>}
+                    filters={[{
+                        text: 'PASS',
+                        value: 'true',
+                    }, {
+                        text: 'FAIL',
+                        value: 'false',
+                    }]}
+                    onFilter={(value, record) => record.lastStatus.toString() === value}
                 />
                 <ScheduleStatisticsColumn
                     title="Success"
