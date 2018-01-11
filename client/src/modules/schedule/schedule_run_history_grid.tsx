@@ -448,14 +448,17 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                 <ScheduleStatisticsColumn
                     title="Min Time (ms)"
                     dataIndex="minTime"
+                    sorter={(p, c) => p.minTime - c.minTime}
                 />
                 <ScheduleStatisticsColumn
                     title="Max Time (ms)"
                     dataIndex="maxTime"
+                    sorter={(p, c) => p.maxTime - c.maxTime}
                 />
                 <ScheduleStatisticsColumn
                     title="Avg Time (ms)"
                     dataIndex="averageTime"
+                    sorter={(p, c) => p.averageTime - c.averageTime}
                 />
             </ScheduleStatisticsTable>
         );
