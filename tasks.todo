@@ -145,7 +145,6 @@
     ✔ #67 stop stress test @done (1/11/2018, 12:46:45 PM)
     ✔ #64 run all schedule @done (1/11/2018, 12:01:36 AM)
     ✔ schedule record filter @done (1/11/2018, 10:42:31 PM)
-    ☐ schedule request filter
     ☐ package compiled app
     ✔ change duplicated env will apply the change to origin env @done (1/11/2018, 1:45:34 PM)
 
@@ -155,6 +154,7 @@
     ☐ edit global function in collection module
 
 backlog:
+    ☐ handle zip response
     ☐ auth
     ☐ response timeline
     ☐ resize request panel and response panel height 
@@ -169,7 +169,7 @@ backlog:
     ☐ body type
     ☐ project share collection/env for own
     ☐ login user email case sensitive in linux mysql
-
+    ☐ api data zip
     ☐ variable highlight
     ☐ save all tabs, close all tabs, close all but active.
     ☐ Me project should be removable
