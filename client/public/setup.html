@@ -42,6 +42,21 @@
             line-height: 40px;
         }
 
+        .log {
+            color: #27AE60;
+            font-size: 12px;
+            font-weight: bold;
+            height: 20px;
+        }
+
+        .mail-api {
+            display: none;
+        }
+
+        .mail-smtp {
+            display: none;
+        }
+
         #msform {
             width: 600px;
             margin: 30px auto;
@@ -99,6 +114,10 @@
         #msform .action-button:hover,
         #msform .action-button:focus {
             box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
+        }
+
+        #msform .action-button:disabled {
+            background: #999;
         }
         /*headings*/
 
@@ -193,12 +212,14 @@
             <div class="field-title field-must">
                 <span>*</span>IP:
             </div>
-            <input type="text" name="HITCHHIKER_APP_HOST" placeholder="IP" />
+            <input type="text" name="HITCHHIKER_APP_HOST" oninput="onHostChange()" value="localhost" onpropertychange="onHostChange()"
+                placeholder="IP" />
             <div class="field-title field-must">
                 <span>*</span>Port:
             </div>
-            <input type="text" name="Port" placeholder="Port" />
-            <input type="button" name="next" class="next action-button" value="Next" />
+            <input type="text" name="Port" placeholder="Port" oninput="onHostChange()" value="8080" onpropertychange="onHostChange()"
+            />
+            <input type="button" id="host-next" name="next" class="next action-button" value="Next" />
         </fieldset>
         <fieldset>
             <h2 class="fs-title">Mysql Database Settings</h2>
@@ -206,25 +227,30 @@
             <div class="field-title field-must">
                 <span>*</span>Host:
             </div>
-            <input type="text" name="HITCHHIKER_DB_HOST" placeholder="Host" />
+            <input type="text" name="HITCHHIKER_DB_HOST" placeholder="Host" value="localhost" oninput="onDBChange()" onpropertychange="onDBChange()"
+            />
             <div class="field-title field-must">
                 <span>*</span>Port:
             </div>
-            <input type="text" name="HITCHHIKER_DB_PORT" placeholder="Port" />
+            <input type="text" name="HITCHHIKER_DB_PORT" placeholder="Port" oninput="onDBChange()" value="3306" onpropertychange="onDBChange()"
+            />
             <div class="field-title field-must">
                 <span>*</span>Database:
             </div>
-            <input type="text" name="MYSQL_DATABASE" placeholder="Database" value="hitchhiker-prod" />
+            <input type="text" name="MYSQL_DATABASE" placeholder="Database" value="hitchhiker-prod" oninput="onDBChange()" onpropertychange="onDBChange()"
+            />
             <div class="field-title field-must">
                 <span>*</span>User:
             </div>
-            <input type="text" name="HITCHHIKER_DB_USERNAME" placeholder="User" value="root" />
+            <input type="text" name="HITCHHIKER_DB_USERNAME" placeholder="User" value="root" oninput="onDBChange()" onpropertychange="onDBChange()"
+            />
             <div class="field-title field-must">
                 <span>*</span>Password:
             </div>
-            <input type="text" name="MYSQL_ROOT_PASSWORD" placeholder="Password" />
+            <input type="text" name="MYSQL_ROOT_PASSWORD" placeholder="Password" value="hitchhiker888" oninput="onDBChange()" onpropertychange="onDBChange()"
+            />
             <input type="button" name="previous" class="previous action-button" value="Previous" />
-            <input type="button" name="next" class="next action-button" value="Next" />
+            <input type="button" id="db-next" name="next" class="next action-button" value="Next" />
         </fieldset>
         <fieldset>
             <h2 class="fs-title">Hitchhiker Settings</h2>
@@ -233,14 +259,17 @@
                 <input type="checkbox" name="HITCHHIKER_SYNC_ONOFF" id="Sync">
                 <label class="checkbox-title" for="Sync">Auto Sync Data</label>
             </div>
-            <div class="field-title">Auto sync interval:</div>
+            <div class="field-title">Auto sync interval(s):</div>
             <input type="text" name="HITCHHIKER_SYNC_INTERVAL" placeholder="Auto Sync Interval" value="30" />
             <div class="checkbox-div">
                 <input type="checkbox" name="HITCHHIKER_SCHEDULE_MAILFORFAIL" id="MailOnlyForFail" checked>
-                <label class="checkbox-title" for="MailOnlyForFail">Schedule send mail only for fail</label>
+                <label class="checkbox-title" for="MailOnlyForFail">Schedule send mail only when fail</label>
             </div>
             <div class="field-title">Schedule store unit:</div>
-            <input type="text" name="HITCHHIKER_SCHEDULE_STORE_UNIT" placeholder="Schedule store unit" value="count" />
+            <select name="HITCHHIKER_SCHEDULE_STORE_UNIT">
+                <option selected>count</option>
+                <option>day</option>
+            </select>
             <div class="field-title">Schedule store limit:</div>
             <input type="text" name="HITCHHIKER_SCHEDULE_STORE_LIMIT" placeholder="Schedule store limit" value="50" />
             <div class="field-title">Stress store max count:</div>
@@ -250,37 +279,42 @@
         </fieldset>
         <fieldset>
             <h2 class="fs-title">Mail Interface</h2>
-            <h3 class="fs-subtitle">Use custom api or SMTP server to send email</h3>
+            <h3 class="fs-subtitle">Use custom API or SMTP server to send email</h3>
             <div class="field-title">Type:</div>
-            <select name="HITCHHIKER_MAIL_CUSTOM">
+            <select name="HITCHHIKER_MAIL_CUSTOM" onchange="onMailTypeSelect(this.options[this.options.selectedIndex].value)">
                 <option selected>none</option>
                 <option>api</option>
                 <option>smtp</option>
             </select>
-            <div class="field-title">API address:</div>
-            <input type="text" name="api" placeholder="Custom API address" />
-            <div class="field-title">SMTP host:</div>
-            <input type="text" name="HITCHHIKER_MAIL_SMTP_HOST" placeholder="SMTP host" value="smtp.qq.com" />
-            <div class="field-title">SMTP port:</div>
-            <input type="text" name="HITCHHIKER_MAIL_SMTP_PORT" placeholder="SMTP port" value="465" />
-            <div class="field-title">SMTP user:</div>
-            <input type="text" name="HITCHHIKER_MAIL_SMTP_USER" placeholder="SMTP user" />
-            <div class="field-title">SMTP password:</div>
-            <input type="text" name="HITCHHIKER_MAIL_SMTP_PASS" placeholder="SMTP password" />
-            <div class="field-title">From:</div>
-            <input type="text" name="HITCHHIKER_MAIL_SMTP_From" placeholder="From" />
-            <div class="field-title">Nick name:</div>
-            <input type="text" name="HITCHHIKER_MAIL_SMTP_NICKNAME" placeholder="Nick name" />
-            <div class="checkbox-div">
-                <input type="checkbox" name="HITCHHIKER_MAIL_SMTP_TLS" id="HITCHHIKER_MAIL_SMTP_TLS" checked>
-                <label class="checkbox-title" for="HITCHHIKER_MAIL_SMTP_TLS">TLS</label>
+            <div class="mail-api">
+                <div class="field-title">API address:</div>
+                <input type="text" name="HITCHHIKER_MAIL_API" placeholder="Custom API address" />
             </div>
-            <div class="checkbox-div">
-                <input type="checkbox" name="HITCHHIKER_MAIL_SMTP_RU" id="HITCHHIKER_MAIL_SMTP_RU">
-                <label class="checkbox-title" for="HITCHHIKER_MAIL_SMTP_RU">Fail for error Cert</label>
+            <div class="mail-smtp">
+                <div class="field-title">SMTP host:</div>
+                <input type="text" name="HITCHHIKER_MAIL_SMTP_HOST" placeholder="SMTP host" value="smtp.qq.com" />
+                <div class="field-title">SMTP port:</div>
+                <input type="text" name="HITCHHIKER_MAIL_SMTP_PORT" placeholder="SMTP port" value="465" />
+                <div class="field-title">SMTP user:</div>
+                <input type="text" name="HITCHHIKER_MAIL_SMTP_USER" placeholder="SMTP user" />
+                <div class="field-title">SMTP password:</div>
+                <input type="text" name="HITCHHIKER_MAIL_SMTP_PASS" placeholder="SMTP password" />
+                <div class="field-title">From:</div>
+                <input type="text" name="HITCHHIKER_MAIL_SMTP_From" placeholder="From" />
+                <div class="field-title">Nick name:</div>
+                <input type="text" name="HITCHHIKER_MAIL_SMTP_NICKNAME" placeholder="Nick name" />
+                <div class="checkbox-div">
+                    <input type="checkbox" name="HITCHHIKER_MAIL_SMTP_TLS" id="HITCHHIKER_MAIL_SMTP_TLS" checked>
+                    <label class="checkbox-title" for="HITCHHIKER_MAIL_SMTP_TLS">TLS</label>
+                </div>
+                <div class="checkbox-div">
+                    <input type="checkbox" name="HITCHHIKER_MAIL_SMTP_RU" id="HITCHHIKER_MAIL_SMTP_RU">
+                    <label class="checkbox-title" for="HITCHHIKER_MAIL_SMTP_RU">Fail for error cert</label>
+                </div>
             </div>
             <input type="button" name="previous" class="previous action-button" value="Previous" />
-            <input type="submit" name="submit" class="submit action-button" value="Submit" />
+            <input type="button" id="submit" class="submit action-button" value="Submit" />
+            <div id="log" class="log" hidden></div>
         </fieldset>
     </form>
     <script src="setup.js"></script>

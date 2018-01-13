@@ -2,6 +2,36 @@ var current_fs, next_fs, previous_fs; //fieldsets
 var left, opacity, scale; //fieldset properties which we will animate
 var animating; //flag to prevent quick multi-click glitches
 
+$.ajax({
+    method: "GET",
+    url: "/setup/env",
+}).done(env => {
+    Object.keys(env).forEach(k => {
+        const input = $(`input[name='${k}']`);
+        if (input.length > 0) {
+            if (input.prop('type') === 'text') {
+                if (k === 'HITCHHIKER_APP_HOST') {
+                    let port = env[k].substr(env[k].lastIndexOf(':') + 1).replace('/', '');
+                    const host = env[k].substr(0, env[k].lastIndexOf(':')).replace(/^http[s]?:\/\//, '');
+                    if (!(/^[0-9]*$/.test(port))) {
+                        port = '';
+                    }
+                    input.val(host);
+                    $("input[name=Port]").val(port);
+                } else {
+                    input.val(env[k]);
+                }
+            } else if (input.prop('type') === 'checkbox') {
+                input.prop('checked', env[k] === '1' ? true : false);
+            }
+        } else {
+            const select = $(`select[name='${k}']`);
+            select.val(env[k]);
+        }
+    });
+    onMailTypeSelect(env['HITCHHIKER_MAIL_CUSTOM']);
+});
+
 $(".next ").click(function () {
     if (animating) return false;
     animating = true;
@@ -87,6 +117,64 @@ $(".previous ").click(function () {
     });
 });
 
-$(".submit ").click(function () {
-    return false;
-})
+$("#submit").click(function () {
+    $("#submit").prop("disabled", true);
+    $("#log").prop("hidden", false);
+    $("#log").html("Start");
+    var formData = $("#msform").serializeArray();
+    var postData = {};
+    formData.forEach(f => postData[f.name] = f.value);
+    postData['HITCHHIKER_APP_HOST'] = `${postData['HITCHHIKER_APP_HOST']}:${postData['Port']}`;
+    if (!/^http[s]?:\/\//.test(postData['HITCHHIKER_APP_HOST'])) {
+        postData['HITCHHIKER_APP_HOST'] = `http://${postData['HITCHHIKER_APP_HOST']}`;
+    }
+    if (!postData['HITCHHIKER_APP_HOST'].endsWith('/')) {
+        postData['HITCHHIKER_APP_HOST'] = `${postData['HITCHHIKER_APP_HOST']}/`;
+    }
+    postData['HITCHHIKER_SCHEDULE_MAILFORFAIL'] = postData['HITCHHIKER_SCHEDULE_MAILFORFAIL'] === "on" ? "1" : "0";
+    postData['HITCHHIKER_MAIL_SMTP_TLS'] = postData['HITCHHIKER_MAIL_SMTP_TLS'] === "on" ? "1" : "0";
+    postData['HITCHHIKER_MAIL_SMTP_RU'] = postData['HITCHHIKER_MAIL_SMTP_RU'] === "on" ? "1" : "0";
+    postData['HITCHHIKER_SYNC_ONOFF'] = postData['HITCHHIKER_SYNC_ONOFF'] === "on" ? "1" : "0";
+    Reflect.deleteProperty(postData, "Port");
+    console.log(postData);
+    $.ajax({
+        method: "POST",
+        url: "/setup/env",
+        data: postData,
+    }).done(msg => {
+        $("#log").html("Done, wait 5 seconds.");
+        console.log(msg);
+        const url = postData['HITCHHIKER_APP_HOST'];
+        setTimeout(() => {
+            $("#log").html("Redirecting");
+            location.href = url;
+        }, 5000);
+    });
+});
+
+function onHostChange() {
+    var couldNext = couldGoNext('HITCHHIKER_APP_HOST', 'Port');
+    $("#host-next").prop("disabled", !couldNext);
+}
+
+function onDBChange() {
+    var couldNext = couldGoNext('HITCHHIKER_DB_HOST', 'HITCHHIKER_DB_PORT', 'MYSQL_DATABASE', 'HITCHHIKER_DB_USERNAME', 'MYSQL_ROOT_PASSWORD');
+    $("#db-next").prop("disabled", !couldNext);
+}
+
+function couldGoNext() {
+    return [...arguments].every(a => !!$(`input[name='${a}']`).val());
+}
+
+function onMailTypeSelect(type) {
+    if (type === "none") {
+        $(".mail-api").css("display", "none");
+        $(".mail-smtp").css("display", "none");
+    } else if (type === "api") {
+        $(".mail-api").css("display", "inline");
+        $(".mail-smtp").css("display", "none");
+    } else if (type === "smtp") {
+        $(".mail-api").css("display", "none");
+        $(".mail-smtp").css("display", "inline");
+    }
+}
