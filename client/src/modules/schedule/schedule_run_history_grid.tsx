@@ -160,8 +160,6 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                     title="Environment"
                     dataIndex="envId"
                     render={(text, runResult) => this.getEnvName(runResult.envId)}
-                    filters={_.chain(displayRunResults).map(d => d.envId).uniq().map(d => ({ text: this.getEnvName(d), value: this.getEnvName(d) })).value()}
-                    onFilter={(value, runResult) => runResult.envId === value}
                 />
                 <RunResultColumn title="Headers" dataIndex="headers" render={this.getHeadersDisplay} />
                 <RunResultColumn title="Body" dataIndex="body" render={this.getBodyDisplay} />
