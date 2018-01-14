@@ -41,7 +41,7 @@ app.use(KoaStatic(path.join(__dirname, 'public'), { gzip: true }))
 app.listen(9527);
 
 function getPm2File() {
-    return path.join(__dirname, '../pm2.json');
+    return path.join(__dirname, 'pm2.json');
 }
 
 function getPm2Obj() {

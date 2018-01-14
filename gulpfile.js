@@ -12,7 +12,7 @@ gulp.task('package', ['release'], function () {
     const keepFiles = ['build', 'node_modules', 'appconfig.json', 'gulpfile.js', 'logconfig.json', 'mail.json', 'pm2.json', 'sample collection.json', 'tsconfig.json'];
     const files = fs.readdirSync(__dirname);
     files.forEach(f => {
-        if (!keepFiles.find(f)) {
+        if (!keepFiles.find(fileName => f.endsWith(fileName))) {
             fs.removeSync(f)
         }
     });
@@ -43,7 +43,11 @@ gulp.task('release', ['copy', 'copyTemplate', 'copyGlobalData']);
 
 gulp.task('copy', ['compilerClient'], function () {
     return gulp.src('./client/build/**/*.*')
-        .pipe(gulp.dest('./build/public'));
+        .pipe(gulp.dest('./build/public'))
+        .on('end', function () {
+            gulp.src('./pm2.json')
+                .pipe(gulp.dest('./build'))
+        });
 });
 
 gulp.task('copyTemplate', function () {

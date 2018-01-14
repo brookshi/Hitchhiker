@@ -120,7 +120,7 @@ $(".previous ").click(function () {
 $("#submit").click(function () {
     $("#submit").prop("disabled", true);
     $("#log").prop("hidden", false);
-    $("#log").html("Start");
+    $("#log").html("Working...");
     var formData = $("#msform").serializeArray();
     var postData = {};
     formData.forEach(f => postData[f.name] = f.value);

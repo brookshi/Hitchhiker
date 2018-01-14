@@ -24,9 +24,9 @@
 
 1. 下载安装包 ;
 
-2. 解压并在根目录（即setup.js的目录）执行命令`node setup.js`;
+2. 解压并在build目录下（即setup.js的目录）执行命令`node setup.js`;
 
-3. 在浏览器中访问 `localhost:9527`;
+3. 在浏览器中访问 `http://localhost:9527/setup_cn.html`;
 
 4. 一步一步输入ip, 端口， DB设置等（有红色*号表示必须设置的，其他可以默认）;
 
