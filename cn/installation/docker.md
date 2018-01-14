@@ -1,6 +1,6 @@
 docker使用的是docker-compose来安装，会自动下载两个image：hitchhiker和mysql，基本上按命令执行即可，如果需要配置，可以参考：[配置文件](configuration.md), 环境变量可以写到docker-compose.yml里
 
-国内用户请使用阿里云的镜像 hitchhiker-cn：registry.cn-hangzhou.aliyuncs.com/brook/hitchhiker-cn:v0.7
+国内用户请使用阿里云的镜像 hitchhiker-cn：registry.cn-hangzhou.aliyuncs.com/brook/hitchhiker-cn:v0.8
 
 #### 参考下面命令，一步一步部署 (基于ubuntu，其他系统类似):
 ``` bash
@@ -21,7 +21,7 @@ curl -O https://raw.githubusercontent.com/brookshi/Hitchhiker/release/deploy/doc
 
 # 编辑 docker-compose.yml， 把localhost换成你机器的局域网ip，如果是只有本机一个人用那就localhost也可以
 sudo vim docker-compose.yml
-# 修改完成后，保存退出 (国内用户改image地址：registry.cn-hangzhou.aliyuncs.com/brook/hitchhiker-cn:v0.7， 以及写入环境变量配置hitchhiker以及mysql)
+# 修改完成后，保存退出 (国内用户改image地址：registry.cn-hangzhou.aliyuncs.com/brook/hitchhiker-cn:v0.8， 以及写入环境变量配置hitchhiker以及mysql)
 ...
 
 # 执行docker-compose up安装镜像
@@ -36,7 +36,7 @@ curl http://ip:8080/
 version: '2'
 services:
   hitchhiker:
-    image: brookshi/hitchhiker:v0.7 
+    image: brookshi/hitchhiker:v0.8
     container_name: hitchhiker
     environment:
       - HITCHHIKER_DB_HOST=hitchhiker-mysql
@@ -65,7 +65,7 @@ services:
 version: '2'
 services:
   hitchhiker:
-    image: registry.cn-hangzhou.aliyuncs.com/brook/hitchhiker-cn:v0.7
+    image: registry.cn-hangzhou.aliyuncs.com/brook/hitchhiker-cn:v0.8
     container_name: hitchhiker
     environment:
       - HITCHHIKER_DB_HOST=hitchhiker-mysql
@@ -92,7 +92,7 @@ services:
 version: '2'
 services:
   hitchhiker:
-    image: registry.cn-hangzhou.aliyuncs.com/brook/hitchhiker-cn:v0.7
+    image: registry.cn-hangzhou.aliyuncs.com/brook/hitchhiker-cn:v0.8
     container_name: hitchhiker
     environment:
       - HITCHHIKER_DB_HOST=192.168.0.10
