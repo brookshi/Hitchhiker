@@ -22,6 +22,21 @@ If this schedule have a comparison environment, a request will have two rows for
 
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/schedule/schedule_run.png)
 
+#### Schedule statistics view
+
+Schedule default value is a record set of run result, it's not easy to view the data of a single request.
+Schedule statistics view could get the information with view of single request.
+
+Option: exculde depredated request, default is true. if false, will include the requests which was deleted in the Collection.
+
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/schedule/statistics.png)
+
+#### Run multiple schedule
+
+You can run multiple schedule at one time, each schedule have a checkbox, check it, a Run Selected Schedules button will occur.
+
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/schedule/runselect.png)
+
 #### Schedule comparision diff
 
 If you choose environment comparision, then a `view diff` button is avaliable if the responses do not match.

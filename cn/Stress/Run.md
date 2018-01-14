@@ -15,3 +15,8 @@ Hitchhiker 会显示压力测试实时状况，包括当前工作的压力点，
 3. 请示失败的状态和个数，失败有3种：No Response, Server Error(500), Test Failed.
 
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/stresstest.gif)
+
+压力请求也可以中断掉，因为可能在压力过程中服务端已经暴露出了问题，不需要再跑下去，这时可以停止当前压力测试。
+
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/stress/stop.png)
+

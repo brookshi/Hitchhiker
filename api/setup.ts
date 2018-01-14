@@ -24,6 +24,11 @@ router.post('/setup/env', (ctx, next) => {
     const pm2Obj = getPm2Obj();
     pm2Obj.apps[0].env = ctx.request.body;
     fs.writeFileSync(getPm2File(), JSON.stringify(pm2Obj), 'utf8');
+    try {
+        execSync('pm2 -V', { encoding: 'utf8' });
+    } catch (e) {
+        execSync(`npm install pm2 -g`);
+    }
     const stdout = execSync(`pm2 start ${getPm2File()}`, { encoding: 'utf8' });
     ctx.body = stdout;
 });

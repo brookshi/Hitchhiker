@@ -1,3 +1,18 @@
+#### 0.8 2018-01-14
+
+**Features:**
+
+* Schedule的统计视图.
+* \#67 中断压力测试.
+* \#64 一次跑多个Schedule.
+* Schedule 表过滤.
+* 已编译好的安装包及一步一步安装.
+
+**Bugs:**
+
+* Duplicate出来的environment的改动变影响到原始的environment.
+
+
 #### 0.7 2017-12-31
 
 **Features:**

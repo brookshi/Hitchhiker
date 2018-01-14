@@ -1,3 +1,18 @@
+#### 0.8 2018-01-14
+
+**Features:**
+
+* Schedule statistics mode.
+* \#67 stop stress test.
+* \#64 run selected schedule.
+* Schedule filter.
+* Step by step install.
+
+**Bugs:**
+
+* change duplicated env will apply the change to origin env.
+
+
 #### 0.7 2017-12-31
 
 **Features:**

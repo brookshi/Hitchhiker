@@ -40,7 +40,7 @@ Api Mock | ✘ | ✔
 Detail | Need improve | Strong 
 security | Strong，deploy in local | Weak, data will upload to server
 
-## 微信交流
+## 微信交流 (注明 api)
 
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/hitchhiker_wx.jpg' width='400'/>
 
@@ -53,6 +53,7 @@ security | Strong，deploy in local | Weak, data will upload to server
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/history.png' width='800'/>
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/parameters.gif' width='800'/>
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/schedule.png' width='800'/>
+<img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/schedule/statistics.png' width='800'/>
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/stresstest.gif' width='800'/>
 
 ## Browser

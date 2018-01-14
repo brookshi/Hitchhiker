@@ -23,6 +23,20 @@ Schedule会按照period的设置自动来跑，并且在跑完后发送邮件给
 
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/schedule/schedule_run.png)
 
+#### Schedule 统计视图
+
+Schedule默认展示的视图是每次跟Collection的结果，这个表里对于每个Request的运行状态就很难表现出来，有时我们需要看哪些request比较稳定，哪些会经常有问题。这时就可以看统计视图。
+
+exculde depredated request选项, 默认是true，如果false的话会把曾经在这个Collection现在已经被删掉的记录也包含进来。
+
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/schedule/statistics.png)
+
+#### 一次跑多个Schedule
+
+每个Schedule前面都有个checkbox，勾上的话会有一个Run Selected Schedules的按钮在上面显示出来，点这个按钮会一次跑所有勾上的Schedule。
+
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/schedule/runselect.png)
+
 #### Schedule 对比结果Diff
 
 如果Schedule勾选了环境对比，并且跑的时候两个环境的对比不一致的话可以看到Match那一列会多出一个按钮：`view diff`，点击可以以Diff方式查看两者的不同。

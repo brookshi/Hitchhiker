@@ -1,0 +1,323 @@
+<html>
+
+<head>
+    <script src="jq.js"></script>
+    <script src="jq.easing.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            height: 100%;
+            background: #333;
+        }
+
+        .title {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 24px;
+        }
+
+        .field-title {
+            font-size: 12px;
+            text-align: left;
+            margin-left: 4px;
+            color: #666;
+        }
+
+        .field-must span {
+            color: red;
+            font-weight: bold;
+        }
+
+        .checkbox-title {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .checkbox-div {
+            text-align: left;
+            line-height: 40px;
+        }
+
+        .log {
+            color: #27AE60;
+            font-size: 12px;
+            font-weight: bold;
+            height: 20px;
+        }
+
+        .mail-api {
+            display: none;
+        }
+
+        .mail-smtp {
+            display: none;
+        }
+
+        #msform {
+            width: 600px;
+            margin: 30px auto;
+            text-align: center;
+            position: relative;
+        }
+
+        #msform fieldset {
+            background: white;
+            border: 0 none;
+            border-radius: 3px;
+            box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+            padding: 20px 30px;
+            box-sizing: border-box;
+            width: 80%;
+            margin: 0 10%;
+
+            /*stacking fieldsets above each other*/
+            position: relative;
+        }
+        /*Hide all except first fieldset*/
+
+        #msform fieldset:not(:first-of-type) {
+            display: none;
+        }
+        /*inputs*/
+
+        #msform input[type="text"],
+        #msform select,
+        #msform textarea {
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            margin-bottom: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: montserrat;
+            color: #2C3E50;
+            font-size: 13px;
+        }
+        /*buttons*/
+
+        #msform .action-button {
+            width: 100px;
+            background: #27AE60;
+            font-weight: bold;
+            color: white;
+            border: 0 none;
+            border-radius: 1px;
+            cursor: pointer;
+            padding: 10px 5px;
+            margin: 10px 5px;
+        }
+
+        #msform .action-button:hover,
+        #msform .action-button:focus {
+            box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
+        }
+
+        #msform .action-button:disabled {
+            background: #999;
+        }
+        /*headings*/
+
+        .fs-title {
+            font-size: 15px;
+            text-transform: uppercase;
+            color: #2C3E50;
+            margin-bottom: 10px;
+        }
+
+        .fs-subtitle {
+            font-weight: normal;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        /*progressbar*/
+
+        #progressbar {
+            margin-bottom: 30px;
+            overflow: hidden;
+            /*CSS counters to number the steps*/
+            counter-reset: step;
+        }
+
+        #progressbar li {
+            list-style-type: none;
+            color: white;
+            text-transform: uppercase;
+            font-size: 9px;
+            width: 25%;
+            float: left;
+            position: relative;
+        }
+
+        #progressbar li:before {
+            content: counter(step);
+            counter-increment: step;
+            width: 20px;
+            line-height: 20px;
+            display: block;
+            font-size: 10px;
+            color: #333;
+            background: white;
+            border-radius: 3px;
+            margin: 0 auto 5px auto;
+        }
+        /*progressbar connectors*/
+
+        #progressbar li:after {
+            content: '';
+            width: 100%;
+            height: 2px;
+            background: white;
+            position: absolute;
+            left: -50%;
+            top: 9px;
+            z-index: -1;
+            /*put it behind the numbers*/
+        }
+
+        #progressbar li:first-child:after {
+            /*connector not needed before the first step*/
+            content: none;
+        }
+        /*marking active/completed steps green*/
+        /*The number of the step and the connector before it = green*/
+
+        #progressbar li.active:before,
+        #progressbar li.active:after {
+            background: #27AE60;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- multistep form -->
+    <form id="msform">
+        <div class="title">Hitchhiker 安装</div>
+        <!-- progressbar -->
+        <ul id="progressbar">
+            <li class="active">服务器</li>
+            <li>Mysql数据库</li>
+            <li>Hitchhiker通用设置</li>
+            <li>邮件接口设置</li>
+        </ul>
+        <!-- fieldsets -->
+        <fieldset>
+            <h2 class="fs-title">服务器</h2>
+            <h3 class="fs-subtitle">设置服务器的IP和端口</h3>
+            <div class="field-title field-must">
+                <span>*</span>IP:
+            </div>
+            <input type="text" name="HITCHHIKER_APP_HOST" oninput="onHostChange()" value="localhost" onpropertychange="onHostChange()"
+                placeholder="IP" />
+            <div class="field-title field-must">
+                <span>*</span>端口:
+            </div>
+            <input type="text" name="Port" placeholder="Port" oninput="onHostChange()" value="8080" onpropertychange="onHostChange()"
+            />
+            <input type="button" id="host-next" name="next" class="next action-button" value="下一步" />
+        </fieldset>
+        <fieldset>
+            <h2 class="fs-title">Mysql数据库</h2>
+            <h3 class="fs-subtitle">设置数据库的地址，端口，库名，用户名和密码</h3>
+            <div class="field-title field-must">
+                <span>*</span>地址:
+            </div>
+            <input type="text" name="HITCHHIKER_DB_HOST" placeholder="Host" value="localhost" oninput="onDBChange()" onpropertychange="onDBChange()"
+            />
+            <div class="field-title field-must">
+                <span>*</span>端口:
+            </div>
+            <input type="text" name="HITCHHIKER_DB_PORT" placeholder="Port" oninput="onDBChange()" value="3306" onpropertychange="onDBChange()"
+            />
+            <div class="field-title field-must">
+                <span>*</span>数据库:
+            </div>
+            <input type="text" name="MYSQL_DATABASE" placeholder="Database" value="hitchhiker-prod" oninput="onDBChange()" onpropertychange="onDBChange()"
+            />
+            <div class="field-title field-must">
+                <span>*</span>用户名:
+            </div>
+            <input type="text" name="HITCHHIKER_DB_USERNAME" placeholder="User" value="root" oninput="onDBChange()" onpropertychange="onDBChange()"
+            />
+            <div class="field-title field-must">
+                <span>*</span>密码:
+            </div>
+            <input type="text" name="MYSQL_ROOT_PASSWORD" placeholder="Password" value="hitchhiker888" oninput="onDBChange()" onpropertychange="onDBChange()"
+            />
+            <input type="button" name="previous" class="previous action-button" value="上一步" />
+            <input type="button" id="db-next" name="next" class="next action-button" value="下一步" />
+        </fieldset>
+        <fieldset>
+            <h2 class="fs-title">Hitchhiker通用设置</h2>
+            <h3 class="fs-subtitle">一些使用上的常用设置</h3>
+            <div class="checkbox-div">
+                <input type="checkbox" name="HITCHHIKER_SYNC_ONOFF" id="Sync">
+                <label class="checkbox-title" for="Sync">自动同步数据</label>
+            </div>
+            <div class="field-title">自动同步数据时间间隔(秒):</div>
+            <input type="text" name="HITCHHIKER_SYNC_INTERVAL" placeholder="Auto Sync Interval" value="30" />
+            <div class="checkbox-div">
+                <input type="checkbox" name="HITCHHIKER_SCHEDULE_MAILFORFAIL" id="MailOnlyForFail" checked>
+                <label class="checkbox-title" for="MailOnlyForFail">Schedule只在失败时发邮件</label>
+            </div>
+            <div class="field-title">Schedule记录存储的单位（个数和天数）:</div>
+            <select name="HITCHHIKER_SCHEDULE_STORE_UNIT">
+                <option selected>count</option>
+                <option>day</option>
+            </select>
+            <div class="field-title">Schedule记录存储的最大值:</div>
+            <input type="text" name="HITCHHIKER_SCHEDULE_STORE_LIMIT" placeholder="Schedule store limit" value="50" />
+            <div class="field-title">压力测试记录存储的最大值:</div>
+            <input type="text" name="HITCHHIKER_STRESS_COUNT" placeholder="Stress store max count" value="5" />
+            <input type="button" name="previous" class="previous action-button" value="上一步" />
+            <input type="button" name="next" class="next action-button" value="下一步" />
+        </fieldset>
+        <fieldset>
+            <h2 class="fs-title">邮件接口</h2>
+            <h3 class="fs-subtitle">使用自定义的API或SMTP来发送邮件</h3>
+            <div class="field-title">类型:</div>
+            <select name="HITCHHIKER_MAIL_CUSTOM" onchange="onMailTypeSelect(this.options[this.options.selectedIndex].value)">
+                <option selected>none</option>
+                <option>api</option>
+                <option>smtp</option>
+            </select>
+            <div class="mail-api">
+                <div class="field-title">API地址:</div>
+                <input type="text" name="HITCHHIKER_MAIL_API" placeholder="Custom API address" />
+            </div>
+            <div class="mail-smtp">
+                <div class="field-title">SMTP地址:</div>
+                <input type="text" name="HITCHHIKER_MAIL_SMTP_HOST" placeholder="SMTP host" value="smtp.qq.com" />
+                <div class="field-title">SMTP端口:</div>
+                <input type="text" name="HITCHHIKER_MAIL_SMTP_PORT" placeholder="SMTP port" value="465" />
+                <div class="field-title">SMTP用户名:</div>
+                <input type="text" name="HITCHHIKER_MAIL_SMTP_USER" placeholder="SMTP user" />
+                <div class="field-title">SMTP密码:</div>
+                <input type="text" name="HITCHHIKER_MAIL_SMTP_PASS" placeholder="SMTP password" />
+                <div class="field-title">发送人:</div>
+                <input type="text" name="HITCHHIKER_MAIL_SMTP_From" placeholder="From" />
+                <div class="field-title">昵称:</div>
+                <input type="text" name="HITCHHIKER_MAIL_SMTP_NICKNAME" placeholder="Nick name" />
+                <div class="checkbox-div">
+                    <input type="checkbox" name="HITCHHIKER_MAIL_SMTP_TLS" id="HITCHHIKER_MAIL_SMTP_TLS" checked>
+                    <label class="checkbox-title" for="HITCHHIKER_MAIL_SMTP_TLS">TLS</label>
+                </div>
+                <div class="checkbox-div">
+                    <input type="checkbox" name="HITCHHIKER_MAIL_SMTP_RU" id="HITCHHIKER_MAIL_SMTP_RU">
+                    <label class="checkbox-title" for="HITCHHIKER_MAIL_SMTP_RU">证书无效时失败</label>
+                </div>
+            </div>
+            <input type="button" name="previous" class="previous action-button" value="上一步" />
+            <input type="button" id="submit" class="submit action-button" value="提交" />
+            <div id="log" class="log" hidden></div>
+        </fieldset>
+    </form>
+    <script src="setup.js"></script>
+</body>
+
+</html>

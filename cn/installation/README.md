@@ -5,8 +5,6 @@ Hitchhiker 有很多参数可以在部署时设置，参考：[配置文件](con
 
 1. [Docker](docker.md) (强烈推荐的方式，简单且升级方便)
 
-2. [Linux](linux.md)
-
-3. [Windows](win.md)
+2. [安装包](StepByStep.md)
 
 Hitchhiker 会在邀请Project成员或跑Schedule时发送邮件，用的是一个外部的邮箱系统，但是用户的服务器经常不能访问外网，所以Hitchhiker 提供了自定义Mail的方式，支持SMTP和API方式，具体参考：[自定义邮箱](Mail_Interface.md)。

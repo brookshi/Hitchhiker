@@ -5,8 +5,6 @@ There are several setting that you can use while deploying, refer to [Configurat
 
 1. [Docker](docker.md)
 
-2. [Linux](linux.md)
-
-3. [Windows](win.md)
+2. [Package](StepByStep.md)
 
 Hitchhiker use a mail service that used to send mail for Project members invitation or Schedule run result. Sometimes user server can't access internet, in this case, you can refer to [Custom Mail Interface](Mail_Interface.md).

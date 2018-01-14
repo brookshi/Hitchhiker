@@ -15,3 +15,7 @@ There are three diagram:
 3. Request failed status, include No Response, Server Error(500), Test Failed.
 
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/stresstest.gif)
+
+You can stop the running stress test.
+
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/stress/stop.png)
