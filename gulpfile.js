@@ -3,9 +3,41 @@ var gulp = require('gulp'),
     replace = require('gulp-replace'),
     exec = require('child_process').exec,
     fs = require('fs-extra'),
-    path = require('path');
+    path = require('path'),
+    archiver = require('archiver');
 
 gulp.task('build', ['copyTemplate', 'copyGlobalData']);
+
+gulp.task('package', ['release'], function () {
+    const keepFiles = ['build', 'node_modules', 'appconfig.json', 'gulpfile.js', 'logconfig.json', 'mail.json', 'pm2.json', 'sample collection.json', 'tsconfig.json'];
+    const files = fs.readdirSync(__dirname);
+    files.forEach(f => {
+        if (!keepFiles.find(f)) {
+            fs.removeSync(f)
+        }
+    });
+
+    const zipPath = __dirname;
+    const zipFile = `${zipPath}.zip`;
+    if (fs.existsSync(zipFile)) {
+        fs.unlinkSync(zipFile);
+    }
+
+    const output = fs.createWriteStream(zipFile);
+    const archive = archiver('zip');
+    let isClose = false;
+
+    output.on('close', () => {
+        isClose = true;
+    });
+    output.on('end', () => {
+        isClose = true;
+    });
+
+    archive.pipe(output);
+    archive.directory(zipPath, false);
+    archive.finalize();
+});
 
 gulp.task('release', ['copy', 'copyTemplate', 'copyGlobalData']);
 
