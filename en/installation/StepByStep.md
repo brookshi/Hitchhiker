@@ -24,7 +24,7 @@ Dependence: nodejs 7.60+, recommend use LTS (8.9) and `mysql 5.7+` with json col
 
 1. Download app package from ;
 
-2. Unzip and run command `node setup.js` in `build` folder;
+2. Unzip and run command `node setup.js`(windows), `sudo node setup.js`(linux) in `build` folder;
 
 3. Open `http://localhost:9527/setup.html` in browser;
 

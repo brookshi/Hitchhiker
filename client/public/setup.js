@@ -30,6 +30,8 @@ $.ajax({
         }
     });
     onMailTypeSelect(env['HITCHHIKER_MAIL_CUSTOM']);
+    onHostChange();
+    onDBChange();
 });
 
 $(".next ").click(function () {

@@ -23,6 +23,7 @@ router.get('/setup/env', (ctx, next) => {
 router.post('/setup/env', (ctx, next) => {
     const pm2Obj = getPm2Obj();
     pm2Obj.apps[0].env = ctx.request.body;
+    pm2Obj.apps[0].script = 'index.js';
     fs.writeFileSync(getPm2File(), JSON.stringify(pm2Obj), 'utf8');
     try {
         execSync('pm2 -V', { encoding: 'utf8' });
