@@ -563,8 +563,8 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
             r.errorNum = r.runResults.length - successNum;
             r.successNum = successNum;
             r.total = r.runResults.length;
-            r.maxTime = _.max(elapseds);
-            r.minTime = _.min(elapseds);
+            r.maxTime = _.max(elapseds) || 0;
+            r.minTime = _.min(elapseds) || 0;
             r.averageTime = Math.round(elapseds.reduce((p, c) => p + c, 0) / r.runResults.length);
             r.lastStatus = this.isSuccess(r.runResults[r.runResults.length - 1]);
         });

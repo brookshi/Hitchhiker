@@ -9,3 +9,4 @@ cd..
 set NODE_ENV=production
 call gulp package --prod
 
+pause
