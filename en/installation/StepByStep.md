@@ -31,3 +31,5 @@ Dependence: nodejs 7.60+, recommend use LTS (8.9) and `mysql 5.7+` with json col
 4. Enter host,port,db,setting etc.. step by step;
 
 5. Submit;
+
+![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/setup.png)
