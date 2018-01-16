@@ -120,7 +120,7 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
                 <Content className="schedule-content">
                     <ScheduleRunHistoryGrid
                         schedule={schedule}
-                        scheduleRecordsInfo={scheduleRecordsInfo[activeSchedule]}
+                        scheduleRecordsInfo={scheduleRecordsInfo ? scheduleRecordsInfo[activeSchedule] : undefined}
                         envName={envName}
                         compareEnvName={compareEnvName}
                         envNames={this.getEnvNames()}

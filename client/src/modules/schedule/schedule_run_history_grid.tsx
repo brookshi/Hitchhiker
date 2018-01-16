@@ -37,7 +37,7 @@ interface ScheduleRunHistoryGridProps {
 
     schedule: DtoSchedule;
 
-    scheduleRecordsInfo: ScheduleRecordsInfo;
+    scheduleRecordsInfo?: ScheduleRecordsInfo;
 
     envName: string;
 
@@ -573,8 +573,9 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
     }
 
     private insertToStatisticsData(envs: string[], statisticsData: _.Dictionary<ScheduleStatistics>, runResults: Array<RunResult | _.Dictionary<RunResult>>, runDate: Date) {
+        const { scheduleRecordsInfo } = this.props;
         this.flattenRunResult(runResults).forEach(o => {
-            if (envs.find(e => e === o.envId) || this.props.scheduleRecordsInfo.excludeNotExist === false) {
+            if (envs.find(e => e === o.envId) || (scheduleRecordsInfo && scheduleRecordsInfo.excludeNotExist === false)) {
                 const key = `${o.id}${o.param || ''}${o.envId || ''}`;
                 statisticsData[key] = statisticsData[key] || {};
                 statisticsData[key].runResults = statisticsData[key].runResults || [];
