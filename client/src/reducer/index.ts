@@ -156,7 +156,7 @@ export function multipleStateReducer(state: State, action: any): State {
                 },
                 scheduleState: {
                     ...state.scheduleState,
-                    scheduleRecordsInfo: scheduleState.scheduleRecordsInfo,
+                    scheduleRecordsInfo: scheduleState.scheduleRecordsInfo || {},
                     activeSchedule: scheduleState.activeSchedule
                 }
             };
