@@ -138,7 +138,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
         const { activeTabKey, headers, body, parameters, parameterType, test, prescript, headersEditMode, favHeaders } = this.props;
         const { isValid, msg } = StringUtil.verifyParameters(parameters || '', parameterType);
         let paramArr = StringUtil.getUniqParamArr(parameters, parameterType);
-
+        
         return (
             <Tabs
                 className="req-res-tabs"
@@ -194,6 +194,12 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                     </Badge>
                 )} key="test">
                     <Editor type="javascript" height={300} fixHeight={true} value={test} onChange={v => this.props.changeRecord({ 'test': v })} />
+                </TabPane>
+                <TabPane tab={(
+                    <Badge style={normalBadgeStyle} dot={!!test && test.length > 0} count="">
+                        Assert base on UI
+                    </Badge>
+                )} key="assert">
                 </TabPane>
             </Tabs>
         );

@@ -150,10 +150,11 @@
 
 0.9:
     ☐ test function base on UI
-    ☐ pre script, header, auth, test in Collection/folder level
-    ☐ edit global function in collection module
+    ☐ use domain name for host in yml will cause stress test connect failed
 
 backlog:
+    ☐ pre script, header, auth, test in Collection/folder level
+    ☐ edit global function in collection module
     ☐ handle zip response
     ☐ auth
     ☐ response timeline
