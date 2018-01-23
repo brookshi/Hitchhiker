@@ -18,9 +18,10 @@ interface AssertItemState { }
 
 class AssertItem extends React.Component<AssertItemProps, AssertItemState> {
 
-    private generateFunctionSelect = (type: AssertType) => {
+    private generateFunctionSelect = () => {
+        const { type, assertInfo } = this.props;
         return (
-            <Select onChange={func => this.onPropertyChanged('function', func.toString())}>
+            <Select defaultValue={assertInfo.function} onChange={func => this.onPropertyChanged('function', func.toString())}>
                 {
                     AssertTypeFuncMapping[type].map(k =>
                         <Option key={k} value={k}>{k}</Option>)
@@ -40,10 +41,10 @@ class AssertItem extends React.Component<AssertItemProps, AssertItemState> {
 
         return (
             <div>
-                <span className="assert-item-func">{this.generateFunctionSelect}</span>
+                <span className="assert-item-func">{this.generateFunctionSelect()}</span>
                 <span className="assert-item-value"><Input placeholder="Value" defaultValue={assertInfo.value} onChange={e => this.onPropertyChanged('value', e.currentTarget.value)} /></span>
-                <span className="assert-item-symbol"> => </span>
-                <span className="assert-item-name"><Input placeholder="Name" defaultValue={assertInfo.name} onChange={e => this.onPropertyChanged('name', e.currentTarget.value)} /></span>
+                <span className="assert-item-symbol"> assert </span>
+                <span className="assert-item-name"><Input placeholder="statement" defaultValue={assertInfo.name} onChange={e => this.onPropertyChanged('name', e.currentTarget.value)} /></span>
             </div>
         );
     }

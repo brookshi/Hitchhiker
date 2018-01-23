@@ -21,6 +21,7 @@ import * as _ from 'lodash';
 import { ParameterType } from '../../../common/parameter_type';
 import { StringUtil } from '../../../utils/string_util';
 import { RequestStatus } from '../../../common/request_status';
+import AssertJsonView from '../../../components/assert_json_view';
 
 const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
@@ -138,7 +139,20 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
         const { activeTabKey, headers, body, parameters, parameterType, test, prescript, headersEditMode, favHeaders } = this.props;
         const { isValid, msg } = StringUtil.verifyParameters(parameters || '', parameterType);
         let paramArr = StringUtil.getUniqParamArr(parameters, parameterType);
-        
+
+        const json = {
+            array: [1, 2, 3],
+            bool: true,
+            object: {
+                foo: 'bar'
+            },
+            undefined: undefined,
+            objArr: [
+                { a: 1 },
+                { b: 2 }
+            ]
+        };
+
         return (
             <Tabs
                 className="req-res-tabs"
@@ -200,6 +214,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                         Assert base on UI
                     </Badge>
                 )} key="assert">
+                    <AssertJsonView data={json} assertInfos={{}} onAssertInfosChanged={infos => console.log(infos)} />
                 </TabPane>
             </Tabs>
         );

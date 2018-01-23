@@ -5,7 +5,7 @@ import { DtoAssert } from '../../../../api/interfaces/dto_assert';
 import './style/index.less';
 import { Modal } from 'antd';
 import AssertItem from './assert_item';
-import { AssertType } from './assert_funcs';
+import { AssertType, AssertTypeFuncMapping } from './assert_funcs';
 
 interface AssertJsonViewProps {
 
@@ -22,7 +22,7 @@ interface AssertJsonViewState {
 
     isEditDlgOpen: boolean;
 
-    currentKey: [string, string];
+    currentKey: string;
 }
 
 class AssertJsonView extends React.Component<AssertJsonViewProps, AssertJsonViewState> {
@@ -32,11 +32,11 @@ class AssertJsonView extends React.Component<AssertJsonViewProps, AssertJsonView
         this.state = {
             editedAssertInfos: [],
             isEditDlgOpen: false,
-            currentKey: ['', '']
-        }
+            currentKey: ''
+        };
     }
 
-    private getType = (keys: [string, string], root: any) => {
+    private getType = (keys: string[], root: any) => {
         let parent = root;
         let isArr = _.isArray(parent);
         if (keys.length > 1) {
@@ -53,16 +53,26 @@ class AssertJsonView extends React.Component<AssertJsonViewProps, AssertJsonView
         return isArr ? 'array' : 'object';
     }
 
-    private onEditAssert = (e: any) => {
+    private onEditAssert = (e: any, keys: string[], type: string) => {
         e.stopPropagation();
+        const currentKey = _.reverse([...keys]).join('/');
+        const infos = this.props.assertInfos[currentKey];
+        this.setState({ ...this.state, currentKey, isEditDlgOpen: true, editedAssertInfos: !infos || infos.length === 0 ? [this.createDefaultAssertInfo(keys, type)] : infos });
     }
 
-    private generateKey = (keys: [string, string], root: any) => {
+    private createDefaultAssertInfo = (keys: string[], type: string): DtoAssert => {
+
+        return { target: keys, name: '', function: AssertTypeFuncMapping[type][0], value: '' };
+    }
+
+    private generateKey = (keys: string[], root: any) => {
         const type = this.getType(keys, root);
-        console.log(type);
+        if (type === 'object') {
+            return <span>{keys[0]}</span>;
+        }
         return (
             <span className="tree-key">{keys[0]}
-                <span className="tree-key-ex" onClick={this.onEditAssert}>
+                <span className="tree-key-ex" onClick={e => this.onEditAssert(e, keys, type)}>
                     <svg
                         viewBox="0 0 40 40"
                         height="14"
@@ -84,45 +94,41 @@ class AssertJsonView extends React.Component<AssertJsonViewProps, AssertJsonView
         this.setState({ ...this.state, editedAssertInfos: infos });
     }
 
+    private completeAssert = () => {
+        const { currentKey, editedAssertInfos } = this.state;
+        this.props.onAssertInfosChanged({ ...this.props.assertInfos, [currentKey]: editedAssertInfos });
+        this.setState({ ...this.state, isEditDlgOpen: false });
+    }
+
     private get assertEditDialog() {
         const { isEditDlgOpen, currentKey, editedAssertInfos } = this.state;
         const { data } = this.props;
-        const type = this.getType(currentKey, data) as AssertType;
+        const type = editedAssertInfos.length === 0 ? 'string' : this.getType(editedAssertInfos[0].target, data) as AssertType;
         return (
             <Modal
                 visible={isEditDlgOpen}
                 okText="OK"
                 cancelText="Cancel"
-                //onOk={ProjectSelectedDialogType.isCreateMode(projectSelectedDlgMode) ? this.createCollection : this.shareCollection}
+                title={currentKey}
+                width={760}
+                onOk={() => this.completeAssert()}
                 onCancel={() => this.setState({ ...this.state, isEditDlgOpen: false })}
             >
-                {
-                    editedAssertInfos.map((info, i) => <AssertItem type={type} assertInfo={info} onAssertInfoChanged={d => this.onAssertItemChanged(d, i)} />)
-                }
+                {editedAssertInfos.map((info, i) => <AssertItem key={i} type={type} assertInfo={info} onAssertInfoChanged={d => this.onAssertItemChanged(d, i)} />)}
             </Modal>
         );
     }
 
     public render() {
 
-        const json = {
-            array: [1, 2, 3],
-            bool: true,
-            object: {
-                foo: 'bar'
-            },
-            undefined: undefined,
-            objArr: [
-                { a: 1 },
-                { b: 2 }
-            ]
-        };
-
         return (
-            <JSONTree
-                data={json}
-                labelRenderer={(key) => this.generateKey(key, json)}
-            />
+            <div>
+                <JSONTree
+                    data={this.props.data}
+                    labelRenderer={(key) => this.generateKey(key, this.props.data)}
+                />
+                {this.assertEditDialog}
+            </div>
         );
     }
 }

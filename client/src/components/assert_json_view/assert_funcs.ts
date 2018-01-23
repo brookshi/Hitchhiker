@@ -13,4 +13,4 @@ export const AssertTypeFuncMapping = {
     string: stringFuncs,
     number: numberFuncs,
     boolean: booleanFuncs
-}
+};

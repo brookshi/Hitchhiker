@@ -1,4 +1,4 @@
-export interface DtoAssert{
+export interface DtoAssert {
 
     name: string;
 
