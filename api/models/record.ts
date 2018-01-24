@@ -8,6 +8,7 @@ import { ParameterType } from '../common/parameter_type';
 import { RecordDoc } from './record_doc';
 import { RecordHistory } from './record_history';
 import { ServerResponse } from 'http';
+import { DtoAssert } from '../interfaces/dto_assert';
 
 @Entity()
 export class Record {
@@ -27,6 +28,9 @@ export class Record {
 
     @OneToMany(type => RecordHistory, history => history.target)
     history: RecordHistory[];
+
+    @Column('json')
+    assertInfos: _.Dictionary<DtoAssert[]>;
 
     @Column({ nullable: true, default: '' })
     pid: string;

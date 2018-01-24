@@ -22,6 +22,7 @@ import { ParameterType } from '../../../common/parameter_type';
 import { StringUtil } from '../../../utils/string_util';
 import { RequestStatus } from '../../../common/request_status';
 import AssertJsonView from '../../../components/assert_json_view';
+import { DtoAssert } from "../../../../../api/interfaces/dto_assert";
 
 const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
@@ -46,6 +47,8 @@ interface RequestOptionPanelStateProps {
     parameters?: string;
 
     parameterType: ParameterType;
+
+    assertInfos?: _.Dictionary<DtoAssert[]>;
 
     headersEditMode: KeyValueEditMode;
 
@@ -136,7 +139,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
 
     public render() {
 
-        const { activeTabKey, headers, body, parameters, parameterType, test, prescript, headersEditMode, favHeaders } = this.props;
+        const { activeTabKey, headers, body, parameters, parameterType, assertInfos, test, prescript, headersEditMode, favHeaders } = this.props;
         const { isValid, msg } = StringUtil.verifyParameters(parameters || '', parameterType);
         let paramArr = StringUtil.getUniqParamArr(parameters, parameterType);
 
@@ -214,7 +217,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                         Assert base on UI
                     </Badge>
                 )} key="assert">
-                    <AssertJsonView data={json} assertInfos={{}} onAssertInfosChanged={infos => console.log(infos)} />
+                    <AssertJsonView data={json} assertInfos={assertInfos || {}} onAssertInfosChanged={infos => this.props.changeRecord({ 'assertInfos': infos })} />
                 </TabPane>
             </Tabs>
         );
@@ -249,6 +252,7 @@ const mapStateToProps = (state: State): RequestOptionPanelStateProps => {
         bodyType: record.bodyType,
         parameters: record.parameters,
         parameterType: record.parameterType,
+        assertInfos: record.assertInfos,
         headersEditMode: getHeadersEditModeSelector()(state),
         currentParam: getActiveRecordStateSelector()(state).parameter,
         favHeaders,

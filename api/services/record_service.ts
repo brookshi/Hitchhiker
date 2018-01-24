@@ -48,6 +48,7 @@ export class RecordService {
         record.parameters = target.parameters;
         record.parameterType = target.parameterType;
         record.prescript = target.prescript || '';
+        record.assertInfos = target.assertInfos || {};
         return record;
     }
 

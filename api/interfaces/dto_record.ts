@@ -3,6 +3,7 @@ import { RecordCategory } from '../common/record_category';
 import { BodyType } from '../common/string_type';
 import { DtoUser } from './dto_user';
 import { ParameterType } from '../common/parameter_type';
+import { DtoAssert } from './dto_assert';
 
 export interface DtoRecord {
 
@@ -23,6 +24,8 @@ export interface DtoRecord {
     headers?: DtoHeader[];
 
     history?: DtoRecordHistory[];
+
+    assertInfos?: _.Dictionary<DtoAssert[]>;
 
     body?: string;
 
