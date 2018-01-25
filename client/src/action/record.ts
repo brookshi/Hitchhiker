@@ -54,6 +54,7 @@ export function* sendRequest() {
         if (!action.value.record.id) {
             record = _.values<any>(value.record)[0];
         }
+        RequestManager.removeCanceledRequest(record.id);
         let runResult: Partial<RunResult> = {};
         if (isParamReq) {
             yield all(Object.keys(value.record).map(k => put(actionCreator(SendRequestForParamType, { param: k, content: { environment: action.value.environment, record: { ...value.record[k], history: [] } } }))));
@@ -83,6 +84,7 @@ export function* sendRequestForParam() {
         const value = action.value;
         let runResult: Partial<RunResult> = {};
         try {
+            RequestManager.removeCanceledRequest(value.content.record.id);
             const res = yield call(RequestManager.post, Urls.getUrl(`record/run`), { ...value.content, record: { ...value.content.record, history: [] } });
             if (res.status === 403) {
                 yield put(actionCreator(SessionInvalidType));

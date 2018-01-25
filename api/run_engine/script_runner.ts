@@ -59,11 +59,13 @@ export class ScriptRunner {
         try {
             code = `module.exports = function(callback) { 
                     void async function() { 
+                        let msg;
                         try{
                             ${code || ''};
-                            callback();
                         }catch(err){
-                            callback(err);
+                            msg = err;
+                        }finally{
+                            callback(msg);
                         }
                     }(); 
                 }`;
