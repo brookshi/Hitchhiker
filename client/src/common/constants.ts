@@ -1,6 +1,8 @@
 
 export const noEnvironment = 'No environment';
 
+export const allEnvironment = 'All';
+
 export const newCollectionName = 'New collection';
 
 export const newFolderName = 'New Folder';

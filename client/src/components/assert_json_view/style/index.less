@@ -1,11 +1,36 @@
+@import '../../../style/colors.less';
+
+.json-tree {
+    background: white;
+    padding: 0px 8px;
+    overflow: auto;
+    border: 1px solid #d9d9d9;
+}
+
+.json-tree::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background-color: #F5F5F5;
+}
+
+.json-tree::-webkit-scrollbar {
+    width: 8px;
+    background-color: #F5F5F5;
+}
+
+.json-tree::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, .1);
+    background-color: #ccc;
+}
 
 .tree-key{
-    padding-right: 8px;
+    padding-right: 8px; 
 
     .tree-key-ex{
         padding-left: 12px;
         vertical-align: sub;
-        display: none;
+        display: inline-block;
 
         svg{
             color: #02b302;
@@ -14,21 +39,52 @@
 }
 
 .tree-key:hover{
-    padding-right: 4px;
 
     .tree-key-ex{
-        display: inline-block;
-
         svg:hover{
             color: #00ff00;
+            cursor: pointer;
         }
+    }
+}
+
+.tree-key-info {
+    background: #ce00ff;
+    color: white;
+    border-radius: 2px;
+    padding: 0px 4px;
+    margin-left: 4px;
+}
+
+.assert-item {
+    width: calc(100% - 12px); 
+    display: inline-block;
+
+    span {
+        display: inline-block;
+    }
+}
+
+.assert-item-add {
+    margin-left: 8px;
+}
+
+.assert-item-close:hover {
+    color: red; 
+}
+
+.assert-item-env{
+    width: 100px;
+    margin-right: 4px;
+
+    > div{
+        width: 100px;
     }
 }
 
 .assert-item-func{
     width: 100px;
     margin-right: 4px;
-    display: inline-block;
     
     > div{
         width: 100px;
@@ -36,16 +92,13 @@
 }
 
 .assert-item-value{
-    width: calc(100% - 352px);
-    display: inline-block;
+    width: calc(100% - 456px);
 }
 
 .assert-item-symbol{
-    width: 50px;
     margin: 0px 4px
 }
 
 .assert-item-name{
     width: 200px;
-    display: inline-block;
 }

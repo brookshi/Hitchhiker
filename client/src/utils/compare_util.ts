@@ -1,5 +1,6 @@
 import { DtoRecord } from '../../../api/interfaces/dto_record';
 import { StringUtil } from './string_util';
+import * as _ from 'lodash';
 
 export class CompareUtil {
 
@@ -19,6 +20,7 @@ export class CompareUtil {
                 (o.bodyType || '') === (t.bodyType || '') &&
                 (o.parameters || '') === (t.parameters || '') &&
                 o.parameterType === t.parameterType &&
+                _.isEqual(o.assertInfos, t.assertInfos) &&
                 (o.test || '') === (t.test || '') &&
                 (o.prescript || '') === (t.prescript || ''));
     }

@@ -13,7 +13,7 @@ import KeyValueList from '../../../components/key_value';
 import { UpdateDisplayRecordPropertyType, ChangeCurrentParamType } from '../../../action/record';
 import { bodyTypes } from '../../../common/body_type';
 import { defaultBodyType, allParameter } from '../../../common/constants';
-import { getActiveRecordSelector, getReqActiveTabKeySelector, getHeadersEditModeSelector, getActiveRecordStateSelector } from './selector';
+import { getActiveRecordSelector, getReqActiveTabKeySelector, getHeadersEditModeSelector, getActiveRecordStateSelector, getProjectEnvsSelector } from './selector';
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 import { RecordState, ParameterStatusState } from '../../../state/collection';
 import { State } from '../../../state/index';
@@ -22,7 +22,7 @@ import { ParameterType } from '../../../common/parameter_type';
 import { StringUtil } from '../../../utils/string_util';
 import { RequestStatus } from '../../../common/request_status';
 import AssertJsonView from '../../../components/assert_json_view';
-import { DtoAssert } from "../../../../../api/interfaces/dto_assert";
+import { DtoAssert } from '../../../../../api/interfaces/dto_assert';
 
 const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
@@ -57,6 +57,8 @@ interface RequestOptionPanelStateProps {
     currentParam: string;
 
     paramReqStatus?: ParameterStatusState;
+
+    envs: string[];
 }
 
 interface RequestOptionPanelDispatchProps {
@@ -139,7 +141,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
 
     public render() {
 
-        const { activeTabKey, headers, body, parameters, parameterType, assertInfos, test, prescript, headersEditMode, favHeaders } = this.props;
+        const { activeTabKey, headers, body, parameters, parameterType, assertInfos, test, prescript, headersEditMode, favHeaders, envs } = this.props;
         const { isValid, msg } = StringUtil.verifyParameters(parameters || '', parameterType);
         let paramArr = StringUtil.getUniqParamArr(parameters, parameterType);
 
@@ -213,11 +215,11 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                     <Editor type="javascript" height={300} fixHeight={true} value={test} onChange={v => this.props.changeRecord({ 'test': v })} />
                 </TabPane>
                 <TabPane tab={(
-                    <Badge style={normalBadgeStyle} dot={!!test && test.length > 0} count="">
+                    <Badge style={normalBadgeStyle} dot={!!assertInfos && Object.keys(assertInfos).length > 0} count="">
                         Assert base on UI
                     </Badge>
                 )} key="assert">
-                    <AssertJsonView data={json} assertInfos={assertInfos || {}} onAssertInfosChanged={infos => this.props.changeRecord({ 'assertInfos': infos })} />
+                    <AssertJsonView height={300} envs={envs} data={json} assertInfos={assertInfos || {}} onAssertInfosChanged={infos => this.props.changeRecord({ 'assertInfos': infos })} />
                 </TabPane>
             </Tabs>
         );
@@ -226,6 +228,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
 
 const mapStateToProps = (state: State): RequestOptionPanelStateProps => {
     const record = getActiveRecordSelector()(state);
+    const envs = getProjectEnvsSelector()(state).map(e => e.name);
     const favHeaders = _.chain(state.collectionState.collectionsInfo.records)
         .values<_.Dictionary<DtoRecord>>()
         .map(r => _.values(r))
@@ -256,7 +259,8 @@ const mapStateToProps = (state: State): RequestOptionPanelStateProps => {
         headersEditMode: getHeadersEditModeSelector()(state),
         currentParam: getActiveRecordStateSelector()(state).parameter,
         favHeaders,
-        paramReqStatus: getActiveRecordStateSelector()(state).parameterStatus
+        paramReqStatus: getActiveRecordStateSelector()(state).parameterStatus,
+        envs
     };
 };
 
