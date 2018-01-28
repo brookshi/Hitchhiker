@@ -2,23 +2,76 @@
 
 .json-tree {
     background: white;
+}
+
+.json-tree-body{
+    background: white;
+    display: inline-block;
     padding: 0px 8px;
     overflow: auto;
+    width: calc(100% - 300px);
+    height: 298px;
     border: 1px solid #d9d9d9;
 }
 
-.json-tree::-webkit-scrollbar-track {
+.json-tree-asserts{
+    background: white;
+    display: inline-block;
+    width: 300px;
+    border: 1px solid #d9d9d9;
+    border-left: 0px;
+    height: 298px;
+    vertical-align: top;
+    padding: 8px;
+    overflow: auto;
+
+    li{
+        line-height: 15px;
+        font-size: 12px;
+        border-bottom: 1px solid #d9d9d9;
+        background: #b701dd;
+        color: white;
+        padding: 4px;
+        padding-left: 8px;
+        border-radius: 4px;
+        margin-bottom: 4px;
+    }
+
+    li:hover{
+        background: #ce00ff;
+        cursor: pointer;
+    }
+}
+
+.json-tree-asserts-item{
+    display: inline-block;
+    text-overflow: ellipsis;
+    width: calc(100% - 20px);
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: bottom;
+}
+
+.json-tree-asserts-del{
+    margin-left: 4px;
+}
+
+.json-tree-asserts-del:hover {
+    color: #ff9f9f; 
+}
+
+.json-tree-asserts::-webkit-scrollbar-track,.json-tree-body::-webkit-scrollbar-track {
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     background-color: #F5F5F5;
 }
 
-.json-tree::-webkit-scrollbar {
+.json-tree-asserts::-webkit-scrollbar,.json-tree-body::-webkit-scrollbar {
     width: 8px;
     background-color: #F5F5F5;
 }
 
-.json-tree::-webkit-scrollbar-thumb {
+.json-tree-asserts::-webkit-scrollbar-thumb,.json-tree-body::-webkit-scrollbar-thumb {
     border-radius: 8px;
     box-shadow: inset 0 0 6px rgba(0, 0, 0, .1);
     background-color: #ccc;
@@ -33,7 +86,7 @@
         display: inline-block;
 
         svg{
-            color: #02b302;
+            color: #8a2be2;
         }
     }
 }
@@ -42,7 +95,7 @@
 
     .tree-key-ex{
         svg:hover{
-            color: #00ff00;
+            color: #9f56e2;
             cursor: pointer;
         }
     }
@@ -51,7 +104,7 @@
 .tree-key-info {
     background: #ce00ff;
     color: white;
-    border-radius: 2px;
+    border-radius: 3px;
     padding: 0px 4px;
     margin-left: 4px;
 }

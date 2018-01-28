@@ -15,6 +15,7 @@ import { HeaderService } from '../services/header_service';
 import { CollectionService } from '../services/collection_service';
 import { Duration } from '../interfaces/dto_stress_setting';
 import { RecordService } from '../services/record_service';
+import { AssertRunner } from "./assert_runner";
 
 type BatchRunResult = RunResult | _.Dictionary<RunResult>;
 
@@ -207,6 +208,16 @@ export class RecordRunner {
                 value: RecordRunner.applyVariables(header.value, variables)
             });
         }
+        const assertInfos = {};
+        for (let key of Object.keys(record.assertInfos)) {
+            assertInfos[key] = [];
+            for (let info of record.assertInfos[key]) {
+                assertInfos[key].push({
+                    ...info,
+                    value: RecordRunner.applyVariables(info.value, variables)
+                });
+            }
+        }
         return {
             ...record,
             headers,
@@ -214,6 +225,7 @@ export class RecordRunner {
             test: RecordRunner.applyVariables(record.test, variables),
             body: RecordRunner.applyVariables(record.body, variables),
             prescript: RecordRunner.applyVariables(record.prescript, variables),
+            assertInfos
         };
     }
 
@@ -276,6 +288,9 @@ export class RecordRunner {
     private static async handleRes(res: request.RequestResponse, elapsed: number, err: Error, record: RecordEx, needPipe?: boolean): Promise<RunResult> {
         const { envId, serverRes } = record;
         const testRst = !err && record.test ? (await ScriptRunner.test(record, res)) : { tests: {}, variables: {}, export: {}, consoleMsgQueue: [] };
+        if (!err && record.assertInfos && Object.keys(record.assertInfos).length > 0) {
+            AssertRunner.run(record, res, testRst.tests);
+        }
         const pRes: Partial<request.RequestResponse> = res || {};
         const isImg = pRes.headers && pRes.headers['content-type'] && pRes.headers['content-type'].indexOf('image/') >= 0;
         const finalRes: RunResult = {

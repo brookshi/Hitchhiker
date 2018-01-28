@@ -6,6 +6,7 @@ import './style/index.less';
 import { Modal, Button, Icon } from 'antd';
 import AssertItem from './assert_item';
 import { AssertType, AssertTypeFuncMapping } from './assert_funcs';
+import { allEnvironment, noEnvironment } from '../../common/constants';
 
 interface AssertJsonViewProps {
 
@@ -16,6 +17,8 @@ interface AssertJsonViewProps {
     envs: string[];
 
     height: number;
+
+    currentEnv: string;
 
     onAssertInfosChanged(assertInfos: _.Dictionary<DtoAssert[]>);
 }
@@ -50,6 +53,9 @@ class AssertJsonView extends React.Component<AssertJsonViewProps, AssertJsonView
                 const current = parent[key];
                 if (i === 0) {
                     return _.isArray(current) ? 'array' : typeof current;
+                }
+                if (!current) {
+                    return 'object';
                 }
                 parent = current;
             }
@@ -104,7 +110,7 @@ class AssertJsonView extends React.Component<AssertJsonViewProps, AssertJsonView
                             </g>
                         </svg>
                     </span>
-                    {(this.props.assertInfos[currentKey] || []).map(info => <span className="tree-key-info">{`${info.function} ${info.value}`}</span>)}
+                    {(this.props.assertInfos[currentKey] || []).map(info => <span key={info.name} className="tree-key-info">{`${info.function} ${info.value}`}</span>)}
                 </span>
             </span>
         );
@@ -116,11 +122,20 @@ class AssertJsonView extends React.Component<AssertJsonViewProps, AssertJsonView
         this.setState({ ...this.state, editedAssertInfos: infos });
     }
 
-    private completeAssert = () => {
+    private completeEditAssert = () => {
         const { keys, editedAssertInfos } = this.state;
         const currentKey = this.getCurrentKey(keys);
         this.props.onAssertInfosChanged({ ...this.props.assertInfos, [currentKey]: editedAssertInfos });
         this.setState({ ...this.state, isEditDlgOpen: false });
+    }
+
+    private delAssertInfoDirectly = (e: any, keys: string[], index: number) => {
+        e.stopPropagation();
+        const { assertInfos, onAssertInfosChanged } = this.props;
+        const currentKey = this.getCurrentKey(keys);
+        const editedAssertInfos = [...assertInfos[currentKey]];
+        editedAssertInfos.splice(index, 1);
+        onAssertInfosChanged({ ...assertInfos, [currentKey]: editedAssertInfos });
     }
 
     private get assertEditDialog() {
@@ -132,9 +147,10 @@ class AssertJsonView extends React.Component<AssertJsonViewProps, AssertJsonView
                 visible={isEditDlgOpen}
                 okText="OK"
                 cancelText="Cancel"
+                maskClosable={false}
                 title={<span><span>{this.getCurrentKey(keys)}</span><Button ghost={true} size="small" className="assert-item-add" type="primary" icon="plus" onClick={() => this.addNewAssertInfo(keys, type)} >New assert item</Button></span>}
-                width={860}
-                onOk={() => this.completeAssert()}
+                width={type !== 'boolean' ? 860 : 500}
+                onOk={() => this.completeEditAssert()}
                 onCancel={() => this.setState({ ...this.state, isEditDlgOpen: false })}
             >
                 {
@@ -149,16 +165,33 @@ class AssertJsonView extends React.Component<AssertJsonViewProps, AssertJsonView
         );
     }
 
-    public render() {
+    private isValidEnv = (env?: string) => {
+        const { currentEnv } = this.props;
+        return env === currentEnv || env === allEnvironment || env === noEnvironment || !env;
+    }
 
+    public render() {
+        const { assertInfos, data } = this.props;
         return (
             <div className="json-tree" style={{ height: this.props.height }}>
-                <JSONTree
-                    data={this.props.data}
-                    labelRenderer={(key) => this.generateKey(key, this.props.data)}
-                    theme="summerfruit"
-                    invertTheme={true}
-                />
+                <span className="json-tree-body">
+                    <JSONTree
+                        data={data}
+                        labelRenderer={(key) => this.generateKey(key, data)}
+                        theme="colors"
+                        invertTheme={true}
+                    />
+                </span>
+                <span className="json-tree-asserts">
+                    <ul>
+                        {_.flatten(_.keys(assertInfos).map(k => assertInfos[k].filter(info => this.isValidEnv(info.env)).map((info, i) => (
+                            <li key={`${k} ${i}`} onClick={e => this.onEditAssert(e, info.target, this.getType(info.target, data))}>
+                                <span className="json-tree-asserts-item">{`${info.name}: ${this.getCurrentKey(info.target)} ${info.function} ${info.value}`}</span>
+                                <Icon className="json-tree-asserts-del" type="close" onClick={e => this.delAssertInfoDirectly(e, info.target, i)} />
+                            </li>
+                        ))))}
+                    </ul>
+                </span>
                 {this.assertEditDialog}
             </div>
         );

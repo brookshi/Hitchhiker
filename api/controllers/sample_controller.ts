@@ -41,4 +41,20 @@ export default class SampleController extends BaseController {
             message: `delete sample ${id} success`
         };
     }
+
+    @GET('/sample/action/assert')
+    assert() {
+        return {
+            root: {
+                array: [100, 102, 104],
+                boolean: true,
+                number: 10000,
+                string: "hitchhiker",
+                objArr: [
+                    { name: "111" },
+                    { name: "222" }
+                ]
+            }
+        }
+    }
 }

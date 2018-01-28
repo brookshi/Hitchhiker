@@ -12,8 +12,8 @@ import Editor from '../../../components/editor';
 import KeyValueList from '../../../components/key_value';
 import { UpdateDisplayRecordPropertyType, ChangeCurrentParamType } from '../../../action/record';
 import { bodyTypes } from '../../../common/body_type';
-import { defaultBodyType, allParameter } from '../../../common/constants';
-import { getActiveRecordSelector, getReqActiveTabKeySelector, getHeadersEditModeSelector, getActiveRecordStateSelector, getProjectEnvsSelector } from './selector';
+import { defaultBodyType, allParameter, noEnvironment } from '../../../common/constants';
+import { getActiveRecordSelector, getReqActiveTabKeySelector, getHeadersEditModeSelector, getActiveRecordStateSelector, getProjectEnvsSelector, getActiveEnvIdSelector } from './selector';
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 import { RecordState, ParameterStatusState } from '../../../state/collection';
 import { State } from '../../../state/index';
@@ -59,6 +59,10 @@ interface RequestOptionPanelStateProps {
     paramReqStatus?: ParameterStatusState;
 
     envs: string[];
+
+    currentEnv: string;
+
+    resBody?: string;
 }
 
 interface RequestOptionPanelDispatchProps {
@@ -139,24 +143,24 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
         }
     }
 
+    private hasVaildResponseObj = () => {
+        const body = this.props.resBody;
+        let isResValid = body != null;
+        let obj;
+        try {
+            obj = JSON.parse(body || '');
+        } catch (e) {
+            isResValid = false;
+        }
+        return { isResValid, obj };
+    }
+
     public render() {
 
-        const { activeTabKey, headers, body, parameters, parameterType, assertInfos, test, prescript, headersEditMode, favHeaders, envs } = this.props;
+        const { activeTabKey, headers, body, parameters, parameterType, assertInfos, test, prescript, headersEditMode, favHeaders, envs, currentEnv } = this.props;
         const { isValid, msg } = StringUtil.verifyParameters(parameters || '', parameterType);
         let paramArr = StringUtil.getUniqParamArr(parameters, parameterType);
-
-        const json = {
-            array: [1, 2, 3],
-            bool: true,
-            object: {
-                foo: 'bar'
-            },
-            undefined: undefined,
-            objArr: [
-                { a: 1 },
-                { b: 2 }
-            ]
-        };
+        const { isResValid, obj } = this.hasVaildResponseObj();
 
         return (
             <Tabs
@@ -219,16 +223,32 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                         Assert base on UI
                     </Badge>
                 )} key="assert">
-                    <AssertJsonView height={300} envs={envs} data={json} assertInfos={assertInfos || {}} onAssertInfosChanged={infos => this.props.changeRecord({ 'assertInfos': infos })} />
+                    {isResValid ?
+                        <AssertJsonView height={300} envs={envs} currentEnv={currentEnv} data={obj} assertInfos={assertInfos || {}} onAssertInfosChanged={infos => this.props.changeRecord({ 'assertInfos': infos })} />
+                        : <div className="req-opt-assert-invalid">There is no valid response, please ensure response exist with json format.</div>
+                    }
                 </TabPane>
             </Tabs>
         );
     }
 }
 
+function getRes(state: State) {
+    const record = getActiveRecordSelector()(state);
+    const recordState = getActiveRecordStateSelector()(state);
+    const activeKey = state.displayRecordsState.activeKey;
+    const { currParam, paramArr } = StringUtil.parseParameters(record.parameters, record.parameterType, recordState.parameter);
+    const currParamStr = JSON.stringify(currParam);
+    const resState = state.displayRecordsState.responseState[activeKey];
+    return !resState ? undefined : (paramArr.length === 0 ? resState['runResult'] : (currParam === allParameter ? resState : resState[currParamStr]));
+}
+
 const mapStateToProps = (state: State): RequestOptionPanelStateProps => {
     const record = getActiveRecordSelector()(state);
-    const envs = getProjectEnvsSelector()(state).map(e => e.name);
+    const res = getRes(state);
+    const envs = getProjectEnvsSelector()(state);
+    const currEnvId = getActiveEnvIdSelector()(state);
+    const currEnv = envs.find(e => e.id === currEnvId);
     const favHeaders = _.chain(state.collectionState.collectionsInfo.records)
         .values<_.Dictionary<DtoRecord>>()
         .map(r => _.values(r))
@@ -260,7 +280,9 @@ const mapStateToProps = (state: State): RequestOptionPanelStateProps => {
         currentParam: getActiveRecordStateSelector()(state).parameter,
         favHeaders,
         paramReqStatus: getActiveRecordStateSelector()(state).parameterStatus,
-        envs
+        envs: envs.map(e => e.name),
+        currentEnv: currEnv ? currEnv.name : noEnvironment,
+        resBody: res ? res.body : undefined
     };
 };
 

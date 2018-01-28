@@ -2,7 +2,7 @@ import React from 'react';
 import { DtoAssert } from '../../../../api/interfaces/dto_assert';
 import { Select, Input } from 'antd';
 import { AssertType, AssertTypeFuncMapping } from './assert_funcs';
-import { allEnvironment } from '../../common/constants';
+import { allEnvironment, noEnvironment } from '../../common/constants';
 
 const Option = Select.Option;
 
@@ -37,7 +37,8 @@ class AssertItem extends React.Component<AssertItemProps, AssertItemState> {
         const { assertInfo, envs } = this.props;
         return (
             <Select value={assertInfo.env || 'All'} onChange={func => this.onPropertyChanged('env', func.toString())}>
-                <Option key={allEnvironment} value={allEnvironment}>All</Option>
+                <Option key={allEnvironment} value={allEnvironment}>{allEnvironment}</Option>
+                <Option key={noEnvironment} value={noEnvironment}>{noEnvironment}</Option>
                 {
                     envs.map(e => (
                         <Option key={e} value={e}>{e}</Option>
@@ -54,13 +55,14 @@ class AssertItem extends React.Component<AssertItemProps, AssertItemState> {
 
     public render() {
 
-        const { assertInfo } = this.props;
+        const { assertInfo, type } = this.props;
+        const needValue = type !== 'boolean';
 
         return (
             <span className="assert-item">
                 <span className="assert-item-env">{this.generateEnvSelect()}</span>
                 <span className="assert-item-func">{this.generateFunctionSelect()}</span>
-                <span className="assert-item-value"><Input placeholder="Value" defaultValue={assertInfo.value} value={assertInfo.value} onChange={e => this.onPropertyChanged('value', e.currentTarget.value)} /></span>
+                {needValue ? <span className="assert-item-value"><Input placeholder="Value" defaultValue={assertInfo.value} value={assertInfo.value} onChange={e => this.onPropertyChanged('value', e.currentTarget.value)} /></span> : ''}
                 <span className="assert-item-symbol"> assert </span>
                 <span className="assert-item-name"><Input placeholder="statement" defaultValue={assertInfo.name} value={assertInfo.name} onChange={e => this.onPropertyChanged('name', e.currentTarget.value)} /></span>
             </span>

@@ -2,7 +2,7 @@ export type AssertType = 'array' | 'string' | 'number' | 'boolean';
 
 export const arrayFuncs = ['length >', 'length ==', 'length <', 'includes', 'every', 'some', 'custom'];
 
-export const stringFuncs = ['length >', 'length ==', 'length <', 'includes', 'startsWith', 'endsWith', 'custom'];
+export const stringFuncs = ['length >', 'length ==', 'length <', '==', 'includes', 'startsWith', 'endsWith', 'custom'];
 
 export const numberFuncs = ['>', '>=', '==', '<', '<='];
 

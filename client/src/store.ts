@@ -10,8 +10,8 @@ import { StressWS } from './action/stress';
 
 const sagaMiddleware = createSagaMiddleware();
 
-const reduxDebugFlag = '__REDUX_DEVTOOLS_EXTENSION_COMPOSE__';
-const composeEnhancers = window[reduxDebugFlag] || compose;
+// const reduxDebugFlag = '__REDUX_DEVTOOLS_EXTENSION_COMPOSE__';
+const composeEnhancers = compose; // window[reduxDebugFlag] || compose;
 
 let isStoring = false;
 
