@@ -293,6 +293,16 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                 <Tooltip overlayClassName="schedule-sub-table-tooltip" placement="top" title={<pre>{_.keys(runResult.tests).map(k => <div key={k}>{k}: <span className={runResult.tests[k] ? 'schedule-success' : 'schedule-failed'}>{runResult.tests[k] ? pass : fail}</span></div>)}</pre>}>
                     {_.keys(runResult.tests).length > 0 ? this.getCellDisplay(tests) : ''}
                 </Tooltip>
+                {tests ? (
+                    <CopyToClipboard text={_.keys(runResult.tests).map(k => `${k}: ${runResult.tests[k] ? pass : fail}`).join('\n')} onCopy={() => message.success('test copied!', 3)}>
+                        <Button
+                            className="schedule-sub-tab-btn"
+                            style={{ marginLeft: 8 }}
+                            type="primary"
+                            icon="copy"
+                        />
+                    </CopyToClipboard>
+                ) : ''}
             </span>
         );
     }
