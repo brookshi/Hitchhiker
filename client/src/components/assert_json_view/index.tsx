@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import JSONTree from 'react-json-tree';
 import { DtoAssert } from '../../../../api/interfaces/dto_assert';
 import './style/index.less';
-import { Modal, Button, Icon } from 'antd';
+import { Modal, Button, Icon, Tooltip } from 'antd';
 import AssertItem from './assert_item';
 import { AssertType, AssertTypeFuncMapping } from './assert_funcs';
 import { allEnvironment, noEnvironment } from '../../common/constants';
@@ -186,7 +186,9 @@ class AssertJsonView extends React.Component<AssertJsonViewProps, AssertJsonView
                     <ul>
                         {_.flatten(_.keys(assertInfos).map(k => assertInfos[k].filter(info => this.isValidEnv(info.env)).map((info, i) => (
                             <li key={`${k} ${i}`} onClick={e => this.onEditAssert(e, info.target, this.getType(info.target, data))}>
-                                <span className="json-tree-asserts-item">{`${info.name}: ${this.getCurrentKey(info.target)} ${info.function} ${info.value}`}</span>
+                                <Tooltip mouseEnterDelay={1} placement="top" title={`${info.name}: ${this.getCurrentKey(info.target)} ${info.function} ${info.value}`}>
+                                    <span className="json-tree-asserts-item">{`${info.name}: ${this.getCurrentKey(info.target)} ${info.function} ${info.value}`}</span>
+                                </Tooltip>
                                 <Icon className="json-tree-asserts-del" type="close" onClick={e => this.delAssertInfoDirectly(e, info.target, i)} />
                             </li>
                         ))))}

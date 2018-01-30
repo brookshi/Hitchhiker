@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Dropdown, Input } from 'antd';
+import { Icon, Dropdown, Input, Tooltip } from 'antd';
 import './style/index.less';
 
 interface ItemWithMenuProps {
@@ -92,20 +92,22 @@ class ItemWithMenu extends React.Component<ItemWithMenuProps, ItemWithMenuState>
             <span className={`${className} item-with-menu`}>
                 {isLoading ? <Icon className="c-icon item-loading-anim" type="sync" /> : icon}
                 <span className="item-with-menu-name">
-                    <div className="item-with-menu-title" style={{ lineHeight }}>
-                        <Input
-                            className="item-with-menu-input"
-                            spellCheck={false}
-                            onBlur={this.completeEdit}
-                            onKeyDown={this.onKeyDown}
-                            onClick={this.stopPropagation}
-                            onChange={this.onNameChanged}
-                            style={nameStyle}
-                            ref={ele => this.nameInput = ele}
-                            value={name}
-                        />
-                        {isEdit ? '' : this.props.name}
-                    </div>
+                    <Tooltip mouseEnterDelay={1} placement="top" title={this.props.name}>
+                        <div className="item-with-menu-title" style={{ lineHeight }}>
+                            <Input
+                                className="item-with-menu-input"
+                                spellCheck={false}
+                                onBlur={this.completeEdit}
+                                onKeyDown={this.onKeyDown}
+                                onClick={this.stopPropagation}
+                                onChange={this.onNameChanged}
+                                style={nameStyle}
+                                ref={ele => this.nameInput = ele}
+                                value={name}
+                            />
+                            {isEdit ? '' : this.props.name}
+                        </div>
+                    </Tooltip>
                     {
                         subName ? (
                             <div className="item-with-menu-subname" style={{ lineHeight }}>
