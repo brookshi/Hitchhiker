@@ -19,10 +19,11 @@ export class AssertRunner {
 
     private static runAssert(keys: string[], func: string, value: string, responseObj: any) {
         const target = this.getTarget(keys, responseObj);
+        let type = typeof target;
         if (this.isLenOper(func)) {
             return eval(`${target['length']} ${func.replace('length', '').trim()} ${value}`);
         } else if (this.isCompareOper(func)) {
-            if (typeof target === 'number') {
+            if (type === 'number') {
                 return eval(`${target} ${func} ${value}`);
             } else {
                 return eval(`'${target}' ${func} '${value}'`);
@@ -32,7 +33,7 @@ export class AssertRunner {
         } else if (['true', 'false'].find(o => o === func)) {
             return target === (func === 'true' ? true : false);
         } else {
-            return eval(target[func](eval(`'${value}'`)));
+            return eval(target[func](eval(value)));
         }
     }
 
