@@ -91,6 +91,10 @@ export class Setting {
         return this.getValidNum(process.env.HITCHHIKER_SCHEDULE_STORE_LIMIT, this.schedule.storeLimit);
     }
 
+    get scheduleStoreContent() {
+        return process.env.HITCHHIKER_SCHEDULE_STORE_CONTENT || this.schedule.storeContent;
+    }
+
     get schedulePageSize() {
         return this.getValidNum(process.env.HITCHHIKER_SCHEDULE_PAGESIZE, this.schedule.pageSize);
     }

@@ -143,7 +143,32 @@ export class ScheduleRunner {
         Log.info('clear redundant records');
         await ScheduleRecordService.clearRedundantRecords(schedule.id);
         Log.info('create new record');
+        if (Setting.instance.scheduleStoreContent !== 'all') {
+            Log.info('try clear record content');
+            const forFail = Setting.instance.scheduleStoreContent === 'forFail';
+            this.tryClearContent(originRunResults, forFail);
+            this.tryClearContent(compareRunResults, forFail);
+        }
         return await ScheduleRecordService.create(scheduleRecord);
+    }
+
+    private async tryClearContent(runResults: Array<RunResult | _.Dictionary<RunResult>>, forFail: boolean) {
+        runResults.forEach(r => {
+            if (this.isRunResult(r)) {
+                this.clearRunResult(r, forFail);
+            } else {
+                _.values(r).forEach(s => {
+                    this.clearRunResult(s, forFail);
+                });
+            }
+        });
+    }
+
+    private async clearRunResult(runResult: RunResult, forFail: boolean) {
+        if (!forFail || this.isSuccess(runResult)) {
+            runResult.body = '';
+            runResult.headers = {};
+        }
     }
 
     private flattenRunResult(res: Array<RunResult | _.Dictionary<RunResult>>) {

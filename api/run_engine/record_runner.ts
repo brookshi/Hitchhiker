@@ -209,7 +209,7 @@ export class RecordRunner {
             });
         }
         const assertInfos = {};
-        for (let key of Object.keys(record.assertInfos)) {
+        for (let key of Object.keys(record.assertInfos || {})) {
             assertInfos[key] = [];
             for (let info of record.assertInfos[key]) {
                 assertInfos[key].push({
