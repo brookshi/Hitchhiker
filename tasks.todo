@@ -149,8 +149,9 @@
     ✔ change duplicated env will apply the change to origin env @done (1/11/2018, 1:45:34 PM)
 
 0.9:
-    ☐ test function base on UI
-    ☐ use domain name for host in yml will cause stress test connect failed
+    ✔ test function base on UI @done (2/1/2018, 9:34:57 PM)
+    ✔ use domain name for host in yml will cause stress test connect failed @done (2/1/2018, 11:08:24 PM)
+    ✔ add schedule record store mode @done (2/1/2018, 9:34:55 PM)
 
 backlog:
     ☐ pre script, header, auth, test in Collection/folder level

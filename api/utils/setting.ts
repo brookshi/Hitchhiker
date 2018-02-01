@@ -64,8 +64,8 @@ export class Setting {
     }
 
     get appPort() {
-        let port = this.appHost.substr(this.appHost.lastIndexOf(':') + 1).replace('/', '');
-        if (!(/^[0-9]*$/.test(port))) {
+        let port = this.getValidNum(process.env.HITCHHIKER_APP_PORT, this.appHost.substr(this.appHost.lastIndexOf(':') + 1).replace('/', ''));
+        if (!(/^[0-9]*$/.test(port.toString()))) {
             port = 8080;
         }
         return this.isDev ? 81 : port;

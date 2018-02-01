@@ -2,6 +2,7 @@
     "app": {
         "env": "DEV",
         "host": "http://localhost:3000/",
+        "port": 8080,
         "api": "http://localhost:81/api/",
         "language": "en",
         "encryptKey": "hitchhikerapi",
