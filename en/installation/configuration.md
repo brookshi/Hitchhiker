@@ -7,6 +7,7 @@ when type of variable is boolean, use 1 for true and 0 for false.
     "app": {
         "env": "DEV",
         "host": "http://localhost:3000/",   // set ip and port， Env Variable：HITCHHIKER_APP_HOST
+        "port": 8080,  // port, use for nginx   HITCHHIKER_APP_PORT
         "api": "http://localhost:81/api/",  // API interface, used for debug， Env Variable same as above
         "language": "en",  // language, only support mail right now, HITCHHIKER_APP_LANG
         "encryptKey": "hitchhikerapi",  

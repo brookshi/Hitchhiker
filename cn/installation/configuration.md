@@ -5,6 +5,7 @@ Hitchhiker的很多设置可以在appconfig.json里设置，也有对应的环�
     "app": {
         "env": "DEV",
         "host": "http://localhost:3000/",   // 设置运行的ip和端口， 环境变量：HITCHHIKER_APP_HOST
+        "port": 8080,  //  使用nginx做代理时可以使用这个端口  HITCHHIKER_APP_PORT
         "api": "http://localhost:81/api/",  // API接口，调试用， 环境变量使用上面的
         "language": "en",  // 语言，目前只对邮件内容起作用， HITCHHIKER_APP_LANG
         "encryptKey": "hitchhikerapi",  
@@ -32,7 +33,10 @@ Hitchhiker的很多设置可以在appconfig.json里设置，也有对应的环�
     },
     "schedule": {
         "duration": 60, // schedule 监测时间间隔（秒）  HITCHHIKER_SCHEDULE_DURATION
-        "storeMaxCount": 50, // schedule 列表最大长度   HITCHHIKER_SCHEDULE_COUNT
+        "storeUnit": "count",  //schedule 存储的单位，支持按个数存 count 和按天存: day   HITCHHIKER_SCHEDULE_STORE_UNIT
+        "storeLimit": 50, // schedule 存储的大小   HITCHHIKER_SCHEDULE_COUNT
+        "storeContent": "forFail", // schedule record response 是否存储, all表示所有都存下来, forFail表示只存失败的, none表示都不存（这会很大影响数据库大小和性能）    HITCHHIKER_SCHEDULE_STORE_CONTENT
+        "pageSize": 20,  // schedule record 在浏览器端显示的一页的个数   HITCHHIKER_SCHEDULE_PAGESIZE
         "mailOnlyForFail": true // 只在失败时发邮件   HITCHHIKER_SCHEDULE_MAILFORFAIL
     },
     "stress": {

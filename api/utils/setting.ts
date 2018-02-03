@@ -112,7 +112,14 @@ export class Setting {
     }
 
     get stressHost() {
-        return `${this.appHost.replace(/^http(s?):\/\//g, 'ws://').replace(/:\d+/, `:${this.stressPort}`)}`;
+        let host = this.appHost.replace(/^http(s?):\/\//g, 'ws://');
+        if (/:\d+/.test(host)) {
+            host = host.replace(/:\d+/, `:${this.stressPort}`);
+        } else {
+            host = host.endsWith('/') ? `${host.substr(0, host.length - 1)}:${this.stressPort}/` : `${host}:${this.stressPort}/`;
+        }
+
+        return host;
     }
 
     get stressPort() {
