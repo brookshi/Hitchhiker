@@ -3,6 +3,7 @@ import { DtoAssert } from '../../../../api/interfaces/dto_assert';
 import { Select, Input } from 'antd';
 import { AssertType, AssertTypeFuncMapping } from './assert_funcs';
 import { allEnvironment, noEnvironment } from '../../common/constants';
+import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
 
 const Option = Select.Option;
 
@@ -12,7 +13,7 @@ interface AssertItemProps {
 
     assertInfo: DtoAssert;
 
-    envs: string[];
+    envs: DtoEnvironment[];
 
     onAssertInfoChanged(assertInfo: DtoAssert);
 }
@@ -41,7 +42,7 @@ class AssertItem extends React.Component<AssertItemProps, AssertItemState> {
                 <Option key={noEnvironment} value={noEnvironment}>{noEnvironment}</Option>
                 {
                     envs.map(e => (
-                        <Option key={e} value={e}>{e}</Option>
+                        <Option key={e.id} value={e.id}>{e.name}</Option>
                     ))
                 }
             </Select>

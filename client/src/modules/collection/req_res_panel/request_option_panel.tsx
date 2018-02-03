@@ -23,6 +23,7 @@ import { StringUtil } from '../../../utils/string_util';
 import { RequestStatus } from '../../../common/request_status';
 import AssertJsonView from '../../../components/assert_json_view';
 import { DtoAssert } from '../../../../../api/interfaces/dto_assert';
+import { DtoEnvironment } from '../../../../../api/interfaces/dto_environment';
 
 const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
@@ -58,7 +59,7 @@ interface RequestOptionPanelStateProps {
 
     paramReqStatus?: ParameterStatusState;
 
-    envs: string[];
+    envs: DtoEnvironment[];
 
     currentEnv: string;
 
@@ -248,7 +249,6 @@ const mapStateToProps = (state: State): RequestOptionPanelStateProps => {
     const res = getRes(state);
     const envs = getProjectEnvsSelector()(state);
     const currEnvId = getActiveEnvIdSelector()(state);
-    const currEnv = envs.find(e => e.id === currEnvId);
     const favHeaders = _.chain(state.collectionState.collectionsInfo.records)
         .values<_.Dictionary<DtoRecord>>()
         .map(r => _.values(r))
@@ -280,8 +280,8 @@ const mapStateToProps = (state: State): RequestOptionPanelStateProps => {
         currentParam: getActiveRecordStateSelector()(state).parameter,
         favHeaders,
         paramReqStatus: getActiveRecordStateSelector()(state).parameterStatus,
-        envs: envs.map(e => e.name),
-        currentEnv: currEnv ? currEnv.name : noEnvironment,
+        envs: envs,
+        currentEnv: currEnvId || noEnvironment,
         resBody: res ? res.body : undefined
     };
 };

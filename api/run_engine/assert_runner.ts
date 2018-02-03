@@ -6,8 +6,8 @@ import { noEnvironment } from '../common/stress_type';
 export class AssertRunner {
 
     static run(record: RecordEx, res: request.RequestResponse, tests: any) {
-        const { envName, assertInfos } = record;
-        const infos = _.flatten(_.values(assertInfos)).filter(info => info.env === envName || info.env === 'All' || info.env === noEnvironment || !info.env);
+        const { envId, assertInfos } = record;
+        const infos = _.flatten(_.values(assertInfos)).filter(info => info.env === envId || info.env === 'All' || info.env === noEnvironment || !info.env);
         infos.forEach(info => {
             try {
                 tests[info.name] = this.runAssert(info.target, info.function, info.value, this.getResponseObj(res));

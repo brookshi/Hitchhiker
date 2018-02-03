@@ -7,6 +7,7 @@ import { Modal, Button, Icon, Tooltip } from 'antd';
 import AssertItem from './assert_item';
 import { AssertType, AssertTypeFuncMapping } from './assert_funcs';
 import { allEnvironment, noEnvironment } from '../../common/constants';
+import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
 
 interface AssertJsonViewProps {
 
@@ -14,7 +15,7 @@ interface AssertJsonViewProps {
 
     assertInfos: _.Dictionary<DtoAssert[]>;
 
-    envs: string[];
+    envs: DtoEnvironment[];
 
     height: number;
 
