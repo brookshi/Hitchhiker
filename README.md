@@ -12,7 +12,8 @@ Go to [http://www.hitchhiker-api.com](http://www.hitchhiker-api.com) for test，
 * Api collaboration development with team
 * Api history
 * Multiple environments and Runtime variables support, easy to handle api dependence
-* powerful script, support requiring any js lib which upload to project, read excel, cryptographic, no can't do
+* Assert base on UI
+* Powerful script, support requiring any js lib which upload to project, read excel, cryptographic, no can't do
 * Request parameterization, include ManytoMany and OnetoOne, now you can use a request to handle multple situation like various query string, body
 * Schedule and run batch
 * Make a comparison for Api response between two different environments (eg: stage vs product)
@@ -21,7 +22,7 @@ Go to [http://www.hitchhiker-api.com](http://www.hitchhiker-api.com) for test，
 * All changed will be auto saved in local cache even if refresh page
 * Support importing Postman v1 collections
 * Distributed stress test
-* sync collection data of team automatically
+* Sync collection data of team automatically
 * Api Document (in future)
 
 
@@ -55,6 +56,7 @@ security | Strong，deploy in local | Weak, data will upload to server
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/schedule.png' width='800'/>
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/schedule/statistics.png' width='800'/>
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/stresstest.gif' width='800'/>
+<img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/assert.gif' width='800'/>
 
 ## Browser
 
