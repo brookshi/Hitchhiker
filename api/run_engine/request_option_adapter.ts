@@ -15,7 +15,7 @@ export class RequestOptionAdapter {
             await RequestOptionAdapter.applyLocalhost(record, record.uid);
         }
         const { reqStrictSSL, reqFollowRedirect } = record.collection || { reqStrictSSL: false, reqFollowRedirect: false };
-        return {
+        const option: Options = {
             url: StringUtil.fixedEncodeURI(record.url),
             method: record.method,
             headers: RecordService.formatHeaders(record),
@@ -23,8 +23,18 @@ export class RequestOptionAdapter {
             strictSSL: reqStrictSSL,
             followRedirect: reqFollowRedirect,
             time: true,
-            timeout: Setting.instance.requestTimeout
+            timeout: Setting.instance.requestTimeout,
         };
+        if (this.isRequestImg(option.headers)) {
+            option.encoding = null;
+        }
+
+        return option;
+    }
+
+    static isRequestImg(headers: { [key: string]: string }) {
+        const accept = _.keys(headers).find(h => h.toLowerCase() === 'accept');
+        return accept && headers[accept].indexOf('image') >= 0;
     }
 
     static async applyLocalhost(record: RecordEx, userId: string): Promise<any> {

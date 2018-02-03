@@ -22,6 +22,7 @@ import { RecordCategory } from '../common/record_category';
 import { StringUtil } from '../utils/string_util';
 import { Sandbox } from './sandbox';
 import { Setting } from '../utils/setting';
+import { ValidateUtil } from '../utils/validate_util';
 
 export class ScheduleRunner {
 
@@ -142,30 +143,31 @@ export class ScheduleRunner {
 
         Log.info('clear redundant records');
         await ScheduleRecordService.clearRedundantRecords(schedule.id);
+
+        Log.info('try clear record content');
+        this.tryClearContent(originRunResults);
+        this.tryClearContent(compareRunResults);
+
         Log.info('create new record');
-        if (Setting.instance.scheduleStoreContent !== 'all') {
-            Log.info('try clear record content');
-            const forFail = Setting.instance.scheduleStoreContent === 'forFail';
-            this.tryClearContent(originRunResults, forFail);
-            this.tryClearContent(compareRunResults, forFail);
-        }
         return await ScheduleRecordService.create(scheduleRecord);
     }
 
-    private async tryClearContent(runResults: Array<RunResult | _.Dictionary<RunResult>>, forFail: boolean) {
+    private async tryClearContent(runResults: Array<RunResult | _.Dictionary<RunResult>>) {
         runResults.forEach(r => {
             if (this.isRunResult(r)) {
-                this.clearRunResult(r, forFail);
+                this.clearRunResult(r);
             } else {
                 _.values(r).forEach(s => {
-                    this.clearRunResult(s, forFail);
+                    this.clearRunResult(s);
                 });
             }
         });
     }
 
-    private async clearRunResult(runResult: RunResult, forFail: boolean) {
-        if (!forFail || this.isSuccess(runResult)) {
+    private async clearRunResult(runResult: RunResult) {
+        const storeContent = Setting.instance.scheduleStoreContent;
+        const isImg = ValidateUtil.isResImg(runResult.headers);
+        if (isImg || storeContent === 'none' || (storeContent === 'forFail' && !this.isSuccess(runResult))) {
             runResult.body = '';
             runResult.headers = {};
         }

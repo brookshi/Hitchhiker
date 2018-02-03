@@ -15,7 +15,8 @@ import { HeaderService } from '../services/header_service';
 import { CollectionService } from '../services/collection_service';
 import { Duration } from '../interfaces/dto_stress_setting';
 import { RecordService } from '../services/record_service';
-import { AssertRunner } from "./assert_runner";
+import { AssertRunner } from './assert_runner';
+import { ValidateUtil } from '../utils/validate_util';
 
 type BatchRunResult = RunResult | _.Dictionary<RunResult>;
 
@@ -292,13 +293,13 @@ export class RecordRunner {
             AssertRunner.run(record, res, testRst.tests);
         }
         const pRes: Partial<request.RequestResponse> = res || {};
-        const isImg = pRes.headers && pRes.headers['content-type'] && pRes.headers['content-type'].indexOf('image/') >= 0;
+        const isImg = ValidateUtil.isResImg(pRes.headers);
         const finalRes: RunResult = {
             id: record.id,
             envId,
             host: pRes.request ? pRes.request.host : StringUtil.getHostFromUrl(record.url),
             error: err ? { message: err.message, stack: err.stack } : undefined,
-            body: isImg ? (record.method === 'GET' ? record.url : 'Body is a image') : pRes.body,
+            body: isImg ? `data:${pRes.headers['content-type']};base64,${pRes.body.toString('base64')}` : pRes.body,
             tests: testRst.tests,
             variables: {},
             export: testRst.export,

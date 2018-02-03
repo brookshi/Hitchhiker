@@ -33,4 +33,8 @@ export class ValidateUtil {
     static checkUserName(name: string): ResObject {
         return { success: !!name, message: Message.userNameFormatError };
     }
+
+    static isResImg(headers: { [key: string]: string | string[] }) {
+        return headers && headers['content-type'] && headers['content-type'].indexOf('image/') >= 0;
+    }
 }
