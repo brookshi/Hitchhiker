@@ -19,6 +19,7 @@ import Perf from 'react-addons-perf';
 import './style/App.less';
 import * as _ from 'lodash';
 import { toolBarWidth } from './common/constants';
+import Msg from './locales';
 
 const { Header, Sider } = Layout;
 
@@ -102,7 +103,7 @@ class App extends React.Component<AppProps, AppState> {
               onClick={this.onClick}
             >
               <Menu.Item key="collection">
-                <Tooltip mouseEnterDelay={0} placement="right" title="Collections">
+                <Tooltip mouseEnterDelay={0} placement="right" title={Msg('App.Collections')}>
                   <Icon type="wallet" />
                 </Tooltip>
               </Menu.Item>

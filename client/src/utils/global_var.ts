@@ -11,4 +11,6 @@ export class GlobalVar {
     enableUploadProjectData: boolean = true;
 
     schedulePageSize: number = 50;
+
+    lang = 'cn';
 }
