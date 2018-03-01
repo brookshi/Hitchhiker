@@ -108,27 +108,27 @@ class App extends React.Component<AppProps, AppState> {
                 </Tooltip>
               </Menu.Item>
               <Menu.Item key="project">
-                <Tooltip mouseEnterDelay={0} placement="right" title="Project">
+                <Tooltip mouseEnterDelay={0} placement="right" title={Msg('App.Project')}>
                   <Icon type="solution" />
                 </Tooltip>
               </Menu.Item>
               <Menu.Item key="schedule">
-                <Tooltip mouseEnterDelay={0} placement="right" title="Scheduler">
+                <Tooltip mouseEnterDelay={0} placement="right" title={Msg('App.Scheduler')}>
                   <Icon type="schedule" />
                 </Tooltip>
               </Menu.Item>
               <Menu.Item key="stress_test">
-                <Tooltip mouseEnterDelay={0} placement="right" title="Stress test">
+                <Tooltip mouseEnterDelay={0} placement="right" title={Msg('App.StressTest')}>
                   <Icon type="code-o" />
                 </Tooltip>
               </Menu.Item>
               <Menu.Item key="api_doc">
-                <Tooltip mouseEnterDelay={0} placement="right" title="Api document">
+                <Tooltip mouseEnterDelay={0} placement="right" title={Msg('App.ApiDocument')}>
                   <Icon type="file-text" />
                 </Tooltip>
               </Menu.Item>
               <Menu.Item key="api_mock">
-                <Tooltip mouseEnterDelay={0} placement="right" title="Api mock">
+                <Tooltip mouseEnterDelay={0} placement="right" title={Msg('App.Mock')}>
                   <Icon type="api" />
                 </Tooltip>
               </Menu.Item>

@@ -1,9 +1,11 @@
 import React from 'react';
-import { Form, Input, Button, Icon, message } from 'antd';
+import { Form, Button, Icon, message } from 'antd';
 import { RequestState } from '../../state/request';
 import { RequestStatus } from '../../common/request_status';
 import './style/index.less';
 import { LoginPageMode } from '../../common/custom_type';
+import Msg from '../../locales';
+import LoInput from '../../locales/input';
 
 const FormItem = Form.Item;
 
@@ -58,51 +60,51 @@ class LoginPanel extends React.Component<LoginProps, LoginPanelState> {
             <Form onSubmit={this.signIn} className="login-page-form">
                 <FormItem>
                     <div>
-                        Email
+                        {Msg('Login.Email')}
                     </div>
                     {
                         getFieldDecorator('email', {
                             initialValue: this.props.lastLoginName,
-                            rules: [{ required: true, message: 'Please enter your email!' }],
+                            rules: [{ required: true, message: Msg('Login.EnterEmail') }],
                         })
                             (
-                            <Input
+                            <LoInput
                                 onPressEnter={this.signIn}
                                 spellCheck={false}
                                 className="login-page-form-input"
                                 prefix={<Icon type="user" style={{ fontSize: 13 }} />}
-                                placeholder="Email"
+                                placeholderId="Login.Email"
                             />
                             )
                     }
                 </FormItem>
                 <FormItem>
                     <div>
-                        Password <a tabIndex={4} className="login-panel-form-forgot" onClick={() => this.props.switchPanel('findPassword')}>Forgot password?</a>
+                        {Msg('Login.Password')} <a tabIndex={4} className="login-panel-form-forgot" onClick={() => this.props.switchPanel('findPassword')}>{Msg('Login.ForgotPassword')}</a>
                     </div>
                     {
                         getFieldDecorator('password', {
-                            rules: [{ required: true, message: 'Please enter your Password!' }],
+                            rules: [{ required: true, message: Msg('Login.EnterPassword') }],
                         })
                             (
-                            <Input
+                            <LoInput
                                 onPressEnter={this.signIn}
                                 spellCheck={false}
                                 className="login-page-form-input"
                                 prefix={<Icon type="lock" style={{ fontSize: 13 }} />}
                                 type="password"
-                                placeholder="Password"
+                                placeholderId="Login.Password"
                             />
                             )
                     }
                 </FormItem>
                 <FormItem>
                     <Button loading={this.props.loginState.status === RequestStatus.pending} type="primary" htmlType="submit" className="login-page-form-button">
-                        Sign in
+                        {Msg('Login.SignIn')}
                     </Button>
-                    New to Hitchhiker? <a onClick={() => this.props.switchPanel('register')}>Create an account.</a>
+                    {Msg('Login.New', { create: <a onClick={() => this.props.switchPanel('register')}>{Msg('Login.CreateAccount')}</a> })}
                     <br />
-                    Or <a onClick={() => this.props.tempUse()}>try without login.</a>
+                    {Msg('Login.OrTry', { try: <a onClick={() => this.props.tempUse()}>{Msg('Login.Try')}</a> })}
                 </FormItem>
             </Form >
         );

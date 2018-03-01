@@ -4,6 +4,7 @@ import { ProjectData, ProjectFiles } from '../../../../api/interfaces/dto_projec
 import * as _ from 'lodash';
 import { ProjectFileType, ProjectFileTypes } from '../../common/custom_type';
 import { Urls } from '../../utils/urls';
+import Msg from '../../locales';
 
 interface ProjectDataDialogProps {
 
@@ -15,7 +16,7 @@ interface ProjectDataDialogProps {
 
     isDlgOpen: boolean;
 
-    title: string;
+    title: string | React.ReactNode;
 
     deleteFile(pid: string, name: string, type: ProjectFileType);
 
@@ -52,9 +53,9 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
             const { addFile, projectId, type } = this.props;
             const fileNameWithoutExt = this.removeExt(info.file.name);
             addFile(projectId, fileNameWithoutExt, `${projectId}/${fileNameWithoutExt}`, type);
-            message.success(`${info.file.name} file uploaded successfully`);
+            message.success(Msg('Project.UploadFileSuccess', { name: info.file.name }));
         } else if (info.file.status === 'error') {
-            message.error(`${info.file.name} file upload failed.`);
+            message.error(Msg('Project.UploadFileFail', { name: info.file.name }));
         }
     }
 
@@ -86,7 +87,7 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
                     <div style={{ height: 30 }}>
                         <Upload accept={isLib ? '.zip' : ''} action={action} multiple={false} name="projectfile" showUploadList={false} withCredentials={true} onChange={this.onUploadStatusChange}>
                             <Button size="small" icon="upload" >
-                                Upload new {isLib ? 'javascript lib (zip)' : 'data file'}
+                                {Msg('Project.Upload', { name: isLib ? 'javascript lib (zip)' : 'data file' })}
                             </Button>
                         </Upload>
                     </div>
@@ -100,11 +101,11 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
                             pagination={false}
                         >
                             <ProjectLibColumn
-                                title="Name"
+                                title={Msg('Project.Name')}
                                 dataIndex="name"
                             />
                             <ProjectLibColumn
-                                title="Path"
+                                title={Msg('Project.Path')}
                                 dataIndex="path"
                                 render={(text, record) => {
                                     const globalPathIndex = (text || '').indexOf('global_data');
@@ -117,7 +118,7 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
                                 }
                             />
                             <ProjectLibColumn
-                                title="Origin"
+                                title={Msg('Project.Origin')}
                                 dataIndex="isGlobal"
                                 render={(text, record) => record.isGlobal ? 'global' : 'project'}
                             />
@@ -127,19 +128,19 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
                             render={(text, record) => (record.size > 1024 * 1024 ? `${_.round(record.size / (1024 * 1024), 2)} MB` : (record.size > 1024 ? `${_.round(record.size / 1024, 2)} KB` : `${text} B`))}
                         /> */}
                             <ProjectLibColumn
-                                title="CreatedDate"
+                                title={Msg('Project.CreatedDate')}
                                 dataIndex="createdDate"
                                 render={(text, record) => new Date(record.createdDate).toLocaleDateString()}
                             />
                             <ProjectLibColumn
-                                title="Action"
+                                title={Msg('Project.Action')}
                                 key="action"
                                 width={140}
                                 render={(text, record) => (
                                     record.isGlobal ? '' : (
                                         <span>
-                                            <Popconfirm title="Sure to delete?" okText="Yes" cancelText="No" onConfirm={() => this.delProjectLib(record)}>
-                                                <a>Delete</a>
+                                            <Popconfirm title={Msg('Common.SureDelete')} onConfirm={() => this.delProjectLib(record)}>
+                                                <a>{Msg('Common.Delete')}</a>
                                             </Popconfirm>
                                         </span>
                                     )

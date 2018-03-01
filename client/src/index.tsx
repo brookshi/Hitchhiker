@@ -8,7 +8,7 @@ import LocalStore from './utils/local_store';
 import { LocaleProvider } from 'antd';
 import { addLocaleData, IntlProvider } from 'react-intl';
 
-const appLocale = l.language['zh'];
+const appLocale = l.language['en'];
 
 addLocaleData(appLocale.data);
 

@@ -1,8 +1,10 @@
 import React from 'react';
-import { Form, Input, message, Button } from 'antd';
+import { Form, message, Button } from 'antd';
 import { RequestState } from '../../state/request';
 import { RequestStatus } from '../../common/request_status';
 import { LoginPageMode } from '../../common/custom_type';
+import Msg from '../../locales';
+import LoInput from '../../locales/input';
 
 const FormItem = Form.Item;
 
@@ -52,27 +54,27 @@ class FindPasswordPanel extends React.Component<FindPasswordProps, FindPasswordP
         return (
             <Form onSubmit={this.findPassword} className="login-page-form">
                 <FormItem>
-                    <div style={{ marginBottom: 8 }}> Enter your email address and we will send you a new password </div>
+                    <div style={{ marginBottom: 8 }}> {Msg('FindPassword.Desc')} </div>
                     {
                         getFieldDecorator('email', {
-                            rules: [{ type: 'email', message: 'The input is not valid email!' },
-                            { required: true, message: 'Please enter your email!' }],
+                            rules: [{ type: 'email', message: Msg('Login.InvalidEmail') },
+                            { required: true, message: Msg('Login.EnterEmail') }],
                         })
                             (
-                            <Input
+                            <LoInput
                                 onPressEnter={this.findPassword}
                                 spellCheck={false}
                                 className="login-page-form-input"
-                                placeholder="Your email address"
+                                placeholderId="Login.EmailPlaceholder"
                             />
                             )
                     }
                 </FormItem>
                 <FormItem>
                     <Button loading={this.props.findPasswordState.status === RequestStatus.pending} type="primary" htmlType="submit" className="login-page-form-button">
-                        Send password email
+                        {Msg('FindPassword.Send')}
                     </Button>
-                    <a onClick={() => this.props.switchPanel('login')}>{'<- Back to login'}</a>
+                    <a onClick={() => this.props.switchPanel('login')}>{Msg('Login.BackToLogin')}</a>
                 </FormItem>
             </Form>
         );

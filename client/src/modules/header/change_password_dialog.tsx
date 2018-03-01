@@ -1,8 +1,10 @@
 import React from 'react';
-import { Form, Modal, Input, Button, message } from 'antd';
+import { Form, Modal, Button, message } from 'antd';
 import { StringUtil } from '../../utils/string_util';
 import { RequestState } from '../../state/request';
 import { RequestStatus } from '../../common/request_status';
+import Msg from '../../locales';
+import LoInput from '../../locales/input';
 import './style/index.less';
 
 const FormItem = Form.Item;
@@ -75,7 +77,7 @@ class ChangePasswordDialog extends React.Component<ChangePasswordDlgFormProps, C
     private checkPassword = (rule, value, callback) => {
         const form = this.props.form;
         if (value && value !== form.getFieldValue('newPassword')) {
-            callback('Two passwords are inconsistent!');
+            callback(Msg('Reg.Inconsistent'));
         } else {
             callback();
         }
@@ -84,7 +86,7 @@ class ChangePasswordDialog extends React.Component<ChangePasswordDlgFormProps, C
     private checkConfirm = (rule, value, callback) => {
         const form = this.props.form;
         if (!value || !StringUtil.checkPassword(value)) {
-            callback(`6 - 16 characters, letter or numeral.`);
+            callback(Msg('Reg.PasswordRule'));
         } else if (value && this.state.isConfirmPwdModified) {
             form.validateFields(['confirm'], { force: true });
         }
@@ -102,7 +104,7 @@ class ChangePasswordDialog extends React.Component<ChangePasswordDlgFormProps, C
         return (
             <Modal
                 visible={isDlgOpen}
-                title="Change password"
+                title={Msg('Header.ChangePassword')}
                 width={500}
                 maskClosable={false}
                 closable={false}
@@ -110,52 +112,52 @@ class ChangePasswordDialog extends React.Component<ChangePasswordDlgFormProps, C
                 onCancel={this.onCancel}
                 onOk={this.onOk}
                 footer={[
-                    <Button key="cancel" disabled={isLoading} onClick={this.onCancel}>Cancel</Button>,
-                    <Button key="submit" type="primary" loading={isLoading} onClick={this.onOk}>Submit</Button>
+                    <Button key="cancel" disabled={isLoading} onClick={this.onCancel}>{Msg('Common.Cancel')}</Button>,
+                    <Button key="submit" type="primary" loading={isLoading} onClick={this.onOk}>{Msg('Common.Submit')}</Button>
                 ]}
             >
                 <Form onSubmit={this.onOk} >
-                    <FormItem {...formItemLayout} hasFeedback={true} label="Old password">
+                    <FormItem {...formItemLayout} hasFeedback={true} label={Msg('Header.OldPassword')}>
                         {
                             getFieldDecorator('oldPassword', {
-                                rules: [{ required: true, message: 'Please enter your old password!' }],
+                                rules: [{ required: true, message: Msg('Header.EnterOldPassword') }],
                             })
                                 (
-                                <Input
+                                <LoInput
                                     spellCheck={false}
                                     type="password"
-                                    placeholder="Your old password"
+                                    placeholderId="Header.YourOldPassword"
                                 />
                                 )
                         }
                     </FormItem>
-                    <FormItem {...formItemLayout} hasFeedback={true} label="New Password">
+                    <FormItem {...formItemLayout} hasFeedback={true} label={Msg('Header.NewPassword')}>
                         {getFieldDecorator('newPassword', {
                             rules: [{
-                                required: true, message: 'Please enter your new password!',
+                                required: true, message: Msg('Header.EnterNewPassword')
                             }, {
                                 validator: this.checkConfirm,
                             }],
                         })(
-                            <Input
+                            <LoInput
                                 spellCheck={false}
                                 type="password"
-                                placeholder="Create a password"
+                                placeholderId="Header.YourNewPassword"
                             />
                             )}
                     </FormItem>
-                    <FormItem {...formItemLayout} hasFeedback={true} label="Confirm New Password">
+                    <FormItem {...formItemLayout} hasFeedback={true} label={Msg('ConfirmNewPassword')}>
                         {getFieldDecorator('confirm', {
                             rules: [{
-                                required: true, message: 'Please confirm your new password!',
+                                required: true, message: Msg('Header.ConfirmYourNewPassword')
                             }, {
                                 validator: this.checkPassword,
                             }],
                         })(
-                            <Input
+                            <LoInput
                                 spellCheck={false}
                                 type="password"
-                                placeholder="Confirm your password"
+                                placeholderId="Header.ConfirmYourPassword"
                                 onBlur={this.handleConfirmBlur}
                             />
                             )}

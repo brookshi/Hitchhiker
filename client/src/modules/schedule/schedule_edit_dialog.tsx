@@ -141,10 +141,13 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
 
     private generateTimerSelect = () => {
         return (
-            <Select dropdownMenuStyle={{ maxHeight: 200 }} onChange={(id: string) => {
-                this.setState({ ...this.state, currentTimerType: parseInt(id) });
-                this.props.form.setFieldsValue({ hour: this.getDefaultHour(parseInt(id)).toString() });
-            }}>
+            <Select
+                dropdownMenuStyle={{ maxHeight: 200 }}
+                onChange={(id: string) => {
+                    this.setState({ ...this.state, currentTimerType: parseInt(id) });
+                    this.props.form.setFieldsValue({ hour: this.getDefaultHour(parseInt(id)).toString() });
+                }}
+            >
                 {
                     Object.keys(TimerType).filter(k => StringUtil.isNumberString(k)).map(k =>
                         <Option key={k} value={k}>{TimerCode.convert(parseInt(k) as TimerType)}</Option>)
@@ -260,14 +263,18 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                             {
                                 this.state.needCompare ? (
                                     <span className="keyvalue-match">
-                                        <Switch checked={item.match} size="small" onChange={checked => {
-                                            const sortedRecords = [...this.state.sortedRecords];
-                                            const activeRecord = sortedRecords.find(r => r.id === item.id);
-                                            if (activeRecord) {
-                                                activeRecord.match = checked;
-                                            }
-                                            this.setState({ ...this.state, sortedRecords });
-                                        }} />
+                                        <Switch
+                                            checked={item.match}
+                                            size="small"
+                                            onChange={checked => {
+                                                const sortedRecords = [...this.state.sortedRecords];
+                                                const activeRecord = sortedRecords.find(r => r.id === item.id);
+                                                if (activeRecord) {
+                                                    activeRecord.match = checked;
+                                                }
+                                                this.setState({ ...this.state, sortedRecords });
+                                            }}
+                                        />
                                     </span>
                                 ) : ''}
                         </li>
@@ -359,7 +366,8 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                                             onChange={e => {
                                                 this.setState({ ...this.state, needOrder: (e.target as any).checked });
                                             }}
-                                            disabled={!this.state.enableSort}>
+                                            disabled={!this.state.enableSort}
+                                        >
                                             Sort requests
                                         </Checkbox>
                                         )}
@@ -426,9 +434,14 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                                     {getFieldDecorator('needCompare', {
                                         initialValue: schedule.needCompare,
                                     })(
-                                        <Checkbox checked={this.state.needCompare} onChange={e => {
-                                            this.setState({ ...this.state, needCompare: (e.target as any).checked });
-                                        }}>compare</Checkbox>
+                                        <Checkbox
+                                            checked={this.state.needCompare}
+                                            onChange={e => {
+                                                this.setState({ ...this.state, needCompare: (e.target as any).checked });
+                                            }}
+                                        >
+                                            compare
+                                        </Checkbox>
                                         )}
                                 </FormItem>
                             </Col>

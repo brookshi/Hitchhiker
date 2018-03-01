@@ -8,6 +8,7 @@ import { PeriodStr, TimerCode, TimerType } from '../../common/period';
 import { DateUtil } from '../../utils/date_util';
 import { NotificationStr, NotificationMode } from '../../common/notification_mode';
 import { noEnvironment } from '../../common/constants';
+import Msg from '../../locales';
 
 interface ScheduleItemProps {
 
@@ -71,10 +72,9 @@ class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState>
 
     delete = () => {
         confirmDlg(
-            'schedule',
+            Msg('Schedule.DeleteSchedule'),
             () => this.props.delete(),
-            'delete',
-            this.props.schedule.name
+            Msg('Schedule.DeleteThisSchedule', { name: this.props.schedule.name })
         );
     }
 

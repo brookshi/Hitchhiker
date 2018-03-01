@@ -16,6 +16,7 @@ import { ResizeResHeightType } from '../../../action/ui';
 import { getReqActiveTabKeySelector, getIsResPanelMaximumSelector, getActiveRecordStateSelector, getResHeightSelector } from './selector';
 import { newRecordFlag } from '../../../common/constants';
 import { ConflictType } from '../../../common/conflict_type';
+import Msg from '../../../locales';
 
 interface ReqResPanelStateProps {
 
@@ -131,24 +132,25 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
     private get confirmCloseDialog() {
         return (
-            <Modal title="Close Tab"
+            <Modal
+                title={Msg('Collection.CloseTab')}
                 visible={this.state.isConfirmCloseDlgOpen}
                 onCancel={() => this.setState({ ...this.state, isConfirmCloseDlgOpen: false })}
                 footer={[(
                     <Button key="dont_save" onClick={this.closeTabWithoutSave} >
-                        Don't Save
+                        {Msg('Common.DontSave')}
                     </Button>
                 ), (
                     <Button key="cancel_save" onClick={() => this.setState({ ...this.state, isConfirmCloseDlgOpen: false })} >
-                        Cancel
+                        {Msg('Common.Cancel')}
                     </Button>
                 ), (
                     <Button key="save" type="primary" onClick={this.closeTabWithSave} >
-                        Save
+                        {Msg('Common.Save')}
                     </Button>
                 )]}
             >
-                Your changed will be lost if you close this tab without saving.
+                {Msg('Collection.LoseChanges')}
             </Modal>
         );
     }
@@ -176,7 +178,8 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                                 <Tabs.TabPane
                                     key={key}
                                     tab={<Badge count="" dot={isChanged}><span style={tabFontColorStyle}>{name}</span></Badge>}
-                                    closable={true} />
+                                    closable={true}
+                                />
                             );
                         })
                     }

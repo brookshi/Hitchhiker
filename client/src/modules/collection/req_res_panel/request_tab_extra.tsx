@@ -12,6 +12,7 @@ import { UpdateDisplayRecordType } from '../../../action/record';
 import { State } from '../../../state/index';
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 import { SwitchHeadersEditModeType } from '../../../action/ui';
+import Msg from '../../../locales';
 
 interface RequestTabExtraStateProps {
 
@@ -103,7 +104,7 @@ class RequestTabExtra extends React.Component<RequestTabExtraProps, RequestTabEx
             case 'body': {
                 return (
                     <span>
-                        <Button className="tab-extra-button" style={{ marginRight: 12 }} onClick={this.onBeautifyBody}>Beautify</Button>
+                        <Button className="tab-extra-button" style={{ marginRight: 12 }} onClick={this.onBeautifyBody}>{Msg('Collection.Beautify')}</Button>
                         <Dropdown overlay={this.getBodyTypeMenu()} trigger={['click']} style={{ width: 200 }}>
                             <a className="ant-dropdown-link" href="#">
                                 {this.currentBodyType()} <Icon type="down" />
@@ -116,7 +117,7 @@ class RequestTabExtra extends React.Component<RequestTabExtraProps, RequestTabEx
                 return (
                     <Dropdown overlay={this.snippetsMenu} trigger={['click']}>
                         <a className="ant-dropdown-link" href="#">
-                            Snippets <Icon type="down" />
+                            {Msg('Collection.Snippets')} <Icon type="down" />
                         </a>
                     </Dropdown>
                 );

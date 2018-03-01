@@ -3,6 +3,7 @@ import ItemWithMenu from '../../components/item_with_menu';
 import { Menu, Icon } from 'antd';
 import { confirmDlg } from '../../components/confirm_dialog/index';
 import { DtoStress } from '../../../../api/interfaces/dto_stress';
+import Msg from '../../locales';
 import './style/index.less';
 
 interface StressItemProps {
@@ -62,10 +63,9 @@ class StressItem extends React.Component<StressItemProps, StressItemState> {
 
     delete = () => {
         confirmDlg(
-            'stress',
+            Msg('Stress.DeleteStress'),
             () => this.props.delete(),
-            'delete',
-            this.props.stress.name
+            Msg('Stress.DeleteStress', { name: this.props.stress.name })
         );
     }
 

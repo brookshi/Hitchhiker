@@ -6,6 +6,7 @@ import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 import { confirmDlg } from '../../../components/confirm_dialog/index';
 import { getDefaultRecord } from '../../../state/collection';
 import { StringUtil } from '../../../utils/string_util';
+import Msg from '../../../locales';
 
 interface RecordFolderProps {
 
@@ -52,13 +53,13 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
         return (
             <Menu className="item_menu" onClick={this.onClickMenu}>
                 <Menu.Item key="edit">
-                    <Icon type="edit" /> Rename
+                    <Icon type="edit" /> {Msg('Common.Rename')}
                 </Menu.Item>
                 <Menu.Item key="createRecord">
-                    <Icon type="file" /> Create request
+                    <Icon type="file" /> {Msg('Collection.CreateRequest')}
                 </Menu.Item>
                 <Menu.Item key="delete">
-                    <Icon type="delete" /> Delete
+                    <Icon type="delete" /> {Msg('Common.Delete')}
                 </Menu.Item>
             </Menu>
         );
@@ -68,7 +69,7 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
         this[e.key]();
     }
 
-    delete = () => confirmDlg('folder', () => this.props.deleteRecord());
+    delete = () => confirmDlg(Msg('Collection.DeleteFolder'), () => this.props.deleteRecord(), Msg('Collection.DeleteThisFolder'));
 
     createRecord = () => this.props.createRecord({ ...getDefaultRecord(false), collectionId: this.props.folder.collectionId, pid: this.props.folder.id, id: StringUtil.generateUID() });
 

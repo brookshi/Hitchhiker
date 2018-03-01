@@ -10,6 +10,7 @@ import ChangePasswordDialog from './change_password_dialog';
 import { Password } from '../../../../api/interfaces/password';
 import { getProjectsIdNameStateSelector } from '../collection/collection_tree/selector';
 import { ImportDataType } from '../../action/collection';
+import Msg from '../../locales';
 
 const Dragger = Upload.Dragger;
 
@@ -65,7 +66,7 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
         const { message } = this.props;
         if (!!message && notification.warning) {
             notification.warning({
-                message: 'Warning Message',
+                message: Msg('Common.WarningMsg'),
                 description: message,
             });
             this.props.resetSyncMsg();
@@ -101,7 +102,7 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
 
     private importPostman = (file: File) => {
         if (!this.state.selectedProjectInDlg) {
-            message.warning('Please select a project first.', 3);
+            message.warning(Msg('Header.SelectProjectFirst'), 3);
             return;
         }
         const fr = new FileReader();
@@ -117,13 +118,13 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
     private userMenu = (
         <Menu onClick={this.onUserMenuClick} style={{ width: 200 }}>
             <Menu.Item key="changePwd">
-                <Icon type="key" /> Change password
+                <Icon type="key" /> {Msg('Header.ChangePassword')}
             </Menu.Item>
             <Menu.Item key="logout">
-                <Icon type="logout" /> Logout
+                <Icon type="logout" /> {Msg('Header.Logout')}
             </Menu.Item>
             <Menu.Item key="logoutAndClear">
-                <Icon type="close-circle-o" /> Logout & Clear cache
+                <Icon type="close-circle-o" /> {Msg('Header.Logout&Clear')}
             </Menu.Item>
         </Menu>
     );
@@ -140,11 +141,11 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
                         <Icon className={`${syncCount > 0 ? 'header-sync-anim' : ''} header-sync`} type="sync" />
                     </Badge>
                     <span className="header-sync-title">
-                        {syncCount > 0 ? 'SYNCING' : 'IN SYNC'}
+                        {syncCount > 0 ? Msg('Header.Syncing') : Msg('Header.Insync')}
                     </span>
                     <span className="header-user">
                         <a className="ant-dropdown-link" href="#" onClick={() => this.setState({ ...this.state, isImportDlgOpen: true })}>
-                            <Icon type="upload" /> Import
+                            <Icon type="upload" /> {Msg('Header.Import')}
                         </a>
                     </span>
                     <span className="header-user">
@@ -163,12 +164,13 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
                 />
                 <Modal
                     visible={this.state.isImportDlgOpen}
-                    title="Import Postman V1 or Swagger V2 JSON"
+                    title={Msg('Header.ImportJson')}
                     width={500}
                     closable={true}
                     onCancel={() => this.setState({ ...this.state, isImportDlgOpen: false })}
-                    footer={[]} >
-                    <div>Select project for import data:</div>
+                    footer={[]}
+                >
+                    <div>{Msg('Header.SelectProject')}</div>
                     <TreeSelect
                         allowClear={true}
                         style={{ marginTop: 8, width: '100%' }}
@@ -187,7 +189,7 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
                             <p className="ant-upload-drag-icon">
                                 <Icon type="inbox" />
                             </p>
-                            <p className="ant-upload-text">Click or drag json file to this area</p>
+                            <p className="ant-upload-text">{Msg('Header.DragFile')}</p>
                         </Dragger>
                     </div>
                 </Modal>

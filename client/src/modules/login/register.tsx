@@ -1,10 +1,12 @@
 import React from 'react';
-import { Form, Input, Button, message } from 'antd';
+import { Form, Button, message } from 'antd';
 import { RequestState } from '../../state/request';
 import { RequestStatus } from '../../common/request_status';
 import { StringUtil } from '../../utils/string_util';
 import './style/index.less';
 import { LoginPageMode } from '../../common/custom_type';
+import Msg from '../../locales';
+import LoInput from '../../locales/input';
 
 const FormItem = Form.Item;
 
@@ -65,7 +67,7 @@ class RegisterPanel extends React.Component<RegisterProps, RegisterPanelState> {
     private checkPassword = (rule, value, callback) => {
         const form = this.props.form;
         if (value && value !== form.getFieldValue('reg_password')) {
-            callback('Two passwords are inconsistent!');
+            callback(Msg('Reg.Inconsistent'));
         } else {
             callback();
         }
@@ -74,7 +76,7 @@ class RegisterPanel extends React.Component<RegisterProps, RegisterPanelState> {
     private checkConfirm = (rule, value, callback) => {
         const form = this.props.form;
         if (!value || !StringUtil.checkPassword(value)) {
-            callback(`6 - 16 characters, letter or numeral.`);
+            callback(Msg('Reg.PasswordRule'));
         } else if (value && this.state.isConfirmPwdModified) {
             form.validateFields(['confirm'], { force: true });
         }
@@ -100,61 +102,61 @@ class RegisterPanel extends React.Component<RegisterProps, RegisterPanelState> {
                     <div> Email </div>
                     {
                         getFieldDecorator('reg_email', {
-                            rules: [{ type: 'email', message: 'The input is not valid email!' },
-                            { required: true, message: 'Please enter your email!' }],
+                            rules: [{ type: 'email', message: Msg('Login.InvalidEmail') },
+                            { required: true, message: Msg('Login.EnterEmail') }],
                         })
                             (
-                            <Input
+                            <LoInput
                                 onPressEnter={this.signUp}
                                 spellCheck={false}
                                 className="login-page-form-input"
-                                placeholder="Your email address"
+                                placeholderId="Login.EmailPlaceholder"
                             />
                             )
                     }
                 </FormItem>
                 <FormItem hasFeedback={true}>
-                    <div> Password </div>
+                    <div> {Msg('Login.Password')} </div>
                     {getFieldDecorator('reg_password', {
                         rules: [{
-                            required: true, message: 'Please enter your password!',
+                            required: true, message: Msg('Login.EnterPassword'),
                         }, {
                             validator: this.checkConfirm,
                         }],
                     })(
-                        <Input
+                        <LoInput
                             onPressEnter={this.signUp}
                             spellCheck={false}
                             className="login-page-form-input"
                             type="password"
-                            placeholder="Create a password"
+                            placeholderId="Reg.CreatePassword"
                         />
                         )}
                 </FormItem>
                 <FormItem hasFeedback={true}>
-                    <div> Confirm Password </div>
+                    <div> {Msg('Reg.ConfirmPassword')} </div>
                     {getFieldDecorator('confirm', {
                         rules: [{
-                            required: true, message: 'Please confirm your password!',
+                            required: true, message: Msg('Reg.PleaseConfirmYourPassword')
                         }, {
                             validator: this.checkPassword,
                         }],
                     })(
-                        <Input
+                        <LoInput
                             onPressEnter={this.signUp}
                             spellCheck={false}
                             className="login-page-form-input"
                             type="password"
-                            placeholder="Confirm your password"
+                            placeholderId="Reg.ConfirmYourPassword"
                             onBlur={this.handleConfirmBlur}
                         />
                         )}
                 </FormItem>
                 <FormItem>
                     <Button loading={this.props.registerState.status === RequestStatus.pending} style={{ background: '#269f42' }} type="primary" htmlType="submit" className="login-page-form-button">
-                        Sign up
+                        {Msg('Reg.SignUp')}
                     </Button>
-                    Have an account already? <a onClick={() => this.props.switchPanel('login')}>Sign in.</a>
+                    {Msg('Reg.Have', { sign: <a onClick={() => this.props.switchPanel('login')}>{Msg('Login.SignIn')}</a> })}
                 </FormItem>
             </Form>
         );

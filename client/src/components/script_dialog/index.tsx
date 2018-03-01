@@ -4,7 +4,7 @@ import Editor from '../editor';
 
 interface ScriptDialogProps {
 
-    title: string;
+    title: string | React.ReactNode;
 
     isOpen: boolean;
 
