@@ -4,6 +4,7 @@ import { WorkerInfo } from '../../../../api/interfaces/dto_stress_setting';
 import Indicator from '../../components/indicator';
 import { State } from '../../state/index';
 import { connect, Dispatch } from 'react-redux';
+import Msg from '../../locales';
 
 interface StressWorkerStatusProps {
 
@@ -27,7 +28,7 @@ class StressWorkerStatus extends React.Component<StressWorkerProps, StressWorker
             <div className="stress-worker-status">
                 {workerInfos.map((w, i) => <Indicator key={w.addr} left={i > 0 ? 8 : 0} status={w.status} name={`${this.localhostConverter(w.addr)} (${w.cpuNum} Cores)`} />)}
                 <span className="stress-worker-gap" />
-                <span className="stress-task">Task Count: {taskCount} {currentTask ? `, Current Task: ${currentTask}` : ''}</span>
+                <span className="stress-task">{Msg('Stress.TaskCount')}: {taskCount} {currentTask ? `, Current Task: ${currentTask}` : ''}</span>
             </div>
         );
     }

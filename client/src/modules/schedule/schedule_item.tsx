@@ -47,18 +47,18 @@ class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState>
         return (
             <Menu className="item_menu" onClick={this.onClickMenu}>
                 <Menu.Item key="run">
-                    <Icon type="play-circle-o" /> Run now
+                    <Icon type="play-circle-o" /> {Msg('Common.RunNow')}
                 </Menu.Item>
                 <Menu.Item key="edit">
-                    <Icon type="edit" /> Edit
+                    <Icon type="edit" /> {Msg('Common.Edit')}
                 </Menu.Item>
                 <Menu.Item key="suspend">
-                    <Icon type="pause-circle-o" /> {this.props.schedule.suspend ? 'Resume' : 'Suspend'}
+                    <Icon type="pause-circle-o" /> {this.props.schedule.suspend ? Msg('Schedule.Resume') : Msg('Schedule.Suspend')}
                 </Menu.Item>
                 {
                     this.props.isOwner ? (
                         <Menu.Item key="delete">
-                            <Icon type="delete" /> Delete
+                            <Icon type="delete" /> {Msg('Common.Delete')}
                         </Menu.Item>
                     ) : ''
                 }
@@ -94,15 +94,15 @@ class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState>
         const { timer, period, hour, notification, emails, suspend, needCompare } = this.props.schedule;
         return (
             <div>
-                <div><span>Collection: </span>{this.props.collectionName}</div>
-                <div><span>Environment: </span>{this.props.environmentName || noEnvironment}</div>
-                {needCompare ? <div><span>Compare to: </span>{this.props.compareEnvName || noEnvironment}</div> : ''}
-                <div><span>Timer: </span>{TimerCode.convert(timer)}</div>
-                {timer === TimerType.Day ? <div><span>Period: </span>{PeriodStr.convert(period)}</div> : ''}
-                <div><span>Unit: </span>{(timer === TimerType.Day ? DateUtil.getDisplayHour : t => DateUtil.getEveryTime(t, TimerType[timer]))(hour, true)}</div>
-                <div><span>Notification: </span>{NotificationStr.convert(notification)}</div>
-                {notification === NotificationMode.custom ? <div><span>Emails: </span>{emails}</div> : ''}
-                <div><span>Suspend: </span>{suspend.toString()}</div>
+                <div><span>{Msg('Schedule.Collection')}: </span>{this.props.collectionName}</div>
+                <div><span>{Msg('Common.Environment')}: </span>{this.props.environmentName || noEnvironment}</div>
+                {needCompare ? <div><span>{Msg('Schedule.CompareTo')}: </span>{this.props.compareEnvName || noEnvironment}</div> : ''}
+                <div><span>{Msg('Schedule.Timer')}: </span>{TimerCode.convert(timer)}</div>
+                {timer === TimerType.Day ? <div><span>{Msg('Schedule.Period')}: </span>{PeriodStr.convert(period)}</div> : ''}
+                <div><span>{Msg('Schedule.Unit')}: </span>{(timer === TimerType.Day ? DateUtil.getDisplayHour : t => DateUtil.getEveryTime(t, TimerType[timer]))(hour, true)}</div>
+                <div><span>{Msg('Common.Notification')}: </span>{NotificationStr.convert(notification)}</div>
+                {notification === NotificationMode.custom ? <div><span>{Msg('Common.Emails')}: </span>{emails}</div> : ''}
+                <div><span>{Msg('Schedule.Suspend')}: </span>{suspend.toString()}</div>
             </div>
         );
     }
@@ -112,14 +112,14 @@ class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState>
         const { name, lastRunDate, suspend } = schedule;
 
         return (
-            <Popover mouseEnterDelay={1.5} placement="bottom" title="Schedule information" content={this.scheduleInfo}>
+            <Popover mouseEnterDelay={1.5} placement="bottom" title={Msg('Schedule.ScheduleInformation')} content={this.scheduleInfo}>
                 <Checkbox className="schedule-item-check" checked={isChecked} onChange={event => onCheck((event.target as any).checked)} />
                 <ItemWithMenu
                     ref={ele => this.itemWithMenu = ele}
                     icon={<Icon className="c-icon" type="schedule" />}
                     isLoading={isRunning}
                     name={name}
-                    subName={<div>{`Last run: ${lastRunDate ? new Date(lastRunDate).toLocaleString() : 'never run'}`}</div>}
+                    subName={<div>{Msg('Common.LastRun')}{lastRunDate ? new Date(lastRunDate).toLocaleString() : Msg('Common.NeverRun')}</div>}
                     menu={this.getMenu()}
                 />
                 {suspend ? <Icon className="schedule-item-suspend" type="pause-circle-o" /> : ''}

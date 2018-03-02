@@ -4,6 +4,7 @@ import { noEnvironment, unknownName, pass, fail } from '../../common/constants';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import * as _ from 'lodash';
 import * as ReactDOM from 'react-dom';
+import Msg from '../../locales';
 import './style/index.less';
 
 interface ScheduleConsoleProps {
@@ -39,7 +40,7 @@ class ScheduleRunConsole extends React.Component<ScheduleConsoleProps, ScheduleC
         return (
             <div key={runResult.id + runResult.envId + (runResult.param || '')}>
                 <span className={`schedule-item-key schedule-${isSuccess ? 'success' : 'failed'}`}>{isSuccess ? pass : fail}</span>
-                <span> {recordName} in {envName}, spend {`${runResult.elapsed / 1000}s`}</span>
+                <span>{Msg('Schedule.ConsoleInfo', { recordName, envName, elapsed: runResult.elapsed / 1000 })}</span>
             </div>
         );
     }
@@ -48,7 +49,7 @@ class ScheduleRunConsole extends React.Component<ScheduleConsoleProps, ScheduleC
         const style = { display: this.props.isRunning ? '' : 'none' };
         return (
             <div style={style} className="schedule-console">
-                <div className="schedule-console-title">Trace</div>
+                <div className="schedule-console-title">{Msg('Schedule.Trace')}</div>
                 <div className="schedule-console-content">
                     {
                         this.props.runResults.map(r => this.getRunResultLine(r))

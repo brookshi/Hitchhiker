@@ -7,6 +7,7 @@ import './style/index.less';
 import { StressRunResult, StressResFailedStatistics } from '../../../../api/interfaces/dto_stress_setting';
 import StressRunDiagram from './stress_run_diagram';
 import { DtoStress } from '../../../../api/interfaces/dto_stress';
+import Msg from '../../locales';
 
 interface StressRunHistoryGridProps {
 
@@ -79,12 +80,12 @@ class StressRunHistoryGrid extends React.Component<StressRunHistoryGridProps, St
                     pagination={false}
                 >
                     <StressRecordColumn
-                        title="Run Date"
+                        title={Msg('Common.RunDate')}
                         dataIndex="createDate"
                         render={(text, record) => new Date(record.runDate).toLocaleString()}
                     />
                     <StressRecordColumn
-                        title="Request Count"
+                        title={Msg('Stress.RequestCount')}
                         dataIndex="totalCount"
                     />
                     <StressRecordColumn
@@ -92,7 +93,7 @@ class StressRunHistoryGrid extends React.Component<StressRunHistoryGridProps, St
                         dataIndex="tps"
                     />
                     <StressRecordColumn
-                        title="Failed"
+                        title={Msg('Stress.Failed')}
                         dataIndex="failed"
                         render={this.getFailedDisplay}
                     />

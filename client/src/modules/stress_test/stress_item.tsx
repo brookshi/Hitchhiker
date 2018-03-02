@@ -34,22 +34,22 @@ class StressItem extends React.Component<StressItemProps, StressItemState> {
         return (
             <Menu className="item_menu" onClick={this.onClickMenu}>
                 <Menu.Item key="run">
-                    <Icon type="play-circle-o" /> Run now
+                    <Icon type="play-circle-o" /> {Msg('Common.RunNow')}
                 </Menu.Item>
                 {
                     isRunning ? (
                         <Menu.Item key="stop">
-                            <Icon type="minus-circle-o" /> Stop
+                            <Icon type="minus-circle-o" /> {Msg('Common.Stop')}
                         </Menu.Item>
                     ) : ''
                 }
                 <Menu.Item key="edit">
-                    <Icon type="edit" /> Edit
+                    <Icon type="edit" /> {Msg('Common.Edit')}
                 </Menu.Item>
                 {
                     isOwner ? (
                         <Menu.Item key="delete">
-                            <Icon type="delete" /> Delete
+                            <Icon type="delete" /> {Msg('Common.Delete')}
                         </Menu.Item>
                     ) : ''
                 }
@@ -91,7 +91,7 @@ class StressItem extends React.Component<StressItemProps, StressItemState> {
                 icon={<Icon className="c-icon" type="code-o" />}
                 isLoading={isRunning}
                 name={name}
-                subName={<div>{`Last run: ${lastRunDate ? new Date(lastRunDate).toLocaleString() : 'never run'}`}</div>}
+                subName={<div>{Msg('Common.LastRun')}{lastRunDate ? new Date(lastRunDate).toLocaleString() : Msg('Common.NeverRun')}</div>}
                 menu={this.getMenu()}
             />
         );
