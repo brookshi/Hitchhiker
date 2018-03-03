@@ -39,11 +39,11 @@ export class ProjectSelectedDialogType {
     static create: ProjectSelectedDialogMode = 'create';
 
     static getTitle(mode: ProjectSelectedDialogMode): string {
-        return ProjectSelectedDialogType.isCreateMode(mode) ? 'Create new collection' : 'Share collection';
+        return ProjectSelectedDialogType.isCreateMode(mode) ? LocalesString.get('Collection.CreateNew') : 'Share collection';
     }
 
     static getDescription(mode: ProjectSelectedDialogMode): string {
-        return ProjectSelectedDialogType.isCreateMode(mode) ? 'Select project for this collection:' : 'Share to project:';
+        return ProjectSelectedDialogType.isCreateMode(mode) ? LocalesString.get('Collection.SelectProjectForCollection') : 'Share to project:';
     }
 
     static isCreateMode(mode: ProjectSelectedDialogMode): boolean {

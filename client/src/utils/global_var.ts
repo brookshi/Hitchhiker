@@ -12,5 +12,5 @@ export class GlobalVar {
 
     schedulePageSize: number = 50;
 
-    lang = 'en';
+    lang = 'zh';
 }

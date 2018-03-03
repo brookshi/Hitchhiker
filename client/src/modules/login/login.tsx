@@ -36,7 +36,9 @@ type LoginProps = LoginPanelProps & { form: any };
 class LoginPanel extends React.Component<LoginProps, LoginPanelState> {
 
     public componentDidMount() {
-        this.props.form.getFieldInstance(`email`).focus(); const { loginState } = this.props;
+        const email = this.props.form.getFieldInstance(`email`);
+        email.focus();
+        const { loginState } = this.props;
         if (loginState.message && loginState.status === RequestStatus.failed) {
             this.props.checkSessionFinish();
             this.props.resetLogin();

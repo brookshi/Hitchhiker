@@ -121,6 +121,8 @@
     "Collection.Request": "{count} {count, plural, one {request} other {requests}}",
     "Collection.EnterNewCollectionName": "Enter new collection name:",
     "Collection.Create": "Create collection",
+    "Collection.CreateNew": "Create new collection",
+    "Collection.SelectProjectForCollection": "Select project for this collection:",
     "Collection.History": "History",
     "Collection.NewRequestFromcURL": "New Request from cUrl",
     "Collection.ParsecURLFailed": "Parse cURL failed.",
@@ -202,7 +204,7 @@
     "Project.ProjectLibs": "Project libs",
     "Project.ProjectDatas": "Project datas",
     "Project.MemberDesc": "{count} {count, plural, one {member} other {members}}",
-    "Project.GlobalFuncOfTest": "{name}Global Function of Tests",
+    "Project.GlobalFuncOfTest": "{name} Global Function",
     "Project.Projects": "Projects",
     "Project.CreateProject": "Create project",
     "Project.NewName": "New Project",
@@ -306,6 +308,6 @@
     "App.Project": "Project",
     "App.Scheduler": "Scheduler",
     "App.StressTest": "Stress test",
-    "App.ApiDocument": "Api document",
-    "App.Mock": "Api mock"
+    "App.ApiDocument": "API document",
+    "App.Mock": "API mock"
 }
