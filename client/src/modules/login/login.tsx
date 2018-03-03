@@ -1,11 +1,10 @@
 import React from 'react';
-import { Form, Button, Icon, message } from 'antd';
+import { Form, Button, Icon, message, Input } from 'antd';
 import { RequestState } from '../../state/request';
 import { RequestStatus } from '../../common/request_status';
 import './style/index.less';
 import { LoginPageMode } from '../../common/custom_type';
 import Msg from '../../locales';
-import LoInput from '../../locales/input';
 import LocalesString from '../../locales/string';
 
 const FormItem = Form.Item;
@@ -71,12 +70,12 @@ class LoginPanel extends React.Component<LoginProps, LoginPanelState> {
                             rules: [{ required: true, message: LocalesString.get('Login.EnterEmail') }],
                         })
                             (
-                            <LoInput
+                            <Input
                                 onPressEnter={this.signIn}
                                 spellCheck={false}
                                 className="login-page-form-input"
                                 prefix={<Icon type="user" style={{ fontSize: 13 }} />}
-                                placeholderId="Login.Email"
+                                placeholder={LocalesString.get('Login.Email')}
                             />
                             )
                     }
@@ -90,13 +89,13 @@ class LoginPanel extends React.Component<LoginProps, LoginPanelState> {
                             rules: [{ required: true, message: LocalesString.get('Login.EnterPassword') }],
                         })
                             (
-                            <LoInput
+                            <Input
                                 onPressEnter={this.signIn}
                                 spellCheck={false}
                                 className="login-page-form-input"
                                 prefix={<Icon type="lock" style={{ fontSize: 13 }} />}
                                 type="password"
-                                placeholderId="Login.Password"
+                                placeholder={LocalesString.get('Login.Password')}
                             />
                             )
                     }

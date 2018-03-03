@@ -1,12 +1,11 @@
 import React from 'react';
-import { Form, Button, message } from 'antd';
+import { Form, Button, message, Input } from 'antd';
 import { RequestState } from '../../state/request';
 import { RequestStatus } from '../../common/request_status';
 import { StringUtil } from '../../utils/string_util';
 import './style/index.less';
 import { LoginPageMode } from '../../common/custom_type';
 import Msg from '../../locales';
-import LoInput from '../../locales/input';
 import LocalesString from '../../locales/string';
 
 const FormItem = Form.Item;
@@ -107,11 +106,11 @@ class RegisterPanel extends React.Component<RegisterProps, RegisterPanelState> {
                             { required: true, message: LocalesString.get('Login.EnterEmail') }],
                         })
                             (
-                            <LoInput
+                            <Input
                                 onPressEnter={this.signUp}
                                 spellCheck={false}
                                 className="login-page-form-input"
-                                placeholderId="Login.EmailPlaceholder"
+                                placeholder={LocalesString.get('Login.EmailPlaceholder')}
                             />
                             )
                     }
@@ -125,12 +124,12 @@ class RegisterPanel extends React.Component<RegisterProps, RegisterPanelState> {
                             validator: this.checkConfirm,
                         }],
                     })(
-                        <LoInput
+                        <Input
                             onPressEnter={this.signUp}
                             spellCheck={false}
                             className="login-page-form-input"
                             type="password"
-                            placeholderId="Reg.CreatePassword"
+                            placeholder={LocalesString.get('Reg.CreatePassword')}
                         />
                         )}
                 </FormItem>
@@ -143,12 +142,12 @@ class RegisterPanel extends React.Component<RegisterProps, RegisterPanelState> {
                             validator: this.checkPassword,
                         }],
                     })(
-                        <LoInput
+                        <Input
                             onPressEnter={this.signUp}
                             spellCheck={false}
                             className="login-page-form-input"
                             type="password"
-                            placeholderId="Reg.ConfirmYourPassword"
+                            placeholder={LocalesString.get('Reg.ConfirmYourPassword')}
                             onBlur={this.handleConfirmBlur}
                         />
                         )}

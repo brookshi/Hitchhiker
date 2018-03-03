@@ -1,10 +1,9 @@
 import React from 'react';
-import { Form, message, Button } from 'antd';
+import { Form, message, Button, Input } from 'antd';
 import { RequestState } from '../../state/request';
 import { RequestStatus } from '../../common/request_status';
 import { LoginPageMode } from '../../common/custom_type';
 import Msg from '../../locales';
-import LoInput from '../../locales/input';
 import LocalesString from '../../locales/string';
 
 const FormItem = Form.Item;
@@ -62,11 +61,11 @@ class FindPasswordPanel extends React.Component<FindPasswordProps, FindPasswordP
                             { required: true, message: LocalesString.get('Login.EnterEmail') }],
                         })
                             (
-                            <LoInput
+                            <Input
                                 onPressEnter={this.findPassword}
                                 spellCheck={false}
                                 className="login-page-form-input"
-                                placeholderId="Login.EmailPlaceholder"
+                                placeholder={LocalesString.get('Login.EmailPlaceholder')}
                             />
                             )
                     }
