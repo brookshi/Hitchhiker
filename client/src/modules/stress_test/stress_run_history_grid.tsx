@@ -8,6 +8,7 @@ import { StressRunResult, StressResFailedStatistics } from '../../../../api/inte
 import StressRunDiagram from './stress_run_diagram';
 import { DtoStress } from '../../../../api/interfaces/dto_stress';
 import Msg from '../../locales';
+import LocalesString from '../../locales/string';
 
 interface StressRunHistoryGridProps {
 
@@ -120,11 +121,11 @@ class StressRunHistoryGrid extends React.Component<StressRunHistoryGridProps, St
     private formatFailedKey = (key: string) => {
         switch (key) {
             case 'm500':
-                return 'Server Error(500)';
+                return LocalesString.get('Stress.ServerError500');
             case 'noRes':
-                return 'No Response';
+                return LocalesString.get('Stress.NoResponse');
             case 'testFailed':
-                return 'Test Failed';
+                return LocalesString.get('Stress.TestFailed');
             default:
                 return '';
         }

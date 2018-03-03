@@ -6,6 +6,7 @@ import { RequestStatus } from '../../common/request_status';
 import Msg from '../../locales';
 import LoInput from '../../locales/input';
 import './style/index.less';
+import LocalesString from '../../locales/string';
 
 const FormItem = Form.Item;
 
@@ -77,7 +78,7 @@ class ChangePasswordDialog extends React.Component<ChangePasswordDlgFormProps, C
     private checkPassword = (rule, value, callback) => {
         const form = this.props.form;
         if (value && value !== form.getFieldValue('newPassword')) {
-            callback(Msg('Reg.Inconsistent'));
+            callback(LocalesString.get('Reg.Inconsistent'));
         } else {
             callback();
         }
@@ -86,7 +87,7 @@ class ChangePasswordDialog extends React.Component<ChangePasswordDlgFormProps, C
     private checkConfirm = (rule, value, callback) => {
         const form = this.props.form;
         if (!value || !StringUtil.checkPassword(value)) {
-            callback(Msg('Reg.PasswordRule'));
+            callback(LocalesString.get('Reg.PasswordRule'));
         } else if (value && this.state.isConfirmPwdModified) {
             form.validateFields(['confirm'], { force: true });
         }
@@ -120,7 +121,7 @@ class ChangePasswordDialog extends React.Component<ChangePasswordDlgFormProps, C
                     <FormItem {...formItemLayout} hasFeedback={true} label={Msg('Header.OldPassword')}>
                         {
                             getFieldDecorator('oldPassword', {
-                                rules: [{ required: true, message: Msg('Header.EnterOldPassword') }],
+                                rules: [{ required: true, message: LocalesString.get('Header.EnterOldPassword') }],
                             })
                                 (
                                 <LoInput
@@ -134,7 +135,7 @@ class ChangePasswordDialog extends React.Component<ChangePasswordDlgFormProps, C
                     <FormItem {...formItemLayout} hasFeedback={true} label={Msg('Header.NewPassword')}>
                         {getFieldDecorator('newPassword', {
                             rules: [{
-                                required: true, message: Msg('Header.EnterNewPassword')
+                                required: true, message: LocalesString.get('Header.EnterNewPassword')
                             }, {
                                 validator: this.checkConfirm,
                             }],
@@ -149,7 +150,7 @@ class ChangePasswordDialog extends React.Component<ChangePasswordDlgFormProps, C
                     <FormItem {...formItemLayout} hasFeedback={true} label={Msg('ConfirmNewPassword')}>
                         {getFieldDecorator('confirm', {
                             rules: [{
-                                required: true, message: Msg('Header.ConfirmYourNewPassword')
+                                required: true, message: LocalesString.get('Header.ConfirmYourNewPassword')
                             }, {
                                 validator: this.checkPassword,
                             }],

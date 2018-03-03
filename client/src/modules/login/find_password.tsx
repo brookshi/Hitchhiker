@@ -5,6 +5,7 @@ import { RequestStatus } from '../../common/request_status';
 import { LoginPageMode } from '../../common/custom_type';
 import Msg from '../../locales';
 import LoInput from '../../locales/input';
+import LocalesString from '../../locales/string';
 
 const FormItem = Form.Item;
 
@@ -57,8 +58,8 @@ class FindPasswordPanel extends React.Component<FindPasswordProps, FindPasswordP
                     <div style={{ marginBottom: 8 }}> {Msg('FindPassword.Desc')} </div>
                     {
                         getFieldDecorator('email', {
-                            rules: [{ type: 'email', message: Msg('Login.InvalidEmail') },
-                            { required: true, message: Msg('Login.EnterEmail') }],
+                            rules: [{ type: 'email', message: LocalesString.get('Login.InvalidEmail') },
+                            { required: true, message: LocalesString.get('Login.EnterEmail') }],
                         })
                             (
                             <LoInput

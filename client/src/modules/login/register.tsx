@@ -7,6 +7,7 @@ import './style/index.less';
 import { LoginPageMode } from '../../common/custom_type';
 import Msg from '../../locales';
 import LoInput from '../../locales/input';
+import LocalesString from '../../locales/string';
 
 const FormItem = Form.Item;
 
@@ -67,7 +68,7 @@ class RegisterPanel extends React.Component<RegisterProps, RegisterPanelState> {
     private checkPassword = (rule, value, callback) => {
         const form = this.props.form;
         if (value && value !== form.getFieldValue('reg_password')) {
-            callback(Msg('Reg.Inconsistent'));
+            callback(LocalesString.get('Reg.Inconsistent'));
         } else {
             callback();
         }
@@ -76,7 +77,7 @@ class RegisterPanel extends React.Component<RegisterProps, RegisterPanelState> {
     private checkConfirm = (rule, value, callback) => {
         const form = this.props.form;
         if (!value || !StringUtil.checkPassword(value)) {
-            callback(Msg('Reg.PasswordRule'));
+            callback(LocalesString.get('Reg.PasswordRule'));
         } else if (value && this.state.isConfirmPwdModified) {
             form.validateFields(['confirm'], { force: true });
         }
@@ -102,8 +103,8 @@ class RegisterPanel extends React.Component<RegisterProps, RegisterPanelState> {
                     <div> Email </div>
                     {
                         getFieldDecorator('reg_email', {
-                            rules: [{ type: 'email', message: Msg('Login.InvalidEmail') },
-                            { required: true, message: Msg('Login.EnterEmail') }],
+                            rules: [{ type: 'email', message: LocalesString.get('Login.InvalidEmail') },
+                            { required: true, message: LocalesString.get('Login.EnterEmail') }],
                         })
                             (
                             <LoInput
@@ -119,7 +120,7 @@ class RegisterPanel extends React.Component<RegisterProps, RegisterPanelState> {
                     <div> {Msg('Login.Password')} </div>
                     {getFieldDecorator('reg_password', {
                         rules: [{
-                            required: true, message: Msg('Login.EnterPassword'),
+                            required: true, message: LocalesString.get('Login.EnterPassword'),
                         }, {
                             validator: this.checkConfirm,
                         }],
@@ -137,7 +138,7 @@ class RegisterPanel extends React.Component<RegisterProps, RegisterPanelState> {
                     <div> {Msg('Reg.ConfirmPassword')} </div>
                     {getFieldDecorator('confirm', {
                         rules: [{
-                            required: true, message: Msg('Reg.PleaseConfirmYourPassword')
+                            required: true, message: LocalesString.get('Reg.PleaseConfirmYourPassword')
                         }, {
                             validator: this.checkPassword,
                         }],

@@ -6,6 +6,7 @@ import './style/index.less';
 import { LoginPageMode } from '../../common/custom_type';
 import Msg from '../../locales';
 import LoInput from '../../locales/input';
+import LocalesString from '../../locales/string';
 
 const FormItem = Form.Item;
 
@@ -65,7 +66,7 @@ class LoginPanel extends React.Component<LoginProps, LoginPanelState> {
                     {
                         getFieldDecorator('email', {
                             initialValue: this.props.lastLoginName,
-                            rules: [{ required: true, message: Msg('Login.EnterEmail') }],
+                            rules: [{ required: true, message: LocalesString.get('Login.EnterEmail') }],
                         })
                             (
                             <LoInput
@@ -84,7 +85,7 @@ class LoginPanel extends React.Component<LoginProps, LoginPanelState> {
                     </div>
                     {
                         getFieldDecorator('password', {
-                            rules: [{ required: true, message: Msg('Login.EnterPassword') }],
+                            rules: [{ required: true, message: LocalesString.get('Login.EnterPassword') }],
                         })
                             (
                             <LoInput

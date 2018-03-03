@@ -6,6 +6,7 @@ import { confirmDlg } from '../../components/confirm_dialog/index';
 import { DtoProject } from '../../../../api/interfaces/dto_project';
 import { GlobalVar } from '../../utils/global_var';
 import Msg from '../../locales';
+import LocalesString from '../../locales/string';
 
 interface ProjectItemProps {
 
@@ -68,9 +69,9 @@ class ProjectItem extends React.Component<ProjectItemProps, ProjectItemState> {
 
     delete = () => {
         confirmDlg(
-            Msg('Project.DeleteProject', { action: this.props.isOwner ? Msg('Project.Disband') : Msg('Project.Quit') }),
+            LocalesString.get('Project.DeleteProject', { action: this.props.isOwner ? LocalesString.get('Project.Disband') : LocalesString.get('Project.Quit') }),
             () => this.props.isOwner ? this.props.disbandProject() : this.props.quitProject(),
-            Msg('Project.DeleteThisProject', { action: this.props.isOwner ? Msg('Project.disband') : Msg('Project.quit'), name: this.props.project.name })
+            LocalesString.get('Project.DeleteThisProject', { action: this.props.isOwner ? LocalesString.get('Project.disband') : LocalesString.get('Project.quit'), name: this.props.project.name })
         );
     }
 

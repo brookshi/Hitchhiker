@@ -14,6 +14,7 @@ import { DtoCollection } from '../../../../api/interfaces/dto_collection';
 import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
 import { ParameterType } from '../../common/parameter_type';
 import Msg from '../../locales';
+import LocalesString from '../../locales/string';
 
 const FormItem = Form.Item;
 
@@ -224,7 +225,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
         if (!this.props.form.getFieldValue('needCompare') || this.props.form.getFieldValue('environmentId') !== value) {
             callback();
         } else {
-            callback(Msg('Schedule.EnvironmentMustDifferent'));
+            callback(LocalesString.get('Schedule.EnvironmentMustDifferent'));
         }
     }
 
@@ -338,7 +339,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                     <FormItem {...formItemLayout} label={Msg('Common.Name')}>
                         {getFieldDecorator('name', {
                             initialValue: schedule.name,
-                            rules: [{ required: true, message: Msg('Schedule.EnterName') }],
+                            rules: [{ required: true, message: LocalesString.get('Schedule.EnterName') }],
                         })(
                             <Input spellCheck={false} />
                             )}
@@ -349,7 +350,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                                 <FormItem>
                                     {getFieldDecorator('collectionId', {
                                         initialValue: schedule.collectionId,
-                                        rules: [{ required: true, message: Msg('Schedule.SelectCollection') }],
+                                        rules: [{ required: true, message: LocalesString.get('Schedule.SelectCollection') }],
                                     })(
                                         this.generateCollectionSelect()
                                         )}

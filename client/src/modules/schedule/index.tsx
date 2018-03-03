@@ -100,7 +100,8 @@ class Schedule extends React.Component<ScheduleProps, ScheduleState> {
                     collapsible={true}
                     collapsedWidth="0.1"
                     collapsed={collapsed}
-                    onCollapse={collapsedLeftPanel}>
+                    onCollapse={collapsedLeftPanel}
+                >
                     <ScheduleList
                         schedules={this.scheduleArr}
                         user={user}

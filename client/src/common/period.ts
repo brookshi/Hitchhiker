@@ -1,3 +1,5 @@
+import LocalesString from '../locales/string';
+
 export enum Period {
 
     daily = 1,
@@ -19,21 +21,21 @@ export enum Period {
 
 export class PeriodStr {
 
-    static daily = 'Every Day';
+    static daily = LocalesString.get('Common.EveryDay');
 
-    static monday = 'Every Monday';
+    static monday = LocalesString.get('Common.EveryMonday');
 
-    static tuesday = 'Every Tuesday';
+    static tuesday = LocalesString.get('Common.EveryTuesday');
 
-    static wednesday = 'Every Wednesday';
+    static wednesday = LocalesString.get('Common.EveryWednesday');
 
-    static thursday = 'Every Thursday';
+    static thursday = LocalesString.get('Common.EveryThursday');
 
-    static friday = 'Every Friday';
+    static friday = LocalesString.get('Common.EveryFriday');
 
-    static saturday = 'Every Saturday';
+    static saturday = LocalesString.get('Common.EverySaturday');
 
-    static sunday = 'Every Sunday';
+    static sunday = LocalesString.get('Common.EverySunday');
 
     static convert(period: Period): string {
         switch (period) {
@@ -70,11 +72,11 @@ export enum TimerType {
 
 export class TimerCode {
 
-    static minute = 'Minute Timer';
+    static minute = LocalesString.get('Common.MinuteTimer');
 
-    static hour = 'Hour Timer';
+    static hour = LocalesString.get('Common.HourTimer');
 
-    static day = 'Day Timer';
+    static day = LocalesString.get('Common.DayTimer');
 
     static convert(type: TimerType) {
         switch (type) {

@@ -8,6 +8,7 @@ import { StringUtil } from '../../utils/string_util';
 import { DtoVariable } from '../../../../api/interfaces/dto_variable';
 import { confirmDlg } from '../../components/confirm_dialog/index';
 import Msg from '../../locales';
+import LocalesString from '../../locales/string';
 
 const getDefaultEnv = (projectId: string) => { return { id: StringUtil.generateUID(), name: '', variables: [], project: { id: projectId } }; };
 
@@ -101,7 +102,7 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
     }
 
     private delEnvironment = (record: DtoEnvironment) => {
-        confirmDlg(Msg('Project.DeleteEnvironment'), () => this.props.delEnv(record.id), Msg('Project.DeleteThisEnvironment', { name: record.name }));
+        confirmDlg(LocalesString.get('Project.DeleteEnvironment'), () => this.props.delEnv(record.id), LocalesString.get('Project.DeleteThisEnvironment', { name: record.name }));
     }
 
     private onHeadersChanged = (variables: DtoHeader[]) => {
@@ -150,7 +151,7 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
                     pagination={false}
                 >
                     <EnvironmentColumn
-                        title="Environment"
+                        title={Msg('Common.Environment')}
                         dataIndex="name"
                         key="name"
                         render={(text, record) => (
@@ -158,7 +159,7 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
                         )}
                     />
                     <EnvironmentColumn
-                        title="Action"
+                        title={Msg('Project.Action')}
                         key="action"
                         width={240}
                         render={(text, record) => (

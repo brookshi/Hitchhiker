@@ -15,6 +15,7 @@ import { DtoHeader } from '../../../../../api/interfaces/dto_header';
 import CodeSnippetDialog from '../../../components/code_snippet_dialog';
 import Msg from '../../../locales';
 import LoInput from '../../../locales/input';
+import LocalesString from '../../../locales/string';
 
 const DButton = Dropdown.Button as any;
 const Option = Select.Option;
@@ -242,10 +243,8 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
                 </div>
 
                 <Modal
-                    title="Save Request"
+                    title={Msg('Common.Save')}
                     visible={this.state.isSaveDlgOpen || this.state.isSaveAsDlgOpen}
-                    okText="OK"
-                    cancelText="Cancel"
                     onOk={this.onSaveNew}
                     onCancel={() => this.setState({ ...this.state, isSaveDlgOpen: false, isSaveAsDlgOpen: false })}
                 >
@@ -254,7 +253,7 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
                         allowClear={true}
                         style={{ width: '100%' }}
                         dropdownStyle={{ maxHeight: 500, overflow: 'auto' }}
-                        placeholder="Please select collection / folder"
+                        placeholder={LocalesString.get('Collection.SelectCollectionFolder')}
                         treeDefaultExpandAll={true}
                         value={this.state.selectedFolderId}
                         onChange={(e) => this.setState({ ...this.state, selectedFolderId: e })}

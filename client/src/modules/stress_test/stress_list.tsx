@@ -58,7 +58,7 @@ interface StressListState {
 const createDefaultStress: (user: DtoUser) => DtoStress = (user: DtoUser) => {
     return {
         id: StringUtil.generateUID(),
-        name: newStressName,
+        name: newStressName(),
         ownerId: user.id,
         collectionId: '',
         environmentId: noEnvironment,

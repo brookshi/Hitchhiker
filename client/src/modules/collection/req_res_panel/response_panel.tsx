@@ -53,7 +53,7 @@ const ResponseEmptyPanel = (
     <div>
         <div className="res-non-header">{Msg('Collection.Response')}</div>
         <div className="res-non-content">
-            {Msg('Collection.HitToGetResponse', { send: <span><Icon type="rocket" />{Msg('Common.Send')}</span> })}
+            {Msg('Collection.HitToGetResponse', { send: <span className="res-non-content-send"><Icon type="rocket" />{Msg('Common.Send')}</span> })}
         </div>
     </div>
 );
@@ -86,7 +86,7 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
             {
                 tests ? Object.keys(tests).map(key => (
                     <li key={`res-test-${key}`}>
-                        <Tag color={tests[key] ? successColor : failColor}>{tests[key] ? pass : fail}</Tag>
+                        <Tag color={tests[key] ? successColor : failColor}>{tests[key] ? pass() : fail()}</Tag>
                         <span>{key}</span>
                     </li>)
                 ) : ''
@@ -193,11 +193,11 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
         }
         const testPassNum = _.values(tests).filter(t => t).length;
         if (testPassNum === totalNum) {
-            return <span>{Msg('Collection.Tests')}<span className="res-panel-pass">{`ALL ${pass}`}</span></span>;
+            return <span>{Msg('Collection.Tests')}<span className="res-panel-pass">{`ALL ${pass()}`}</span></span>;
         } else if (testPassNum === 0) {
-            return <span>{Msg('Collection.Tests')}<span className="res-panel-fail">{`ALL ${fail}`}</span></span>;
+            return <span>{Msg('Collection.Tests')}<span className="res-panel-fail">{`ALL ${fail()}`}</span></span>;
         } else {
-            return <span>{Msg('Collection.Tests')}<span className="res-panel-pass">{`${testPassNum} ${pass}`}</span>, <span className="res-panel-fail">{`${totalNum - testPassNum} ${fail}`}</span></span>;
+            return <span>{Msg('Collection.Tests')}<span className="res-panel-pass">{`${testPassNum} ${pass()}`}</span>, <span className="res-panel-fail">{`${totalNum - testPassNum} ${fail()}`}</span></span>;
         }
     }
 

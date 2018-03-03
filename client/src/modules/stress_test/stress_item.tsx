@@ -5,6 +5,7 @@ import { confirmDlg } from '../../components/confirm_dialog/index';
 import { DtoStress } from '../../../../api/interfaces/dto_stress';
 import Msg from '../../locales';
 import './style/index.less';
+import LocalesString from '../../locales/string';
 
 interface StressItemProps {
 
@@ -63,9 +64,9 @@ class StressItem extends React.Component<StressItemProps, StressItemState> {
 
     delete = () => {
         confirmDlg(
-            Msg('Stress.DeleteStress'),
+            LocalesString.get('Stress.DeleteStress'),
             () => this.props.delete(),
-            Msg('Stress.DeleteStress', { name: this.props.stress.name })
+            LocalesString.get('Stress.DeleteStress', { name: this.props.stress.name })
         );
     }
 

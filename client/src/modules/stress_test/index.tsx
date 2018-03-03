@@ -83,7 +83,8 @@ class StressTest extends React.Component<StressProps, StressState> {
                     collapsible={true}
                     collapsedWidth="0.1"
                     collapsed={collapsed}
-                    onCollapse={collapsedLeftPanel}>
+                    onCollapse={collapsedLeftPanel}
+                >
                     <StressList
                         stresses={this.stressArr}
                         user={user}

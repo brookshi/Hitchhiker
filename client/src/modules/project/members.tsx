@@ -5,6 +5,7 @@ import { StringUtil } from '../../utils/string_util';
 import EditableCell from '../../components/editable_cell';
 import * as ReactDOM from 'react-dom';
 import Msg from '../../locales';
+import LocalesString from '../../locales/string';
 
 interface Member {
 
@@ -61,9 +62,9 @@ class Members extends React.Component<MembersProps, MembersState> {
 
     private removeUser = (member: Member) => {
         confirmDlg(
-            Msg('Project.RemoveUser'),
+            LocalesString.get('Project.RemoveUser'),
             () => this.props.removeUser(this.props.activeProject, member.id),
-            Msg('Project.RemoveThisUser')
+            LocalesString.get('Project.RemoveThisUser')
         );
     }
 

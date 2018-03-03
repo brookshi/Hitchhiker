@@ -7,7 +7,7 @@ import './style/index.less';
 
 interface DiffDialogProps {
 
-    title: string;
+    title: string | React.ReactNode;
 
     isOpen?: boolean;
 
@@ -42,10 +42,9 @@ class DiffDialog extends React.Component<DiffDialogProps, DiffDialogState> {
                 closable={true}
                 width="100%"
                 style={{ padding: 36, height: '100%', top: 0, }}
-                cancelText="Cancel"
                 onCancel={onClose}
                 footer={null}
-                >
+            >
                 <div dangerouslySetInnerHTML={{ __html: diffHtml }} style={{ height: '100%' }} />
             </Modal>
         );

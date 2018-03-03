@@ -25,5 +25,8 @@
     "Reg.Have": "已有账号? {sign}",
     "Reg.Inconsistent": "两次密码输入不一致!",
     "Reg.PasswordRule": "密码必须是6 - 16个字母或数字",
+
+    "Snippet.BodyEqualString": "返回结果等于某个字符串",
+
     "App.Collections": "集合"
 }

@@ -5,7 +5,7 @@ import { KeyValueEditType, KeyValueEditMode } from '../../../common/custom_type'
 import { bodyTypes } from '../../../common/body_type';
 import { defaultBodyType, defaultReqTabKey } from '../../../common/constants';
 import { StringUtil } from '../../../utils/string_util';
-import { testSnippets } from '../../../common/test_snippet';
+import { getTestSnippets } from '../../../common/test_snippet';
 import { getActiveRecordSelector, getReqActiveTabKeySelector, getHeadersEditModeSelector } from './selector';
 import { actionCreator } from '../../../action/index';
 import { UpdateDisplayRecordType } from '../../../action/record';
@@ -83,7 +83,7 @@ class RequestTabExtra extends React.Component<RequestTabExtraProps, RequestTabEx
     private currentBodyType = () => this.props.record.bodyType || defaultBodyType;
 
     private onSelectSnippet = (e) => {
-        const snippet = testSnippets[e.key];
+        const snippet = getTestSnippets()[e.key];
         const { record, changeRecord } = this.props;
         const test = record.test && record.test.length > 0 ? (`${record.test}\n\n${snippet}`) : snippet;
         changeRecord({ ...record, test });
@@ -91,7 +91,7 @@ class RequestTabExtra extends React.Component<RequestTabExtraProps, RequestTabEx
 
     private snippetsMenu = (
         <Menu onClick={this.onSelectSnippet}>
-            {Object.keys(testSnippets).map(s => <Menu.Item key={s}>{s}</Menu.Item>)}
+            {Object.keys(getTestSnippets()).map(s => <Menu.Item key={s}>{s}</Menu.Item>)}
         </Menu>
     );
 

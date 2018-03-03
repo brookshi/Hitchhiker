@@ -55,7 +55,7 @@ interface ProjectListState {
 const createDefaultProject = (user: DtoUser) => {
     return {
         id: StringUtil.generateUID(),
-        name: newProjectName,
+        name: newProjectName(),
         owner: user,
         members: [user]
     };

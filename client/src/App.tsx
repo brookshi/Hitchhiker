@@ -15,11 +15,13 @@ import { actionCreator } from './action';
 import { UpdateLeftPanelType } from './action/ui';
 import LoginPage from './modules/login';
 import { RequestStatus } from './common/request_status';
-import Perf from 'react-addons-perf';
+// import Perf from 'react-addons-perf';
 import './style/App.less';
 import * as _ from 'lodash';
 import { toolBarWidth } from './common/constants';
 import Msg from './locales';
+import { injectIntl } from 'react-intl';
+import LocalesString from './locales/string';
 
 const { Header, Sider } = Layout;
 
@@ -45,7 +47,8 @@ class App extends React.Component<AppProps, AppState> {
 
   constructor(props: AppProps) {
     super(props);
-    (window as any).Perf = Perf;
+    LocalesString.intl = props['intl'];
+    // (window as any).Perf = Perf;
   }
 
   shouldComponentUpdate(nextProps: AppProps, nextState: AppState) {
@@ -165,4 +168,4 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): AppDispatchProps => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(App);
+)(injectIntl(App));

@@ -9,6 +9,7 @@ import { DateUtil } from '../../utils/date_util';
 import { NotificationStr, NotificationMode } from '../../common/notification_mode';
 import { noEnvironment } from '../../common/constants';
 import Msg from '../../locales';
+import LocalesString from '../../locales/string';
 
 interface ScheduleItemProps {
 
@@ -72,9 +73,9 @@ class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState>
 
     delete = () => {
         confirmDlg(
-            Msg('Schedule.DeleteSchedule'),
+            LocalesString.get('Schedule.DeleteSchedule'),
             () => this.props.delete(),
-            Msg('Schedule.DeleteThisSchedule', { name: this.props.schedule.name })
+            LocalesString.get('Schedule.DeleteThisSchedule', { name: this.props.schedule.name })
         );
     }
 

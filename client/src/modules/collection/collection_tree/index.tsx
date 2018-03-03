@@ -22,6 +22,7 @@ import { ShowTimelineType, CloseTimelineType } from '../../../action/ui';
 import ScriptDialog from '../../../components/script_dialog';
 import Msg from '../../../locales';
 import './style/index.less';
+import LocalesString from '../../../locales/string';
 
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
@@ -104,7 +105,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         this.state = {
             projectSelectedDlgMode: ProjectSelectedDialogType.create,
             isProjectSelectedDlgOpen: false,
-            newCollectionName: newCollectionName,
+            newCollectionName: newCollectionName(),
             shareCollectionId: '',
             isScriptDlgOpen: false
         };
@@ -198,7 +199,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             description: ''
         };
         this.props.saveCollection(collection);
-        this.setState({ ...this.state, isProjectSelectedDlgOpen: false, newCollectionName, selectedProjectInDlg: undefined });
+        this.setState({ ...this.state, isProjectSelectedDlgOpen: false, newCollectionName: newCollectionName(), selectedProjectInDlg: undefined });
     }
 
     private duplicateRecord = (record: DtoRecord) => {
@@ -287,7 +288,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         }
         return (
             <ScriptDialog
-                title={`${currentOperatedCollection.name} - ${Msg('Collection.CommonPreRequestScript')}`}
+                title={`${currentOperatedCollection.name} - ${LocalesString.get('Collection.CommonPreRequestScript')}`}
                 isOpen={isScriptDlgOpen}
                 onOk={this.saveCommonPreScript}
                 value={currentOperatedCollection.commonPreScript || ''}
@@ -320,7 +321,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                     allowClear={true}
                     style={{ width: '100%' }}
                     dropdownStyle={{ maxHeight: 500, overflow: 'auto' }}
-                    placeholder="Please select project"
+                    placeholder={LocalesString.get('Collection.SelectProject')}
                     treeDefaultExpandAll={true}
                     value={this.state.selectedProjectInDlg}
                     onChange={(e) => this.setState({ ...this.state, selectedProjectInDlg: e })}

@@ -1,3 +1,4 @@
+import LocalesString from '../locales/string';
 
 export type ValidateStatus = 'success' | 'warning' | 'error' | 'validating';
 
@@ -12,13 +13,13 @@ export class ValidateType {
     static validating: ValidateStatus = 'validating';
 }
 
-export type KeyValueEditMode = 'Key Value Edit' | 'Bulk Edit';
+export type KeyValueEditMode = 'Key Value Edit' | 'Bulk Edit' | '键值对编辑' | '批量编辑';
 
 export class KeyValueEditType {
 
-    static keyValueEdit: KeyValueEditMode = 'Key Value Edit';
+    static keyValueEdit: KeyValueEditMode = LocalesString.get('Common.KeyValueEdit');
 
-    static bulkEdit: KeyValueEditMode = 'Bulk Edit';
+    static bulkEdit: KeyValueEditMode = LocalesString.get('Common.BulkEdit');
 
     static isBulkEdit(mode: KeyValueEditMode): boolean {
         return mode === KeyValueEditType.bulkEdit;

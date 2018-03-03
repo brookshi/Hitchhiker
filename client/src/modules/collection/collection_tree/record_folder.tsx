@@ -7,6 +7,7 @@ import { confirmDlg } from '../../../components/confirm_dialog/index';
 import { getDefaultRecord } from '../../../state/collection';
 import { StringUtil } from '../../../utils/string_util';
 import Msg from '../../../locales';
+import LocalesString from '../../../locales/string';
 
 interface RecordFolderProps {
 
@@ -69,7 +70,7 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
         this[e.key]();
     }
 
-    delete = () => confirmDlg(Msg('Collection.DeleteFolder'), () => this.props.deleteRecord(), Msg('Collection.DeleteThisFolder'));
+    delete = () => confirmDlg(LocalesString.get('Collection.DeleteFolder'), () => this.props.deleteRecord(), LocalesString.get('Collection.DeleteThisFolder'));
 
     createRecord = () => this.props.createRecord({ ...getDefaultRecord(false), collectionId: this.props.folder.collectionId, pid: this.props.folder.id, id: StringUtil.generateUID() });
 
@@ -114,7 +115,8 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
 
     public render() {
         return (
-            <div className={this.state.isDragOver ? 'folder-item-container' : ''}
+            <div
+                className={this.state.isDragOver ? 'folder-item-container' : ''}
                 draggable={!this.state.isEdit}
                 onDragStart={this.dragStart}
                 onDragOver={this.dragOver}

@@ -86,7 +86,7 @@ class EnvironmentSelect extends React.Component<EnvironmentSelectProps, Environm
                             return;
                         }
                         const recordState: RecordState = {
-                            name: record.name || newRequestName,
+                            name: record.name || newRequestName(),
                             record,
                             isChanged: true,
                             isRequesting: false,

@@ -65,7 +65,7 @@ interface ScheduleListState {
 const createDefaultSchedule: (user: DtoUser) => DtoSchedule = (user: DtoUser) => {
     return {
         id: StringUtil.generateUID(),
-        name: newScheduleName,
+        name: newScheduleName(),
         ownerId: user.id,
         collectionId: '',
         environmentId: noEnvironment,

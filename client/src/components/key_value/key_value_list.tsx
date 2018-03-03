@@ -5,6 +5,7 @@ import './style/index.less';
 import { StringUtil } from '../../utils/string_util';
 import { DtoHeader } from '../../../../api/interfaces/dto_header';
 import { headerKeys, headerValues } from '../../common/constants';
+import Msg from '../../locales';
 
 const Option = AutoComplete.Option;
 const OptGroup = AutoComplete.OptGroup;
@@ -50,10 +51,12 @@ class KeyValueListComponent extends React.Component<KeyValueListComponentProps, 
     get keyDataSource() {
         const favHeaders = this.props.favHeaders;
         return (favHeaders && favHeaders.length > 0 ? [{
-            title: 'Favorites',
+            key: 'Favorites',
+            title: Msg('Component.Favorites'),
             children: favHeaders.map(h => `${h.key || ''}::${h.value || ''}`)
         }] : []).concat([{
-            title: 'Common',
+            key: 'Common',
+            title: Msg('Component.Common'),
             children: headerKeys
         }]);
     }
@@ -61,7 +64,7 @@ class KeyValueListComponent extends React.Component<KeyValueListComponentProps, 
     get keyOptions() {
         return this.keyDataSource.map(group => (
             <OptGroup
-                key={group.title}
+                key={group.key}
                 label={group.title}
             >
                 {group.children.map((opt, index) => (

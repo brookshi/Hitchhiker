@@ -11,6 +11,7 @@ import { newFolderName } from '../../../common/constants';
 import { getDefaultRecord } from '../../../state/collection';
 import { ParameterType } from '../../../common/parameter_type';
 import Msg from '../../../locales';
+import LocalesString from '../../../locales/string';
 
 interface CollectionItemProps {
 
@@ -43,7 +44,7 @@ interface CollectionItemState {
 const createDefaultFolder: (collectionId: string) => DtoRecord = (cid) => {
     return {
         id: StringUtil.generateUID(),
-        name: newFolderName,
+        name: newFolderName(),
         category: RecordCategory.folder,
         collectionId: cid,
         parameterType: ParameterType.ManyToMany
@@ -113,7 +114,7 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
         this[e.key]();
     }
 
-    delete = () => confirmDlg(Msg('Collection.DeleteCollection'), () => this.props.deleteCollection(), Msg('Collection.DeleteThisCollection'));
+    delete = () => confirmDlg(LocalesString.get('Collection.DeleteCollection'), () => this.props.deleteCollection(), LocalesString.get('Collection.DeleteThisCollection'));
 
     share = () => this.props.shareCollection(this.props.collection.id);
 

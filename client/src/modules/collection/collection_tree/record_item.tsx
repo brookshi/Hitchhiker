@@ -7,6 +7,7 @@ import { confirmDlg } from '../../../components/confirm_dialog/index';
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 import { StringUtil } from '../../../utils/string_util';
 import Msg from '../../../locales';
+import LocalesString from '../../../locales/string';
 
 interface RecordItemProps {
 
@@ -64,7 +65,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
         this[e.key]();
     }
 
-    delete = () => confirmDlg(Msg('Collection.DeleteRequest'), () => this.props.deleteRecord(), Msg('Collection.DeleteThisRequest'));
+    delete = () => confirmDlg(LocalesString.get('Collection.DeleteRequest'), () => this.props.deleteRecord(), LocalesString.get('Collection.DeleteThisRequest'));
 
     duplicate = () => this.props.duplicateRecord();
 

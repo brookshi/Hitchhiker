@@ -1,17 +1,18 @@
+import LocalesString from '../locales/string';
 
 export const noEnvironment = 'No environment';
 
 export const allEnvironment = 'All';
 
-export const newCollectionName = 'New collection';
+export const newCollectionName = () => LocalesString.get('Collection.NewName');
 
-export const newFolderName = 'New Folder';
+export const newFolderName = () => LocalesString.get('Collection.NewFolderName');
 
-export const newProjectName = 'New Project';
+export const newProjectName = () => LocalesString.get('Project.NewName');
 
-export const newScheduleName = 'New Schedule';
+export const newScheduleName = () => LocalesString.get('Schedule.NewName');
 
-export const newStressName = 'New Stress Test';
+export const newStressName = () => LocalesString.get('Stress.NewName');
 
 export const allProject = 'All';
 
@@ -19,17 +20,17 @@ export const defaultExport = 'export:impossiblethis:tropxe';
 
 export const unknownName = 'unknown';
 
-export const newRequestName = 'new request';
+export const newRequestName = () => LocalesString.get('Collection.NewRequestName');
 
-export const pass = 'PASS';
+export const pass = () => LocalesString.get('Common.PASS');
 
-export const fail = 'FAIL';
+export const fail = () => LocalesString.get('Common.FAIL');
 
-export const match = 'MATCH';
+export const match = () => LocalesString.get('Common.MATCH');
 
-export const notMatch = 'NOT MATCH';
+export const notMatch = () => LocalesString.get('Common.NOTMATCH');
 
-export const notMatchButIgnore = 'NOT MATCH BUT IGNORE';
+export const notMatchButIgnore = () => LocalesString.get('Common.NOTMATCHBUTIGNORE');
 
 export const successColor = '#87d068';
 

@@ -11,6 +11,7 @@ import { Password } from '../../../../api/interfaces/password';
 import { getProjectsIdNameStateSelector } from '../collection/collection_tree/selector';
 import { ImportDataType } from '../../action/collection';
 import Msg from '../../locales';
+import LocalesString from '../../locales/string';
 
 const Dragger = Upload.Dragger;
 
@@ -175,17 +176,19 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
                         allowClear={true}
                         style={{ marginTop: 8, width: '100%' }}
                         dropdownStyle={{ maxHeight: 500, overflow: 'auto' }}
-                        placeholder="Please select project"
+                        placeholder={LocalesString.get('Collection.SelectProject')}
                         treeDefaultExpandAll={true}
                         value={this.state.selectedProjectInDlg}
                         onChange={(e) => this.setState({ ...this.state, selectedProjectInDlg: e })}
-                        treeData={this.props.projects.map(t => ({ key: t.id, value: t.id, label: t.name }))} />
+                        treeData={this.props.projects.map(t => ({ key: t.id, value: t.id, label: t.name }))}
+                    />
                     <div style={{ marginTop: 8, height: 180 }}>
                         <Dragger
                             showUploadList={false}
                             accept=".json"
                             customRequest={obj => { this.importPostman(obj.file); }}
-                            action="">
+                            action=""
+                        >
                             <p className="ant-upload-drag-icon">
                                 <Icon type="inbox" />
                             </p>

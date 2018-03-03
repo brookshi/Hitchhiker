@@ -12,6 +12,7 @@ import { DtoCollection } from '../../../../api/interfaces/dto_collection';
 import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
 import { ParameterType } from '../../common/parameter_type';
 import Msg from '../../locales';
+import LocalesString from '../../locales/string';
 
 const FormItem = Form.Item;
 
@@ -167,7 +168,7 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
         if (this.state.sortedRecords.some(r => r.include)) {
             callback();
         } else {
-            callback(Msg('Stress.AtLeastARequest'));
+            callback(LocalesString.get('Stress.AtLeastARequest'));
         }
     }
 
@@ -291,7 +292,7 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                     <FormItem {...formItemLayout} label={Msg('Common.Name')}>
                         {getFieldDecorator('name', {
                             initialValue: stress.name,
-                            rules: [{ required: true, message: Msg('Stress.EnterName') }],
+                            rules: [{ required: true, message: LocalesString.get('Stress.EnterName') }],
                         })(
                             <Input spellCheck={false} />
                             )}
@@ -299,7 +300,7 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                     <FormItem {...formItemLayout} required={true} label={Msg('Stress.Collection')}>
                         {getFieldDecorator('collectionId', {
                             initialValue: stress.collectionId,
-                            rules: [{ required: true, message: Msg('Stress.SelectCollection') }],
+                            rules: [{ required: true, message: LocalesString.get('Stress.SelectCollection') }],
                         })(
                             this.generateCollectionSelect()
                             )}
