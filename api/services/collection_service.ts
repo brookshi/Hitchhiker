@@ -51,7 +51,7 @@ export class CollectionService {
         collection.owner = owner;
 
         await CollectionService.save(collection);
-        return { success: true, message: Message.collectionCreateSuccess };
+        return { success: true, message: Message.get('collectionCreateSuccess') };
     }
 
     static async update(dtoCollection: DtoCollection, userId: string): Promise<ResObject> {
@@ -68,7 +68,7 @@ export class CollectionService {
                 reqFollowRedirect: !!dtoCollection.reqFollowRedirect
             })
             .execute();
-        return { success: true, message: Message.collectionUpdateSuccess };
+        return { success: true, message: Message.get('collectionUpdateSuccess') };
     }
 
     static async delete(id: string): Promise<ResObject> {
@@ -79,7 +79,7 @@ export class CollectionService {
             .where('id=:id', { id })
             .update({ recycle: true })
             .execute();
-        return { success: true, message: Message.collectionDeleteSuccess };
+        return { success: true, message: Message.get('collectionDeleteSuccess') };
     }
 
     static async getOwns(userId: string): Promise<Collection[]> {
@@ -168,7 +168,7 @@ export class CollectionService {
     static async shareCollection(collectionId: string, projectId: string): Promise<ResObject> {
         const origin = await CollectionService.getById(collectionId, true);
         if (!origin) {
-            return { success: false, message: Message.collectionNotExist };
+            return { success: false, message: Message.get('collectionNotExist') };
         }
 
         const target = CollectionService.clone(origin);

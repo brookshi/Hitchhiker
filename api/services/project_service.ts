@@ -88,7 +88,7 @@ export class ProjectService {
 
         await connection.getRepository(Project).save(project);
 
-        return { success: true, message: Message.projectSaveSuccess };
+        return { success: true, message: Message.get('projectSaveSuccess') };
     }
 
     static async createOwnProject(owner: User): Promise<Project> {
@@ -111,14 +111,14 @@ export class ProjectService {
             .update({ name: dtoProject.name, note: dtoProject.note })
             .execute();
 
-        return { success: true, message: Message.projectSaveSuccess };
+        return { success: true, message: Message.get('projectSaveSuccess') };
     }
 
     static async save(project: Project): Promise<ResObject> {
         const connection = await ConnectionManager.getInstance();
         await connection.getRepository(Project).save(project);
 
-        return { success: true, message: Message.projectSaveSuccess };
+        return { success: true, message: Message.get('projectSaveSuccess') };
     }
 
     static async delete(id: string, delCollection?: boolean, delEnv?: boolean): Promise<ResObject> {
@@ -137,7 +137,7 @@ export class ProjectService {
             await manager.remove(project);
         });
 
-        return { success: true, message: Message.projectDeleteSuccess };
+        return { success: true, message: Message.get('projectDeleteSuccess') };
     }
 
     static async createLocalhostMapping(id: string, userId: string, projectId: string, ip: string): Promise<ResObject> {
@@ -150,7 +150,7 @@ export class ProjectService {
         const connection = await ConnectionManager.getInstance();
         await connection.getRepository(LocalhostMapping).save(mapping);
 
-        return { success: true, message: Message.createLocalhostMappingSuccess };
+        return { success: true, message: Message.get('createLocalhostMappingSuccess') };
     }
 
     static async updateLocalhostMapping(id: string, ip: string): Promise<ResObject> {
@@ -162,7 +162,7 @@ export class ProjectService {
             .update({ ip })
             .execute();
 
-        return { success: true, message: Message.updateLocalhostMappingSuccess };
+        return { success: true, message: Message.get('updateLocalhostMappingSuccess') };
     }
 
     static async getLocalhost(userId: string, collectionId: string): Promise<string> {
@@ -191,7 +191,7 @@ export class ProjectService {
             .update({ globalFunction })
             .execute();
 
-        return { success: true, message: Message.updateGlobalFuncSuccess };
+        return { success: true, message: Message.get('updateGlobalFuncSuccess') };
     }
 
     static async getProjectByCollectionId(collectionId: string): Promise<Project> {

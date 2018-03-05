@@ -12,5 +12,5 @@ export class GlobalVar {
 
     schedulePageSize: number = 50;
 
-    lang = 'zh';
+    lang = 'hitchhiker_en'.replace('hitchhiker_', '');
 }

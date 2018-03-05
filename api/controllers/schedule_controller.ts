@@ -40,7 +40,7 @@ export default class ScheduleController extends BaseController {
     async run( @PathParam('id') id: string): Promise<ResObject> {
         const schedule = await ScheduleService.getById(id);
         if (!schedule) {
-            return { success: false, message: Message.scheduleNotExist };
+            return { success: false, message: Message.get('scheduleNotExist') };
         }
 
         new ScheduleRunner().runSchedule(schedule, null, false);

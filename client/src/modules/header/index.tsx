@@ -67,7 +67,7 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
         const { message } = this.props;
         if (!!message && notification.warning) {
             notification.warning({
-                message: Msg('Common.WarningMsg'),
+                message: LocalesString.get('Common.WarningMsg'),
                 description: message,
             });
             this.props.resetSyncMsg();

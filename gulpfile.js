@@ -6,7 +6,7 @@ var gulp = require('gulp'),
     path = require('path'),
     archiver = require('archiver');
 
-gulp.task('build', ['copyTemplate', 'copyGlobalData']);
+gulp.task('build', ['copyTemplate', 'copyGlobalData', 'copyLocales']);
 
 gulp.task('package', ['release'], function () {
     const keepFiles = ['build', 'node_modules', 'appconfig.json', 'gulpfile.js', 'logconfig.json', 'mail.json', 'pm2.json', 'sample collection.json', 'tsconfig.json'];
@@ -39,7 +39,7 @@ gulp.task('package', ['release'], function () {
     archive.finalize();
 });
 
-gulp.task('release', ['copy', 'copyTemplate', 'copyGlobalData']);
+gulp.task('release', ['copy', 'copyTemplate', 'copyGlobalData', 'copyLocales']);
 
 gulp.task('copy', ['compilerClient'], function () {
     return gulp.src('./client/build/**/*.*')
@@ -60,6 +60,12 @@ gulp.task('copyGlobalData', function () {
     fs.removeSync(path.join(__dirname, 'build/global_data'));
     return gulp.src('./api/global_data/**/*.*')
         .pipe(gulp.dest('./build/global_data'));
+});
+
+gulp.task('copyLocales', function () {
+    fs.removeSync(path.join(__dirname, 'build/locales'));
+    return gulp.src('./api/locales/**/*.*')
+        .pipe(gulp.dest('./build/locales'));
 });
 
 gulp.task('compilerClient', ['compilerServer'], function (cb) {

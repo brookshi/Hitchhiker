@@ -56,6 +56,6 @@ export default class CollectionController extends BaseController {
     async importFromPostman(ctx: Koa.Context, @PathParam('projectid') projectId: string, @BodyParam info: any): Promise<ResObject> {
         const user = SessionService.getUser(ctx);
         await Importer.do(info, projectId, user);
-        return { success: true, message: Message.importPostmanSuccess };
+        return { success: true, message: Message.get('importPostmanSuccess') };
     }
 }

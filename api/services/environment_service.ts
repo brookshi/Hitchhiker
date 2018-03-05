@@ -51,7 +51,7 @@ export class EnvironmentService {
 
         await EnvironmentService.save(env);
 
-        return { success: true, message: Message.envCreateSuccess };
+        return { success: true, message: Message.get('envCreateSuccess') };
     }
 
     private static adjustVariables(env: Environment) {
@@ -92,7 +92,7 @@ export class EnvironmentService {
             await manager.save(newEnv);
         });
 
-        return { success: true, message: Message.envUpdateSuccess };
+        return { success: true, message: Message.get('envUpdateSuccess') };
     }
 
     static async delete(id: string): Promise<ResObject> {
@@ -105,7 +105,7 @@ export class EnvironmentService {
             });
         }
 
-        return { success: true, message: Message.envDeleteSuccess };
+        return { success: true, message: Message.get('envDeleteSuccess') };
     }
 
     static async getVariables(envId: string): Promise<_.Dictionary<string>> {
