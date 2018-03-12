@@ -10,6 +10,8 @@ import { DtoCollection } from '../../../../../api/interfaces/dto_collection';
 import { newFolderName } from '../../../common/constants';
 import { getDefaultRecord } from '../../../state/collection';
 import { ParameterType } from '../../../common/parameter_type';
+import Msg from '../../../locales';
+import LocalesString from '../../../locales/string';
 
 interface CollectionItemProps {
 
@@ -42,7 +44,7 @@ interface CollectionItemState {
 const createDefaultFolder: (collectionId: string) => DtoRecord = (cid) => {
     return {
         id: StringUtil.generateUID(),
-        name: newFolderName,
+        name: newFolderName(),
         category: RecordCategory.folder,
         collectionId: cid,
         parameterType: ParameterType.ManyToMany
@@ -75,34 +77,34 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
         return (
             <Menu className="collection_item_menu" onClick={this.onClickMenu}>
                 <Menu.Item key="edit">
-                    <Icon type="edit" /> Rename
+                    <Icon type="edit" /> {Msg('Common.Rename')}
                 </Menu.Item>
                 <Menu.Item key="createFolder">
-                    <Icon type="folder" /> Create folder
+                    <Icon type="folder" /> {Msg('Collection.CreateFolder')}
                 </Menu.Item>
                 <Menu.Item key="createRecord">
-                    <Icon type="file" /> Create request
+                    <Icon type="file" /> {Msg('Collection.CreateRequest')}
                 </Menu.Item>
                 {/*<Menu.Item key="share">
                     <Icon type="share-alt" /> Share
                 </Menu.Item>*/}
                 <Menu.Item key="editPreRequestScript">
-                    <Icon type="code-o" /> Common Pre Request Script
+                    <Icon type="code-o" /> {Msg('Collection.CommonPreRequestScript')}
                 </Menu.Item>
                 <Menu.Item key="editReqStrictSSL">
                     <span>
-                        <Icon type="safety" /> Request Strict SSL
+                        <Icon type="safety" /> {Msg('Collection.RequestStrictSSL')}
                         <span style={checkStyle}>{reqStrictSSL ? <Icon type="check" /> : ''}</span>
                     </span>
                 </Menu.Item>
                 <Menu.Item key="editReqFollowRedirect">
                     <span>
-                        <Icon type="fork" /> Request Follow Redirect
+                        <Icon type="fork" /> {Msg('Collection.RequestFollowRedirect')}
                         <span style={checkStyle}>{reqFollowRedirect ? <Icon type="check" /> : ''}</span>
                     </span>
                 </Menu.Item>
                 <Menu.Item key="delete">
-                    <Icon type="delete" /> Delete
+                    <Icon type="delete" /> {Msg('Common.Delete')}
                 </Menu.Item>
             </Menu>
         );
@@ -112,7 +114,7 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
         this[e.key]();
     }
 
-    delete = () => confirmDlg('collection', () => this.props.deleteCollection());
+    delete = () => confirmDlg(LocalesString.get('Collection.DeleteCollection'), () => this.props.deleteCollection(), LocalesString.get('Collection.DeleteThisCollection'));
 
     share = () => this.props.shareCollection(this.props.collection.id);
 
@@ -159,19 +161,20 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
     }
 
     public render() {
-
+        const { onNameChanged, collection, recordCount } = this.props;
         return (
-            <div className={this.state.isDragOver ? 'folder-item-container' : ''}
+            <div
+                className={this.state.isDragOver ? 'folder-item-container' : ''}
                 onDragOver={this.dragOver}
                 onDragLeave={this.dragLeave}
                 onDrop={this.drop}
             >
                 <ItemWithMenu
                     ref={ele => this.itemWithMenu = ele}
-                    onNameChanged={this.props.onNameChanged}
+                    onNameChanged={onNameChanged}
                     icon={<Icon className="c-icon" type="wallet" />}
-                    name={this.props.collection.name}
-                    subName={<div>{`${this.props.recordCount} request${this.props.recordCount > 1 ? 's' : ''}`}</div>}
+                    name={collection.name}
+                    subName={<div>{Msg('Collection.Request', { count: recordCount })}</div>}
                     menu={this.getMenu()}
                 />
             </div>

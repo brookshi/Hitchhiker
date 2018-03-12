@@ -24,7 +24,7 @@ export class ScheduleOnDemandService extends WebSocketHandler {
     async run(id: string): Promise<any> {
         const schedule = await ScheduleService.getById(id);
         if (!schedule) {
-            this.close(Message.scheduleNotExist);
+            this.close(Message.get('scheduleNotExist'));
             return;
         }
 

@@ -86,13 +86,13 @@ export class StressService {
         const stress = StressService.fromDto(dtoStress);
         stress.ownerId = owner.id;
         await StressService.save(stress);
-        return { message: Message.stressCreateSuccess, success: true };
+        return { message: Message.get('stressCreateSuccess'), success: true };
     }
 
     static async update(dtoStress: DtoStress): Promise<ResObject> {
         const stress = StressService.fromDto(dtoStress);
         await StressService.save(stress);
-        return { message: Message.stressUpdateSuccess, success: true };
+        return { message: Message.get('stressUpdateSuccess'), success: true };
     }
 
     static async delete(id: string): Promise<ResObject> {
@@ -112,18 +112,18 @@ export class StressService {
             .where('id=:id', { id })
             .delete()
             .execute();
-        return { success: true, message: Message.stressDeleteSuccess };
+        return { success: true, message: Message.get('stressDeleteSuccess') };
     }
 
     static async getStressInfo(id: string): Promise<ResObject> {
         const stress = await StressService.getById(id);
         if (!stress) {
-            return { success: false, message: Message.stressNotExist };
+            return { success: false, message: Message.get('stressNotExist') };
         }
         const collectionRecords = await RecordService.getByCollectionIds([stress.collectionId]);
         const records = _.keyBy((collectionRecords ? collectionRecords[stress.collectionId] : []).filter(r => stress.requests.some(i => i === r.id)), 'id');
         if (_.keys(records).length === 0) {
-            return { success: false, message: Message.stressNoRecords };
+            return { success: false, message: Message.get('stressNoRecords') };
         }
         const envVariables = await EnvironmentService.getVariables(stress.environmentId);
         const { globalFunction } = (await ProjectService.getProjectByCollectionId(stress.collectionId)) || { globalFunction: '' };

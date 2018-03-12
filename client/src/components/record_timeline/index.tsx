@@ -12,6 +12,7 @@ import { DiffMode, DiffType } from '../../common/custom_type';
 import { IDiffResult } from 'diff';
 import * as JsDiff from 'diff';
 import { ParameterType } from '../../common/parameter_type';
+import Msg from '../../locales';
 
 registerLanguage('javascript', js);
 
@@ -52,7 +53,7 @@ class RecordTimeline extends React.Component<RecordTimelineProps, RecordTimeline
         const lastRecord = last ? last.record : undefined;
         return (
             <Timeline.Item className="record-timeline-item" key={item.id}>
-                <p style={{ fontWeight: 'bold' }}>{`${new Date(item.createDate).toLocaleString()} by ${item.user ? item.user.name : unknownName}`}</p>
+                <p style={{ fontWeight: 'bold' }}>{`${new Date(item.createDate).toLocaleString()}: ${item.user ? item.user.name : unknownName}`}</p>
                 <div className="record-timeline-item-detail">
                     {this.generateItem('name', this.getDiffChars(record, lastRecord, 'name'), true)}
                     {this.generateItem('method', this.getDiffChars(record, lastRecord, 'method', DiffType.words), true)}
@@ -92,7 +93,7 @@ class RecordTimeline extends React.Component<RecordTimelineProps, RecordTimeline
         let continousLineCount = 0;
         diffFuncMap[DiffType.lines](lastContent, content).forEach((part: IDiffResult, index: number) => {
             if (part.added || part.removed) {
-                lines.push(_.uniq([...nextLines.map(r => this.getValueWithFlag(r)), ...(continousLineCount > codeLevel * 2 ? [<p>...</p>] : []), ...prevLines.map(r => this.getValueWithFlag(r))]));
+                lines.push(_.uniq([...nextLines.map((r) => this.getValueWithFlag(r)), ...(continousLineCount > codeLevel * 2 ? [<p key="1">...</p>] : []), ...prevLines.map(r => this.getValueWithFlag(r))]));
                 continousLineCount = 0;
                 prevLines.splice(0, prevLines.length);
                 nextLines.splice(0, nextLines.length);
@@ -159,7 +160,7 @@ class RecordTimeline extends React.Component<RecordTimelineProps, RecordTimeline
                     record && record.history ? (
                         <Modal
                             visible={visible}
-                            title={`History (${record.history.length})`}
+                            title={Msg('Component.HistoryDesc', { length: record.history.length })}
                             footer={[]}
                             onCancel={onClose}
                             width={600}

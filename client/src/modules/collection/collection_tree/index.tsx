@@ -20,7 +20,9 @@ import { newCollectionName, allProject } from '../../../common/constants';
 import RecordTimeline from '../../../components/record_timeline';
 import { ShowTimelineType, CloseTimelineType } from '../../../action/ui';
 import ScriptDialog from '../../../components/script_dialog';
+import Msg from '../../../locales';
 import './style/index.less';
+import LocalesString from '../../../locales/string';
 
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
@@ -103,7 +105,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         this.state = {
             projectSelectedDlgMode: ProjectSelectedDialogType.create,
             isProjectSelectedDlgOpen: false,
-            newCollectionName: newCollectionName,
+            newCollectionName: newCollectionName(),
             shareCollectionId: '',
             isScriptDlgOpen: false
         };
@@ -197,7 +199,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             description: ''
         };
         this.props.saveCollection(collection);
-        this.setState({ ...this.state, isProjectSelectedDlgOpen: false, newCollectionName, selectedProjectInDlg: undefined });
+        this.setState({ ...this.state, isProjectSelectedDlgOpen: false, newCollectionName: newCollectionName(), selectedProjectInDlg: undefined });
     }
 
     private duplicateRecord = (record: DtoRecord) => {
@@ -232,18 +234,22 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                 const isOpen = openKeys.indexOf(r.id) > -1;
                 const children = _.remove(data, (d) => d.pid === r.id);
                 return (
-                    <SubMenu className="folder" key={r.id} title={(
-                        <RecordFolder
-                            ref={ele => this.folderRefs[r.id] = ele}
-                            folder={{ ...r }}
-                            isOpen={isOpen}
-                            deleteRecord={() => deleteRecord(r.id, records[cid])}
-                            createRecord={this.createRecord}
-                            onNameChanged={(name) => this.changeFolderName(r, name)}
-                            moveRecordToFolder={this.moveRecordToFolder}
-                            moveToCollection={this.moveToCollection}
-                        />
-                    )}>
+                    <SubMenu
+                        className="folder"
+                        key={r.id}
+                        title={(
+                            <RecordFolder
+                                ref={ele => this.folderRefs[r.id] = ele}
+                                folder={{ ...r }}
+                                isOpen={isOpen}
+                                deleteRecord={() => deleteRecord(r.id, records[cid])}
+                                createRecord={this.createRecord}
+                                onNameChanged={(name) => this.changeFolderName(r, name)}
+                                moveRecordToFolder={this.moveRecordToFolder}
+                                moveToCollection={this.moveToCollection}
+                            />
+                        )}
+                    >
                         {this.loopRecords(children, cid, true)}
                     </SubMenu>
                 );
@@ -282,7 +288,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         }
         return (
             <ScriptDialog
-                title={`${currentOperatedCollection.name} - Common Pre Request Script`}
+                title={`${currentOperatedCollection.name} - ${LocalesString.get('Collection.CommonPreRequestScript')}`}
                 isOpen={isScriptDlgOpen}
                 onOk={this.saveCommonPreScript}
                 value={currentOperatedCollection.commonPreScript || ''}
@@ -298,15 +304,13 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             <Modal
                 title={ProjectSelectedDialogType.getTitle(projectSelectedDlgMode)}
                 visible={isProjectSelectedDlgOpen}
-                okText="OK"
-                cancelText="Cancel"
                 onOk={ProjectSelectedDialogType.isCreateMode(projectSelectedDlgMode) ? this.createCollection : this.shareCollection}
                 onCancel={() => this.setState({ ...this.state, isProjectSelectedDlgOpen: false })}
             >
                 {
                     ProjectSelectedDialogType.isCreateMode(projectSelectedDlgMode) ? (
                         <div>
-                            <div style={{ marginBottom: '8px' }}>Enter new collection name:</div>
+                            <div style={{ marginBottom: '8px' }}>{Msg('Collection.EnterNewCollectionName')}</div>
                             <Input spellCheck={false} ref={ele => this.newCollectionNameRef = ele} style={{ width: '100%', marginBottom: '8px' }} value={this.state.newCollectionName} onChange={e => this.setState({ ...this.state, newCollectionName: e.currentTarget.value })} />
                         </div>
                     ) : ''
@@ -317,11 +321,12 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                     allowClear={true}
                     style={{ width: '100%' }}
                     dropdownStyle={{ maxHeight: 500, overflow: 'auto' }}
-                    placeholder="Please select project"
+                    placeholder={LocalesString.get('Collection.SelectProject')}
                     treeDefaultExpandAll={true}
                     value={this.state.selectedProjectInDlg}
                     onChange={(e) => this.setState({ ...this.state, selectedProjectInDlg: e })}
-                    treeData={this.props.projects.map(t => ({ key: t.id, value: t.id, label: t.name }))} />
+                    treeData={this.props.projects.map(t => ({ key: t.id, value: t.id, label: t.name }))}
+                />
             </Modal>
         );
     }
@@ -363,7 +368,8 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                                                 editReqStrictSSL={() => this.props.updateCollection({ ...c, reqStrictSSL: !c.reqStrictSSL })}
                                                 editReqFollowRedirect={() => this.props.updateCollection({ ...c, reqFollowRedirect: !c.reqFollowRedirect })}
                                             />
-                                        )}>
+                                        )}
+                                    >
                                         {
                                             sortRecords.length === 0 ?
                                                 <div style={{ height: 20 }} /> :
@@ -383,7 +389,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     private get collectionHeader() {
         return (
             <div className="small-toolbar">
-                <span>Project:</span>
+                <span>{Msg('App.Project')}:</span>
                 <span>
                     <Dropdown overlay={this.getProjectMenu()} trigger={['click']} style={{ width: 200 }}>
                         <a className="ant-dropdown-link" href="#">
@@ -391,7 +397,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                         </a>
                     </Dropdown>
                 </span>
-                <Tooltip mouseEnterDelay={1} placement="bottom" title="create collection">
+                <Tooltip mouseEnterDelay={1} placement="bottom" title={Msg('Collection.Create')}>
                     <Button className="icon-btn" type="primary" icon="folder-add" onClick={this.addCollection} />
                 </Tooltip>
             </div>

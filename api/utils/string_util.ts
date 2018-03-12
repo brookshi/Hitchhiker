@@ -105,6 +105,14 @@ export class StringUtil {
         }
     }
 
+    static tryAddHttpPrefix(url: string) {
+        const pattern = /^http[s]?:\/\//gi;
+        if (!pattern.test(url)) {
+            return `http://${url}`;
+        }
+        return url;
+    }
+
     static fixedEncodeURIComponent(url: string) {
         return encodeURIComponent(url).replace(/[!'()*]/g, c => {
             return '%' + c.charCodeAt(0).toString(16);

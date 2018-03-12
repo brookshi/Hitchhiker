@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect, Dispatch, MapStateToPropsFactory } from 'react-redux';
-import { Input, Button, Dropdown, Select, Menu, Modal, TreeSelect, message } from 'antd';
+import { Button, Dropdown, Select, Menu, Modal, TreeSelect, message } from 'antd';
 import { HttpMethod } from '../../../common/http_method';
 import { getActiveRecordSelector, getActiveRecordStateSelector, getActiveEnvIdSelector, getCollectionTreeDataSelector } from './selector';
 import { actionCreator } from '../../../action/index';
@@ -13,6 +13,9 @@ import { TreeData } from 'antd/lib/tree-select/interface';
 import * as _ from 'lodash';
 import { DtoHeader } from '../../../../../api/interfaces/dto_header';
 import CodeSnippetDialog from '../../../components/code_snippet_dialog';
+import Msg from '../../../locales';
+import LoInput from '../../../locales/input';
+import LocalesString from '../../../locales/string';
 
 const DButton = Dropdown.Button as any;
 const Option = Select.Option;
@@ -94,7 +97,7 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         if (this.props.record.name.trim() !== '') {
             return true;
         }
-        message.warning('miss name', 3);
+        message.warning(Msg('Collection.MissName'), 3);
         return false;
     }
 
@@ -211,51 +214,51 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
 
         const menu = (
             <Menu onClick={this.onClick}>
-                <Menu.Item key="saveAs">Save As</Menu.Item>
-                <Menu.Item key="codeSnippet">Generate Code Snippet</Menu.Item>
+                <Menu.Item key="saveAs">{Msg('Common.SaveAs')}</Menu.Item>
+                <Menu.Item key="codeSnippet">{Msg('Collection.GenerateCodeSnippet')}</Menu.Item>
             </Menu>
         );
 
         return (
             <div className="ant-form-inline url-panel">
                 <div className="ant-row ant-form-item req-url">
-                    <Input
-                        placeholder="please enter url of this request"
+                    <LoInput
+                        placeholderId="Collection.EnterUrlForRequest"
                         size="large"
                         spellCheck={false}
                         onChange={(e) => this.onUrlChanged(e.currentTarget.value)}
                         addonBefore={this.getMethods(record.method)}
-                        value={record.url} />
+                        value={record.url}
+                    />
                 </div>
                 <div className="ant-row ant-form-item req-send">
                     <Button type="primary" icon="rocket" loading={isRequesting} onClick={this.sendRequest}>
-                        Send
+                        {Msg('Common.Send')}
                     </Button>
                 </div>
                 <div className="ant-row ant-form-item req-save" style={{ marginRight: 0 }}>
                     <DButton overlay={menu} onClick={this.onSave}>
-                        Save
+                        {Msg('Common.Save')}
                     </DButton>
                 </div>
 
                 <Modal
-                    title="Save Request"
+                    title={Msg('Common.Save')}
                     visible={this.state.isSaveDlgOpen || this.state.isSaveAsDlgOpen}
-                    okText="OK"
-                    cancelText="Cancel"
                     onOk={this.onSaveNew}
                     onCancel={() => this.setState({ ...this.state, isSaveDlgOpen: false, isSaveAsDlgOpen: false })}
                 >
-                    <div style={{ marginBottom: '8px' }}>Select collection/folder:</div>
+                    <div style={{ marginBottom: '8px' }}>{Msg('Collection.Select')}</div>
                     <TreeSelect
                         allowClear={true}
                         style={{ width: '100%' }}
                         dropdownStyle={{ maxHeight: 500, overflow: 'auto' }}
-                        placeholder="Please select collection / folder"
+                        placeholder={LocalesString.get('Collection.SelectCollectionFolder')}
                         treeDefaultExpandAll={true}
                         value={this.state.selectedFolderId}
                         onChange={(e) => this.setState({ ...this.state, selectedFolderId: e })}
-                        treeData={collectionTreeData} />
+                        treeData={collectionTreeData}
+                    />
                 </Modal>
                 <CodeSnippetDialog
                     record={record}

@@ -8,6 +8,7 @@ import AssertItem from './assert_item';
 import { AssertType, AssertTypeFuncMapping } from './assert_funcs';
 import { allEnvironment, noEnvironment } from '../../common/constants';
 import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
+import Msg from '../../locales';
 
 interface AssertJsonViewProps {
 
@@ -149,7 +150,7 @@ class AssertJsonView extends React.Component<AssertJsonViewProps, AssertJsonView
                 okText="OK"
                 cancelText="Cancel"
                 maskClosable={false}
-                title={<span><span>{this.getCurrentKey(keys)}</span><Button ghost={true} size="small" className="assert-item-add" type="primary" icon="plus" onClick={() => this.addNewAssertInfo(keys, type)} >New assert item</Button></span>}
+                title={<span><span>{this.getCurrentKey(keys)}</span><Button ghost={true} size="small" className="assert-item-add" type="primary" icon="plus" onClick={() => this.addNewAssertInfo(keys, type)} >{Msg('Component.NewAssertItem')}</Button></span>}
                 width={type !== 'boolean' ? 860 : 500}
                 onOk={() => this.completeEditAssert()}
                 onCancel={() => this.setState({ ...this.state, isEditDlgOpen: false })}

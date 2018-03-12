@@ -5,6 +5,7 @@ import * as shortId from 'shortid';
 import { ParameterType } from '../common/parameter_type';
 import * as _ from 'lodash';
 import { allParameter } from '../common/constants';
+import LocalesString from '../locales/string';
 
 export class StringUtil {
     static generateUID(): string {
@@ -102,7 +103,7 @@ export class StringUtil {
     }
 
     static checkEmail(email: string): boolean {
-        const pattern = /^[^@]+@[^\.@]+\.[a-zA-Z]+$/;
+        const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return pattern.test(email);
     }
 
@@ -120,13 +121,13 @@ export class StringUtil {
         const separator = ';';
         const emailArr = emails instanceof Array ? emails : emails.split(separator);
         if (!emailArr || emailArr.length === 0) {
-            return { success: false, message: 'at least one email', emails: [] };
+            return { success: false, message: LocalesString.get('Common.AtLeastOneEmail'), emails: [] };
         }
 
         const invalidEmailArr = emailArr.filter(e => !StringUtil.checkEmail(e));
         return {
             success: invalidEmailArr.length === 0,
-            message: `${invalidEmailArr.join(';')} is invalid`,
+            message: `${invalidEmailArr.join(';')} ${LocalesString.get('Common.invalid')}`,
             emails: emailArr.filter(e => StringUtil.checkEmail(e))
         };
     }
@@ -165,7 +166,7 @@ export class StringUtil {
             return { isValid: false, count, msg: e.toString() };
         }
         if (parameters !== '' && (!_.isPlainObject(paramObj) || !_.values<any>(paramObj).every(p => _.isArray(p)))) {
-            return { isValid: false, count, msg: 'Parameters must be a plain object and children must be a array.' };
+            return { isValid: false, count, msg: LocalesString.get('Collection.ParametersMustBeObj') };
         }
         const paramArray = _.values<Array<any>>(paramObj);
         if (parameterType === ParameterType.OneToOne) {
@@ -174,14 +175,14 @@ export class StringUtil {
                     count = paramArray[i].length;
                 }
                 if (paramArray[i].length !== count) {
-                    return { isValid: false, count, msg: `The length of OneToOne parameters' children arrays must be identical.` };
+                    return { isValid: false, count, msg: LocalesString.get('Collection.OneToOneTip') };
                 }
             }
         } else {
             count = paramArray.length === 0 ? 0 : paramArray.map(p => p.length).reduce((p, c) => p * c);
         }
 
-        return { isValid: true, count, msg: `${count} requests: ` };
+        return { isValid: true, count, msg: LocalesString.get('Collection.ParameterRequest', { length: count }) };
     }
 
     static getParameterArr(paramObj: any, parameterType: ParameterType): Array<any> {

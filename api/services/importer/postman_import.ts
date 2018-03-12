@@ -145,7 +145,7 @@ export class PostmanImport implements RequestsImport {
     }
 
     private parseBody(data: PostmanRecord): string {
-        return _.isString(data.rawModeData || data.data) ? (data.rawModeData || data.data) : '';
+        return _.isString(data.rawModeData || data.data) ? (data.rawModeData || data.data) : (_.isArray(data.data) && data.data.length > 0 ? JSON.stringify(data.data, null, 4) : '');
     }
 
     private parseHeaders(headers: string | DtoHeader[]): DtoHeader[] {

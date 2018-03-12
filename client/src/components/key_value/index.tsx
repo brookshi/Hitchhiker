@@ -43,7 +43,8 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
                     className="req-header"
                     type="textarea"
                     spellCheck={false}
-                    value={StringUtil.headersToString(headers)} onChange={(e) => this.onHeadersChanged(e)}
+                    value={StringUtil.headersToString(headers)}
+                    onChange={(e) => this.onHeadersChanged(e)}
                 />
             ) :
             (

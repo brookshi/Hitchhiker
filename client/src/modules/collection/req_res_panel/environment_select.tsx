@@ -11,6 +11,7 @@ import ScriptDialog from '../../../components/script_dialog';
 import { RecordState } from '../../../state/collection';
 import { CurlImport } from '../../../utils/curl_import';
 import { ConflictType } from '../../../common/conflict_type';
+import Msg from '../../../locales';
 
 const Option = Select.Option;
 
@@ -54,7 +55,7 @@ class EnvironmentSelect extends React.Component<EnvironmentSelectProps, Environm
 
     private tabMenu = (
         <Menu onClick={this.onClickMenu}>
-            <Menu.Item key="importCurl">new Request from cUrl</Menu.Item>
+            <Menu.Item key="importCurl">{Msg('Collection.NewRequestFromcURL')}</Menu.Item>
         </Menu>
     );
 
@@ -74,18 +75,18 @@ class EnvironmentSelect extends React.Component<EnvironmentSelectProps, Environm
         const { isImportDlgOpen } = this.state;
         return (
             <ScriptDialog
-                title="New request from cURL"
+                title={Msg('Collection.NewRequestFromcURL')}
                 isOpen={!!isImportDlgOpen}
                 editorType="text"
                 onOk={value => {
                     try {
                         const record = CurlImport.do(value);
                         if (!record) {
-                            message.warning(`parse cURL failed.`);
+                            message.warning(Msg('Collection.ParsecURLFailed'));
                             return;
                         }
                         const recordState: RecordState = {
-                            name: record.name || newRequestName,
+                            name: record.name || newRequestName(),
                             record,
                             isChanged: true,
                             isRequesting: false,
@@ -97,10 +98,10 @@ class EnvironmentSelect extends React.Component<EnvironmentSelectProps, Environm
                     } catch (err) {
                         message.warning(err.toString());
                     }
-                } }
+                }}
                 value=""
                 onCancel={() => this.setState({ ...this.state, isImportDlgOpen: false })}
-                />
+            />
         );
     }
 

@@ -12,6 +12,7 @@ import { newProjectName } from '../../common/constants';
 import ScriptDialog from '../../components/script_dialog';
 import { ProjectFileTypes, ProjectFileType } from '../../common/custom_type';
 import * as _ from 'lodash';
+import Msg from '../../locales';
 
 interface ProjectListProps {
 
@@ -54,7 +55,7 @@ interface ProjectListState {
 const createDefaultProject = (user: DtoUser) => {
     return {
         id: StringUtil.generateUID(),
-        name: newProjectName,
+        name: newProjectName(),
         owner: user,
         members: [user]
     };
@@ -121,7 +122,7 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
         const project = this.getProject(currentOperatedProject || '');
         return (
             <ScriptDialog
-                title={`${project ? project.name + ': ' : ''}Global Function of Tests`}
+                title={Msg('Project.GlobalFuncOfTest', { name: project ? project.name + ': ' : '' })}
                 isOpen={isGlobalFuncDlgOpen}
                 onOk={this.saveGlobalFunc}
                 value={this.getProjectGlobalFunc(currentOperatedProject || '')}
@@ -138,7 +139,7 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
                 type={projectFileType}
                 projectFiles={this.props.projectFiles}
                 isDlgOpen={isProjectFileDlgOpen}
-                title={projectFileType === ProjectFileTypes.lib ? 'Project Lib' : 'Project Data'}
+                title={Msg(projectFileType === ProjectFileTypes.lib ? 'Project.ProjectLibs' : 'Project.ProjectDatas')}
                 deleteFile={(pid, name, type) => this.props.deleteFile(pid, name, type)}
                 addFile={(pid, name, path, type) => this.props.addFile(pid, name, path, type)}
                 onClose={() => this.setState({ ...this.state, isProjectFileDlgOpen: false })}
@@ -150,8 +151,8 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
         return (
             <div>
                 <div className="small-toolbar">
-                    <span>Projects</span>
-                    <Tooltip mouseEnterDelay={1} placement="bottom" title="create project">
+                    <span>{Msg('Project.Projects')}</span>
+                    <Tooltip mouseEnterDelay={1} placement="bottom" title={Msg('Project.CreateProject')}>
                         <Button className="icon-btn project-add-btn" type="primary" icon="file-add" onClick={this.createProject} />
                     </Tooltip>
                 </div>

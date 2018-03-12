@@ -6,6 +6,8 @@ import { Menu, Icon, Badge } from 'antd';
 import { confirmDlg } from '../../../components/confirm_dialog/index';
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 import { StringUtil } from '../../../utils/string_util';
+import Msg from '../../../locales';
+import LocalesString from '../../../locales/string';
 
 interface RecordItemProps {
 
@@ -47,13 +49,13 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
         return (
             <Menu className="item_menu" onClick={this.onClickMenu}>
                 <Menu.Item key="duplicate">
-                    <Icon type="copy" /> Duplicate
+                    <Icon type="copy" /> {Msg('Common.Duplicate')}
                 </Menu.Item>
                 <Menu.Item key="delete">
-                    <Icon type="delete" /> Delete
+                    <Icon type="delete" /> {Msg('Common.Delete')}
                 </Menu.Item>
                 <Menu.Item key="history">
-                    <Icon type="clock-circle-o" /> History
+                    <Icon type="clock-circle-o" /> {Msg('Collection.History')}
                 </Menu.Item>
             </Menu>
         );
@@ -63,7 +65,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
         this[e.key]();
     }
 
-    delete = () => confirmDlg('record', () => this.props.deleteRecord());
+    delete = () => confirmDlg(LocalesString.get('Collection.DeleteRequest'), () => this.props.deleteRecord(), LocalesString.get('Collection.DeleteThisRequest'));
 
     duplicate = () => this.props.duplicateRecord();
 

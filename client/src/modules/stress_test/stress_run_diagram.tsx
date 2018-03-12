@@ -16,6 +16,7 @@ import 'echarts/lib/component/grid';
 import 'echarts/lib/component/title';
 import 'echarts/lib/component/legend';
 import { unknownName } from '../../common/constants';
+import LocalesString from '../../locales/string';
 
 interface StressRunDiagramProps {
 
@@ -49,7 +50,7 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
             splitArea: { show: false }
         }],
         yAxis: [{
-            name: 'ms',
+            name: LocalesString.get('Common.MicroSecond'),
             type: 'value',
             axisTick: { show: false },
             splitArea: { show: false },
@@ -68,7 +69,7 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
     private getProgressOption = (names: _.Dictionary<string>, data: StressReqProgress[], totalCount: number, doneCount: number, tps: number) => {
         return {
             title: {
-                text: `Total: ${totalCount}    Done: ${doneCount}    TPS: ${_.round(tps, 2)}`,
+                text: `${LocalesString.get('Common.Total')}: ${totalCount}    ${LocalesString.get('Common.Done')}: ${doneCount}    ${LocalesString.get('Common.TPS')}: ${_.round(tps, 2)}`,
                 left: 'center'
             },
             tooltip: {
@@ -105,7 +106,7 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
     }
 
     private getDurationOption = (names: string[], data: _.Dictionary<{ durations: Duration[], statistics?: StressResStatisticsTime }>) => {
-        _.pull(names, 'End');
+        _.pull(names, LocalesString.get('Common.End'));
         names = names.map((n, i) => `${i + 1}: ${n}`);
         const baseBarOption = {
             type: 'bar'
@@ -126,26 +127,26 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
             ...this.commonBarOption,
             xAxis: [{ ...this.commonBarOption.xAxis[0], data: names }],
             series: [{
-                name: 'Average DNS',
+                name: LocalesString.get('Common.AverageDNS'),
                 ...baseBarOption,
                 stack: 'average',
                 data: _.values(data).map(d => d.statistics ? _.round(d.statistics.averageDns, 2) : 0)
             }, {
-                name: 'Average Connect',
+                name: LocalesString.get('Common.AverageConnect'),
                 ...baseBarOption,
                 stack: 'average',
                 data: _.values(data).map(d => d.statistics ? _.round(d.statistics.averageConnect, 2) : 0)
             }, {
-                name: 'Average Request',
+                name: LocalesString.get('Common.AverageRequest'),
                 ...baseBarOption,
                 stack: 'average',
                 data: _.values(data).map(d => d.statistics ? _.round(d.statistics.averageRequest, 2) : 0)
             }, {
-                name: 'Max',
+                name: LocalesString.get('Common.Max'),
                 ...baseScatterOption,
                 data: _.values(data).map(d => d.statistics ? _.round(d.statistics.high, 2) : 0)
             }, {
-                name: 'Min',
+                name: LocalesString.get('Common.Min'),
                 ...baseScatterOption,
                 data: _.values(data).map(d => d.statistics ? _.round(d.statistics.low, 2) : 0)
             }]
@@ -161,11 +162,11 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
             }
         });
         const pieData = [
-            { name: 'Test Failed', value: _.round(_.values(data.testFailed).reduce((p, c) => p + c, 0), 2) },
-            { name: 'No Response', value: _.round(_.values(data.noRes).reduce((p, c) => p + c, 0), 2) },
-            { name: 'Server Error(500)', value: _.round(_.values(data.m500).reduce((p, c) => p + c, 0), 2) }
+            { name: LocalesString.get('Stress.TestFailed'), value: _.round(_.values(data.testFailed).reduce((p, c) => p + c, 0), 2) },
+            { name: LocalesString.get('Stress.NoResponse'), value: _.round(_.values(data.noRes).reduce((p, c) => p + c, 0), 2) },
+            { name: LocalesString.get('Stress.ServerError500'), value: _.round(_.values(data.m500).reduce((p, c) => p + c, 0), 2) }
         ];
-        pieData.push({ name: 'Success', value: totalCount - pieData.map(d => d.value).reduce((p, c) => p + c, 0) });
+        pieData.push({ name: LocalesString.get('Common.Success'), value: totalCount - pieData.map(d => d.value).reduce((p, c) => p + c, 0) });
         const baseBarOption = {
             type: 'bar'
         };
@@ -173,21 +174,21 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
             color: ['#FFB980', '#FA827D', '#E87C25', '#3FB0F0'],
             legend: {
                 top: 30,
-                data: ['Test Failed', 'No Response', 'Server Error(500)']
+                data: [LocalesString.get('Stress.TestFailed'), LocalesString.get('Stress.NoResponse'), LocalesString.get('Stress.ServerError500')]
             },
             ...this.commonBarOption,
             xAxis: [{ ...this.commonBarOption.xAxis[0], data: names }],
-            yAxis: [{ ...this.commonBarOption.yAxis[0], name: 'count' }],
+            yAxis: [{ ...this.commonBarOption.yAxis[0], name: LocalesString.get('Common.Count') }],
             series: [{
-                name: 'Test Failed',
+                name: LocalesString.get('Stress.TestFailed'),
                 ...baseBarOption,
                 data: ids.map(id => _.round(data.testFailed[id] || 0), 2)
             }, {
-                name: 'No Response',
+                name: LocalesString.get('Stress.NoResponse'),
                 ...baseBarOption,
                 data: ids.map(id => _.round(data.noRes[id] || 0), 2)
             }, {
-                name: 'Server Error(500)',
+                name: LocalesString.get('Stress.ServerError500'),
                 ...baseBarOption,
                 data: ids.map(id => _.round(data.m500[id] || 0), 2)
             }, {

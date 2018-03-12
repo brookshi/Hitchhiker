@@ -16,7 +16,8 @@
     "react-ace": "5.8.0",
     "react-copy-to-clipboard": "5.0.0",
     "react-dom": "15.5.4",
-    "react-json-tree": "^0.11.0",
+    "react-intl": "2.4.0",
+    "react-json-tree": "0.11.0",
     "react-perfect-scrollbar": "0.2.1",
     "react-redux": "5.0.5",
     "react-sortable-hoc": "0.6.3",
@@ -113,7 +114,8 @@
     "moduleFileExtensions": [
       "ts",
       "tsx",
-      "js"
+      "js",
+      "json"
     ],
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$"
   },

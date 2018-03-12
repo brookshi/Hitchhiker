@@ -15,10 +15,13 @@ import { actionCreator } from './action';
 import { UpdateLeftPanelType } from './action/ui';
 import LoginPage from './modules/login';
 import { RequestStatus } from './common/request_status';
-import Perf from 'react-addons-perf';
+// import Perf from 'react-addons-perf';
 import './style/App.less';
 import * as _ from 'lodash';
 import { toolBarWidth } from './common/constants';
+import Msg from './locales';
+import { injectIntl } from 'react-intl';
+import LocalesString from './locales/string';
 
 const { Header, Sider } = Layout;
 
@@ -44,7 +47,8 @@ class App extends React.Component<AppProps, AppState> {
 
   constructor(props: AppProps) {
     super(props);
-    (window as any).Perf = Perf;
+    LocalesString.intl = props['intl'];
+    // (window as any).Perf = Perf;
   }
 
   shouldComponentUpdate(nextProps: AppProps, nextState: AppState) {
@@ -102,32 +106,32 @@ class App extends React.Component<AppProps, AppState> {
               onClick={this.onClick}
             >
               <Menu.Item key="collection">
-                <Tooltip mouseEnterDelay={0} placement="right" title="Collections">
+                <Tooltip mouseEnterDelay={0} placement="right" title={Msg('App.Collections')}>
                   <Icon type="wallet" />
                 </Tooltip>
               </Menu.Item>
               <Menu.Item key="project">
-                <Tooltip mouseEnterDelay={0} placement="right" title="Project">
+                <Tooltip mouseEnterDelay={0} placement="right" title={Msg('App.Project')}>
                   <Icon type="solution" />
                 </Tooltip>
               </Menu.Item>
               <Menu.Item key="schedule">
-                <Tooltip mouseEnterDelay={0} placement="right" title="Scheduler">
+                <Tooltip mouseEnterDelay={0} placement="right" title={Msg('App.Scheduler')}>
                   <Icon type="schedule" />
                 </Tooltip>
               </Menu.Item>
               <Menu.Item key="stress_test">
-                <Tooltip mouseEnterDelay={0} placement="right" title="Stress test">
+                <Tooltip mouseEnterDelay={0} placement="right" title={Msg('App.StressTest')}>
                   <Icon type="code-o" />
                 </Tooltip>
               </Menu.Item>
               <Menu.Item key="api_doc">
-                <Tooltip mouseEnterDelay={0} placement="right" title="Api document">
+                <Tooltip mouseEnterDelay={0} placement="right" title={Msg('App.ApiDocument')}>
                   <Icon type="file-text" />
                 </Tooltip>
               </Menu.Item>
               <Menu.Item key="api_mock">
-                <Tooltip mouseEnterDelay={0} placement="right" title="Api mock">
+                <Tooltip mouseEnterDelay={0} placement="right" title={Msg('App.Mock')}>
                   <Icon type="api" />
                 </Tooltip>
               </Menu.Item>
@@ -164,4 +168,4 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): AppDispatchProps => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(App);
+)(injectIntl(App));

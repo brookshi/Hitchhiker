@@ -13,6 +13,7 @@ import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
 import { DtoCollection } from '../../../../api/interfaces/dto_collection';
 import StressEditDialog from './stress_edit_dialog';
 import StressItem from './stress_item';
+import Msg from '../../locales';
 
 interface StressListProps {
 
@@ -57,7 +58,7 @@ interface StressListState {
 const createDefaultStress: (user: DtoUser) => DtoStress = (user: DtoUser) => {
     return {
         id: StringUtil.generateUID(),
-        name: newStressName,
+        name: newStressName(),
         ownerId: user.id,
         collectionId: '',
         environmentId: noEnvironment,
@@ -123,8 +124,8 @@ class StressList extends React.Component<StressListProps, StressListState> {
         return (
             <div>
                 <div className="small-toolbar">
-                    <span>Stresses</span>
-                    <Tooltip mouseEnterDelay={1} placement="bottom" title="create stress test">
+                    <span>{Msg('Stress.Stresses')}</span>
+                    <Tooltip mouseEnterDelay={1} placement="bottom" title={Msg('Stress.CreateTip')}>
                         <Button
                             className="icon-btn stress-add-btn"
                             type="primary"

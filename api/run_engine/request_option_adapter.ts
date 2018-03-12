@@ -16,7 +16,7 @@ export class RequestOptionAdapter {
         }
         const { reqStrictSSL, reqFollowRedirect } = record.collection || { reqStrictSSL: false, reqFollowRedirect: false };
         const option: Options = {
-            url: StringUtil.fixedEncodeURI(record.url),
+            url: StringUtil.tryAddHttpPrefix(StringUtil.fixedEncodeURI(record.url)),
             method: record.method,
             headers: RecordService.formatHeaders(record),
             body: record.body,

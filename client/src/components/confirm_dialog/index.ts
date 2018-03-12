@@ -1,12 +1,12 @@
 import { Modal } from 'antd';
-import { StringUtil } from '../../utils/string_util';
+import LocalesString from '../../locales/string';
 
-export function confirmDlg(type: string, onOk: (func: Function) => any, action: string = 'delete', target: string = '') {
+export function confirmDlg(title: string | React.ReactNode, onOk: (func: Function) => any, action: string | React.ReactNode = 'delete') {
     Modal.confirm({
-        title: `${StringUtil.upperFirstAlphabet(action)} ${type}`,
-        content: `You want to ${action} this ${type}${target ? ': ' : ''}${target}, right?`,
+        title,
+        content: LocalesString.get('Common.ConfirmContent', { action }),
         okText: 'Yes',
         cancelText: 'No',
-        onOk: onOk,
+        onOk,
     });
 }

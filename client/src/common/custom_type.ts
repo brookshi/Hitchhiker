@@ -1,3 +1,4 @@
+import LocalesString from '../locales/string';
 
 export type ValidateStatus = 'success' | 'warning' | 'error' | 'validating';
 
@@ -12,13 +13,13 @@ export class ValidateType {
     static validating: ValidateStatus = 'validating';
 }
 
-export type KeyValueEditMode = 'Key Value Edit' | 'Bulk Edit';
+export type KeyValueEditMode = 'Key Value Edit' | 'Bulk Edit' | '键值对编辑' | '批量编辑';
 
 export class KeyValueEditType {
 
-    static keyValueEdit: KeyValueEditMode = 'Key Value Edit';
+    static keyValueEdit: KeyValueEditMode = LocalesString.get('Common.KeyValueEdit');
 
-    static bulkEdit: KeyValueEditMode = 'Bulk Edit';
+    static bulkEdit: KeyValueEditMode = LocalesString.get('Common.BulkEdit');
 
     static isBulkEdit(mode: KeyValueEditMode): boolean {
         return mode === KeyValueEditType.bulkEdit;
@@ -38,11 +39,11 @@ export class ProjectSelectedDialogType {
     static create: ProjectSelectedDialogMode = 'create';
 
     static getTitle(mode: ProjectSelectedDialogMode): string {
-        return ProjectSelectedDialogType.isCreateMode(mode) ? 'Create new collection' : 'Share collection';
+        return ProjectSelectedDialogType.isCreateMode(mode) ? LocalesString.get('Collection.CreateNew') : 'Share collection';
     }
 
     static getDescription(mode: ProjectSelectedDialogMode): string {
-        return ProjectSelectedDialogType.isCreateMode(mode) ? 'Select project for this collection:' : 'Share to project:';
+        return ProjectSelectedDialogType.isCreateMode(mode) ? LocalesString.get('Collection.SelectProjectForCollection') : 'Share to project:';
     }
 
     static isCreateMode(mode: ProjectSelectedDialogMode): boolean {

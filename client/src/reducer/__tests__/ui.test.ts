@@ -62,9 +62,9 @@ test('sync retry', () => {
 
     let oldState = { ...uiDefaultValue, syncState: { ...defaultState.uiState.syncState, message: undefined } };
 
-    let state = uiState(oldState, actionCreator(SyncRetryType, { errMsg: 'error msg', delay: 100, time: 2, syncItem: { type: 'sync2', url: 'url2', method: 'POST' } }));
+    let state = uiState(oldState, actionCreator(SyncRetryType, { errMsg: 'error msg', delay: 1000, time: 2, syncItem: { type: 'sync2', url: 'url2', method: 'POST' } }));
 
-    expect(state).toEqual({ ...uiDefaultValue, syncState: { ...defaultState.uiState.syncState, message: `sync2 failed, error msg, Retry 2th time after 100s` } });
+    expect(state).toEqual({ ...uiDefaultValue, syncState: { ...defaultState.uiState.syncState, message: `sync2 failed, error msg, Retry 2th time after 1s` } });
 });
 
 test('sync retry', () => {

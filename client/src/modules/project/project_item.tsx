@@ -5,6 +5,8 @@ import { Menu, Icon } from 'antd';
 import { confirmDlg } from '../../components/confirm_dialog/index';
 import { DtoProject } from '../../../../api/interfaces/dto_project';
 import { GlobalVar } from '../../utils/global_var';
+import Msg from '../../locales';
+import LocalesString from '../../locales/string';
 
 interface ProjectItemProps {
 
@@ -41,21 +43,21 @@ class ProjectItem extends React.Component<ProjectItemProps, ProjectItemState> {
                 {
                     this.props.isOwner ? (
                         <Menu.Item key="edit">
-                            <Icon type="edit" /> Rename
+                            <Icon type="edit" /> {Msg('Common.Rename')}
                         </Menu.Item>
                     ) : ''
                 }
                 <Menu.Item key="globalFunc">
-                    <Icon type="code-o" /> Global function
+                    <Icon type="code-o" /> {Msg('Project.GlobalFunction')}
                 </Menu.Item>
                 <Menu.Item key="projectLibs" disabled={!GlobalVar.instance.enableUploadProjectData}>
-                    <Icon type="file" /> Project libs
+                    <Icon type="file" /> {Msg('Project.ProjectLibs')}
                 </Menu.Item>
                 <Menu.Item key="projectDatas" disabled={!GlobalVar.instance.enableUploadProjectData}>
-                    <Icon type="file-text" /> Project datas
+                    <Icon type="file-text" /> {Msg('Project.ProjectDatas')}
                 </Menu.Item>
                 <Menu.Item key="delete">
-                    <Icon type="delete" /> {this.props.isOwner ? 'Disband' : 'Quit'}
+                    <Icon type="delete" /> {this.props.isOwner ? Msg('Project.Disband') : Msg('Project.Quit')}
                 </Menu.Item>
             </Menu>
         );
@@ -67,10 +69,9 @@ class ProjectItem extends React.Component<ProjectItemProps, ProjectItemState> {
 
     delete = () => {
         confirmDlg(
-            'project',
+            LocalesString.get('Project.DeleteProject', { action: this.props.isOwner ? LocalesString.get('Project.Disband') : LocalesString.get('Project.Quit') }),
             () => this.props.isOwner ? this.props.disbandProject() : this.props.quitProject(),
-            this.props.isOwner ? 'disband' : 'quit',
-            this.props.project.name
+            LocalesString.get('Project.DeleteThisProject', { action: this.props.isOwner ? LocalesString.get('Project.disband') : LocalesString.get('Project.quit'), name: this.props.project.name })
         );
     }
 
@@ -106,7 +107,7 @@ class ProjectItem extends React.Component<ProjectItemProps, ProjectItemState> {
                     icon={<Icon className="c-icon" type="solution" />}
                     name={name}
                     disableMenu={project.isMe}
-                    subName={<div>{`${count} member${count > 1 ? 's' : ''}`}</div>}
+                    subName={<div>{Msg('Project.MemberDesc', { count })}</div>}
                     menu={this.getMenu()}
                 />
             </div>

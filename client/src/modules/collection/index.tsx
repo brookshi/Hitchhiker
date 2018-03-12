@@ -46,7 +46,8 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
                     collapsible={true}
                     collapsedWidth="0.1"
                     collapsed={collapsed}
-                    onCollapse={this.onCollapse}>
+                    onCollapse={this.onCollapse}
+                >
                     <CollectionList />
                 </Sider>
                 <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />

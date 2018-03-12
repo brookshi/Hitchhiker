@@ -16,6 +16,7 @@ import { ScheduleRunState } from '../../state/schedule';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
 import { DtoCollection } from '../../../../api/interfaces/dto_collection';
+import Msg from '../../locales';
 
 interface ScheduleListProps {
 
@@ -64,7 +65,7 @@ interface ScheduleListState {
 const createDefaultSchedule: (user: DtoUser) => DtoSchedule = (user: DtoUser) => {
     return {
         id: StringUtil.generateUID(),
-        name: newScheduleName,
+        name: newScheduleName(),
         ownerId: user.id,
         collectionId: '',
         environmentId: noEnvironment,
@@ -181,9 +182,9 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                         checked={selectAll}
                         onChange={this.onSelectAll}
                     />
-                    <span style={{ marginLeft: -10 }}>Schedules</span>
+                    <span style={{ marginLeft: -10 }}>{Msg('Schedule.Schedulers')}</span>
                     {selectItems.length > 0 ? (
-                        <Tooltip mouseEnterDelay={1} placement="bottom" title="Run selected schedules">
+                        <Tooltip mouseEnterDelay={1} placement="bottom" title={Msg('Schedule.RunSchedulers')}>
                             <Button
                                 className="icon-btn"
                                 style={{ right: 42 }}
@@ -193,7 +194,7 @@ class ScheduleList extends React.Component<ScheduleListProps, ScheduleListState>
                             />
                         </Tooltip>
                     ) : ''}
-                    <Tooltip mouseEnterDelay={1} placement="bottom" title="Create schedule">
+                    <Tooltip mouseEnterDelay={1} placement="bottom" title={Msg('Schedule.Create')}>
                         <Button
                             className="icon-btn schedule-add-btn"
                             type="primary"

@@ -133,7 +133,8 @@ class Project extends React.Component<ProjectProps, ProjectState> {
                     collapsible={true}
                     collapsedWidth="0.1"
                     collapsed={collapsed}
-                    onCollapse={collapsedLeftPanel}>
+                    onCollapse={collapsedLeftPanel}
+                >
                     <ProjectList
                         activeProject={activeProject}
                         selectProject={(id) => selectProject(id)}

@@ -6,6 +6,7 @@ import { syncAction, actionCreator } from './index';
 import { HttpMethod } from '../common/http_method';
 import { Dispatch } from 'react-redux';
 import message from 'antd/lib/message';
+import LocalesString from '../locales/string';
 
 export const SaveStressType = 'save stress test';
 
@@ -55,12 +56,12 @@ export class StressWS {
             }
         };
         this.socket.onclose = (ev: CloseEvent) => {
-            console.error('socket closed, stress test server error');
-            console.log('will try to reconnect in 3s');
+            console.error(LocalesString.get('Stress.SocketError'));
+            console.log(LocalesString.get('Stress.Reconnect'));
             setTimeout(() => this.initStressWS(this.dispatch), 3000);
         };
         this.socket.onerror = (ev: Event) => {
-            console.error('stress test server error', ev);
+            console.error(LocalesString.get('Stress.ServerError'), ev);
         };
     }
 
@@ -80,7 +81,7 @@ export class StressWS {
 
     private checkSocket() {
         if (!this.socket || this.socket.readyState !== this.socket.OPEN) {
-            console.error('socket is closed, please refresh to connect');
+            console.error(LocalesString.get('Stress.SocketClose'));
             return false;
         }
         return true;

@@ -173,7 +173,7 @@ export class RecordService {
                 .where('record.id=:id', { id: id })
                 .execute();
         });
-        return { success: true, message: Message.recordDeleteSuccess };
+        return { success: true, message: Message.get('recordDeleteSuccess') };
     }
 
     private static adjustHeaders(record: Record) {
@@ -206,12 +206,12 @@ export class RecordService {
                 .update(Record, { 'collectionId': collectionId, 'pid': folderId, 'sort': newSort })
                 .execute();
         });
-        return { success: true, message: Message.recordSortSuccess };
+        return { success: true, message: Message.get('recordSortSuccess') };
     }
 
     private static async save(record: Record, user: User): Promise<ResObject> {
         if (!record.name) {
-            return { success: false, message: Message.recordCreateFailedOnName };
+            return { success: false, message: Message.get('recordCreateFailedOnName') };
         }
         if (!record.id) {
             record.id = StringUtil.generateUID();
@@ -223,7 +223,7 @@ export class RecordService {
                 await manager.save(RecordService.createRecordHistory(record, user));
             }
         });
-        return { success: true, message: Message.recordSaveSuccess };
+        return { success: true, message: Message.get('recordSaveSuccess') };
     }
 
     private static toTree(records: Record[], parent?: Record, pushedRecord?: Array<string>): Record[] {

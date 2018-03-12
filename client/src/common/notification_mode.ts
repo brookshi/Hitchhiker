@@ -1,3 +1,4 @@
+import LocalesString from '../locales/string';
 
 export enum NotificationMode {
 
@@ -12,13 +13,13 @@ export enum NotificationMode {
 
 export class NotificationStr {
 
-    static none = 'None';
+    static none = LocalesString.get('Common.None');
 
-    static me = 'Me';
+    static me = LocalesString.get('Common.Me');
 
-    static project = 'Project';
+    static project = LocalesString.get('Common.Project');
 
-    static custom = 'Custom';
+    static custom = LocalesString.get('Common.Custom');
 
     static convert(mode: NotificationMode) {
         switch (mode) {

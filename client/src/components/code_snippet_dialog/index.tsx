@@ -7,6 +7,7 @@ import { CodeSnippetLang, CodeSnippetType } from '../../common/code_snippet_type
 import HTTPSnippet from 'httpsnippet';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import * as _ from 'lodash';
+import Msg from '../../locales';
 import './style/index.less';
 
 interface CodeSnippetDialogProps {
@@ -85,13 +86,13 @@ class CodeSnippetDialog extends React.Component<CodeSnippetDialogProps, CodeSnip
 
         return (
             <Modal
-                title="Code Snippets"
+                title={Msg('Component.CodeSnippets')}
                 visible={isOpen}
                 maskClosable={true}
                 width={800}
                 onCancel={onCancel}
                 footer={null}
-                >
+            >
                 <div>
                     <div className="codesnippet-toolbar">
                         <Dropdown overlay={this.getMenu()}>
@@ -101,7 +102,7 @@ class CodeSnippetDialog extends React.Component<CodeSnippetDialogProps, CodeSnip
                         </Dropdown>
                         <CopyToClipboard className="codesnippet-copy" text={code} onCopy={() => message.success('code copied!', 3)}>
                             <Button type="primary" icon="copy" >
-                                Copy to Clipboard
+                                {Msg('Common.CopyToClipboard')}
                             </Button>
                         </CopyToClipboard>
                     </div>

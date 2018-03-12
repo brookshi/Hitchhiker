@@ -4,7 +4,7 @@ import Editor from '../editor';
 
 interface ScriptDialogProps {
 
-    title: string;
+    title: string | React.ReactNode;
 
     isOpen: boolean;
 
@@ -46,9 +46,7 @@ class ScriptDialog extends React.Component<ScriptDialogProps, ScriptDialogState>
                 title={title}
                 visible={isOpen}
                 maskClosable={false}
-                okText="Save"
                 width={800}
-                cancelText="Cancel"
                 onOk={() => onOk(this.state.code)}
                 onCancel={onCancel}
             >

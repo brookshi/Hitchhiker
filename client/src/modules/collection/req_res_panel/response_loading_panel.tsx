@@ -5,6 +5,8 @@ import RequestManager from '../../../utils/request_manager';
 import { State } from '../../../state/index';
 import { actionCreator } from '../../../action/index';
 import { CancelRequestType } from '../../../action/record';
+import Msg from '../../../locales';
+import LocalesString from '../../../locales/string';
 
 interface ResponseLoadingPanelStateProps {
 
@@ -31,9 +33,9 @@ class ResponseLoadingPanel extends React.Component<ResponseLoadingPanelProps, Re
     public render() {
         return (
             <div className="res-loading-content">
-                <Spin tip="Loading..." />
+                <Spin tip={`${LocalesString.get('Common.Loading')}...`} />
                 <div>
-                    <Button onClick={this.cancelRequest}>Cancel Request</Button>
+                    <Button onClick={this.cancelRequest}>{Msg('Collection.CancelRequest')}</Button>
                 </div>
             </div>
         );

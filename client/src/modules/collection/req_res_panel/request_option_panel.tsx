@@ -24,6 +24,7 @@ import { RequestStatus } from '../../../common/request_status';
 import AssertJsonView from '../../../components/assert_json_view';
 import { DtoAssert } from '../../../../../api/interfaces/dto_assert';
 import { DtoEnvironment } from '../../../../../api/interfaces/dto_environment';
+import Msg from '../../../locales';
 
 const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
@@ -113,7 +114,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
         const currParam = arr[Number.parseInt(currentParam)] ? currentParam : allParameter;
         return (
             <Select className="req-res-tabs-param-title-select" value={currParam} onChange={this.onCurrentParamChanged}>
-                <Option key={allParameter} value={allParameter}>allParameter</Option>
+                <Option key={allParameter} value={allParameter}>{Msg('Collection.AllParameter')}</Option>
                 {
                     arr.map((e, i) => (
                         <Option key={i.toString()} value={i.toString()}>
@@ -170,8 +171,9 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                 activeKey={activeTabKey}
                 animated={false}
                 onChange={this.onTabChanged}
-                tabBarExtraContent={<RequestTabExtra />}>
-                <TabPane tab={nameWithTag('Headers', headers ? (Math.max(0, headers.length)).toString() : '')} key="headers">
+                tabBarExtraContent={<RequestTabExtra />}
+            >
+                <TabPane tab={nameWithTag(Msg('Collection.Headers'), headers ? (Math.max(0, headers.length)).toString() : '')} key="headers">
                     <KeyValueList
                         mode={headersEditMode}
                         onHeadersChanged={this.onHeadersChanged}
@@ -181,52 +183,67 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                         favHeaders={favHeaders}
                     />
                 </TabPane>
-                <TabPane tab={(
-                    <Badge style={normalBadgeStyle} dot={!!parameters && parameters.length > 0} count="" >
-                        Parameters
-                    </Badge>
-                )} key="parameters">
+                <TabPane
+                    tab={(
+                        <Badge style={normalBadgeStyle} dot={!!parameters && parameters.length > 0} count="" >
+                            {Msg('Collection.Parameters')}
+                        </Badge>
+                    )}
+                    key="parameters"
+                >
                     <span className="req-res-tabs-param-title">
                         <RadioGroup onChange={v => this.props.changeRecord({ 'parameterType': (v.target as any).value })} value={parameterType}>
                             <Radio value={ParameterType.ManyToMany}>{ParameterType[ParameterType.ManyToMany]}</Radio>
                             <Radio value={ParameterType.OneToOne}>{ParameterType[ParameterType.OneToOne]}</Radio>
                         </RadioGroup>
                         <span>
-                            {isValid ? `${paramArr.length} requests: ` : msg}
+                            {isValid ? Msg('Collection.ParameterRequest') : msg}
                             {isValid ? this.currentParam(paramArr) : ''}
                         </span>
                     </span>
                     <Editor type="json" fixHeight={true} height={258} value={parameters || ''} onChange={v => this.props.changeRecord({ 'parameters': v })} />
                 </TabPane>
-                <TabPane tab={(
-                    <Badge style={normalBadgeStyle} dot={!!body && body.length > 0} count="" >
-                        Body
-                    </Badge>
-                )} key="body">
+                <TabPane
+                    tab={(
+                        <Badge style={normalBadgeStyle} dot={!!body && body.length > 0} count="" >
+                            {Msg('Collection.Body')}
+                        </Badge>
+                    )}
+                    key="body"
+                >
                     <Editor ref={ele => this.bodyEditor = ele} type={bodyTypes[this.currentBodyType()]} fixHeight={true} height={300} value={body} onChange={v => this.props.changeRecord({ 'body': v })} />
                 </TabPane>
-                <TabPane tab={(
-                    <Badge style={normalBadgeStyle} dot={!!prescript && prescript.length > 0} count="">
-                        Pre Request Script
-                    </Badge>
-                )} key="prescript">
+                <TabPane
+                    tab={(
+                        <Badge style={normalBadgeStyle} dot={!!prescript && prescript.length > 0} count="">
+                            {Msg('Collection.PreRequestScript')}
+                        </Badge>
+                    )}
+                    key="prescript"
+                >
                     <Editor type="javascript" height={300} fixHeight={true} value={prescript || ''} onChange={v => this.props.changeRecord({ 'prescript': v })} />
                 </TabPane>
-                <TabPane tab={(
-                    <Badge style={normalBadgeStyle} dot={!!test && test.length > 0} count="">
-                        Test
-                    </Badge>
-                )} key="test">
+                <TabPane
+                    tab={(
+                        <Badge style={normalBadgeStyle} dot={!!test && test.length > 0} count="">
+                            {Msg('Collection.Test')}
+                        </Badge>
+                    )}
+                    key="test"
+                >
                     <Editor type="javascript" height={300} fixHeight={true} value={test} onChange={v => this.props.changeRecord({ 'test': v })} />
                 </TabPane>
-                <TabPane tab={(
-                    <Badge style={normalBadgeStyle} dot={!!assertInfos && Object.keys(assertInfos).length > 0} count="">
-                        Assert base on UI
-                    </Badge>
-                )} key="assert">
+                <TabPane
+                    tab={(
+                        <Badge style={normalBadgeStyle} dot={!!assertInfos && Object.keys(assertInfos).length > 0} count="">
+                            {Msg('Collection.AssertBaseOnUI')}
+                        </Badge>
+                    )}
+                    key="assert"
+                >
                     {isResValid ?
                         <AssertJsonView height={300} envs={envs} currentEnv={currentEnv} data={obj} assertInfos={assertInfos || {}} onAssertInfosChanged={infos => this.props.changeRecord({ 'assertInfos': infos })} />
-                        : <div className="req-opt-assert-invalid">There is no valid response, please ensure response exist with json format.</div>
+                        : <div className="req-opt-assert-invalid">{Msg('Collection.NoValidResponseForAssert')}</div>
                     }
                 </TabPane>
             </Tabs>

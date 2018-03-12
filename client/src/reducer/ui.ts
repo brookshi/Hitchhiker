@@ -6,6 +6,7 @@ import { SyncType, SyncSuccessType, SyncRetryType, ResetSyncMsgType, SyncFailedT
 import { RemoveTabType, SaveRecordType } from '../action/record';
 import { SyncUserDataType } from '../action/user';
 import { GlobalVar } from '../utils/global_var';
+import LocalesString from '../locales/string';
 
 export function uiState(state: UIState = uiDefaultValue, action: any): UIState {
     return combineReducers<UIState>({
@@ -48,7 +49,14 @@ function syncState(state: SyncState = syncDefaultValue, action: any): SyncState 
         }
         case SyncRetryType: {
             const { errMsg, delay, time, syncItem } = action.value;
-            return { ...state, message: `${syncItem.type} failed, ${errMsg}, Retry ${time}th time after ${delay}s` };
+            return {
+                ...state, message: LocalesString.get('Common.RetryMessage', {
+                    type: syncItem.type,
+                    errMsg,
+                    time,
+                    delay: delay / 1000
+                })
+            };
         }
         case SyncFailedType: {
             return { ...state, syncCount: state.syncCount - 1, message: action.value };

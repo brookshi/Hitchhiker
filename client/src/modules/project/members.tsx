@@ -4,6 +4,8 @@ import { confirmDlg } from '../../components/confirm_dialog/index';
 import { StringUtil } from '../../utils/string_util';
 import EditableCell from '../../components/editable_cell';
 import * as ReactDOM from 'react-dom';
+import Msg from '../../locales';
+import LocalesString from '../../locales/string';
 
 interface Member {
 
@@ -60,10 +62,9 @@ class Members extends React.Component<MembersProps, MembersState> {
 
     private removeUser = (member: Member) => {
         confirmDlg(
-            'user',
+            LocalesString.get('Project.RemoveUser'),
             () => this.props.removeUser(this.props.activeProject, member.id),
-            'remove',
-            member.name
+            LocalesString.get('Project.RemoveThisUser')
         );
     }
 
@@ -110,7 +111,7 @@ class Members extends React.Component<MembersProps, MembersState> {
     public render() {
         return (
             <div>
-                <div className="project-title">Members
+                <div className="project-title">{Msg('Project.Members')}
                     <Button
                         className="project-create-btn"
                         type="primary"
@@ -119,7 +120,7 @@ class Members extends React.Component<MembersProps, MembersState> {
                         ghost={true}
                         onClick={this.clickInviteBtn}
                     >
-                        Invite Members
+                        {Msg('Project.InviteMembers')}
                     </Button>
                 </div>
                 <MemberTable
@@ -131,17 +132,17 @@ class Members extends React.Component<MembersProps, MembersState> {
                     pagination={false}
                 >
                     <MemberColumn
-                        title="Name"
+                        title={Msg('Project.Name')}
                         dataIndex="name"
                         key="name"
                     />
                     <MemberColumn
-                        title="Email"
+                        title={Msg('Project.Email')}
                         dataIndex="email"
                         key="email"
                     />
                     <MemberColumn
-                        title="Localhost"
+                        title={Msg('Project.Localhost')}
                         dataIndex="localhost"
                         key="localhost"
                         width={170}
@@ -155,7 +156,7 @@ class Members extends React.Component<MembersProps, MembersState> {
                         }
                     />
                     <MemberColumn
-                        title="IsOwner"
+                        title={Msg('Project.IsOwner')}
                         dataIndex="isOwner"
                         key="isOwner"
                         width={120}
@@ -164,7 +165,7 @@ class Members extends React.Component<MembersProps, MembersState> {
                     {
                         this.props.isOwner ? (
                             <MemberColumn
-                                title="Action"
+                                title={Msg('Project.Action')}
                                 key="action"
                                 width={240}
                                 render={(text, record) =>
@@ -173,8 +174,9 @@ class Members extends React.Component<MembersProps, MembersState> {
                                             <span>
                                                 <a
                                                     href="#"
-                                                    onClick={() => this.removeUser(record)}>
-                                                    Delete
+                                                    onClick={() => this.removeUser(record)}
+                                                >
+                                                    {Msg('Common.Delete')}
                                                 </a>
                                             </span>
                                         )
@@ -183,14 +185,13 @@ class Members extends React.Component<MembersProps, MembersState> {
                         ) : ''
                     }
                 </MemberTable>
-                <Modal title="Invite members"
+                <Modal
+                    title={Msg('Project.InviteMembers')}
                     visible={this.state.isInviteDlgOpen}
                     onCancel={() => this.setState({ ...this.state, isInviteDlgOpen: false })}
-                    okText="Invite"
-                    cancelText="Cancel"
                     onOk={this.inviteMember}
                 >
-                    <div style={{ marginBottom: '8px' }}>Please input members' emails split with ';':</div>
+                    <div style={{ marginBottom: '8px' }}>{Msg('Project.InviterDesc')}</div>
                     <Select
                         ref={ele => this.inviteEmailInput = ele}
                         mode="tags"

@@ -104,13 +104,13 @@ export class ScheduleService {
         const schedule = ScheduleService.fromDto(dtoSchedule);
         schedule.ownerId = owner.id;
         await ScheduleService.save(schedule);
-        return { message: Message.scheduleCreateSuccess, success: true };
+        return { message: Message.get('scheduleCreateSuccess'), success: true };
     }
 
     static async update(dtoSchedule: DtoSchedule): Promise<ResObject> {
         const schedule = ScheduleService.fromDto(dtoSchedule);
         await ScheduleService.save(schedule);
-        return { message: Message.scheduleUpdateSuccess, success: true };
+        return { message: Message.get('scheduleUpdateSuccess'), success: true };
     }
 
     static async delete(id: string): Promise<ResObject> {
@@ -130,7 +130,7 @@ export class ScheduleService {
             .where('id=:id', { id })
             .delete()
             .execute();
-        return { success: true, message: Message.scheduleDeleteSuccess };
+        return { success: true, message: Message.get('scheduleDeleteSuccess') };
     }
 
     static checkScheduleNeedRun(schedule: Schedule): boolean {

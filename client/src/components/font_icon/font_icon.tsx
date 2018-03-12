@@ -15,7 +15,10 @@ class FontIcon extends React.Component<FontIconProps, FontIconState> {
                 className="font-icon"
                 style={{
                     color: this.props.color
-                }}>{this.props.text}</span>
+                }}
+            >
+                {this.props.text}
+            </span>
         );
     }
 }

@@ -1,7 +1,7 @@
 import './style/index.less';
 import React from 'react';
 
-export const nameWithTag = (name: string, tag: string, type: 'normal' | 'warning' = 'normal') => (
+export const nameWithTag = (name: string | React.ReactNode, tag: string, type: 'normal' | 'warning' = 'normal') => (
     <div>
         <span>{name}</span>
         {

@@ -1,12 +1,14 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { Form, Input, Alert } from 'antd';
+import { Form, Alert } from 'antd';
 import { ValidateStatus, ValidateType } from '../../../common/custom_type';
 import { actionCreator } from '../../../action/index';
 import { UpdateDisplayRecordPropertyType } from '../../../action/record';
 import { getActiveRecordSelector, getActiveRecordStateSelector } from './selector';
 import { ConflictType } from '../../../common/conflict_type';
 import { ShowTimelineType } from '../../../action/ui';
+import Msg from '../../../locales';
+import LoInput from '../../../locales/input';
 
 const FItem = Form.Item;
 
@@ -62,8 +64,8 @@ class RequestNamePanel extends React.Component<RequestNamePanelProps, RequestNam
     private getConflictModifyMsg = () => {
         return (
             <div>
-                <span>This request had been modified by someone else.</span>
-                <span style={{ marginLeft: 12 }}><a onClick={() => this.props.showTimeLine(this.props.activeKey)}>View changes</a></span>
+                <span>{Msg('Collection.HasModified')}</span>
+                <span style={{ marginLeft: 12 }}><a onClick={() => this.props.showTimeLine(this.props.activeKey)}>{Msg('Collection.ViewChanges')}</a></span>
             </div>
         );
     }
@@ -78,7 +80,7 @@ class RequestNamePanel extends React.Component<RequestNamePanelProps, RequestNam
             <div>
                 {
                     currentConflictType === ConflictType.delete ?
-                        <Alert message="This request had been delete in remote." type="error" showIcon={true} closable={true} /> : (
+                        <Alert message={Msg('Collection.HasDelete')} type="error" showIcon={true} closable={true} /> : (
                             currentConflictType === ConflictType.modify ?
                                 <Alert message={this.getConflictModifyMsg()} type="warning" showIcon={true} closable={true} /> : ''
                         )
@@ -90,11 +92,12 @@ class RequestNamePanel extends React.Component<RequestNamePanelProps, RequestNam
                         hasFeedback={true}
                         validateStatus={nameValidateStatus}
                     >
-                        <Input
-                            placeholder="please enter name for this request"
+                        <LoInput
+                            placeholderId="Collection.EnterNameForRequest"
                             spellCheck={false}
                             onChange={(e) => this.onNameChanged(e.currentTarget.value)}
-                            value={name} />
+                            value={name}
+                        />
                     </FItem>
                 </Form>
             </div>

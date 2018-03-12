@@ -1,9 +1,11 @@
 import React from 'react';
 import { DtoAssert } from '../../../../api/interfaces/dto_assert';
-import { Select, Input } from 'antd';
+import { Select } from 'antd';
 import { AssertType, AssertTypeFuncMapping } from './assert_funcs';
 import { allEnvironment, noEnvironment } from '../../common/constants';
 import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
+import Msg from '../../locales';
+import LoInput from '../../locales/input';
 
 const Option = Select.Option;
 
@@ -63,9 +65,9 @@ class AssertItem extends React.Component<AssertItemProps, AssertItemState> {
             <span className="assert-item">
                 <span className="assert-item-env">{this.generateEnvSelect()}</span>
                 <span className="assert-item-func">{this.generateFunctionSelect()}</span>
-                {needValue ? <span className="assert-item-value"><Input placeholder="Value" defaultValue={assertInfo.value} value={assertInfo.value} onChange={e => this.onPropertyChanged('value', e.currentTarget.value)} /></span> : ''}
-                <span className="assert-item-symbol"> assert </span>
-                <span className="assert-item-name"><Input placeholder="statement" defaultValue={assertInfo.name} value={assertInfo.name} onChange={e => this.onPropertyChanged('name', e.currentTarget.value)} /></span>
+                {needValue ? <span className="assert-item-value"><LoInput placeholderId="Common.Value" defaultValue={assertInfo.value} value={assertInfo.value} onChange={e => this.onPropertyChanged('value', e.currentTarget.value)} /></span> : ''}
+                <span className="assert-item-symbol"> {Msg('Component.assert')} </span>
+                <span className="assert-item-name"><LoInput placeholderId="Component.statement" defaultValue={assertInfo.name} value={assertInfo.name} onChange={e => this.onPropertyChanged('name', e.currentTarget.value)} /></span>
             </span>
         );
     }

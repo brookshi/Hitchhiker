@@ -13,7 +13,7 @@ export function getDefaultRecord(isInit: boolean = false): DtoRecord {
     return {
         id: isInit ? newRecordFlag : `${newRecordFlag}${StringUtil.generateUID()}`,
         category: RecordCategory.record,
-        name: newRequestName,
+        name: newRequestName(),
         collectionId: '',
         parameterType: ParameterType.ManyToMany,
         headers: []
@@ -23,7 +23,7 @@ export function getDefaultRecord(isInit: boolean = false): DtoRecord {
 export const getNewRecordState: () => RecordState = () => {
     const newRecord = getDefaultRecord();
     return {
-        name: newRecord.name || newRequestName,
+        name: newRecord.name || newRequestName(),
         record: newRecord,
         isChanged: false,
         isRequesting: false,
@@ -99,7 +99,7 @@ export const displayRecordsDefaultValue: DisplayRecordsState = {
     recordStates:
     {
         [newRecordFlag]: {
-            name: newRequestName,
+            name: newRequestName(),
             record: getDefaultRecord(true),
             isChanged: false,
             isRequesting: false,

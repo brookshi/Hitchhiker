@@ -56,14 +56,18 @@ export class HAR {
         let text = this.record.body || '';
         const params = new Array<HARNameValue>();
         if (mimeType === 'application/x-www-form-urlencoded' && text) {
-            text = decodeURIComponent(text.replace('+', '%20'));
-            text.split('&').forEach(pair => {
-                const [name, value] = pair.split('=');
-                params.push({ name, value });
-            });
+            try {
+                text = decodeURIComponent(text.replace('+', '%20'));
+                text.split('&').forEach(pair => {
+                    const [name, value] = pair.split('=');
+                    params.push({ name, value });
+                });
+            } catch (e) {
+                console.error(`generate post data error: ${e}`);
+            }
         }
         this.postData = {
-            params: [],
+            params,
             mimeType,
             text
         };

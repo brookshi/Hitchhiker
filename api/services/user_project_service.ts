@@ -31,21 +31,21 @@ export class UserProjectService {
             user.projects.splice(projectIndex, 1);
         }
         await UserService.save(user);
-        return { success: true, message: Message.projectQuitSuccess };
+        return { success: true, message: Message.get('projectQuitSuccess') };
     }
 
     static async disbandProject(info: DtoProjectQuit): Promise<ResObject> {
         const project = await ProjectService.getProject(info.projectId, true, false, false, false);
         if (!project) {
-            return { success: false, message: Message.projectNotExist };
+            return { success: false, message: Message.get('projectNotExist') };
         }
         if (project.owner.id !== info.userId) {
-            return { success: false, message: Message.projectDisbandNeedOwner };
+            return { success: false, message: Message.get('projectDisbandNeedOwner') };
         }
         project.owner = undefined;
         await ProjectService.save(project);
         await ProjectService.delete(project.id);
-        return { success: true, message: Message.projectDisbandSuccess };
+        return { success: true, message: Message.get('projectDisbandSuccess') };
     }
 
     static async getUserInfo(user: User): Promise<UserData> {
