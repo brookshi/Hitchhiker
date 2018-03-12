@@ -3,6 +3,7 @@ import { UserInfoState, userInfoDefaultValue } from '../state/user';
 import { RequestStatus } from '../common/request_status';
 import { SessionInvalidType } from '../action/index';
 import { GlobalVar } from '../utils/global_var';
+import LocalesString from '../locales/string';
 
 export function userState(state: UserInfoState = userInfoDefaultValue, action: any): UserInfoState {
     switch (action.type) {
@@ -38,7 +39,7 @@ export function userState(state: UserInfoState = userInfoDefaultValue, action: a
             return { ...state, registerState: { status: RequestStatus.none, message: '' } };
         }
         case FindPasswordSuccessType: {
-            return { ...state, findPasswordState: { status: RequestStatus.success, message: 'send a mail include a new password to you, please check' } };
+            return { ...state, findPasswordState: { status: RequestStatus.success, message: LocalesString.get('FindPassword.SendANew') } };
         }
         case FindPasswordFailedType: {
             return { ...state, findPasswordState: { status: RequestStatus.failed, message: action.value } };
@@ -47,7 +48,7 @@ export function userState(state: UserInfoState = userInfoDefaultValue, action: a
             return { ...state, findPasswordState: { status: RequestStatus.pending } };
         }
         case ChangePasswordSuccessType: {
-            return { ...state, changePasswordState: { status: RequestStatus.success, message: 'change password success!' } };
+            return { ...state, changePasswordState: { status: RequestStatus.success, message: LocalesString.get('FindPassword.ChangePwdSuccess') } };
         }
         case ChangePasswordFailedType: {
             return { ...state, changePasswordState: { status: RequestStatus.failed, message: action.value } };
@@ -56,7 +57,7 @@ export function userState(state: UserInfoState = userInfoDefaultValue, action: a
             return { ...state, changePasswordState: { status: RequestStatus.pending, message: '' } };
         }
         case SessionInvalidType: {
-            return { ...state, loginState: { status: RequestStatus.failed, message: 'session is invalid, please login' } };
+            return { ...state, loginState: { status: RequestStatus.failed, message: LocalesString.get('FindPassword.SessionInvalid') } };
         }
         default:
             return state;

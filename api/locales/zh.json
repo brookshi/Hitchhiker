@@ -16,7 +16,7 @@
     "userChangePwdSuccess": "更改密码成功",
     "findPwdSuccess": "新密码已经发送到您的邮箱",
     "regConfirmFailedUserNotExist": "校验失败，用户不存在",
-    "regConfirmFailedUserConfirmed": "user was confirmed",
+    "regConfirmFailedUserConfirmed": "用户已经校验过了",
     "regConfirmFailedExpired": "校验Url已经过期",
     "regConfirmFailedInvalid": "无效的校验Url",
     "regConfirmSuccess": "账号激活成功，请登录",
