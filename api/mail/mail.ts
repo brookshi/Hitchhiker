@@ -155,10 +155,10 @@ export class Mail {
         };
         return new Promise((resolve, reject) => Mail.transporter.sendMail(mailOptions, (err, info) => {
             if (err) {
-                Log.error(err.message);
+                Log.error(`mail: ${err.message}`);
                 reject(err);
             } else {
-                Log.info('send mail success');
+                Log.info('mail: send mail success');
                 resolve();
             }
         }));

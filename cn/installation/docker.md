@@ -1,6 +1,6 @@
 docker使用的是docker-compose来安装，会自动下载两个image：hitchhiker和mysql，基本上按命令执行即可，如果需要配置，可以参考：[配置文件](configuration.md), 环境变量可以写到docker-compose.yml里
 
-国内用户请使用阿里云的镜像 hitchhiker-cn：registry.cn-hangzhou.aliyuncs.com/brook/hitchhiker-cn:v0.9
+国内用户请使用阿里云的镜像 hitchhiker-cn：registry.cn-hangzhou.aliyuncs.com/brook/hitchhiker-cn:v0.10
 
 #### 参考下面命令，一步一步部署 (基于ubuntu，其他系统类似):
 ``` bash
@@ -21,7 +21,7 @@ curl -O https://raw.githubusercontent.com/brookshi/Hitchhiker/release/deploy/doc
 
 # 编辑 docker-compose.yml， 把localhost换成你机器的局域网ip，如果是只有本机一个人用那就localhost也可以
 sudo vim docker-compose.yml
-# 修改完成后，保存退出 (国内用户改image地址：registry.cn-hangzhou.aliyuncs.com/brook/hitchhiker-cn:v0.9， 以及写入环境变量配置hitchhiker以及mysql)
+# 修改完成后，保存退出 (国内用户改image地址：registry.cn-hangzhou.aliyuncs.com/brook/hitchhiker-cn:v0.10， 以及写入环境变量配置hitchhiker以及mysql)
 ...
 
 # 执行docker-compose up安装镜像
@@ -36,7 +36,7 @@ curl http://ip:8080/
 version: '2'
 services:
   hitchhiker:
-    image: brookshi/hitchhiker:v0.9
+    image: brookshi/hitchhiker:v0.10
     container_name: hitchhiker
     environment:
       - HITCHHIKER_DB_HOST=hitchhiker-mysql
@@ -65,7 +65,7 @@ services:
 version: '2'
 services:
   hitchhiker:
-    image: registry.cn-hangzhou.aliyuncs.com/brook/hitchhiker-cn:v0.9
+    image: registry.cn-hangzhou.aliyuncs.com/brook/hitchhiker-cn:v0.10
     container_name: hitchhiker
     environment:
       - HITCHHIKER_DB_HOST=hitchhiker-mysql
@@ -92,7 +92,7 @@ services:
 version: '2'
 services:
   hitchhiker:
-    image: registry.cn-hangzhou.aliyuncs.com/brook/hitchhiker-cn:v0.9
+    image: registry.cn-hangzhou.aliyuncs.com/brook/hitchhiker-cn:v0.10
     container_name: hitchhiker
     environment:
       - HITCHHIKER_DB_HOST=192.168.0.10
@@ -109,3 +109,7 @@ services:
 
 因为使用域名的话基本上是用80端口，如果主机还是使用8080端口是没有问题，因为默认用的是这个端口。但如果用其他端口或要使用压力测试就需要使用另外一个环境变量来设置端口：HITCHHIKER_APP_PORT。
 要注意的是hitchhiker和nginx对主机的端口不能冲突。
+
+#### 可能遇到的问题
+1. 如果docker部署完成后，浏览器访问时界面停留在转圈那里
+解决： 很可能是数据库里的表没创建起来，需要去hitchhiker-mysql容器里查看下，命令：sudo docker exec -it hitchhiker-mysql bash 进入容器， mysql -uroot -p 密码进到mysql， use hitchhker-prod; show tables; 来查看表。如果表确实没创建起来，去到hitchhiker容器里 sudo docker exec -it hitchhiker bash， 执行pm2 restart index重启服务就可以了。

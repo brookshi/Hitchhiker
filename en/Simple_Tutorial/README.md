@@ -17,3 +17,5 @@ Follow these steps below to get familiar with Hitchhiker:
 4. [Use Environment Variable](Use_Env_Var.md)
 
 5. [Use Parameters](Use_Param.md)
+
+6. [Assert base on UI](Assert_Base_On_UI.md)

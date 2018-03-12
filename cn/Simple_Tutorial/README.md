@@ -17,3 +17,5 @@ Collection, Project, Schedule, Stress Test
 4. [使用环境变量](Use_Env_Var.md)
 
 5. [使用Parameters](Use_Param.md)
+
+6. [基于UI的断言](Assert_Base_On_UI.md)

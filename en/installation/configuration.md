@@ -9,7 +9,7 @@ when type of variable is boolean, use 1 for true and 0 for false.
         "host": "http://localhost:3000/",   // set ip and port， Env Variable：HITCHHIKER_APP_HOST
         "port": 8080,  // port, use for nginx   HITCHHIKER_APP_PORT
         "api": "http://localhost:81/api/",  // API interface, used for debug， Env Variable same as above
-        "language": "en",  // language, only support mail right now, HITCHHIKER_APP_LANG
+        "language": "en",  // language, en for english, zh for chinese, HITCHHIKER_APP_LANG
         "encryptKey": "hitchhikerapi",  
         "defaultPassword": "123456",  // default password for new user
         "tempUser": "test@test.test", // email for `use without login`
@@ -21,6 +21,7 @@ when type of variable is boolean, use 1 for true and 0 for false.
             "User-Agent:Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36",
             "Cache-Control:no-cache"
         ],
+        "requestTimeout": 1800000, // request timeout (ms),  HITCHHIKER_APP_SCRIPT_TIMEOUT
         "scriptTimeout": 60000, // script timeout (ms), HITCHHIKER_SCRIPT_TIMEOUT
         "safeVM": false,  // run script in safe VM, eg: require,  HITCHHIKER_SAFE_VM
         "enableUpload": true,  // enable upload js lib or data, HITCHHIKER_ENABLE_UPLOAD
@@ -35,10 +36,14 @@ when type of variable is boolean, use 1 for true and 0 for false.
     },
     "schedule": {
         "duration": 60, // schedule check interval (second), HITCHHIKER_SCHEDULE_DURATION
-        "storeMaxCount": 50, // max length of schedule list, HITCHHIKER_SCHEDULE_COUNT
+        "storeUnit": "count", // store unit, HITCHHIKER_SCHEDULE_STORE_UNIT
+        "storeLimit": 50, // store limit, HITCHHIKER_SCHEDULE_STORE_LIMIT
+        "storeContent": "forFail",  // value: none, forFail, all; store body/header condition,  HITCHHIKER_SCHEDULE_STORE_CONTENT
+        "pageSize": 20,  // schedule page size in browser,  HITCHHIKER_SCHEDULE_PAGESIZE
         "mailOnlyForFail": true // only send schedule mail if failed, HITCHHIKER_SCHEDULE_MAILFORFAIL
     },
     "stress": {
+        "type": "node",  // stress type, support node and go,  HITCHHIKER_STRESS_TYPE
         "storeMaxCount": 5,  // max length of stress test list, HITCHHIKER_STRESS_COUNT
         "stressPort": 11010,  // port of stres test, HITCHHIKER_STRESS_PORT
         "stressUpdateInterval": 1000  // stress test update interval (second), HITCHHIKER_STRESS_UPDATE_INTERVAL
@@ -48,7 +53,7 @@ when type of variable is boolean, use 1 for true and 0 for false.
     },
     "mail": {
         "host": "http://email.hitchhiker-api.com/api/mail/",  // mail default interface
-        "custom": "none",  // custom mail: support "api" or "smtp", HITCHHIKER_MAIL_CUSTOM
+        "customType": "none",  // custom mail: support "api" or "smtp", HITCHHIKER_MAIL_CUSTOM_TYPE
         "customApi": "http://",  // if custom is "api", this custom mail interface will be available, Hitchhiker will post {target, subject, content} to this interface  HITCHHIKER_MAIL_API
         "smtp": {  // if custom is "smtp", hitchhiker will use this smtp config, Note: some company use its internal mail host without user and pass, this config MUST empty user and pass too.
             "host": "smtp.qq.com", // HITCHHIKER_MAIL_SMTP_HOST
