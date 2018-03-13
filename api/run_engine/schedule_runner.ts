@@ -167,7 +167,7 @@ export class ScheduleRunner {
     private async clearRunResult(runResult: RunResult) {
         const storeContent = Setting.instance.scheduleStoreContent;
         const isImg = ValidateUtil.isResImg(runResult.headers);
-        if (isImg || storeContent === 'none' || (storeContent === 'forFail' && !this.isSuccess(runResult))) {
+        if (isImg || storeContent === 'none' || (storeContent === 'forFail' && this.isSuccess(runResult))) {
             runResult.body = '';
             runResult.headers = {};
         }

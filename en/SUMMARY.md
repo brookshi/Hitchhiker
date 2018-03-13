@@ -13,6 +13,7 @@
   * [3.3 Create a Request and Send](Simple_Tutorial/Create_Request.md)
   * [3.4 Use Environment Variable](Simple_Tutorial/Use_Env_Var.md)
   * [3.5 Use Parameters](Simple_Tutorial/Use_Param.md)
+  * [3.6 Assert base on UI](Simple_Tutorial/Assert_Base_On_UI.md)
 * [4. Variable](Variable/README.md)
   * [4.1 Environment Variable](Variable/Env_Var.md)
   * [4.2 Parameter Variable](Variable/Param_Var.md)

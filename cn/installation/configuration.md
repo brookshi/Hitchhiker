@@ -7,7 +7,7 @@ Hitchhiker的很多设置可以在appconfig.json里设置，也有对应的环�
         "host": "http://localhost:3000/",   // 设置运行的ip和端口， 环境变量：HITCHHIKER_APP_HOST
         "port": 8080,  //  使用nginx做代理时可以使用这个端口  HITCHHIKER_APP_PORT
         "api": "http://localhost:81/api/",  // API接口，调试用， 环境变量使用上面的
-        "language": "en",  // 语言，目前只对邮件内容起作用， HITCHHIKER_APP_LANG
+        "language": "en",  // 语言，中文：zh， 英文：en， HITCHHIKER_APP_LANG
         "encryptKey": "hitchhikerapi",  
         "defaultPassword": "123456",  // 新帐号的默认密码
         "tempUser": "test@test.test", // use without login时使用的用户账号
@@ -19,6 +19,7 @@ Hitchhiker的很多设置可以在appconfig.json里设置，也有对应的环�
             "User-Agent:Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36",
             "Cache-Control:no-cache"
         ],
+        "requestTimeout": 1800000, // 请求超时时间 (ms),  HITCHHIKER_APP_SCRIPT_TIMEOUT
         "scriptTimeout": 60000, // 脚本执行时间（毫秒） HITCHHIKER_SCRIPT_TIMEOUT
         "safeVM": false,  // 是否使用安全脚本，如require  HITCHHIKER_SAFE_VM
         "enableUpload": true,  // 是否支持上传脚本和数据， HITCHHIKER_ENABLE_UPLOAD
@@ -50,7 +51,7 @@ Hitchhiker的很多设置可以在appconfig.json里设置，也有对应的环�
     },
     "mail": {
         "host": "http://email.hitchhiker-api.com/api/mail/",  // mail默认接口
-        "custom": "none",  // 是否需要自定义mail，可以使用 "api" 或 "smtp",  HITCHHIKER_MAIL_CUSTOM
+        "customType": "none",  // 是否需要自定义mail，可以使用 "api" 或 "smtp",  HITCHHIKER_MAIL_CUSTOM_TYPE
         "customApi": "http://",  // custom为"api"时会使用这个mail接口, Hitchhiker会post {target, subject, content}到这个接口  HITCHHIKER_MAIL_API
         "smtp": {  // custom为"smtp"时使用这块，下面是qq的一个例子作为参考，注意：有的公司内部邮件不需要用户名或密码验证则 user和pass需要空掉不写，否则会报错
             "host": "smtp.qq.com", // HITCHHIKER_MAIL_SMTP_HOST
