@@ -15,7 +15,7 @@ when type of variable is boolean, use 1 for true and 0 for false.
         "tempUser": "test@test.test", // email for `use without login`
         "tempDelKey": "test",
         "sync": false,  // auto sync data switch, HITCHHIKER_SYNC_ONOFF
-        "syncInterval": 30,  // sync interval (second), HITCHHIKER_SYNC_INTERVAL
+        "syncInterval": 30,  // sync interval (second), minimum value is 10, HITCHHIKER_SYNC_INTERVAL
         "defaultHeaders": [  // default request's headers,  HITCHHIKER_DEFAULT_HEADERS
             "Accept:*/*",
             "User-Agent:Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36",

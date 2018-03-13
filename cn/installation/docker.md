@@ -109,3 +109,11 @@ services:
 
 因为使用域名的话基本上是用80端口，如果主机还是使用8080端口是没有问题，因为默认用的是这个端口。但如果用其他端口或要使用压力测试就需要使用另外一个环境变量来设置端口：HITCHHIKER_APP_PORT。
 要注意的是hitchhiker和nginx对主机的端口不能冲突。
+
+#### 配置docker环境
+
+```
+sudo apt update
+sudo apt install docker.io
+sudo apt install docker-compose
+```
