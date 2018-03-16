@@ -28,7 +28,7 @@ export default class UserController extends BaseController {
         const password = Setting.instance.app.defaultPassword;
         const email = `${StringUtil.generateShortId()}${Setting.instance.app.tempUser}`;
         await UserService.createUser(name, email, password, true, true);
-        return await this.login(ctx, { id: '', email, password, name })
+        return await this.login(ctx, { id: '', email, password, name });
     }
 
     @DELETE('/user/temp')

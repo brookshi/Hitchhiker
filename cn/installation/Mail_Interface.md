@@ -5,7 +5,7 @@ Hitchhiker 会在邀请Project成员或跑Schedule时发送邮件，用的是一
 ```json
  {
     "host": "http://email.hitchhiker-api.com/api/mail/",  // mail默认接口
-    "custom": "none",  // 是否需要自定义mail，可以使用 "api" 或 "smtp",  HITCHHIKER_MAIL_CUSTOM
+    "customType": "none",  // 是否需要自定义mail，可以使用 "api" 或 "smtp",  HITCHHIKER_MAIL_CUSTOM_TYPE
     "customApi": "http://",  // custom为"api"时会使用这个mail接口, Hitchhiker会post {target, subject, content}到这个接口  HITCHHIKER_MAIL_API
     "smtp": {  // custom为"smtp"时使用这块，下面是qq的一个例子作为参考，注意：有的公司内部邮件不需要用户名或密码验证则 user和pass需要空掉不写，否则会报错
         "host": "smtp.qq.com", // HITCHHIKER_MAIL_SMTP_HOST
@@ -26,7 +26,7 @@ Hitchhiker 会在邀请Project成员或跑Schedule时发送邮件，用的是一
 
 比如使用QQ的邮箱需要写入以下环境变量：
 ```json
-HITCHHIKER_MAIL_CUSTOM: "smtp"
+HITCHHIKER_MAIL_CUSTOM_TYPE: "smtp"
 HITCHHIKER_MAIL_SMTP_HOST: "smtp.qq.com"
 HITCHHIKER_MAIL_SMTP_PORT: 465
 HITCHHIKER_MAIL_SMTP_TLS: "1"
@@ -38,7 +38,7 @@ HITCHHIKER_MAIL_SMTP_PASS: "xxx"
 
 使用自定义接口需要加入以下环境变量：
 ```json
-HITCHHIKER_MAIL_CUSTOM: "api"
+HITCHHIKER_MAIL_CUSTOM_TYPE: "api"
 HITCHHIKER_MAIL_API: "you api"
 ```
 
