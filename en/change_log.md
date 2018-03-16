@@ -1,3 +1,23 @@
+#### 0.10 2018-03-13
+
+**Features:**
+
+* \#104 Multiple languages supported(chinese).
+* \#106 Auto add http:// to url if need
+* \#116 Convert form data to body while import datat from postman
+
+**Bugs:**
+
+* \#91 exception caused by form data included special symbol
+* \#103 improve email format verification
+
+#### 0.9 2018-01-29
+
+**Feature:**
+
+* Assert base on UI
+
+
 #### 0.8 2018-01-14
 
 **Features:**
