@@ -77,11 +77,13 @@
             /*stacking fieldsets above each other*/
             position: relative;
         }
+
         /*Hide all except first fieldset*/
 
         #msform fieldset:not(:first-of-type) {
             display: none;
         }
+
         /*inputs*/
 
         #msform input[type="text"],
@@ -97,6 +99,7 @@
             color: #2C3E50;
             font-size: 13px;
         }
+
         /*buttons*/
 
         #msform .action-button {
@@ -119,6 +122,7 @@
         #msform .action-button:disabled {
             background: #999;
         }
+
         /*headings*/
 
         .fs-title {
@@ -134,6 +138,7 @@
             color: #666;
             margin-bottom: 20px;
         }
+
         /*progressbar*/
 
         #progressbar {
@@ -165,6 +170,7 @@
             border-radius: 3px;
             margin: 0 auto 5px auto;
         }
+
         /*progressbar connectors*/
 
         #progressbar li:after {
@@ -183,7 +189,9 @@
             /*connector not needed before the first step*/
             content: none;
         }
+
         /*marking active/completed steps green*/
+
         /*The number of the step and the connector before it = green*/
 
         #progressbar li.active:before,
@@ -281,7 +289,7 @@
             <h2 class="fs-title">Mail Interface</h2>
             <h3 class="fs-subtitle">Use custom API or SMTP server to send email</h3>
             <div class="field-title">Type:</div>
-            <select name="HITCHHIKER_MAIL_CUSTOM" onchange="onMailTypeSelect(this.options[this.options.selectedIndex].value)">
+            <select name="HITCHHIKER_MAIL_CUSTOM_TYPE" onchange="onMailTypeSelect(this.options[this.options.selectedIndex].value)">
                 <option selected>none</option>
                 <option>api</option>
                 <option>smtp</option>
