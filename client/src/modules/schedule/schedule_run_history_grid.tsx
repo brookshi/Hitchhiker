@@ -71,6 +71,8 @@ interface ScheduleRunHistoryGridState {
     diffTargetTitle: string;
 
     diffTargetContent: string;
+
+    isFilter?: boolean;
 }
 
 class ScheduleRecordTable extends Table<DtoScheduleRecord> { }
@@ -100,6 +102,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
 
     private expandedTable = (record: DtoScheduleRecord) => {
         const displayRunResults = new Array<DisplayRunResult>();
+        const isFilter = this.state.isFilter;
         const compareDict = _.keyBy(this.flattenRunResult(record.result.compare), r => `${r.id}${r.param || ''}`);
 
         const notNeedMatchIds = this.getNotNeedMatchIds(this.props.schedule);
@@ -116,9 +119,9 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                     compareResult = notMatch();
                 }
             }
-            displayRunResults.push({ ...r, key, isOrigin: true, compareResult, rowSpan: needCompare ? 2 : 1 });
+            displayRunResults.push({ ...r, key, isOrigin: true, compareResult, rowSpan: !isFilter && needCompare ? 2 : 1 });
             if (needCompare) {
-                displayRunResults.push({ ...compareDict[key], key: `${key}c`, isOrigin: false, compareResult, rowSpan: 0 });
+                displayRunResults.push({ ...compareDict[key], key: `${key}c`, isOrigin: false, compareResult, rowSpan: isFilter ? 1 : 0 });
             }
         });
 
@@ -128,6 +131,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                 bordered={true}
                 size="small"
                 rowKey="key"
+                onChange={(pagination, filters, sorter) => { this.setState({ ...this.state, isFilter: filters && filters['success'] && filters['success'].length > 0 }); }}
                 dataSource={displayRunResults}
                 pagination={false}
             >
