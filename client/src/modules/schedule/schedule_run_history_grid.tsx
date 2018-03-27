@@ -139,6 +139,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                 <RunResultColumn
                     title={Msg('Schedule.Param')}
                     dataIndex="param"
+                    render={text => this.getParamDisplay(text)}
                 />
                 <RunResultColumn
                     title={Msg('Schedule.Pass')}
@@ -246,8 +247,19 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
         return !envId || envId === noEnvironment ? noEnvironment : (this.props.envNames[envId] || unknownName);
     }
 
-    private getCellDisplay = (value: string) => {
-        return value ? (value.length < 15 ? value : `${value.substr(0, 15)}...`) : '';
+    private getParamDisplay = (text: any, length: number = 15, useEditor: boolean = true) => {
+        const beautifyParam = StringUtil.beautify(text || '');
+        return (
+            <span>
+                <Tooltip overlayClassName="schedule-sub-table-tooltip" placement="top" title={useEditor ? <Editor width={600} type="json" value={beautifyParam} readOnly={true} /> : beautifyParam}>
+                    {this.getCellDisplay(text, length)}
+                </Tooltip>
+            </span>
+        );
+    }
+
+    private getCellDisplay = (value: string, length: number = 15) => {
+        return value ? (value.length < length ? value : `${value.substr(0, length)}...`) : '';
     }
 
     private getHeadersDisplay = (text: any, runResult: DisplayRunResult) => {
@@ -446,7 +458,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                 <ScheduleStatisticsColumn
                     title={Msg('Common.Name')}
                     dataIndex="name"
-                    render={(text, record) => `${record.name}${record.param ? ' - ' + record.param : ''}`}
+                    render={(text, record) => this.getParamDisplay(`${record.name}${record.param ? ' - ' + record.param : ''}`, 30, false)}
                 />
                 <ScheduleStatisticsColumn
                     title={Msg('Common.Environment')}
