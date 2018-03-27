@@ -80,6 +80,11 @@ class RequestTabExtra extends React.Component<RequestTabExtraProps, RequestTabEx
         changeRecord({ ...record, body: StringUtil.beautify(record.body || '', bodyType) });
     }
 
+    private onBeautifyParam = () => {
+        const { record, changeRecord } = this.props;
+        changeRecord({ ...record, parameters: StringUtil.beautify(record.parameters || '', 'json') });
+    }
+
     private currentBodyType = () => this.props.record.bodyType || defaultBodyType;
 
     private onSelectSnippet = (e) => {
@@ -112,6 +117,9 @@ class RequestTabExtra extends React.Component<RequestTabExtraProps, RequestTabEx
                         </Dropdown>
                     </span>
                 );
+            }
+            case 'parameters': {
+                return <Button className="tab-extra-button" onClick={this.onBeautifyParam}>{Msg('Collection.Beautify')}</Button>;
             }
             case 'test': {
                 return (
