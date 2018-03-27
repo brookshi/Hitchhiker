@@ -197,7 +197,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                             <Radio value={ParameterType.OneToOne}>{ParameterType[ParameterType.OneToOne]}</Radio>
                         </RadioGroup>
                         <span>
-                            {isValid ? Msg('Collection.ParameterRequest') : msg}
+                            {isValid ? Msg('Collection.ParameterRequest', { length: paramArr.length }) : msg}
                             {isValid ? this.currentParam(paramArr) : ''}
                         </span>
                     </span>
