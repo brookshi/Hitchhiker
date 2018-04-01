@@ -32,6 +32,8 @@ export interface ReqResUIState {
     activeReqTab: string;
 
     headersEditMode: KeyValueEditMode;
+
+    displayQueryString: boolean;
 }
 
 export interface TimelineState {
@@ -63,7 +65,8 @@ export const reqResUIDefaultValue: ReqResUIState = {
     activeResTab: defaultResTabKey,
     activeReqTab: defaultReqTabKey,
     resHeight: 0,
-    headersEditMode: KeyValueEditType.keyValueEdit
+    headersEditMode: KeyValueEditType.keyValueEdit,
+    displayQueryString: false
 };
 
 export const syncDefaultValue: SyncState = {

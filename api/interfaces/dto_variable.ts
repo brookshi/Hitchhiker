@@ -10,3 +10,8 @@ export interface DtoVariable {
 
     sort: number;
 }
+
+export interface DtoQueryString extends DtoVariable {
+
+    description?: string;
+}

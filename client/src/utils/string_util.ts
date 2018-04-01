@@ -6,6 +6,7 @@ import { ParameterType } from '../common/parameter_type';
 import * as _ from 'lodash';
 import { allParameter } from '../common/constants';
 import LocalesString from '../locales/string';
+import { DtoHeader } from '../../../api/interfaces/dto_header';
 
 export class StringUtil {
     static generateUID(): string {
@@ -25,6 +26,44 @@ export class StringUtil {
         const regex = `(?:${protocol}|www\\.)${auth}(?:localhost|${ip}|${host}${domain}${tld})${port}${path}`;
 
         return new RegExp(`(?:^${regex}$)`, 'i');
+    }
+
+    static parseUrl(url: string): { url: string, querys: { key: string, value: string }[] } {
+        const arr = url.split('?');
+        const result = { url: arr[0], querys: new Array<{ key: string, value: string }>() };
+        if (arr.length < 2) {
+            return result;
+        }
+        const queryStr = url.substr(url.indexOf('?'));
+        const matchedQueryStr = queryStr === '?' ? '' : _.get(queryStr.match(/^\?([^#]+)/), '[1]');
+        if (_.isString(matchedQueryStr)) {
+            result.querys = matchedQueryStr.split('&').map(q => {
+                let keyValue = q.split('=');
+                return {
+                    key: _.trim(keyValue[0]) || '',
+                    value: keyValue[1] ? q.substr(q.indexOf('=') + 1) : keyValue[1],
+                };
+            });
+        }
+        return result;
+    }
+
+    static stringifyUrl(url: string, querys: DtoHeader[]) {
+        const arr = (url || '').split('?');
+
+        if (querys && querys.length) {
+            let queryString = '';
+            const activeQuerys = querys.filter(q => q.isActive && q.key != null);
+            activeQuerys.forEach((q, i) => {
+                queryString += `${q.key}${q.value != null ? '=' : ''}${q.value || ''}`;
+                if (i !== activeQuerys.length - 1) {
+                    queryString += '&';
+                }
+            });
+            return `${arr[0]}${queryString != null ? '?' : ''}${queryString}`;
+        }
+
+        return arr[0];
     }
 
     static upperFirstAlphabet(word: string): string {

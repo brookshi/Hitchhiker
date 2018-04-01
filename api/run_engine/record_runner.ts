@@ -182,6 +182,7 @@ export class RecordRunner {
                 record,
                 key: 'Cookie',
                 value: _.values(allCookies).join('; '),
+                description: '',
                 isActive: true,
                 isFav: false
             }

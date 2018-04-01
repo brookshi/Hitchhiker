@@ -3,6 +3,7 @@ import { connect, Dispatch } from 'react-redux';
 import RequestUrlPanel from './request_url_panel';
 import RequestOptionPanel from './request_option_panel';
 import RequestNamePanel from './request_name_panel';
+import RequestQueryStringPanel from './request_query_string_panel';
 import ResponsePanel from './response_panel'; import { Tabs, Badge, Modal, Button } from 'antd';
 import * as _ from 'lodash';
 import EnvironmentSelect from './environment_select';
@@ -13,7 +14,7 @@ import { ActiveTabType, SaveRecordType, AddTabType, RemoveTabType } from '../../
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 import { State } from '../../../state/index';
 import { ResizeResHeightType } from '../../../action/ui';
-import { getReqActiveTabKeySelector, getIsResPanelMaximumSelector, getActiveRecordStateSelector, getResHeightSelector } from './selector';
+import { getReqActiveTabKeySelector, getIsResPanelMaximumSelector, getActiveRecordStateSelector, getResHeightSelector, getActiveReqResUIStateSelector } from './selector';
 import { newRecordFlag } from '../../../common/constants';
 import { ConflictType } from '../../../common/conflict_type';
 import Msg from '../../../locales';
@@ -31,6 +32,8 @@ interface ReqResPanelStateProps {
     isRequesting: boolean;
 
     resHeight: number;
+
+    displayQueryString: boolean;
 }
 
 interface ReqResPanelDispatchProps {
@@ -89,6 +92,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
             isResPanelMaximum: props.isResPanelMaximum,
             activeReqTab: props.activeReqTab,
             isRequesting: props.isRequesting,
+            displayQueryString: props.displayQueryString,
             recordProperties: _.values(props.recordStates).map(r => ({
                 isChanged: r.isChanged,
                 name: r.name,
@@ -157,7 +161,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
     public render() {
 
-        const { recordStates, activeKey, activeTab, isResPanelMaximum } = this.props;
+        const { recordStates, activeKey, activeTab, isResPanelMaximum, displayQueryString } = this.props;
 
         return (
             <div className="request-tab" ref={ele => this.reqResPanel = ele}>
@@ -191,6 +195,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                                 <div>
                                     <RequestNamePanel />
                                     <RequestUrlPanel />
+                                    {displayQueryString ? <RequestQueryStringPanel /> : ''}
                                     <RequestOptionPanel />
                                 </div>
                             ) : ''
@@ -210,6 +215,7 @@ const mapStateToProps = (state: State): ReqResPanelStateProps => {
         activeKey,
         recordStates,
         isRequesting: getActiveRecordStateSelector()(state).isRequesting,
+        displayQueryString: getActiveReqResUIStateSelector()(state).displayQueryString,
         isResPanelMaximum: getIsResPanelMaximumSelector()(state),
         activeReqTab: getReqActiveTabKeySelector()(state),
         resHeight: getResHeightSelector()(state),

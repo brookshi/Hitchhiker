@@ -1,6 +1,7 @@
 import { OneToMany, Entity, PrimaryColumn, JoinColumn, Column, ManyToOne, UpdateDateColumn, CreateDateColumn, OneToOne } from 'typeorm';
 import { Collection } from './collection';
 import { Header } from './header';
+import { QueryString } from './query_string';
 import { RecordCategory } from '../common/record_category';
 import { DataMode } from '../common/data_mode';
 import { BodyType } from '../common/string_type';
@@ -46,6 +47,12 @@ export class Record {
 
     @Column({ nullable: true, default: 'GET' })
     method: string;
+
+    @OneToMany(type => QueryString, queryString => queryString.record, {
+        cascadeInsert: true,
+        cascadeUpdate: true
+    })
+    queryStrings: QueryString[] = [];
 
     @OneToMany(type => Header, header => header.record, {
         cascadeInsert: true,

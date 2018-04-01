@@ -1,7 +1,7 @@
 import { EditEnvType } from '../action/project';
 import { UIState, AppUIState, appUIDefaultValue, ReqResUIState, uiDefaultValue, SyncState, syncDefaultValue, TimelineState, timelineDefaultValue } from '../state/ui';
 import { combineReducers } from 'redux';
-import { ResizeLeftPanelType, UpdateLeftPanelType, SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType, SwitchHeadersEditModeType, CloseTimelineType } from '../action/ui';
+import { ResizeLeftPanelType, UpdateLeftPanelType, SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType, SwitchHeadersEditModeType, CloseTimelineType, DisplayQueryStringType } from '../action/ui';
 import { SyncType, SyncSuccessType, SyncRetryType, ResetSyncMsgType, SyncFailedType } from '../action/index';
 import { RemoveTabType, SaveRecordType } from '../action/record';
 import { SyncUserDataType } from '../action/user';
@@ -104,6 +104,11 @@ function reqResUIState(state: _.Dictionary<ReqResUIState> = {}, action: any): _.
                 return newState;
             }
             return state;
+        }
+        case DisplayQueryStringType: {
+            const { displayQueryString, recordId } = action.value;
+            console.log(action.value);
+            return { ...state, [recordId]: { ...state[recordId], displayQueryString } };
         }
         default:
             return state;

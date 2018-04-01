@@ -2,7 +2,7 @@ import React from 'react';
 import { connect, Dispatch, MapStateToPropsFactory } from 'react-redux';
 import { Button, Dropdown, Select, Menu, Modal, TreeSelect, message } from 'antd';
 import { HttpMethod } from '../../../common/http_method';
-import { getActiveRecordSelector, getActiveRecordStateSelector, getActiveEnvIdSelector, getCollectionTreeDataSelector } from './selector';
+import { getActiveRecordSelector, getActiveRecordStateSelector, getActiveEnvIdSelector, getCollectionTreeDataSelector, getActiveReqResUIStateSelector } from './selector';
 import { actionCreator } from '../../../action/index';
 import { SaveRecordType, SaveAsRecordType, SendRequestType, UpdateDisplayRecordType } from '../../../action/record';
 import { State } from '../../../state/index';
@@ -16,6 +16,7 @@ import CodeSnippetDialog from '../../../components/code_snippet_dialog';
 import Msg from '../../../locales';
 import LoInput from '../../../locales/input';
 import LocalesString from '../../../locales/string';
+import { DisplayQueryStringType } from '../../../action/ui';
 
 const DButton = Dropdown.Button as any;
 const Option = Select.Option;
@@ -33,6 +34,8 @@ interface RequestUrlPanelStateProps {
     collectionTreeData: TreeData[];
 
     currentParam: string;
+
+    displayQueryString: boolean;
 }
 
 interface RequestUrlPanelDispatchProps {
@@ -44,6 +47,8 @@ interface RequestUrlPanelDispatchProps {
     save(record: DtoRecord, isNew: boolean, oldId?: string);
 
     sendRequest(environment: string, record: DtoRecord | _.Dictionary<DtoRecord>);
+
+    switchQueryStringDisplay(recordId: string, displayQueryString: boolean);
 }
 
 type RequestUrlPanelProps = RequestUrlPanelStateProps & RequestUrlPanelDispatchProps;
@@ -71,12 +76,14 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
     }
 
     shouldComponentUpdate(nextProps: RequestUrlPanelStateProps, nextState: RequestUrlPanelState) {
-        const { record, isRequesting, environment, collectionTreeData } = this.props;
+        const { record, isRequesting, environment, collectionTreeData, displayQueryString } = this.props;
         return record.url !== nextProps.record.url ||
             record.method !== nextProps.record.method ||
             isRequesting !== nextProps.isRequesting ||
             environment !== nextProps.environment ||
             collectionTreeData !== nextProps.collectionTreeData ||
+            displayQueryString !== nextProps.displayQueryString ||
+            !_.isEqual(record.queryStrings, nextProps.record.queryStrings) ||
             !_.isEqual(this.state, nextState);
     }
 
@@ -204,13 +211,38 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         return newContent;
     }
 
-    private onUrlChanged = (url: string) => {
-        this.props.changeRecord({ ...this.props.record, url });
+    private onUrlChanged = (urlPath: string) => {
+        const record = this.props.record;
+        const queryStrings = _.keyBy((record.queryStrings || []), 'key');
+        const { url, querys } = StringUtil.parseUrl(urlPath);
+        let newQueryStrings = querys.map((q, i) => {
+            const nq = ({ ...(queryStrings[q.key] != null ? queryStrings[q.key] : { id: StringUtil.generateUID(), key: q.key }), value: q.value, sort: i, isActive: true });
+            if (queryStrings[q.key] != null) {
+                delete queryStrings[q.key];
+            }
+            return nq;
+        });
+
+        let needResort = false;
+        Object.keys(queryStrings).forEach(k => {
+            if (!queryStrings[k].isActive) {
+                let index = (record.queryStrings || []).findIndex(r => r.id === queryStrings[k].id);
+                if (index >= 0) {
+                    needResort = true;
+                    index = index > newQueryStrings.length ? newQueryStrings.length : index;
+                    newQueryStrings.splice(index, 0, { ...queryStrings[k], value: queryStrings[k].value || '', sort: index, isActive: false });
+                }
+            }
+        });
+        if (needResort) {
+            newQueryStrings = newQueryStrings.map((q, i) => ({ ...q, sort: i }));
+        }
+        this.props.changeRecord({ ...record, url, queryStrings: newQueryStrings });
     }
 
     public render() {
 
-        const { record, isRequesting, collectionTreeData } = this.props;
+        const { record, isRequesting, collectionTreeData, switchQueryStringDisplay, displayQueryString } = this.props;
 
         const menu = (
             <Menu onClick={this.onClick}>
@@ -228,7 +260,8 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
                         spellCheck={false}
                         onChange={(e) => this.onUrlChanged(e.currentTarget.value)}
                         addonBefore={this.getMethods(record.method)}
-                        value={record.url}
+                        addonAfter={<Button style={{ height: 32, border: 0, color: '#888888' }} ghost={true} onClick={() => switchQueryStringDisplay(record.id, !displayQueryString)}>Param</Button>}
+                        value={StringUtil.stringifyUrl(record.url || '', record.queryStrings || [])}
                     />
                 </div>
                 <div className="ant-row ant-form-item req-send">
@@ -275,6 +308,7 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
     const getActiveEnvId = getActiveEnvIdSelector();
     const getActiveRecord = getActiveRecordSelector();
     const getTreeData = getCollectionTreeDataSelector();
+    const getUIState = getActiveReqResUIStateSelector();
     const mapStateToProps: (state: State) => RequestUrlPanelStateProps = state => {
         const recordState = getRecordState(state);
         return {
@@ -283,7 +317,8 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
             environment: getActiveEnvId(state),
             record: getActiveRecord(state),
             collectionTreeData: getTreeData(state),
-            currentParam: recordState ? recordState.parameter : allParameter
+            currentParam: recordState ? recordState.parameter : allParameter,
+            displayQueryString: getUIState(state).displayQueryString,
         };
     };
     return mapStateToProps;
@@ -295,6 +330,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): RequestUrlPanelDispatchPro
         save: (record, isNew, oldId) => dispatch(actionCreator(SaveRecordType, { isNew, record, oldId })),
         saveAs: (record) => dispatch(actionCreator(SaveAsRecordType, { isNew: true, record })),
         sendRequest: (environment, record) => dispatch(actionCreator(SendRequestType, { environment, record })),
+        switchQueryStringDisplay: (recordId, displayQueryString) => dispatch(actionCreator(DisplayQueryStringType, { recordId, displayQueryString })),
     };
 };
 

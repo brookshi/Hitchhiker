@@ -15,3 +15,5 @@ export const SwitchHeadersEditModeType = 'switch headers edit mode';
 export const ShowTimelineType = 'show timeline';
 
 export const CloseTimelineType = 'close timeline';
+
+export const DisplayQueryStringType = 'display query string';

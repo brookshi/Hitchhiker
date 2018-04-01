@@ -10,5 +10,7 @@ export interface DtoHeader {
 
     isFav?: boolean;
 
+    description?: string;
+
     sort?: number;
 }

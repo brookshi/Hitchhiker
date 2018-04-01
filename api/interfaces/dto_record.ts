@@ -4,6 +4,7 @@ import { BodyType } from '../common/string_type';
 import { DtoUser } from './dto_user';
 import { ParameterType } from '../common/parameter_type';
 import { DtoAssert } from './dto_assert';
+import { DtoQueryString } from './dto_variable';
 
 export interface DtoRecord {
 
@@ -20,6 +21,8 @@ export interface DtoRecord {
     url?: string;
 
     method?: string;
+
+    queryStrings?: DtoQueryString[];
 
     headers?: DtoHeader[];
 
