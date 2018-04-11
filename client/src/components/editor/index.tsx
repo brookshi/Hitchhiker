@@ -108,7 +108,7 @@ class Editor extends React.Component<EditorProps, EditorState> {
         }
 
         return (
-            <AceEditor ref={ele => this.editorEle = ele} {...props} onValidate={this.onAnnotatesChange} />
+            activeHeight < 50 ? <div /> : <AceEditor ref={ele => this.editorEle = ele} {...props} onValidate={this.onAnnotatesChange} />
         );
     }
 }
