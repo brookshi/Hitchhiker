@@ -17,6 +17,7 @@ import { UserService } from './user_service';
 import { ProjectService } from './project_service';
 import { EnvironmentService } from './environment_service';
 import { VariableService } from './variable_service';
+import { QueryStringService } from './query_string_service';
 
 export class RecordService {
     private static _sort: number = 0;
@@ -30,14 +31,7 @@ export class RecordService {
         record.url = target.url;
         record.pid = target.pid;
         record.body = target.body || '';
-        if (target.headers instanceof Array) {
-            record.headers = target.headers.map(o => {
-                let header = HeaderService.fromDto(o);
-                header.record = new Record();
-                header.record.id = record.id;
-                return header;
-            });
-        }
+        target.headers = this.handleArray(target.headers, record.id, HeaderService.fromDto);
         record.test = target.test || '';
         record.sort = target.sort;
         record.method = target.method;
@@ -49,7 +43,23 @@ export class RecordService {
         record.parameterType = target.parameterType;
         record.prescript = target.prescript || '';
         record.assertInfos = target.assertInfos || {};
+        record.queryStrings = this.handleArray(target.queryStrings, record.id, QueryStringService.fromDto);
         return record;
+    }
+
+    private static handleArray<TTarget extends { record: Record }, TDTO>(dtos: TDTO[] | any, id: string, fromDto: (o: TDTO) => TTarget) {
+        if (dtos instanceof Array) {
+            return dtos.map(o => {
+                let target = fromDto(o);
+                return this.setRecordForChild(target, id);
+            });
+        }
+    }
+
+    private static setRecordForChild<T extends { record: Record }>(child: T, id: string) {
+        child.record = new Record();
+        child.record.id = id;
+        return child;
     }
 
     static toDto(target: Record): DtoRecord {
@@ -90,6 +100,7 @@ export class RecordService {
         let rep = connection.getRepository(Record).createQueryBuilder('record')
             .innerJoinAndSelect('record.collection', 'collection')
             .leftJoinAndSelect('record.headers', 'header')
+            .leftJoinAndSelect('record.queryStrings', 'queryString')
             .where(whereStr, parameters);
 
         if (needHistory) {
@@ -116,7 +127,8 @@ export class RecordService {
         const connection = await ConnectionManager.getInstance();
         let rep = connection.getRepository(Record).createQueryBuilder('record');
         if (includeHeaders) {
-            rep = rep.leftJoinAndSelect('record.headers', 'header');
+            rep = rep.leftJoinAndSelect('record.headers', 'header')
+                .leftJoinAndSelect('record.queryStrings', 'queryString');
         }
         return await rep.where('record.id=:id', { id: id }).getOne();
     }
@@ -125,26 +137,29 @@ export class RecordService {
         const connection = await ConnectionManager.getInstance();
         let rep = connection.getRepository(Record).createQueryBuilder('record');
         if (includeHeaders) {
-            rep = rep.leftJoinAndSelect('record.headers', 'header');
+            rep = rep.leftJoinAndSelect('record.headers', 'header')
+                .leftJoinAndSelect('record.queryStrings', 'queryString');
         }
         return await rep.where('record.pid=:pid', { pid: id }).getMany();
     }
 
     static async create(record: Record, user: User): Promise<ResObject> {
-        record.sort = await RecordService.getMaxSort();
-        RecordService.adjustHeaders(record);
-        return await RecordService.save(record, user);
+        record.sort = await this.getMaxSort();
+        this.adjustHeaders(record);
+        this.adjustQueryStrings(record);
+        return await this.save(record, user);
     }
 
     static async update(record: Record, user: User): Promise<ResObject> {
         const connection = await ConnectionManager.getInstance();
-        const recordInDB = await RecordService.getById(record.id, true);
+        const recordInDB = await this.getById(record.id, true);
 
         if (recordInDB && recordInDB.headers.length > 0) {
             await connection.getRepository(Header).remove(recordInDB.headers);
         }
-        RecordService.adjustHeaders(record);
-        return await RecordService.save(record, user);
+        this.adjustHeaders(record);
+        this.adjustQueryStrings(record);
+        return await this.save(record, user);
     }
 
     static async deleteFolder(id: string): Promise<ResObject> {
@@ -163,7 +178,7 @@ export class RecordService {
     }
 
     static async deleteRecord(id: string): Promise<ResObject> {
-        await HeaderService.deleteForRecord(id);
+        await Promise.all([HeaderService.deleteForRecord(id), QueryStringService.deleteForRecord(id)]);
 
         const connection = await ConnectionManager.getInstance();
         await connection.transaction(async manager => {
@@ -177,9 +192,17 @@ export class RecordService {
     }
 
     private static adjustHeaders(record: Record) {
-        record.headers.forEach((header, index) => {
-            header.id = header.id || StringUtil.generateUID();
-            header.sort = index;
+        this.adjustAttachs(record.headers);
+    }
+
+    private static adjustQueryStrings(record: Record) {
+        this.adjustAttachs(record.queryStrings);
+    }
+
+    private static adjustAttachs<T extends { id: string, sort: number }>(attachs: T[]) {
+        attachs.forEach((attach, index) => {
+            attach.id = attach.id || StringUtil.generateUID();
+            attach.sort = index;
         });
     }
 

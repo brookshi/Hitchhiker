@@ -209,4 +209,22 @@ export class StringUtil {
             return { isActive, key, value };
         });
     }
+
+    static stringifyUrl(url: string, querys: DtoHeader[]) {
+        const arr = (url || '').split('?');
+
+        if (querys && querys.length) {
+            let queryString = '';
+            const activeQuerys = querys.filter(q => q.isActive && q.key != null);
+            activeQuerys.forEach((q, i) => {
+                queryString += `${q.key}${q.value != null ? '=' : ''}${q.value || ''}`;
+                if (i !== activeQuerys.length - 1) {
+                    queryString += '&';
+                }
+            });
+            return `${arr[0]}${queryString != null ? '?' : ''}${queryString}`;
+        }
+
+        return arr[0];
+    }
 }

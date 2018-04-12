@@ -9,6 +9,7 @@ import { ProjectData } from '../interfaces/dto_project_data';
 import { ProjectFolderType } from '../common/string_type';
 import { Record } from '../models/record';
 import { ConsoleMsg } from '../interfaces/dto_res';
+import { StringUtil } from '../utils/string_util';
 
 class SandboxRequest {
 
@@ -67,7 +68,7 @@ export class Sandbox {
         this._allProjectJsFiles = ProjectDataService.instance.getProjectAllJSFiles(projectId);
         if (record) {
             this.request = {
-                url: record.url,
+                url: StringUtil.stringifyUrl(record.url, record.queryStrings),
                 method: record.method || 'GET',
                 body: record.body,
                 headers: {}

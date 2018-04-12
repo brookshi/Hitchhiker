@@ -204,10 +204,14 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
 
     private duplicateRecord = (record: DtoRecord) => {
         let headers = record.headers;
+        let queryStrings = record.queryStrings;
         if (headers) {
             headers = headers.map(h => ({ ...h, id: StringUtil.generateUID() }));
         }
-        this.props.duplicateRecord({ ...record, id: StringUtil.generateUID(), name: `${record.name}.copy`, headers });
+        if (queryStrings) {
+            queryStrings = queryStrings.map(q => ({ ...q, id: StringUtil.generateUID() }));
+        }
+        this.props.duplicateRecord({ ...record, id: StringUtil.generateUID(), name: `${record.name}.copy`, headers, queryStrings });
     }
 
     private shareCollection = () => {

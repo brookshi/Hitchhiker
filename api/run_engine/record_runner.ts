@@ -198,18 +198,21 @@ export class RecordRunner {
         }
     }
 
+    private static applyVariablesToKeyValue<T extends { key: string, value: string }>(keyValues: T[], variables: any) {
+        return (keyValues || []).map(kv => {
+            const obj = Object.assign(kv);
+            obj.key = RecordRunner.applyVariables(kv.key, variables);
+            obj.value = RecordRunner.applyVariables(kv.value, variables);
+            return obj;
+        });
+    }
+
     private static applyLocalVariables(record: RecordEx, variables: any): RecordEx {
         if (_.keys(variables).length === 0) {
             return record;
         }
-        const headers = [];
-        for (let header of record.headers) {
-            headers.push({
-                ...header,
-                key: RecordRunner.applyVariables(header.key, variables),
-                value: RecordRunner.applyVariables(header.value, variables)
-            });
-        }
+        const headers = this.applyVariablesToKeyValue(record.headers, variables);
+        const queryStrings = this.applyVariablesToKeyValue(record.queryStrings, variables);
         const assertInfos = {};
         for (let key of Object.keys(record.assertInfos || {})) {
             assertInfos[key] = [];
@@ -223,6 +226,7 @@ export class RecordRunner {
         return {
             ...record,
             headers,
+            queryStrings,
             url: RecordRunner.applyVariables(record.url, variables),
             test: RecordRunner.applyVariables(record.test, variables),
             body: RecordRunner.applyVariables(record.body, variables),
@@ -232,18 +236,11 @@ export class RecordRunner {
     }
 
     static applyReqParameterToRecord(record: Record, parameter: any): Record {
-        const headers = [];
-        for (let header of record.headers || []) {
-            headers.push({
-                ...header,
-                key: RecordRunner.applyVariables(header.key, parameter),
-                value: RecordRunner.applyVariables(header.value, parameter)
-            });
-        }
         return {
             ...record,
             url: RecordRunner.applyVariables(record.url, parameter),
-            headers,
+            headers: this.applyVariablesToKeyValue(record.headers, parameter),
+            queryStrings: this.applyVariablesToKeyValue(record.queryStrings, parameter),
             body: RecordRunner.applyVariables(record.body, parameter),
             test: RecordRunner.applyVariables(record.test, parameter),
             prescript: RecordRunner.applyVariables(record.prescript, parameter)

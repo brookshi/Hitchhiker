@@ -35,7 +35,7 @@ class RequestQueryStringPanel extends React.Component<RequestQueryStringPanelPro
 
     private onValueChanged = (data: DtoHeader[]) => {
         data.forEach((v, i) => v.sort = i);
-        this.props.changeRecord({ queryStrings: data, url: StringUtil.stringifyUrl(this.props.url, data) });
+        this.props.changeRecord({ queryStrings: data });
     }
 
     public render() {

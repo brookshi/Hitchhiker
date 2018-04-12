@@ -250,7 +250,7 @@ const mapStateToProps = (state: State): ResponsePanelStateProps => {
     const res = !resState ? undefined : (paramArr.length === 0 ? resState['runResult'] : (currParam === allParameter ? resState : resState[currParamStr]));
     return {
         activeKey,
-        url: record.url,
+        url: StringUtil.stringifyUrl(record.url || '', record.queryStrings || []),
         isRequesting: recordState.isRequesting,
         res,
         height: getResHeightSelector()(state),
