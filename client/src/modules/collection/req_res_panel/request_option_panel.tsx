@@ -6,7 +6,7 @@ import { normalBadgeStyle } from '../../../style/theme';
 import { DtoHeader } from '../../../../../api/interfaces/dto_header';
 import { actionCreator } from '../../../action/index';
 import { SelectReqTabType } from '../../../action/ui';
-import { KeyValueEditMode } from '../../../common/custom_type';
+import { KeyValueEditMode, DataMode } from '../../../common/custom_type';
 import { nameWithTag } from '../../../components/name_with_tag/index';
 import Editor from '../../../components/editor';
 import KeyValueList from '../../../components/key_value';
@@ -16,6 +16,7 @@ import { defaultBodyType, allParameter, noEnvironment } from '../../../common/co
 import { getActiveRecordSelector, getReqActiveTabKeySelector, getHeadersEditModeSelector, getActiveRecordStateSelector, getProjectEnvsSelector, getActiveEnvIdSelector } from './selector';
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 import { RecordState, ParameterStatusState } from '../../../state/collection';
+import { KeyValueEditType } from '../../../common/custom_type';
 import { State } from '../../../state/index';
 import * as _ from 'lodash';
 import { ParameterType } from '../../../common/parameter_type';
@@ -25,6 +26,7 @@ import AssertJsonView from '../../../components/assert_json_view';
 import { DtoAssert } from '../../../../../api/interfaces/dto_assert';
 import { DtoEnvironment } from '../../../../../api/interfaces/dto_environment';
 import Msg from '../../../locales';
+import { DtoBodyFormData } from '../../../../../api/interfaces/dto_variable';
 
 const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
@@ -38,7 +40,11 @@ interface RequestOptionPanelStateProps {
 
     headers?: DtoHeader[];
 
+    formDatas?: DtoBodyFormData[];
+
     body?: string;
+
+    bodyMode: DataMode;
 
     test?: string;
 
@@ -157,9 +163,14 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
         return { isResValid, obj };
     }
 
+    private onFormDataChanged = (data: DtoHeader[]) => {
+        data.forEach((v, i) => v.sort = i);
+        this.props.changeRecord({ formDatas: data });
+    }
+
     public render() {
 
-        const { activeTabKey, headers, body, parameters, parameterType, assertInfos, test, prescript, headersEditMode, favHeaders, envs, currentEnv } = this.props;
+        const { activeTabKey, headers, formDatas, body, parameters, parameterType, assertInfos, test, prescript, headersEditMode, favHeaders, envs, currentEnv, bodyMode } = this.props;
         const { isValid, msg } = StringUtil.verifyParameters(parameters || '', parameterType);
         let paramArr = StringUtil.getUniqParamArr(parameters, parameterType);
         const { isResValid, obj } = this.hasVaildResponseObj();
@@ -211,7 +222,22 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                     )}
                     key="body"
                 >
-                    <Editor ref={ele => this.bodyEditor = ele} type={bodyTypes[this.currentBodyType()]} fixHeight={true} height={300} value={body} onChange={v => this.props.changeRecord({ 'body': v })} />
+                    <RadioGroup style={{ marginBottom: 8 }} onChange={v => this.props.changeRecord({ 'dataMode': (v.target as any).value })} value={bodyMode}>
+                        <Radio value={DataMode.urlencoded}>x-www-form-urlencoded</Radio>
+                        <Radio value={DataMode.raw}>raw</Radio>
+                    </RadioGroup>
+                    {
+                        bodyMode === DataMode.raw ?
+                            <Editor ref={ele => this.bodyEditor = ele} type={bodyTypes[this.currentBodyType()]} fixHeight={true} height={300} value={body} onChange={v => this.props.changeRecord({ 'body': v })} /> :
+                            <KeyValueList
+                                mode={KeyValueEditType.keyValueEdit}
+                                onHeadersChanged={this.onFormDataChanged}
+                                isAutoComplete={false}
+                                headers={_.sortBy(_.cloneDeep(formDatas) || [], 'sort')}
+                                showFav={false}
+                            />
+                    }
+
                 </TabPane>
                 <TabPane
                     tab={(
@@ -286,7 +312,9 @@ const mapStateToProps = (state: State): RequestOptionPanelStateProps => {
         activeKey: state.displayRecordsState.activeKey,
         activeTabKey: getReqActiveTabKeySelector()(state),
         headers: record.headers,
+        formDatas: record.formDatas,
         body: record.body,
+        bodyMode: record.dataMode === undefined ? DataMode.raw : record.dataMode,
         test: record.test,
         prescript: record.prescript,
         bodyType: record.bodyType,

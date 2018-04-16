@@ -4,7 +4,8 @@ import { BodyType } from '../common/string_type';
 import { DtoUser } from './dto_user';
 import { ParameterType } from '../common/parameter_type';
 import { DtoAssert } from './dto_assert';
-import { DtoQueryString } from './dto_variable';
+import { DtoQueryString, DtoBodyFormData } from './dto_variable';
+import { DataMode } from '../common/data_mode';
 
 export interface DtoRecord {
 
@@ -24,6 +25,8 @@ export interface DtoRecord {
 
     queryStrings?: DtoQueryString[];
 
+    formDatas?: DtoBodyFormData[];
+
     headers?: DtoHeader[];
 
     history?: DtoRecordHistory[];
@@ -33,6 +36,8 @@ export interface DtoRecord {
     body?: string;
 
     bodyType?: BodyType;
+
+    dataMode?: DataMode;
 
     parameters?: string;
 

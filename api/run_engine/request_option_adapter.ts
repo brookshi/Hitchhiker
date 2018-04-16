@@ -7,6 +7,7 @@ import { StringUtil } from '../utils/string_util';
 import { Setting } from '../utils/setting';
 import { Header } from '../models/header';
 import * as _ from 'lodash';
+import { DataMode } from '../common/data_mode';
 
 export class RequestOptionAdapter {
     static async fromRecord(record: RecordEx): Promise<Options> {
@@ -18,7 +19,8 @@ export class RequestOptionAdapter {
         const option: Options = {
             url: StringUtil.tryAddHttpPrefix(StringUtil.fixedEncodeURI(StringUtil.stringifyUrl(record.url, record.queryStrings))),
             method: record.method,
-            headers: RecordService.formatHeaders(record),
+            headers: RecordService.formatKeyValue(record.headers),
+            form: record.dataMode === DataMode.urlencoded ? RecordService.formatKeyValue(record.formDatas) : undefined,
             body: record.body,
             strictSSL: reqStrictSSL,
             followRedirect: reqFollowRedirect,

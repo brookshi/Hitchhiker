@@ -1,10 +1,10 @@
 export enum DataMode {
 
-    raw = 0,
+    urlencoded = 0,
 
-    urlencoded = 1,
+    raw = 1,
 
-    params = 2,
+    form = 2,
 
     binary = 3
 }

@@ -17,7 +17,9 @@ export class CompareUtil {
                 (o.method || 'GET') === (t.method || 'GET') &&
                 StringUtil.headersToString(o.headers as any) === StringUtil.headersToString(t.headers as any) &&
                 StringUtil.headersToString(o.queryStrings as any) === StringUtil.headersToString(t.queryStrings as any) &&
+                StringUtil.headersToString(o.formDatas as any) === StringUtil.headersToString(t.formDatas as any) &&
                 (o.body || '') === (t.body || '') &&
+                (o.bodyType || '') === (t.bodyType || '') &&
                 (o.bodyType || '') === (t.bodyType || '') &&
                 (o.parameters || '') === (t.parameters || '') &&
                 o.parameterType === t.parameterType &&

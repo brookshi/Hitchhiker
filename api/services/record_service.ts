@@ -18,6 +18,7 @@ import { ProjectService } from './project_service';
 import { EnvironmentService } from './environment_service';
 import { VariableService } from './variable_service';
 import { QueryStringService } from './query_string_service';
+import { FormDataService } from './form_data_service';
 
 export class RecordService {
     private static _sort: number = 0;
@@ -39,11 +40,13 @@ export class RecordService {
         record.name = target.name;
         record.category = target.category;
         record.bodyType = target.bodyType;
+        record.dataMode = target.dataMode;
         record.parameters = target.parameters;
         record.parameterType = target.parameterType;
         record.prescript = target.prescript || '';
         record.assertInfos = target.assertInfos || {};
         record.queryStrings = this.handleArray(target.queryStrings, record.id, QueryStringService.fromDto);
+        record.formDatas = this.handleArray(target.formDatas, record.id, FormDataService.fromDto);
         return record;
     }
 
@@ -76,6 +79,30 @@ export class RecordService {
         return headers;
     }
 
+    static formatKeyValue(keyValues: { key: string, value: string, isActive: boolean }[]) {
+        let objs: { [key: string]: string } = {};
+        keyValues.forEach(o => {
+            if (o.isActive) {
+                objs[o.key] = o.value;
+            }
+        });
+        return objs;
+    }
+
+    static restoreKeyValue<T>(obj: { [key: string]: string }, fromDto: (dto: { isActive: boolean, key: string, value: string, id: string, sort: number }) => T) {
+        const keyValues = [];
+        _.keys(obj || {}).forEach(k => {
+            keyValues.push(fromDto({
+                isActive: true,
+                key: k,
+                value: obj[k],
+                id: '',
+                sort: 0
+            }));
+        });
+        return keyValues;
+    }
+
     static clone(record: Record): Record {
         const target = <Record>Object.create(record);
         target.id = StringUtil.generateUID();
@@ -101,6 +128,7 @@ export class RecordService {
             .innerJoinAndSelect('record.collection', 'collection')
             .leftJoinAndSelect('record.headers', 'header')
             .leftJoinAndSelect('record.queryStrings', 'queryString')
+            .leftJoinAndSelect('record.formDatas', 'formData')
             .where(whereStr, parameters);
 
         if (needHistory) {
@@ -128,7 +156,8 @@ export class RecordService {
         let rep = connection.getRepository(Record).createQueryBuilder('record');
         if (includeHeaders) {
             rep = rep.leftJoinAndSelect('record.headers', 'header')
-                .leftJoinAndSelect('record.queryStrings', 'queryString');
+                .leftJoinAndSelect('record.queryStrings', 'queryString')
+                .leftJoinAndSelect('record.formDatas', 'formData');
         }
         return await rep.where('record.id=:id', { id: id }).getOne();
     }
@@ -138,15 +167,17 @@ export class RecordService {
         let rep = connection.getRepository(Record).createQueryBuilder('record');
         if (includeHeaders) {
             rep = rep.leftJoinAndSelect('record.headers', 'header')
-                .leftJoinAndSelect('record.queryStrings', 'queryString');
+                .leftJoinAndSelect('record.queryStrings', 'queryString')
+                .leftJoinAndSelect('record.formDatas', 'formData');
         }
         return await rep.where('record.pid=:pid', { pid: id }).getMany();
     }
 
     static async create(record: Record, user: User): Promise<ResObject> {
         record.sort = await this.getMaxSort();
-        this.adjustHeaders(record);
-        this.adjustQueryStrings(record);
+        this.adjustAttachs(record.headers);
+        this.adjustAttachs(record.formDatas);
+        this.adjustAttachs(record.queryStrings);
         return await this.save(record, user);
     }
 
@@ -157,8 +188,9 @@ export class RecordService {
         if (recordInDB && recordInDB.headers.length > 0) {
             await connection.getRepository(Header).remove(recordInDB.headers);
         }
-        this.adjustHeaders(record);
-        this.adjustQueryStrings(record);
+        this.adjustAttachs(record.headers);
+        this.adjustAttachs(record.formDatas);
+        this.adjustAttachs(record.queryStrings);
         return await this.save(record, user);
     }
 
@@ -189,14 +221,6 @@ export class RecordService {
                 .execute();
         });
         return { success: true, message: Message.get('recordDeleteSuccess') };
-    }
-
-    private static adjustHeaders(record: Record) {
-        this.adjustAttachs(record.headers);
-    }
-
-    private static adjustQueryStrings(record: Record) {
-        this.adjustAttachs(record.queryStrings);
     }
 
     private static adjustAttachs<T extends { id: string, sort: number }>(attachs: T[]) {

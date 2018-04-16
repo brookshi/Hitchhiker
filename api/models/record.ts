@@ -10,6 +10,7 @@ import { RecordDoc } from './record_doc';
 import { RecordHistory } from './record_history';
 import { ServerResponse } from 'http';
 import { DtoAssert } from '../interfaces/dto_assert';
+import { BodyFormData } from './body_form_data';
 
 @Entity()
 export class Record {
@@ -59,6 +60,12 @@ export class Record {
         cascadeUpdate: true
     })
     headers: Header[] = [];
+
+    @OneToMany(type => BodyFormData, form => form.record, {
+        cascadeInsert: true,
+        cascadeUpdate: true
+    })
+    formDatas: BodyFormData[] = [];
 
     @Column('mediumtext', { nullable: true })
     body: string;

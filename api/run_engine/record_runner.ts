@@ -17,6 +17,7 @@ import { Duration } from '../interfaces/dto_stress_setting';
 import { RecordService } from '../services/record_service';
 import { AssertRunner } from './assert_runner';
 import { ValidateUtil } from '../utils/validate_util';
+import { FormDataService } from "../services/form_data_service";
 
 type BatchRunResult = RunResult | _.Dictionary<RunResult>;
 
@@ -136,14 +137,7 @@ export class RecordRunner {
         const prescriptResult = await ScriptRunner.prerequest(record);
         const { request } = prescriptResult.result;
         if (prescriptResult.success) {
-            record = { ...record, ...request, headers: [] };
-            _.keys(request.headers).forEach(k => {
-                record.headers.push(HeaderService.fromDto({
-                    isActive: true,
-                    key: k,
-                    value: request.headers[k]
-                }));
-            });
+            record = { ...record, ...request, headers: RecordService.restoreKeyValue(request.headers, HeaderService.fromDto), formDatas: RecordService.restoreKeyValue(request.formDatas, FormDataService.fromDto) };
         }
         return { prescriptResult, record };
     }
@@ -213,6 +207,7 @@ export class RecordRunner {
         }
         const headers = this.applyVariablesToKeyValue(record.headers, variables);
         const queryStrings = this.applyVariablesToKeyValue(record.queryStrings, variables);
+        const formDatas = this.applyVariablesToKeyValue(record.formDatas, variables);
         const assertInfos = {};
         for (let key of Object.keys(record.assertInfos || {})) {
             assertInfos[key] = [];
@@ -227,6 +222,7 @@ export class RecordRunner {
             ...record,
             headers,
             queryStrings,
+            formDatas,
             url: RecordRunner.applyVariables(record.url, variables),
             test: RecordRunner.applyVariables(record.test, variables),
             body: RecordRunner.applyVariables(record.body, variables),
@@ -241,6 +237,7 @@ export class RecordRunner {
             url: RecordRunner.applyVariables(record.url, parameter),
             headers: this.applyVariablesToKeyValue(record.headers, parameter),
             queryStrings: this.applyVariablesToKeyValue(record.queryStrings, parameter),
+            formDatas: this.applyVariablesToKeyValue(record.formDatas, parameter),
             body: RecordRunner.applyVariables(record.body, parameter),
             test: RecordRunner.applyVariables(record.test, parameter),
             prescript: RecordRunner.applyVariables(record.prescript, parameter)

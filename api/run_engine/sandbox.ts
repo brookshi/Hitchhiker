@@ -19,6 +19,8 @@ class SandboxRequest {
 
     headers: _.Dictionary<string>;
 
+    formDatas: _.Dictionary<string>;
+
     body: string;
 }
 
@@ -71,10 +73,14 @@ export class Sandbox {
                 url: StringUtil.stringifyUrl(record.url, record.queryStrings),
                 method: record.method || 'GET',
                 body: record.body,
+                formDatas: {},
                 headers: {}
             };
             record.headers.filter(h => h.isActive).forEach(h => {
                 this.request.headers[h.key] = h.value;
+            });
+            record.formDatas.filter(h => h.isActive).forEach(f => {
+                this.request.formDatas[f.key] = f.value;
             });
         }
     }
