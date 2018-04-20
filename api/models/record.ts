@@ -94,6 +94,9 @@ export class Record {
     @Column({ nullable: true })
     version: number; // TODO: need increase for each changing
 
+    @Column('text', { nullable: true })
+    description: string;
+
     @CreateDateColumn()
     createDate: Date;
 

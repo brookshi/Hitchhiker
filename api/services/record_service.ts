@@ -38,6 +38,7 @@ export class RecordService {
         record.method = target.method;
         record.collection = collection;
         record.name = target.name;
+        record.description = target.description;
         record.category = target.category;
         record.bodyType = target.bodyType;
         record.dataMode = target.dataMode;

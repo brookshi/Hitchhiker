@@ -34,6 +34,8 @@ export interface ReqResUIState {
     headersEditMode: KeyValueEditMode;
 
     displayQueryString: boolean;
+
+    displayRequestDescription?: boolean;
 }
 
 export interface TimelineState {

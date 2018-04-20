@@ -13,6 +13,7 @@ export class CompareUtil {
                 (o.pid || '') === (t.pid || '') &&
                 o.category === t.category &&
                 o.name === t.name &&
+                o.description === t.description &&
                 (o.url || '') === (t.url || '') &&
                 (o.method || 'GET') === (t.method || 'GET') &&
                 StringUtil.headersToString(o.headers as any) === StringUtil.headersToString(t.headers as any) &&

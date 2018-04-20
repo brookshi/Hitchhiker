@@ -48,6 +48,8 @@ export interface DtoRecord {
     test?: string;
 
     sort?: number;
+
+    description?: string;
 }
 
 export interface DtoRecordHistory {

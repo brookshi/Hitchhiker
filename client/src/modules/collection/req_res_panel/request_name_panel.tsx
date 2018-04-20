@@ -1,14 +1,15 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { Form, Alert } from 'antd';
+import { Form, Alert, Icon } from 'antd';
 import { ValidateStatus, ValidateType } from '../../../common/custom_type';
 import { actionCreator } from '../../../action/index';
 import { UpdateDisplayRecordPropertyType } from '../../../action/record';
 import { getActiveRecordSelector, getActiveRecordStateSelector } from './selector';
 import { ConflictType } from '../../../common/conflict_type';
-import { ShowTimelineType } from '../../../action/ui';
+import { ShowTimelineType, ToggleRequestDescriptionType } from '../../../action/ui';
 import Msg from '../../../locales';
 import LoInput from '../../../locales/input';
+import { State } from '../../../state/index';
 
 const FItem = Form.Item;
 
@@ -16,11 +17,17 @@ interface RequestNamePanelStateProps {
 
     activeKey: string;
 
+    id: string;
+
     name: string;
+
+    description: string;
 
     notShowConflict?: boolean;
 
     conflictType: ConflictType;
+
+    displayRequestDescription?: boolean;
 }
 
 interface RequestNamePanelDispatchProps {
@@ -28,6 +35,8 @@ interface RequestNamePanelDispatchProps {
     changeRecord(value: { [key: string]: any });
 
     showTimeLine(id: string);
+
+    toggleRequestDescription(id: string, display: boolean);
 }
 
 type RequestNamePanelProps = RequestNamePanelStateProps & RequestNamePanelDispatchProps;
@@ -61,6 +70,10 @@ class RequestNamePanel extends React.Component<RequestNamePanelProps, RequestNam
         this.props.changeRecord({ 'name': value });
     }
 
+    private onDescriptionChanged = (value: string) => {
+        this.props.changeRecord({ 'description': value });
+    }
+
     private getConflictModifyMsg = () => {
         return (
             <div>
@@ -73,7 +86,7 @@ class RequestNamePanel extends React.Component<RequestNamePanelProps, RequestNam
     public render() {
 
         const { nameValidateStatus } = this.state;
-        const { name, notShowConflict, conflictType } = this.props;
+        const { id, name, description, notShowConflict, conflictType, displayRequestDescription, toggleRequestDescription } = this.props;
         const currentConflictType = notShowConflict ? ConflictType.none : conflictType;
 
         return (
@@ -85,40 +98,64 @@ class RequestNamePanel extends React.Component<RequestNamePanelProps, RequestNam
                                 <Alert message={this.getConflictModifyMsg()} type="warning" showIcon={true} closable={true} /> : ''
                         )
                 }
-                <Form className="req-panel">
-                    <FItem
-                        className="req-name"
-                        style={{ marginBottom: 8 }}
-                        hasFeedback={true}
-                        validateStatus={nameValidateStatus}
-                    >
-                        <LoInput
-                            placeholderId="Collection.EnterNameForRequest"
-                            spellCheck={false}
-                            onChange={(e) => this.onNameChanged(e.currentTarget.value)}
-                            value={name}
-                        />
-                    </FItem>
-                </Form>
+                <div>
+                    <span className="req-panel-name-caret" onClick={() => toggleRequestDescription(id, !displayRequestDescription)}><Icon type={displayRequestDescription ? 'caret-down' : 'caret-right'} /></span>
+                    <span className="req-panel">
+                        <Form className="req-panel-form">
+                            <FItem
+                                className="req-name"
+                                hasFeedback={true}
+                                validateStatus={nameValidateStatus}
+                            >
+                                <LoInput
+                                    placeholderId="Collection.EnterNameForRequest"
+                                    spellCheck={false}
+                                    onChange={(e) => this.onNameChanged(e.currentTarget.value)}
+                                    value={name}
+                                />
+                            </FItem>
+                        </Form>
+                    </span>
+                </div>
+                {
+                    displayRequestDescription ? (
+                        <div className="req-panel-description" style={{ marginBottom: 8 }}>
+                            <LoInput
+                                placeholderId="Collection.RequestDescription"
+                                spellCheck={false}
+                                onChange={(e) => this.onDescriptionChanged(e.currentTarget.value)}
+                                value={description}
+                                type="textarea"
+                                autosize={true}
+                            />
+                        </div>
+                    ) : ''
+                }
             </div>
         );
     }
 }
 
-const mapStateToProps = (state: any): RequestNamePanelStateProps => {
+const mapStateToProps = (state: State): RequestNamePanelStateProps => {
     const activeRecordState = getActiveRecordStateSelector()(state);
+    const activeKey = state.displayRecordsState.activeKey;
+    const activeUIState = state.uiState.reqResUIState[activeRecordState.record.id];
     return {
-        activeKey: state.displayRecordsState.activeKey,
+        activeKey,
+        id: activeRecordState.record.id,
         name: getActiveRecordSelector()(state).name,
+        description: getActiveRecordSelector()(state).description || '',
         notShowConflict: activeRecordState.notShowConflict,
-        conflictType: activeRecordState.conflictType
+        conflictType: activeRecordState.conflictType,
+        displayRequestDescription: activeUIState ? activeUIState.displayRequestDescription : false
     };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): RequestNamePanelDispatchProps => {
     return {
         changeRecord: (value) => dispatch(actionCreator(UpdateDisplayRecordPropertyType, value)),
-        showTimeLine: (id) => dispatch(actionCreator(ShowTimelineType, id))
+        showTimeLine: (id) => dispatch(actionCreator(ShowTimelineType, id)),
+        toggleRequestDescription: (recordId, displayRequestDescription) => dispatch(actionCreator(ToggleRequestDescriptionType, { recordId, displayRequestDescription }))
     };
 };
 

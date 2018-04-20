@@ -46,7 +46,36 @@
 }
 
 .req-panel {
+    width: calc(100% - 20px);
+    display: inline-block;
+}
+
+.req-panel-form {
     padding-bottom: 8px;
+    .ant-form-item{
+        margin-bottom: 0px;
+    }
+}
+
+.req-panel-name-caret{
+    padding-right: 4px;
+    display: inline-block;
+    color: gray;
+}
+
+.req-panel-name-caret:hover{
+    color: #a2a2a2;
+}
+
+.req-panel-description{
+    textarea{
+        background: @panel-background;
+        border-width: 0px;
+        border-radius: 0px;
+    }
+    textarea:hover{
+        border-width: 1px;
+    }
 }
 
 .url-panel {
