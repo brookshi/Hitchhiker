@@ -18,6 +18,8 @@ interface KeyValueComponentProps {
 
     showFav?: boolean;
 
+    showDescription?: boolean;
+
     favHeaders?: DtoHeader[];
 }
 
@@ -27,8 +29,13 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
 
     private onHeadersChanged = (data: SyntheticEvent<any> | DtoHeader[]) => {
         let rst = data as DtoHeader[];
+        const oldHeaders = this.props.headers || [];
         if (!(data instanceof Array)) {
             rst = StringUtil.stringToKeyValues(data.currentTarget.value) as DtoHeader[];
+            rst.forEach((h, i) => {
+                h.isFav = oldHeaders[i] ? oldHeaders[i].isFav : false;
+                h.description = oldHeaders[i] ? oldHeaders[i].description : '';
+            });
         } else {
             rst = rst.filter(header => header.key || header.value);
         }
@@ -53,6 +60,7 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
                     onChanged={this.onHeadersChanged}
                     isAutoComplete={this.props.isAutoComplete}
                     showFav={this.props.showFav}
+                    showDescription={this.props.showDescription}
                     favHeaders={this.props.favHeaders}
                 />
             );

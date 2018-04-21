@@ -52,6 +52,7 @@ class RequestQueryStringPanel extends React.Component<RequestQueryStringPanelPro
                 isAutoComplete={false}
                 headers={_.sortBy(_.cloneDeep(queryStrings) || [], 'sort')}
                 showFav={false}
+                showDescription={true}
             />
         );
     }

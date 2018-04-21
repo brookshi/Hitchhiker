@@ -31,6 +31,8 @@ interface KeyValueListComponentProps {
 
     showFav?: boolean;
 
+    showDescription?: boolean;
+
     favHeaders?: DtoHeader[];
 }
 
@@ -45,6 +47,8 @@ interface SortableElementParam {
 
     hIndex: number;
 }
+
+type InputType = 'key' | 'value' | 'description' | 'isActive' | 'isFav';
 
 class KeyValueListComponent extends React.Component<KeyValueListComponentProps, KeyValueListComponentState> {
 
@@ -97,20 +101,20 @@ class KeyValueListComponent extends React.Component<KeyValueListComponentProps, 
                             : ''
                     }
                 </div>
-                {this.getInputControl(true, hIndex, header.key)}
-                {this.getInputControl(false, hIndex, header.value)}
+                {this.generateInputControl(true, hIndex, header.key)}
+                {this.generateInputControl(false, hIndex, header.value)}
+                {this.props.showDescription ? this.getInput('description', hIndex, header.description) : ''}
 
                 <Icon style={visibility} type="close" onClick={(event) => this.onDelItem(hIndex)} />
             </li>
         );
     });
 
-    private getInputControl = (isKey: boolean, hIndex: number, value?: string) => {
+    private generateInputControl = (isKey: boolean, hIndex: number, value?: string) => {
         const type = isKey ? 'key' : 'value';
-        const className = this.props.showFav ? 'inputWithFav' : 'inputWithoutFav';
         return this.props.isAutoComplete ? (
             <AutoComplete
-                className={className}
+                className={this.inputClass}
                 optionLabelProp="value"
                 dataSource={isKey ? [] : headerValues}
                 placeholder={type}
@@ -120,15 +124,23 @@ class KeyValueListComponent extends React.Component<KeyValueListComponentProps, 
             >
                 {isKey ? this.keyOptions : []}
             </AutoComplete>
-        ) : (
-                <Input
-                    className={className}
-                    spellCheck={false}
-                    onChange={(e) => this.onValueChange(type, hIndex, e)}
-                    placeholder={type}
-                    value={value}
-                />
-            );
+        ) : this.getInput(type, hIndex, value);
+    }
+
+    private getInput = (type: InputType, hIndex: number, value?: string) => {
+        return (
+            <Input
+                className={this.inputClass}
+                spellCheck={false}
+                onChange={(e) => this.onValueChange(type, hIndex, e)}
+                placeholder={type}
+                value={value}
+            />
+        );
+    }
+
+    private get inputClass() {
+        return this.props.showDescription ? (this.props.showFav ? 'inputWithFav' : 'inputWithoutFav') : 'inputWithoutFavAndDescription';
     }
 
     private SortableList = SortableContainer(({ headers }) => {
@@ -185,7 +197,7 @@ class KeyValueListComponent extends React.Component<KeyValueListComponentProps, 
         this.onChanged(headers);
     }
 
-    private onValueChange = (type: 'key' | 'value' | 'isActive' | 'isFav', index: number, event) => {
+    private onValueChange = (type: InputType, index: number, event) => {
         const { headers } = this.state;
         if (type === 'key' && typeof event === 'string') {
             const values = event.split('::');

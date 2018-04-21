@@ -32,7 +32,7 @@ export class RecordService {
         record.url = target.url;
         record.pid = target.pid;
         record.body = target.body || '';
-        target.headers = this.handleArray(target.headers, record.id, HeaderService.fromDto);
+        record.headers = this.handleArray(target.headers, record.id, HeaderService.fromDto);
         record.test = target.test || '';
         record.sort = target.sort;
         record.method = target.method;
@@ -225,6 +225,9 @@ export class RecordService {
     }
 
     private static adjustAttachs<T extends { id: string, sort: number }>(attachs: T[]) {
+        if (!attachs) {
+            return;
+        }
         attachs.forEach((attach, index) => {
             attach.id = attach.id || StringUtil.generateUID();
             attach.sort = index;

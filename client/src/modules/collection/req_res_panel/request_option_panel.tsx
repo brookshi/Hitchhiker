@@ -191,6 +191,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                         isAutoComplete={true}
                         headers={_.sortBy(_.cloneDeep(headers) || [], 'sort')}
                         showFav={true}
+                        showDescription={true}
                         favHeaders={favHeaders}
                     />
                 </TabPane>
@@ -235,6 +236,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                                 isAutoComplete={false}
                                 headers={_.sortBy(_.cloneDeep(formDatas) || [], 'sort')}
                                 showFav={false}
+                                showDescription={true}
                             />
                     }
 

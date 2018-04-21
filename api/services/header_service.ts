@@ -11,6 +11,7 @@ export class HeaderService {
         header.isActive = dtoHeader.isActive;
         header.isFav = dtoHeader.isFav;
         header.sort = dtoHeader.sort;
+        header.description = dtoHeader.description;
         header.id = dtoHeader.id || StringUtil.generateUID();
         return header;
     }
