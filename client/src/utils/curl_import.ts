@@ -7,10 +7,12 @@ export class CurlImport {
 
     static do(target: string, collectionId: string = ''): DtoRecord | undefined {
 
-        const content = this.prepare(target);
+        let content = this.prepare(target);
         if (!content.includes('curl ')) {
             return undefined;
         }
+
+        content = content.replace(/--data\s+""/g, '');
 
         const args = words.split(content);
         const result: DtoRecord = getDefaultRecord();
