@@ -23,7 +23,7 @@ export class ScriptRunner {
             res = { success: false, message: ex };
         }
 
-        res = await ScriptRunner.run({ hitchhiker, hh: hitchhiker, console: hitchhiker.console }, prescript);
+        res = await ScriptRunner.run({ hitchhiker, hh: hitchhiker, hkr: hitchhiker, console: hitchhiker.console }, prescript);
         res.result = { request: hitchhiker.request, consoleMsgQueue: hitchhiker.console.msgQueue };
         return res;
     }
@@ -44,7 +44,7 @@ export class ScriptRunner {
         const $variables$: any = hitchhiker.variables;
         const $export$ = hitchhiker.export;
 
-        const sandbox = { hitchhiker, hh: hitchhiker, $variables$, $export$, tests, console: hitchhiker.console, ...ScriptRunner.getInitResObj(res) };
+        const sandbox = { hitchhiker, hh: hitchhiker, hkr: hitchhiker, $variables$, $export$, tests, console: hitchhiker.console, ...ScriptRunner.getInitResObj(res) };
 
         const rst = await ScriptRunner.run(sandbox, test);
         if (!rst.success) {
