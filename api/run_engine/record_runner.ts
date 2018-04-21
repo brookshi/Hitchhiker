@@ -105,7 +105,7 @@ export class RecordRunner {
 
     private static async runRecordWithVW(record: RecordEx) {
         let prescriptResult: ResObject = { success: true, message: '' };
-        const { uid, vid, envId, envName, serverRes, param, trace } = record;
+        const { uid, vid, envId, param, trace } = record;
         const cookies: _.Dictionary<string> = UserVariableManager.getCookies(uid || vid, envId);
 
         if (record.prescript) {
@@ -133,7 +133,6 @@ export class RecordRunner {
     }
 
     private static async runPreScript(record: RecordEx): Promise<{ prescriptResult: ResObject, record: RecordEx }> {
-        const { envId, envName, prescript, uid, vid, pid } = record;
         const prescriptResult = await ScriptRunner.prerequest(record);
         const { request } = prescriptResult.result;
         if (prescriptResult.success) {

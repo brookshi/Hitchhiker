@@ -15,10 +15,10 @@ const { NodeVM: safeVM } = require('vm2');
 export class ScriptRunner {
 
     static async prerequest(record: RecordEx): Promise<ResObject> {
-        const { pid, vid, uid, envId, envName, prescript } = record;
+        const { pid, vid, uid, envId, envName, envVariables, prescript } = record;
         let hitchhiker: Sandbox, res: ResObject;
         try {
-            hitchhiker = new Sandbox(pid, uid || vid, envId, envName, record);
+            hitchhiker = new Sandbox(pid, uid || vid, envId, envName, envVariables, record);
         } catch (ex) {
             res = { success: false, message: ex };
         }
@@ -29,10 +29,10 @@ export class ScriptRunner {
     }
 
     static async test(record: RecordEx, res: request.RequestResponse): Promise<{ tests: _.Dictionary<boolean>, export: {}, consoleMsgQueue: Array<ConsoleMsg> }> {
-        const { pid, vid, uid, envId, envName, test } = record;
+        const { pid, vid, uid, envId, envName, envVariables, test } = record;
         let hitchhiker, tests;
         try {
-            hitchhiker = new Sandbox(pid, uid || vid, envId, envName);
+            hitchhiker = new Sandbox(pid, uid || vid, envId, envName, envVariables);
         } catch (ex) {
             tests = {};
             tests[ex] = false;

@@ -65,7 +65,7 @@ export class Sandbox {
 
     exportObj = { content: Sandbox.defaultExport };
 
-    constructor(private projectId: string, private vid: string, private envId: string, private envName: string, record?: Record) {
+    constructor(private projectId: string, private vid: string, private envId: string, private envName: string, private envVariables: _.Dictionary<string>, record?: Record) {
         this.initVariables();
         this._allProjectJsFiles = ProjectDataService.instance.getProjectAllJSFiles(projectId);
         if (record) {
@@ -142,7 +142,7 @@ export class Sandbox {
     }
 
     getEnvVariable(key: string) {
-        return this.variables[key];
+        return this.variables[key] || this.envVariables[key];
     }
 
     removeEnvVariable(key: string) {

@@ -362,8 +362,10 @@ export class RecordService {
 
     static async prepareRecordsForRun(records: Record[], envId: string, orderIds?: string, trace?: (msg: string) => void): Promise<RecordEx[]> {
         const vid = StringUtil.generateUID();
-        const env = await EnvironmentService.get(envId, false);
+        const env = await EnvironmentService.get(envId, true);
         const envName = env ? env.name : '';
+        const envVariables = {};
+        (env.variables || []).filter(v => v.isActive).forEach(v => envVariables[v.key] = v.value);
 
         let recordExs: RecordEx[] = [];
 
@@ -371,7 +373,7 @@ export class RecordService {
             let newRecord = { ...(await RecordService.combineScript(r)) };
             const { id: pid } = (await ProjectService.getProjectByCollectionId(r.collection.id)) || { id: '' };
             newRecord = await VariableService.applyVariableForRecord(envId, newRecord);
-            recordExs.push({ ...newRecord, pid, envId, envName, vid, param: '', trace });
+            recordExs.push({ ...newRecord, pid, envId, envName, envVariables, vid, param: '', trace });
         }
 
         recordExs = _.sortBy(recordExs, 'name');

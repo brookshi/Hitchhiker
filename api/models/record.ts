@@ -112,6 +112,8 @@ export class RecordEx extends Record {
 
     envName: string;
 
+    envVariables: _.Dictionary<string>;
+
     pid: string;
 
     vid: string;
