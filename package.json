@@ -34,7 +34,7 @@
     "@types/adm-zip": "^0.4.31",
     "@types/archiver": "^2.0.1",
     "@types/fs-extra": "^4.0.4",
-    "@types/koa": "^2.0.39",
+    "@types/koa": "2.0.39",
     "@types/koa-static": "^2.0.22",
     "@types/lodash": "^4.14.55",
     "@types/log4js": "^0.0.32",

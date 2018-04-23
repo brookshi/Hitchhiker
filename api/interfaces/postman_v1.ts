@@ -1,6 +1,7 @@
 import { DtoRecord } from './dto_record';
 import { DtoEnvironment } from './dto_environment';
 import { DtoVariable } from './dto_variable';
+import { DataMode } from '../common/data_mode';
 
 export interface PostmanAllV1 {
 
@@ -31,8 +32,6 @@ export interface PostmanRecord extends DtoRecord {
     rawModeData: string;
 
     data: any;
-
-    dataMode: string;
 
     preRequestScript: string;
 

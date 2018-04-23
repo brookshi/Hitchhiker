@@ -323,7 +323,7 @@ export class RecordService {
         Reflect.deleteProperty(history.record, 'doc');
         Reflect.deleteProperty(history.record, 'history');
         Reflect.deleteProperty(history.record, 'children');
-        history.record.headers = record.headers.map(h => {
+        history.record.headers = (record.headers || []).map(h => {
             const header = { ...h };
             Reflect.deleteProperty(header, 'record');
             return header;
@@ -365,7 +365,7 @@ export class RecordService {
         const env = await EnvironmentService.get(envId, true);
         const envName = env ? env.name : '';
         const envVariables = {};
-        (env.variables || []).filter(v => v.isActive).forEach(v => envVariables[v.key] = v.value);
+        ((env ? env.variables : []) || []).filter(v => v.isActive).forEach(v => envVariables[v.key] = v.value);
 
         let recordExs: RecordEx[] = [];
 

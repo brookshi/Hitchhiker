@@ -16,6 +16,7 @@ import { Collection } from '../../models/collection';
 import { DtoVariable } from '../../interfaces/dto_variable';
 import { Environment } from '../../models/environment';
 import { VariableService } from '../variable_service';
+import { DataMode } from '../../common/data_mode';
 
 export class PostmanImport implements RequestsImport {
 
@@ -124,6 +125,7 @@ export class PostmanImport implements RequestsImport {
         const dtoRecord = <DtoRecord>f;
         dtoRecord.collectionId = cid;
         dtoRecord.sort = sort;
+        dtoRecord.dataMode = DataMode.raw;
         dtoRecord.category = RecordCategory.folder;
         dtoRecord.id = StringUtil.generateUID();
         return dtoRecord;
@@ -136,6 +138,7 @@ export class PostmanImport implements RequestsImport {
         dtoRecord.headers = this.parseHeaders(r.headers);
         dtoRecord.body = this.parseBody(r);
         dtoRecord.test = r.tests;
+        dtoRecord.dataMode = DataMode.raw;
         dtoRecord.category = RecordCategory.record;
         const folder = folders ? folders.find(f => f.order && !!f.order.find(o => o === dtoRecord.id)) : undefined;
         dtoRecord.pid = folder ? folder.id : '';

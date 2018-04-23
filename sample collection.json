@@ -16,27 +16,24 @@
 	"timestamp": 1510480454919,
 	"owner": "1010955",
 	"public": false,
-	"requests": [
-		{
+	"requests": [{
 			"id": "6e7f60c9-acbc-f6c5-c393-6223d9ec2f5f",
 			"headers": "",
 			"headerData": [],
 			"url": "http://httpbin.org/get?a=b",
-			"queryParams": [
-				{
-					"key": "a",
-					"value": "b",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				}
-			],
+			"queryParams": [{
+				"key": "a",
+				"value": "b",
+				"equals": true,
+				"description": "",
+				"enabled": true
+			}],
 			"preRequestScript": null,
 			"pathVariables": {},
 			"pathVariableData": [],
 			"method": "GET",
 			"data": null,
-			"dataMode": "params",
+			"dataMode": 1,
 			"version": 2,
 			"tests": "const crypto = hitchhiker.require('crypto-js');\n\ntests[`crypto ${crypto.HmacSHA1('test', 'asdf')}`] = true;\n\ntests[`crypto ${crypto.MD5('test')}`] = true;",
 			"currentHelper": "normal",
@@ -52,21 +49,19 @@
 			"headers": "",
 			"headerData": [],
 			"url": "http://httpbin.org/get?a=b",
-			"queryParams": [
-				{
-					"key": "a",
-					"value": "b",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				}
-			],
+			"queryParams": [{
+				"key": "a",
+				"value": "b",
+				"equals": true,
+				"description": "",
+				"enabled": true
+			}],
 			"preRequestScript": "",
 			"pathVariables": {},
 			"pathVariableData": [],
 			"method": "GET",
 			"data": null,
-			"dataMode": "params",
+			"dataMode": 1,
 			"version": 2,
 			"tests": "const _ = hitchhiker.require('lodash');\n\nconst a = [1, 2];\n\nconst b= [3, 4];\n\ntests[_.union(a, b).join('-')] = true;",
 			"currentHelper": "normal",
@@ -82,21 +77,19 @@
 			"headers": "",
 			"headerData": [],
 			"url": "http://httpbin.org/get?a={{resBody}}",
-			"queryParams": [
-				{
-					"key": "a",
-					"value": "{{resBody}}",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				}
-			],
+			"queryParams": [{
+				"key": "a",
+				"value": "{{resBody}}",
+				"equals": true,
+				"description": "",
+				"enabled": true
+			}],
 			"preRequestScript": "const request = hitchhiker.require('request');\n\nfunction getData() {\n    return new Promise((resolve, reject) => {\n            const req = request(\"http://httpbin.org/get?a=request in request\", (err, res, body) => {\n                resolve({ err: err, response: res, body: body });\n            });\n        });\n}\n\nconst res = await getData(); // MUST use async/await\n\nhitchhiker.setEnvVariable('resBody', res.body);",
 			"pathVariables": {},
 			"pathVariableData": [],
 			"method": "GET",
 			"data": null,
-			"dataMode": "params",
+			"dataMode": 1,
 			"version": 2,
 			"tests": "const body = hitchhiker.getEnvVariable('resBody');\n\nconst obj = JSON.parse(body);\n\ntests[obj.args.a] = true;",
 			"currentHelper": "normal",
@@ -112,21 +105,19 @@
 			"headers": "",
 			"headerData": [],
 			"url": "http://httpbin.org/get?a=b",
-			"queryParams": [
-				{
-					"key": "a",
-					"value": "b",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				}
-			],
+			"queryParams": [{
+				"key": "a",
+				"value": "b",
+				"equals": true,
+				"description": "",
+				"enabled": true
+			}],
 			"preRequestScript": "",
 			"pathVariables": {},
 			"pathVariableData": [],
 			"method": "GET",
 			"data": null,
-			"dataMode": "params",
+			"dataMode": 1,
 			"version": 2,
 			"tests": "const xlsx = hitchhiker.require('xlsx');\n\nconst workbook = hitchhiker.readFileByReader('test.xlsx', xlsx.readFile); // read excel file in global_data/data by using readFileByReader\n\ntests[workbook.SheetNames[0]] = true;\n\ntests[workbook.Sheets[workbook.SheetNames[0]]['A1'].v] = true;",
 			"currentHelper": "normal",
@@ -142,21 +133,19 @@
 			"headers": "",
 			"headerData": [],
 			"url": "http://httpbin.org/get?a=b",
-			"queryParams": [
-				{
-					"key": "a",
-					"value": "b",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				}
-			],
+			"queryParams": [{
+				"key": "a",
+				"value": "b",
+				"equals": true,
+				"description": "",
+				"enabled": true
+			}],
 			"preRequestScript": "",
 			"pathVariables": {},
 			"pathVariableData": [],
 			"method": "GET",
 			"data": null,
-			"dataMode": "params",
+			"dataMode": 1,
 			"version": 2,
 			"tests": "const uuid = hitchhiker.require('uuid');\n\ntests[uuid.v4()] = true;\n\ntests[uuid.v1()] = true;",
 			"currentHelper": "normal",
@@ -172,21 +161,19 @@
 			"headers": "",
 			"headerData": [],
 			"url": "http://httpbin.org/get?a=b",
-			"queryParams": [
-				{
-					"key": "a",
-					"value": "b",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				}
-			],
+			"queryParams": [{
+				"key": "a",
+				"value": "b",
+				"equals": true,
+				"description": "",
+				"enabled": true
+			}],
 			"preRequestScript": "hitchhiker.saveFile('test.txt', 'test file content'); // save content\n",
 			"pathVariables": {},
 			"pathVariableData": [],
 			"method": "GET",
 			"data": null,
-			"dataMode": "params",
+			"dataMode": 1,
 			"version": 2,
 			"tests": "const value = hitchhiker.readFile('test.txt');  // read file content, support custom reader by using readFileByReader\n\ntests[value] = true;\n\nhitchhiker.removeFile('test.json'); // remove file",
 			"currentHelper": "normal",
@@ -202,21 +189,19 @@
 			"headers": "",
 			"headerData": [],
 			"url": "http://httpbin.org/get?a={{value}}",
-			"queryParams": [
-				{
-					"key": "a",
-					"value": "{{value}}",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				}
-			],
+			"queryParams": [{
+				"key": "a",
+				"value": "{{value}}",
+				"equals": true,
+				"description": "",
+				"enabled": true
+			}],
 			"preRequestScript": "hitchhiker.setEnvVariable('value', 'test'); // set env variable",
 			"pathVariables": {},
 			"pathVariableData": [],
 			"method": "GET",
 			"data": null,
-			"dataMode": "params",
+			"dataMode": 1,
 			"version": 2,
 			"tests": "const value = hitchhiker.getEnvVariable('value'); // get env variable\n\ntests[value] = true;\n\nhitchhiker.removeEnvVariable('value'); // remove env variable\n\ntests[hitchhiker.environment] = true; // get current selected env",
 			"currentHelper": "normal",

@@ -225,6 +225,6 @@ export class StringUtil {
             return `${arr[0]}${queryString != null ? '?' : ''}${queryString}`;
         }
 
-        return arr[0];
+        return url;
     }
 }

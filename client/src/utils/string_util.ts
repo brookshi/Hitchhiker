@@ -63,7 +63,7 @@ export class StringUtil {
             return `${arr[0]}${queryString != null ? '?' : ''}${queryString}`;
         }
 
-        return arr[0];
+        return url;
     }
 
     static upperFirstAlphabet(word: string): string {
