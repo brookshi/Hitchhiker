@@ -1,5 +1,6 @@
 import { DtoRecord } from '../../../api/interfaces/dto_record';
 import { StringUtil } from '../utils/string_util';
+import { DataMode } from './custom_type';
 
 export interface HARNameValue {
 
@@ -31,7 +32,7 @@ export class HAR {
 
     constructor(private record: DtoRecord) {
         this.method = record.method || 'GET';
-        this.url = record.url || '';
+        this.url = StringUtil.stringifyUrl(record.url || '', record.queryStrings || []);
         this.headers = (record.headers || []).filter(h => h.isActive).map(h => ({ name: h.key || '', value: h.value || '' }));
         this.generateCookie();
         this.generatePostData();
@@ -54,17 +55,19 @@ export class HAR {
             mimeType = contentTypeHeader.value || '';
         }
         let text = this.record.body || '';
-        const params = new Array<HARNameValue>();
-        if (mimeType === 'application/x-www-form-urlencoded' && text) {
-            try {
+        let params = new Array<HARNameValue>();
+        try {
+            if (this.record.dataMode === DataMode.urlencoded) {
+                params = (this.record.formDatas || []).filter(h => h.isActive).map(h => ({ name: h.key || '', value: h.value || '' }));
+            } else if (mimeType === 'application/x-www-form-urlencoded' && text) {
                 text = decodeURIComponent(text.replace('+', '%20'));
                 text.split('&').forEach(pair => {
                     const [name, value] = pair.split('=');
                     params.push({ name, value });
                 });
-            } catch (e) {
-                console.error(`generate post data error: ${e}`);
             }
+        } catch (e) {
+            console.error(`generate post data error: ${e}`);
         }
         this.postData = {
             params,

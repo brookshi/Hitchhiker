@@ -17,7 +17,7 @@ import { Duration } from '../interfaces/dto_stress_setting';
 import { RecordService } from '../services/record_service';
 import { AssertRunner } from './assert_runner';
 import { ValidateUtil } from '../utils/validate_util';
-import { FormDataService } from "../services/form_data_service";
+import { FormDataService } from '../services/form_data_service';
 
 type BatchRunResult = RunResult | _.Dictionary<RunResult>;
 
@@ -136,7 +136,7 @@ export class RecordRunner {
         const prescriptResult = await ScriptRunner.prerequest(record);
         const { request } = prescriptResult.result;
         if (prescriptResult.success) {
-            record = { ...record, ...request, headers: RecordService.restoreKeyValue(request.headers, HeaderService.fromDto), formDatas: RecordService.restoreKeyValue(request.formDatas, FormDataService.fromDto) };
+            record = { ...record, ...request, headers: RecordService.restoreKeyValue(request.headers, HeaderService.fromDto), queryStrings: [], formDatas: RecordService.restoreKeyValue(request.formDatas, FormDataService.fromDto) };
         }
         return { prescriptResult, record };
     }

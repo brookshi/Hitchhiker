@@ -19,6 +19,8 @@ import { EnvironmentService } from './environment_service';
 import { VariableService } from './variable_service';
 import { QueryStringService } from './query_string_service';
 import { FormDataService } from './form_data_service';
+import { QueryString } from '../models/query_string';
+import { BodyFormData } from '../models/body_form_data';
 
 export class RecordService {
     private static _sort: number = 0;
@@ -108,6 +110,8 @@ export class RecordService {
         const target = <Record>Object.create(record);
         target.id = StringUtil.generateUID();
         target.headers = target.headers.map(h => HeaderService.clone(h));
+        target.queryStrings = target.queryStrings.map(h => QueryStringService.clone(h));
+        target.formDatas = target.formDatas.map(h => FormDataService.clone(h));
         target.createDate = new Date();
         return target;
     }
@@ -186,8 +190,16 @@ export class RecordService {
         const connection = await ConnectionManager.getInstance();
         const recordInDB = await this.getById(record.id, true);
 
-        if (recordInDB && recordInDB.headers.length > 0) {
-            await connection.getRepository(Header).remove(recordInDB.headers);
+        if (recordInDB) {
+            if ((recordInDB.headers || []).length > 0) {
+                await connection.getRepository(Header).remove(recordInDB.headers);
+            }
+            if ((recordInDB.queryStrings || []).length > 0) {
+                await connection.getRepository(QueryString).remove(recordInDB.queryStrings);
+            }
+            if ((recordInDB.formDatas || []).length > 0) {
+                await connection.getRepository(BodyFormData).remove(recordInDB.formDatas);
+            }
         }
         this.adjustAttachs(record.headers);
         this.adjustAttachs(record.formDatas);
@@ -323,12 +335,18 @@ export class RecordService {
         Reflect.deleteProperty(history.record, 'doc');
         Reflect.deleteProperty(history.record, 'history');
         Reflect.deleteProperty(history.record, 'children');
-        history.record.headers = (record.headers || []).map(h => {
-            const header = { ...h };
-            Reflect.deleteProperty(header, 'record');
-            return header;
-        });
+        history.record.headers = this.deleteRecordForCascade(record.headers || []);
+        history.record.queryStrings = this.deleteRecordForCascade(record.queryStrings || []);
+        history.record.formDatas = this.deleteRecordForCascade(record.formDatas || []);
         return history;
+    }
+
+    static deleteRecordForCascade<T extends object>(cascades: T[]) {
+        return (cascades || []).map(c => {
+            const cascade = Object.assign(c);
+            Reflect.deleteProperty(cascade, 'record');
+            return cascade;
+        });
     }
 
     private static async clearHistories(manager: EntityManager, rid: string): Promise<any> {

@@ -133,11 +133,13 @@ export class StressService {
             let record = records[i];
             const paramArr = StringUtil.parseParameters(record.parameters, record.parameterType);
             const headers = {};
+            const url = StringUtil.stringifyUrl(record.url, record.queryStrings);
 
             if (paramArr.length === 0) {
                 record.headers.forEach(h => { if (h.isActive) { headers[h.key] = h.value; } });
                 requestBodyList.push(<any>{
                     ...record,
+                    url,
                     headers,
                     prescript: StressService.mergeScript(globalFunction, record, true),
                     test: StressService.mergeScript(globalFunction, record, false)
@@ -151,6 +153,7 @@ export class StressService {
                     newRecord.name = `${newRecord.name}\n${param}`;
                     requestBodyList.push(<any>{
                         ...newRecord,
+                        url,
                         param,
                         headers,
                         prescript: StressService.mergeScript(globalFunction, record, true),

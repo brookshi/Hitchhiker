@@ -17,6 +17,7 @@ import Msg from '../../../locales';
 import LoInput from '../../../locales/input';
 import LocalesString from '../../../locales/string';
 import { DisplayQueryStringType } from '../../../action/ui';
+import { DtoQueryString, DtoBodyFormData } from '../../../../../api/interfaces/dto_variable';
 
 const DButton = Dropdown.Button as any;
 const Option = Select.Option;
@@ -148,6 +149,8 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
                 h.id = StringUtil.generateUID();
                 h.isFav = false;
             });
+            (record.queryStrings || []).forEach(q => q.id = StringUtil.generateUID());
+            (record.formDatas || []).forEach(f => f.id = StringUtil.generateUID());
             this.props.saveAs(record);
             this.setState({ ...this.state, isSaveAsDlgOpen: false });
         } else {
@@ -161,8 +164,12 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
 
     private sendRequest = () => {
         const { record, environment } = this.props;
-        let headers = [...record.headers || []];
-        this.props.sendRequest(environment, this.applyAllVariables({ ...record, headers }));
+        this.props.sendRequest(environment, this.applyAllVariables({
+            ...record,
+            headers: [...record.headers || []],
+            queryStrings: [...record.queryStrings || []],
+            formDatas: [...record.formDatas || []]
+        }));
     }
 
     private applyAllVariables: (record: DtoRecord) => DtoRecord | _.Dictionary<DtoRecord> = (record: DtoRecord) => {
@@ -182,22 +189,24 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
     }
 
     private applyReqParameterToRecord = (record: DtoRecord, parameter: any) => {
-        const headers = new Array<DtoHeader>();
-        for (let header of record.headers || []) {
-            headers.push({
-                ...header,
-                key: this.applyVariables(header.key, parameter),
-                value: this.applyVariables(header.value, parameter)
-            });
-        }
         return {
             ...record,
             url: this.applyVariables(record.url, parameter),
-            headers,
+            headers: this.applyVariablesToDtoHeaders(record.headers || [], parameter),
+            queryStrings: this.applyVariablesToDtoHeaders(record.queryStrings || [], parameter) as DtoQueryString[],
+            formDatas: this.applyVariablesToDtoHeaders(record.formDatas || [], parameter) as DtoBodyFormData[],
             body: this.applyVariables(record.body, parameter),
             test: this.applyVariables(record.test, parameter),
             prescript: this.applyVariables(record.prescript, parameter)
         };
+    }
+
+    private applyVariablesToDtoHeaders(headers: DtoHeader[], parameter: any) {
+        return (headers || []).map(header => ({
+            ...header,
+            key: this.applyVariables(header.key, parameter),
+            value: this.applyVariables(header.value, parameter)
+        }));
     }
 
     private applyVariables = (content: string | undefined, variables: any) => {
