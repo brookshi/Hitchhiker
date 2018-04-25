@@ -193,7 +193,7 @@ export class RecordRunner {
 
     private static applyVariablesToKeyValue<T extends { key: string, value: string }>(keyValues: T[], variables: any) {
         return (keyValues || []).map(kv => {
-            const obj = Object.assign(kv);
+            const obj = Object.assign({}, kv);
             obj.key = RecordRunner.applyVariables(kv.key, variables);
             obj.value = RecordRunner.applyVariables(kv.value, variables);
             return obj;

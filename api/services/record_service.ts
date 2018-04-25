@@ -223,7 +223,11 @@ export class RecordService {
     }
 
     static async deleteRecord(id: string): Promise<ResObject> {
-        await Promise.all([HeaderService.deleteForRecord(id), QueryStringService.deleteForRecord(id)]);
+        await Promise.all([
+            HeaderService.deleteForRecord(id),
+            QueryStringService.deleteForRecord(id),
+            FormDataService.deleteForRecord(id)
+        ]);
 
         const connection = await ConnectionManager.getInstance();
         await connection.transaction(async manager => {
@@ -343,7 +347,7 @@ export class RecordService {
 
     static deleteRecordForCascade<T extends object>(cascades: T[]) {
         return (cascades || []).map(c => {
-            const cascade = Object.assign(c);
+            const cascade = Object.assign({}, c);
             Reflect.deleteProperty(cascade, 'record');
             return cascade;
         });
