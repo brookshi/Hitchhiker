@@ -9,7 +9,7 @@
         "script": "./build/index.js",
         "watch": false,
         "env": {
-            "HITCHHIKER_APP_HOST": "myhost"
+            "HITCHHIKER_APP_HOST": "myhost" // 这里一次安装只能改一次，如果需要变动，需要替换build/public/static/main.***.js文件为安装包里的文件，以后会改进这一块
             # 在这里写入环境变量
         }
     }]
@@ -24,7 +24,7 @@
 > 创建DB的脚本: CREATE DATABASE IF NOT EXISTS \`hitchhiker-prod\` default charset utf8 COLLATE utf8_general_ci;
 > 修改变量需要把`max_allowed_packet=200M`加到 my.ini 文件[mysqld] Section下，具体参考：[change max_allowed_packet](https://stackoverflow.com/questions/8062496/how-to-change-max-allowed-packet-size)
 
-1. 下载安装包 [https://github.com/brookshi/Hitchhiker/releases/download/v0.10/Hitchhiker.zip](https://github.com/brookshi/Hitchhiker/releases/download/v0.10/Hitchhiker.zip); 
+1. 下载安装包 [https://github.com/brookshi/Hitchhiker/releases/download/v0.11/Hitchhiker.zip](https://github.com/brookshi/Hitchhiker/releases/download/v0.11/Hitchhiker.zip); 
 下载速度慢的可以去阿里云下载 http://hitchhiker.oss-cn-hongkong.aliyuncs.com/Hitchhiker.zip
 
 2. 解压并在build目录下（即setup.js的目录）执行命令`node setup.js`(windows), `sudo node setup.js`(linux);
@@ -52,8 +52,14 @@
 -----
 **问：**Windows系统下启动后弹出好几个窗口
 
-**答：**正常现象，pm2启动的，如果想避免弹窗，可以考虑把pm2注册成服务。
+**答：**正常现象，pm2启动的，如果想避免弹窗，可以考虑把pm2注册成服务，参考：https://github.com/jon-hall/pm2-windows-service
 
 -----
 **问：**登录不进去，日志提示table header exist之类
+
 **答：**自动创建表时出错，执行pm2 restart hitchhiker可以解决
+
+-----
+**问：**如何使用nginx做反向代理
+
+**答：**参考： https://github.com/brookshi/Hitchhiker/issues/49

@@ -1,3 +1,23 @@
+#### 0.11 2018-04-28
+
+**Features:**
+
+* \#158 脚本增加hitchhiker简称hhk，(hhk.setEnvVariable)
+* \#110 支持Common Pre Request Script里用getEnvVariable拿环境变量
+* \#124 以Key-value形式展示和编辑以及描述url的 Query 字符串
+* \#12  body里支持key-value形式展示和编辑以及描述form数据
+* \#122 parameters里面增加一个Beautify功能吗
+* \#127 Schedules 页面样式优化
+* 增加request描述编辑
+
+**Bugs:**
+
+* \#132 使用[new Request from cUrl]创建请求时，解析空字符串有点问题，会报错
+* \#146 当chrome的开发者工具，高度盖过“加载中”的动画时，chrome浏览器页面会卡死，无响应
+* \#138 parameters lenght显示错误
+* \#105 测试报告中过滤器会导致对比报告样式错乱
+
+
 #### 0.10 2018-03-13
 
 **Features:**

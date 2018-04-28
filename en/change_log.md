@@ -1,3 +1,22 @@
+#### 0.11 2018-04-28
+
+**Features:**
+
+* \#158 Could use hhk instead of hitchhiker in script，(eg: hkr.setEnvVariable)
+* \#110 Could use getEnvVariable to get Environment variable in Common Pre Request Script
+* \#124 Display & edit & describe url's query string with key-value format
+* \#12  Display & edit & describe form data of body wit key-value format
+* \#122 Could beautify parameters
+* \#127 Improve Scheduler page ui
+
+**Bugs:**
+
+* \#132 Error while using [new Request from cUrl]
+* \#146 Chrome will hang if height of chrome's dev tool is high than hitchhiker's response panel
+* \#138 Parameters lenght display error
+* \#105 Scheduler style error when use filter in table
+
+
 #### 0.10 2018-03-13
 
 **Features:**
