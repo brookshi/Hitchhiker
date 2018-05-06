@@ -2,7 +2,7 @@
 
 **Features:**
 
-* \#158 Could use hhk instead of hitchhiker in script，(eg: hkr.setEnvVariable)
+* \#158 Could use hkr instead of hitchhiker in script，(eg: hkr.setEnvVariable)
 * \#110 Could use getEnvVariable to get Environment variable in Common Pre Request Script
 * \#124 Display & edit & describe url's query string with key-value format
 * \#12  Display & edit & describe form data of body wit key-value format

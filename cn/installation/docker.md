@@ -120,4 +120,4 @@ sudo apt install docker-compose
 
 #### 可能遇到的问题
 1. 如果docker部署完成后，浏览器访问时界面停留在转圈那里
-解决： 很可能是数据库里的表没创建起来，需要去hitchhiker-mysql容器里查看下，命令：sudo docker exec -it hitchhiker-mysql bash 进入容器， mysql -uroot -p 密码进到mysql， use hitchhker-prod; show tables; 来查看表。如果表确实没创建起来，去到hitchhiker容器里 sudo docker exec -it hitchhiker bash， 执行pm2 restart index重启服务就可以了。
+解决： 很可能是数据库里的表没创建起来，需要去hitchhiker-mysql容器里查看下，命令：sudo docker exec -it hitchhiker-mysql bash 进入容器， mysql -uroot -p 密码进到mysql， use hitchhiker-prod; show tables; 来查看表。如果表确实没创建起来，去到hitchhiker容器里 sudo docker exec -it hitchhiker bash， 执行pm2 restart index重启服务就可以了。

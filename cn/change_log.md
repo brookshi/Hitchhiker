@@ -2,7 +2,7 @@
 
 **Features:**
 
-* \#158 脚本增加hitchhiker简称hhk，(hhk.setEnvVariable)
+* \#158 脚本增加hitchhiker简称hkr，(hkr.setEnvVariable)
 * \#110 支持Common Pre Request Script里用getEnvVariable拿环境变量
 * \#124 以Key-value形式展示和编辑以及描述url的 Query 字符串
 * \#12  body里支持key-value形式展示和编辑以及描述form数据
