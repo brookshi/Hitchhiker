@@ -9,7 +9,7 @@ import { BaseProcessHandler } from './base_process_handler';
 import { ScheduleProcessHandler } from './schedule_process_handler';
 import { StressProcessHandler } from './stress_process_handler';
 import { StressNodejsProcessHandler } from './stress_nodejs_process_handler';
-import { Setting } from "../../utils/setting";
+import { Setting } from '../../utils/setting';
 
 interface ProcessInfo {
 
@@ -17,7 +17,7 @@ interface ProcessInfo {
 
     entry: string;
 
-    handlerCtor: { new (): BaseProcessHandler };
+    handlerCtor: { new(): BaseProcessHandler };
 }
 
 export class ChildProcessManager {

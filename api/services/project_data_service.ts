@@ -7,6 +7,8 @@ import { Setting } from '../utils/setting';
 import { ProjectData } from '../interfaces/dto_project_data';
 import { ProjectFolderType } from '../common/string_type';
 import * as AdmZip from 'adm-zip';
+import { ChildProcessManager } from '../run_engine/process/child_process_manager';
+import { ScheduleProcessHandler } from '../run_engine/process/schedule_process_handler';
 
 export class ProjectDataService {
 
@@ -34,6 +36,19 @@ export class ProjectDataService {
         // fs.watch(ProjectDataService.globalFolder, { recursive: true }, (event, fileName) => {
 
         // });
+    }
+
+    reload() {
+        this.clearAll();
+        this.initGlobalFiles();
+        this.initProjectFiles();
+    }
+
+    notifyLibsChanged() {
+        const handler = ChildProcessManager.default.getHandler('schedule') as ScheduleProcessHandler;
+        if (handler) {
+            handler.reloadLib();
+        }
     }
 
     getProjectAllJSFiles(projectId: string) {
@@ -78,6 +93,7 @@ export class ProjectDataService {
             }
             this._pDataFiles[pid][file] = { name: file, path: projectFile, createdDate: new Date(), size: 0 };
         }
+        this.notifyLibsChanged();
     }
 
     unZipJS(pid: string, file: string) {
@@ -101,6 +117,23 @@ export class ProjectDataService {
             Reflect.deleteProperty(files[pid], file);
             fs.removeSync(this.getProjectFile(pid, file, type));
         }
+    }
+
+    clearAll() {
+        this.clearData(this._pJsFiles);
+        this.clearData(this._gJsFiles);
+        this.clearData(this._pDataFiles);
+        this.clearData(this._gDataFiles);
+    }
+
+    private clearData(data: _.Dictionary<any>) {
+        if (!data) {
+            return;
+        }
+
+        Object.keys(data).forEach(k => {
+            delete data[k];
+        });
     }
 
     private initFolderFiles(folder: string, isProject: boolean, isJs: boolean, pid?: string) {

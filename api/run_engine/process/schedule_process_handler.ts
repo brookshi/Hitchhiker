@@ -8,4 +8,8 @@ export class ScheduleProcessHandler extends BaseProcessHandler {
     afterProcessCreated() {
         this.process.send('start');
     }
+
+    reloadLib() {
+        this.process.send('reload_project_data');
+    }
 }

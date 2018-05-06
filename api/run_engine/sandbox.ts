@@ -95,7 +95,7 @@ export class Sandbox {
 
     require(lib: string) {
         if (Setting.instance.safeVM) {
-            throw new Error('not support [require] in SafeVM mode, you can set it to false if you want to use [require].');
+            throw new Error('not support [require] in SafeVM mode, you can set it to false in config file if you want to use [require].');
         }
         if (!this._allProjectJsFiles[lib]) {
             throw new Error(`no valid js lib named [${lib}], you should upload this lib first.`);
