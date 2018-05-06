@@ -32,7 +32,7 @@ export class ScriptRunner {
         const { pid, vid, uid, envId, envName, envVariables, test } = record;
         let hitchhiker, tests;
         try {
-            hitchhiker = new Sandbox(pid, uid || vid, envId, envName, envVariables);
+            hitchhiker = new Sandbox(pid, uid || vid, envId, envName, envVariables, record);
         } catch (ex) {
             tests = {};
             tests[ex] = false;
