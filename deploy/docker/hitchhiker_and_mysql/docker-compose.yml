@@ -12,6 +12,8 @@ services:
       - "11010:11010"
     links:
       - hitchhiker-mysql:hitchhiker-mysql
+    volumes:
+      - /my/hitchhiker/data:/usr/src/Hitchhiker/build/global_data/project
   hitchhiker-mysql:
     image: mysql:5.7
     container_name: hitchhiker-mysql

@@ -75,7 +75,7 @@ export class ProjectDataService {
     }
 
     prepareProjectFolder(pid: string) {
-        const projectFolder = path.join(ProjectDataService.globalFolder, `${pid}`);
+        const projectFolder = this.getProjectFolder(pid);
         if (!fs.existsSync(projectFolder)) {
             fs.mkdirSync(projectFolder, 0o666);
             fs.mkdirSync(this.getActualPath(projectFolder, ProjectDataService.libFolderName), 0o666);
@@ -101,7 +101,7 @@ export class ProjectDataService {
         if (!fs.existsSync(projectFile)) {
             return;
         }
-        const projectFolder = path.join(ProjectDataService.globalFolder, `${pid}`);
+        const projectFolder = this.getProjectFolder(pid);
         const targetFile = this.removeExt(projectFile, 'zip');
         new AdmZip(projectFile).extractAllTo(targetFile, true);
         if (!this._pJsFiles[pid]) {
@@ -170,10 +170,10 @@ export class ProjectDataService {
     }
 
     private initProjectFiles() {
-        const projectFolders = fs.readdirSync(ProjectDataService.globalFolder).filter(f => fs.lstatSync(path.join(ProjectDataService.globalFolder, f)).isDirectory && !this.isDataOrLibFolder(f));
+        const projectFolders = fs.readdirSync(path.join(ProjectDataService.globalFolder, 'project')).filter(f => fs.lstatSync(path.join(ProjectDataService.globalFolder, f)).isDirectory && !this.isDataOrLibFolder(f));
         projectFolders.forEach(folder => {
-            this.initFolderFiles(path.join(ProjectDataService.globalFolder, folder), true, true, folder);
-            this.initFolderFiles(path.join(ProjectDataService.globalFolder, folder), true, false, folder);
+            this.initFolderFiles(path.join(ProjectDataService.globalFolder, 'project', folder), true, true, folder);
+            this.initFolderFiles(path.join(ProjectDataService.globalFolder, 'project', folder), true, false, folder);
         });
     }
 
@@ -194,7 +194,11 @@ export class ProjectDataService {
         return file.endsWith(ext) ? file.substr(0, file.length - ext.length - 1) : file;
     }
 
+    private getProjectFolder(pid: string) {
+        return path.join(ProjectDataService.globalFolder, `project/${pid}`);
+    }
+
     getProjectFile(pid: string, file: string, type: ProjectFolderType): string {
-        return path.join(ProjectDataService.globalFolder, `${pid}/${type}/${file}`);
+        return path.join(ProjectDataService.globalFolder, `project/${pid}/${type}/${file}`);
     }
 }
