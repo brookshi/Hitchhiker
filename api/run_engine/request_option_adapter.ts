@@ -1,5 +1,5 @@
 import { Record, RecordEx } from '../models/record';
-import { Options } from 'request';
+import { Options, OptionsWithUrl } from 'request';
 import { VariableService } from '../services/variable_service';
 import { RecordService } from '../services/record_service';
 import { ProjectService } from '../services/project_service';
@@ -8,11 +8,14 @@ import { Setting } from '../utils/setting';
 import { Header } from '../models/header';
 import * as _ from 'lodash';
 import { DataMode } from '../common/data_mode';
+import { ConsoleMessage } from '../services/console_message';
 
 export class RequestOptionAdapter {
-    static async fromRecord(record: RecordEx): Promise<Options> {
+    static async fromRecord(record: RecordEx, cm: ConsoleMessage): Promise<Options> {
+        cm.push('Apply default headers');
         record = RequestOptionAdapter.applyDefaultHeaders(record);
         if (record.uid) {
+            cm.push('Apply localhost mapping');
             await RequestOptionAdapter.applyLocalhost(record, record.uid);
         }
         const { reqStrictSSL, reqFollowRedirect } = record.collection || { reqStrictSSL: false, reqFollowRedirect: false };
@@ -31,6 +34,7 @@ export class RequestOptionAdapter {
             option.encoding = null;
         }
 
+        cm.push(`Generate request options: ${this.generateOptionInfo(option)}`);
         return option;
     }
 
@@ -56,5 +60,19 @@ export class RequestOptionAdapter {
             ...record,
             headers: _.unionBy(record.headers || [], defaultHeaders, 'key')
         };
+    }
+
+    private static generateOptionInfo(option: OptionsWithUrl) {
+        return `
+            method: ${option.method}
+            url: ${option.url}
+            headers: ${Object.keys(option.headers || []).map(k => `${k || ''}:${option.headers[k] || ''}`).join('\n')}
+            body: ${option.body || ''}
+            form: ${option.form || ''}
+            strictSSL: ${option.strictSSL}
+            followRedirect: ${option.followRedirect},
+            timeout: ${option.timeout},
+            encoding: ${option.encoding || 'none'},
+        `;
     }
 }

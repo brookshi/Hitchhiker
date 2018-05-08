@@ -28,7 +28,7 @@ export class ScriptRunner {
         return res;
     }
 
-    static async test(record: RecordEx, res: request.RequestResponse): Promise<{ tests: _.Dictionary<boolean>, export: {}, consoleMsgQueue: Array<ConsoleMsg> }> {
+    static async test(record: RecordEx, res: request.RequestResponse): Promise<{ tests: _.Dictionary<boolean>, export: {}, consoleMsgQueue: Array<ConsoleMsg>, error?: string }> {
         const { pid, vid, uid, envId, envName, envVariables, test } = record;
         let hitchhiker, tests;
         try {
@@ -51,7 +51,7 @@ export class ScriptRunner {
             tests[rst.message] = false;
         }
         _.keys(tests).forEach(k => tests[k] = !!tests[k]);
-        return { tests, export: hitchhiker.exportObj.content, consoleMsgQueue: hitchhiker.console.msgQueue };
+        return { tests, export: hitchhiker.exportObj.content, consoleMsgQueue: hitchhiker.console.msgQueue, error: rst.success ? undefined : rst.message.toString() };
     }
 
     private static run(sandbox: any, code: string): Promise<ResObject> {

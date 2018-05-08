@@ -29,7 +29,7 @@ class Console {
     msgQueue: Array<ConsoleMsg> = [];
 
     private write(type: string, msg: string) {
-        this.msgQueue.push({ type, message: msg });
+        this.msgQueue.push({ time: new Date(), type, message: msg });
     }
 
     log(msg: string) {

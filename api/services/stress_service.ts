@@ -18,6 +18,7 @@ import { ProjectService } from './project_service';
 import { EnvironmentService } from './environment_service';
 import { noEnvironment } from '../common/stress_type';
 import { ScriptTransform } from '../utils/script_transform';
+import { ConsoleMessage } from './console_message';
 
 export class StressService {
 
@@ -168,7 +169,10 @@ export class StressService {
             result: {
                 testCase: <TestCase>{
                     envId: stress.environmentId,
-                    records: await RecordService.prepareRecordsForRun(_.values(records), stress.environmentId, stress.requests.join(';')),
+                    records: await RecordService.prepareRecordsForRun(_.values(records),
+                        stress.environmentId,
+                        ConsoleMessage.create(false),
+                        stress.requests.join(';')),
                     repeat: stress.repeat,
                     concurrencyCount: stress.concurrencyCount,
                     qps: stress.qps,

@@ -21,6 +21,7 @@ import { QueryStringService } from './query_string_service';
 import { FormDataService } from './form_data_service';
 import { QueryString } from '../models/query_string';
 import { BodyFormData } from '../models/body_form_data';
+import { ConsoleMessage } from './console_message';
 
 export class RecordService {
     private static _sort: number = 0;
@@ -382,25 +383,39 @@ export class RecordService {
         };
     }
 
-    static async prepareRecordsForRun(records: Record[], envId: string, orderIds?: string, trace?: (msg: string) => void): Promise<RecordEx[]> {
+    static async prepareRecordsForRun(records: Record[], envId: string, cm: ConsoleMessage, orderIds?: string, trace?: (msg: string) => void): Promise<RecordEx[]> {
         const vid = StringUtil.generateUID();
         const env = await EnvironmentService.get(envId, true);
         const envName = env ? env.name : '';
+        cm.push(`Get environment info for ${envName || 'No Environment'}`);
         const envVariables = {};
         ((env ? env.variables : []) || []).filter(v => v.isActive).forEach(v => envVariables[v.key] = v.value);
 
         let recordExs: RecordEx[] = [];
 
         for (let r of records) {
+            cm.push('Combine scripts');
             let newRecord = { ...(await RecordService.combineScript(r)) };
+            cm.push('Get project info');
             const { id: pid } = (await ProjectService.getProjectByCollectionId(r.collection.id)) || { id: '' };
+            cm.push('Apply environment variables');
             newRecord = await VariableService.applyVariableForRecord(envId, newRecord);
             recordExs.push({ ...newRecord, pid, envId, envName, envVariables, vid, param: '', trace });
         }
 
         recordExs = _.sortBy(recordExs, 'name');
         const recordDict = _.keyBy(recordExs, 'id');
+        cm.push('Sort records');
         const orderRecords = (orderIds || '').split(';').map(i => i.includes(':') ? i.substr(0, i.length - 2) : i).filter(r => recordDict[r]).map(r => recordDict[r]);
         return _.unionBy(orderRecords, recordExs, 'id');
+    }
+
+    static generateRequestInfo(record: Record): string {
+        return `
+            method: ${record.method}
+            url: ${record.url}
+            headers: ${record.headers.map(h => `${h.key || ''}:${h.value || ''}`).join('\n')}
+            body: ${record.body || ''}
+        `;
     }
 }

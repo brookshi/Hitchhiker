@@ -170,7 +170,7 @@ export class ProjectDataService {
     }
 
     private initProjectFiles() {
-        const projectFolders = fs.readdirSync(path.join(ProjectDataService.globalFolder, 'project')).filter(f => fs.lstatSync(path.join(ProjectDataService.globalFolder, f)).isDirectory && !this.isDataOrLibFolder(f));
+        const projectFolders = fs.readdirSync(path.join(ProjectDataService.globalFolder, 'project')).filter(f => fs.lstatSync(path.join(ProjectDataService.globalFolder, 'project', f)).isDirectory && !this.isDataOrLibFolder(f));
         projectFolders.forEach(folder => {
             this.initFolderFiles(path.join(ProjectDataService.globalFolder, 'project', folder), true, true, folder);
             this.initFolderFiles(path.join(ProjectDataService.globalFolder, 'project', folder), true, false, folder);
