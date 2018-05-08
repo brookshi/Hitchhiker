@@ -143,6 +143,7 @@
     "Collection.Body": "Body",
     "Collection.PreRequestScript": "前置脚本",
     "Collection.Test": "测试",
+    "Collection.Console": "日志",
     "Collection.AssertBaseOnUI": "基于UI的断言",
     "Collection.NoValidResponseForAssert": "当前没有有效的返回，请确保返回存在并为JSON格式",
     "Collection.Beautify": "美化",

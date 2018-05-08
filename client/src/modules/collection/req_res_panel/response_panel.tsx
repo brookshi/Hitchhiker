@@ -14,8 +14,10 @@ import ResErrorPanel from '../../../components/res_error_panel';
 import { State } from '../../../state/index';
 import { getActiveRecordSelector, getActiveRecordStateSelector, getResHeightSelector, getResActiveTabKeySelector, getIsResPanelMaximumSelector } from './selector';
 import { ResponseState } from '../../../state/collection';
+import { ConsoleMsg } from '../../../../../api/interfaces/dto_res';
 import Msg from '../../../locales';
 import * as _ from 'lodash';
+import { DateUtil } from '../../../utils/date_util';
 
 const TabPane = Tabs.TabPane;
 
@@ -94,6 +96,21 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
         </ul>
     )
 
+    private tabPanelConsole = (consoleMsgs: ConsoleMsg[]) => {
+        return (
+            <div>
+                {
+                    consoleMsgs.map(m => (
+                        <pre className={`res-console-p res-console-${m.type}`}>
+                            <span className="res-console-time">{DateUtil.getDisplayTime(m.time)}</span>
+                            {m.message}
+                        </pre>)
+                    )
+                }
+            </div>
+        );
+    }
+
     private getExtraContent = () => {
         const { res, toggleResPanelMaximize, isResPanelMaximum, activeKey } = this.props;
         if (!this.isRunResult(res)) {
@@ -113,7 +130,7 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
         if (!this.isRunResult(res)) {
             return <div />;
         }
-        let { body, cookies, headers, tests } = res;
+        let { body, cookies, headers, tests, consoleMsgQueue } = res;
 
         cookies = cookies || [];
         tests = tests || [];
@@ -151,6 +168,11 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
                 <TabPane className="display-tab-panel" tab={nameWithTag(Msg('Collection.Test'), testsTag, successTestLen === testKeys.length ? 'normal' : 'warning')} key="test">
                     {
                         this.tabPanelTest(tests)
+                    }
+                </TabPane>
+                <TabPane className="display-tab-panel" tab={Msg('Collection.Console')} key="console">
+                    {
+                        this.tabPanelConsole(consoleMsgQueue)
                     }
                 </TabPane>
             </Tabs>

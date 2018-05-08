@@ -28,4 +28,9 @@ export class DateUtil {
     static subNowSec(date: Date): number {
         return (Date.now() - date.valueOf()) / 1000;
     }
+
+    static getDisplayTime(date: Date): string {
+        date = new Date(new Date(date) + ' UTC');
+        return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} ${date.getMilliseconds()}`;
+    }
 }

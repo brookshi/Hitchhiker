@@ -143,6 +143,7 @@
     "Collection.Body": "Body",
     "Collection.PreRequestScript": "Pre Request Script",
     "Collection.Test": "Test",
+    "Collection.Console": "Console",
     "Collection.AssertBaseOnUI": "Assert base on UI",
     "Collection.NoValidResponseForAssert": "There is no valid response, please ensure response exist with json format.",
     "Collection.Beautify": "Beautify",
