@@ -411,11 +411,9 @@ export class RecordService {
     }
 
     static generateRequestInfo(record: Record): string {
-        return `
-            method: ${record.method}
-            url: ${record.url}
-            headers: ${record.headers.map(h => `${h.key || ''}:${h.value || ''}`).join('\n')}
-            body: ${record.body || ''}
-        `;
+        return `                method: ${record.method}
+                url: ${record.url}
+                headers: ${record.headers.map(h => `${h.key || ''}:${h.value || ''}`).join('\n                         ')}
+                body: ${record.body || ''}`;
     }
 }

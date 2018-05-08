@@ -68,9 +68,6 @@ export function* sendRequest() {
                     return;
                 }
                 runResult = yield res.json();
-                if (runResult.consoleMsgQueue) {
-                    runResult.consoleMsgQueue.forEach(m => console[m.type] && console[m.type](m.message));
-                }
             } catch (err) {
                 runResult.error = { message: err.message, stack: err.stack };
             }

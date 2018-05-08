@@ -63,16 +63,15 @@ export class RequestOptionAdapter {
     }
 
     private static generateOptionInfo(option: OptionsWithUrl) {
-        return `
-            method: ${option.method}
-            url: ${option.url}
-            headers: ${Object.keys(option.headers || []).map(k => `${k || ''}:${option.headers[k] || ''}`).join('\n')}
-            body: ${option.body || ''}
-            form: ${option.form || ''}
-            strictSSL: ${option.strictSSL}
-            followRedirect: ${option.followRedirect},
-            timeout: ${option.timeout},
-            encoding: ${option.encoding || 'none'},
-        `;
+        return `                
+                method: ${option.method}
+                url: ${option.url}
+                headers: ${Object.keys(option.headers || []).map(k => `${k || ''}:${option.headers[k] || ''}`).join('\n                         ')}
+                body: ${option.body || ''}
+                form: ${option.form || ''}
+                strictSSL: ${option.strictSSL}
+                followRedirect: ${option.followRedirect},
+                timeout: ${option.timeout},
+                encoding: ${option.encoding || 'none'}`;
     }
 }

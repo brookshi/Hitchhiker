@@ -30,7 +30,11 @@ export class DateUtil {
     }
 
     static getDisplayTime(date: Date): string {
-        date = new Date(new Date(date) + ' UTC');
-        return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} ${date.getMilliseconds()}`;
+        date = new Date(date);
+        return `${this.zeroPrefix(date.getHours())}:${this.zeroPrefix(date.getMinutes())}:${this.zeroPrefix(date.getSeconds())} ${this.zeroPrefix(date.getMilliseconds(), 3)}`;
+    }
+
+    private static zeroPrefix(n: number, count: number = 2) {
+        return `00${n}`.slice(0 - count);
     }
 }

@@ -102,7 +102,7 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
                 {
                     consoleMsgs.map(m => (
                         <pre className={`res-console-p res-console-${m.type}`}>
-                            <span className="res-console-time">{DateUtil.getDisplayTime(m.time)}</span>
+                            <span className="res-console-time">{`${DateUtil.getDisplayTime(m.time)}:`}</span>
                             {m.message}
                         </pre>)
                     )

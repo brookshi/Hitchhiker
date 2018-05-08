@@ -360,10 +360,9 @@ export class RecordRunner {
     }
 
     private static generateDurationInfo(duration: Duration) {
-        return `
-            connect: ${duration.connect}
-            dns: ${duration.dns}
-            request: ${duration.request}
-        `;
+        return `                
+                connect: ${duration.connect}
+                dns: ${duration.dns}
+                request: ${duration.request}`;
     }
 }
