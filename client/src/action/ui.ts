@@ -19,3 +19,5 @@ export const CloseTimelineType = 'close timeline';
 export const DisplayQueryStringType = 'display query string';
 
 export const ToggleRequestDescriptionType = 'toggle request description';
+
+export const BatchCloseType = 'batch close type';

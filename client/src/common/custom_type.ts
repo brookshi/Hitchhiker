@@ -96,3 +96,14 @@ export enum DataMode {
 
     binary = 3
 }
+
+export enum CloseAction {
+
+    none = 0,
+
+    exceptActived = 1,
+
+    saved = 2,
+
+    all = 3
+}

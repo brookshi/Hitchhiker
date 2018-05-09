@@ -1,6 +1,6 @@
 import { SyncItem } from '../utils/request_manager';
 import { defaultLeftPanelWidth, defaultModuleKey, defaultReqTabKey, defaultResTabKey } from '../common/constants';
-import { KeyValueEditMode, KeyValueEditType } from '../common/custom_type';
+import { KeyValueEditMode, KeyValueEditType, CloseAction } from '../common/custom_type';
 import { DtoRecord } from '../../../api/interfaces/dto_record';
 
 export interface AppUIState {
@@ -45,6 +45,13 @@ export interface TimelineState {
     isShow: boolean;
 }
 
+export interface CloseState {
+
+    closeAction: CloseAction;
+
+    activedTabBeforeClose: string;
+}
+
 export interface UIState {
 
     appUIState: AppUIState;
@@ -54,6 +61,8 @@ export interface UIState {
     syncState: SyncState;
 
     timelineState: TimelineState;
+
+    closeState: CloseState;
 }
 
 export const appUIDefaultValue: AppUIState = {
@@ -68,7 +77,12 @@ export const reqResUIDefaultValue: ReqResUIState = {
     activeReqTab: defaultReqTabKey,
     resHeight: 0,
     headersEditMode: KeyValueEditType.keyValueEdit,
-    displayQueryString: false
+    displayQueryString: false,
+};
+
+export const closeDefaultValue: CloseState = {
+    closeAction: CloseAction.none,
+    activedTabBeforeClose: ''
 };
 
 export const syncDefaultValue: SyncState = {
@@ -84,5 +98,6 @@ export const uiDefaultValue = {
     appUIState: appUIDefaultValue,
     reqResUIState: {},
     syncState: syncDefaultValue,
-    timelineState: timelineDefaultValue
+    timelineState: timelineDefaultValue,
+    closeState: closeDefaultValue
 };

@@ -1,7 +1,7 @@
 import { EditEnvType } from '../action/project';
-import { UIState, AppUIState, appUIDefaultValue, ReqResUIState, uiDefaultValue, SyncState, syncDefaultValue, TimelineState, timelineDefaultValue } from '../state/ui';
+import { UIState, AppUIState, appUIDefaultValue, ReqResUIState, uiDefaultValue, SyncState, syncDefaultValue, TimelineState, timelineDefaultValue, CloseState, closeDefaultValue } from '../state/ui';
 import { combineReducers } from 'redux';
-import { ResizeLeftPanelType, UpdateLeftPanelType, SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType, SwitchHeadersEditModeType, CloseTimelineType, DisplayQueryStringType, ToggleRequestDescriptionType } from '../action/ui';
+import { ResizeLeftPanelType, UpdateLeftPanelType, SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType, SwitchHeadersEditModeType, CloseTimelineType, DisplayQueryStringType, ToggleRequestDescriptionType, BatchCloseType } from '../action/ui';
 import { SyncType, SyncSuccessType, SyncRetryType, ResetSyncMsgType, SyncFailedType } from '../action/index';
 import { RemoveTabType, SaveRecordType } from '../action/record';
 import { SyncUserDataType } from '../action/user';
@@ -13,7 +13,8 @@ export function uiState(state: UIState = uiDefaultValue, action: any): UIState {
         appUIState,
         reqResUIState,
         syncState,
-        timelineState
+        timelineState,
+        closeState
     })(state, action);
 }
 
@@ -122,6 +123,17 @@ function timelineState(state: TimelineState = timelineDefaultValue, action: any)
     switch (action.type) {
         case CloseTimelineType: {
             return { isShow: false, record: undefined };
+        }
+        default:
+            return state;
+    }
+}
+
+function closeState(state: CloseState = closeDefaultValue, action: any): CloseState {
+    switch (action.type) {
+        case BatchCloseType: {
+            const { activedTab, closeAction } = action.value;
+            return { activedTabBeforeClose: activedTab, closeAction };
         }
         default:
             return state;

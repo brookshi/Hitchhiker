@@ -176,6 +176,9 @@
     "Collection.SelectProject": "Please select project",
     "Collection.SelectCollectionFolder": "Please select collection / folder",
     "Collection.RequestDescription": "Add description for this request",
+    "Collection.closeExceptActived": "Close except actived",
+    "Collection.closeSaved": "Close saved",
+    "Collection.closeAll": "Close all",
 
     "Project.DeleteEnvironment": "Delete environment",
     "Project.DeleteThisEnvironment": "delete environment: {name}",

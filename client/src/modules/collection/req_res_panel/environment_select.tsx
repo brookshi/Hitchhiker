@@ -12,12 +12,16 @@ import { RecordState } from '../../../state/collection';
 import { CurlImport } from '../../../utils/curl_import';
 import { ConflictType } from '../../../common/conflict_type';
 import Msg from '../../../locales';
+import { CloseAction } from '../../../common/custom_type';
+import { BatchCloseType } from '../../../action/ui';
 
 const Option = Select.Option;
 
 interface EnvironmentSelectStateProps {
 
     envs: Array<{ id: string, name: string }>;
+
+    activeTab: string;
 
     activeEnvId: string;
 
@@ -31,6 +35,8 @@ interface EnvironmentSelectDispatchProps {
     switchEnv(projectId: string, envId: string);
 
     editEnv(projectId: string, envId: string);
+
+    setCloseAction(closeAction: CloseAction, activeTab: string);
 }
 
 type EnvironmentSelectProps = EnvironmentSelectStateProps & EnvironmentSelectDispatchProps;
@@ -56,11 +62,30 @@ class EnvironmentSelect extends React.Component<EnvironmentSelectProps, Environm
     private tabMenu = (
         <Menu onClick={this.onClickMenu}>
             <Menu.Item key="importCurl">{Msg('Collection.NewRequestFromcURL')}</Menu.Item>
+            <Menu.Item key="closeExceptActived">{Msg('Collection.NewRequestFromcURL')}</Menu.Item>
+            <Menu.Item key="closeSaved">{Msg('Collection.NewRequestFromcURL')}</Menu.Item>
+            <Menu.Item key="closeAll">{Msg('Collection.NewRequestFromcURL')}</Menu.Item>
         </Menu>
     );
 
     importCurl = () => {
         this.setState({ ...this.state, isImportDlgOpen: true });
+    }
+
+    closeExceptActived = () => {
+        this.closeTabs(CloseAction.exceptActived);
+    }
+
+    closeSaved = () => {
+        this.closeTabs(CloseAction.saved);
+    }
+
+    closeAll = () => {
+        this.closeTabs(CloseAction.all);
+    }
+
+    private closeTabs = (mode: CloseAction) => {
+        this.props.setCloseAction(mode, this.props.activeTab);
     }
 
     private onEnvChanged = (value) => {
@@ -144,7 +169,8 @@ const makeMapStateToProps = () => {
         return {
             envs: getProjectEnvs(state),
             activeEnvId: getActiveEnvId(state),
-            activeRecordProjectId: getActiveRecordProjectId(state)
+            activeRecordProjectId: getActiveRecordProjectId(state),
+            activeTab: state.displayRecordsState.activeKey,
         };
     };
     return mapStateToProps;
@@ -154,7 +180,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): EnvironmentSelectDispatchP
     return {
         addTab: (newRequestState) => dispatch(actionCreator(AddTabType, newRequestState)),
         switchEnv: (projectId, envId) => dispatch(actionCreator(SwitchEnvType, { projectId, envId })),
-        editEnv: (projectId, envId) => dispatch(actionCreator(EditEnvType, { projectId, envId }))
+        editEnv: (projectId, envId) => dispatch(actionCreator(EditEnvType, { projectId, envId })),
+        setCloseAction: (closeAction, activedTab) => dispatch(actionCreator(BatchCloseType, { closeAction, activedTab }))
     };
 };
 
