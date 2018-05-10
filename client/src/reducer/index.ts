@@ -20,8 +20,9 @@ import { stressTestState } from './stress';
 import { SyncUserDataSuccessType } from '../action/user';
 import { ConflictType } from '../common/conflict_type';
 import { newRecordFlag } from '../common/constants';
-import { ShowTimelineType } from '../action/ui';
+import { ShowTimelineType, BatchCloseType } from '../action/ui';
 import { CompareUtil } from '../utils/compare_util';
+import { CloseAction } from '../common/custom_type';
 
 export const reduceReducers = (...reducers) => {
     return (state, action) =>
@@ -198,7 +199,47 @@ export function multipleStateReducer(state: State, action: any): State {
                 displayRecordsState: newDisplayRecordState
             };
         }
-        default: return state;
+        case BatchCloseType: {
+            const { activedTab, closeAction } = action.value;
+            const uiState = { ...state.uiState, closeState: { activedTabBeforeClose: activedTab, closeAction } };
+            const recordsOrder = [...state.displayRecordsState.recordsOrder];
+            const recordStates = { ...state.displayRecordsState.recordStates };
+            const responseState = { ...state.displayRecordsState.responseState };
+            let activeKey = activedTab;
+            state.displayRecordsState.recordsOrder.forEach((t, i) => {
+                const recordState = state.displayRecordsState.recordStates[t];
+                if (recordState) {
+                    if (!(closeAction === CloseAction.exceptActived && recordState.record.id === activedTab) && (!recordState.isChanged || t.startsWith(newRecordFlag))) {
+                        recordsOrder.splice(recordsOrder.indexOf(t), 1);
+                        Reflect.deleteProperty(recordStates, t);
+                        Reflect.deleteProperty(responseState, t);
+                    }
+                }
+            });
+
+            if (_.keys(recordStates).length === 0) {
+                const newRecordState = getNewRecordState();
+                recordStates[newRecordState.record.id] = newRecordState;
+                activeKey = newRecordState.record.id;
+                recordsOrder.push(activeKey);
+                uiState.closeState.closeAction = CloseAction.none;
+            } else if (closeAction === CloseAction.saved) {
+                uiState.closeState.closeAction = CloseAction.none;
+            } else if (closeAction === CloseAction.exceptActived) {
+                if (recordsOrder.length === 1) {
+                    uiState.closeState.closeAction = CloseAction.none;
+                } else {
+                    activeKey = recordsOrder.find(r => r !== activedTab);
+                }
+            } else {
+                activeKey = recordsOrder[0];
+            }
+
+            const displayRecordsState = { ...state.displayRecordsState, recordStates, responseState, recordsOrder, activeKey };
+            return { ...state, uiState, displayRecordsState };
+        }
+        default:
+            return state;
     }
 
     function updateStateRecord(rootState: State, record: any): State {
