@@ -10,6 +10,7 @@ import errorHandle from './error_handle';
 import * as KoaStatic from 'koa-static';
 import * as Path from 'path';
 import asyncInit from './async_init';
+import * as Compress from 'koa-compress';
 
 export default function middleware(context: Koa) {
     const ctrlRouter = new WebApiRouter();
@@ -24,6 +25,7 @@ export default function middleware(context: Koa) {
                 }
             }),
             sessionHandle(),
+            Compress(),
             Bodyparser({ jsonLimit: '50mb' }),
             ctrlRouter.router('../build/controllers', 'api'),
             routeFailed(),

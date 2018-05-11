@@ -49,6 +49,7 @@
     "gulp-clean": "^0.3.2",
     "gulp-replace": "^0.6.1",
     "gulp-shell": "^0.6.3",
+    "koa-compress": "^3.0.0",
     "yargs": "^8.0.2"
   },
   "scripts": {
