@@ -176,9 +176,9 @@
     "Collection.SelectProject": "请选择项目",
     "Collection.SelectCollectionFolder": "请选择集合/目录",
     "Collection.RequestDescription": "给请求添加描述，以便更好的生成文档",
-    "Collection.closeExceptActived": "关掉当前标签外的其他标签",
-    "Collection.closeSaved": "关掉已经保存的标签",
-    "Collection.closeAll": "关掉所有标签",
+    "Collection.CloseExceptActived": "关掉当前标签外的其他标签",
+    "Collection.CloseSaved": "关掉已经保存的标签",
+    "Collection.CloseAll": "关掉所有标签",
 
     "Project.DeleteEnvironment": "删除环境",
     "Project.DeleteThisEnvironment": "删除环境: {name}",

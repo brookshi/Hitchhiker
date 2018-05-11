@@ -62,9 +62,9 @@ class EnvironmentSelect extends React.Component<EnvironmentSelectProps, Environm
     private tabMenu = (
         <Menu onClick={this.onClickMenu}>
             <Menu.Item key="importCurl">{Msg('Collection.NewRequestFromcURL')}</Menu.Item>
-            <Menu.Item key="closeExceptActived">{Msg('Collection.NewRequestFromcURL')}</Menu.Item>
-            <Menu.Item key="closeSaved">{Msg('Collection.NewRequestFromcURL')}</Menu.Item>
-            <Menu.Item key="closeAll">{Msg('Collection.NewRequestFromcURL')}</Menu.Item>
+            <Menu.Item key="closeExceptActived">{Msg('Collection.CloseExceptActived')}</Menu.Item>
+            <Menu.Item key="closeSaved">{Msg('Collection.CloseSaved')}</Menu.Item>
+            <Menu.Item key="closeAll">{Msg('Collection.CloseAll')}</Menu.Item>
         </Menu>
     );
 
