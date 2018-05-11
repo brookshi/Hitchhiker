@@ -95,7 +95,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
     componentWillReceiveProps(nextProps: ReqResPanelProps) {
         if (nextProps.closeAction !== CloseAction.none) {
-            this.setState({ ...this.state, currentEditKey: this.props.activeKey, isConfirmCloseDlgOpen: true });
+            this.setState({ ...this.state, currentEditKey: nextProps.activeKey, isConfirmCloseDlgOpen: true });
         }
     }
 
@@ -127,23 +127,22 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
     private closeTabWithoutSave = () => {
         const { closeAction, activedTabBeforeClose, batchClose, removeTab } = this.props;
-        if (closeAction === CloseAction.none) {
-            removeTab(this.state.currentEditKey);
-        } else {
+        this.setState({ ...this.state, currentEditKey: '', isConfirmCloseDlgOpen: false });
+        removeTab(this.state.currentEditKey);
+        if (closeAction !== CloseAction.none) {
             batchClose(closeAction, activedTabBeforeClose);
         }
-        this.setState({ ...this.state, currentEditKey: '', isConfirmCloseDlgOpen: false });
     }
 
     private closeTabWithSave = () => {
         const { closeAction, activedTabBeforeClose, batchClose, removeTab, save } = this.props;
+        this.setState({ ...this.state, currentEditKey: '', isConfirmCloseDlgOpen: false });
         save(this.props.recordStates[this.state.currentEditKey].record);
         if (closeAction === CloseAction.none) {
             removeTab(this.state.currentEditKey);
         } else {
             batchClose(closeAction, activedTabBeforeClose);
         }
-        this.setState({ ...this.state, currentEditKey: '', isConfirmCloseDlgOpen: false });
     }
 
     private cancelClose = () => {

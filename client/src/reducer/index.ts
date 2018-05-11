@@ -202,6 +202,9 @@ export function multipleStateReducer(state: State, action: any): State {
         case BatchCloseType: {
             const { activedTab, closeAction } = action.value;
             const uiState = { ...state.uiState, closeState: { activedTabBeforeClose: activedTab, closeAction } };
+            if (closeAction === CloseAction.none) {
+                return { ...state, uiState };
+            }
             const recordsOrder = [...state.displayRecordsState.recordsOrder];
             const recordStates = { ...state.displayRecordsState.recordStates };
             const responseState = { ...state.displayRecordsState.responseState };
@@ -225,6 +228,7 @@ export function multipleStateReducer(state: State, action: any): State {
                 uiState.closeState.closeAction = CloseAction.none;
             } else if (closeAction === CloseAction.saved) {
                 uiState.closeState.closeAction = CloseAction.none;
+                activeKey = recordsOrder.find(r => r === activedTab) ? activedTab : recordsOrder[0];
             } else if (closeAction === CloseAction.exceptActived) {
                 if (recordsOrder.length === 1) {
                     uiState.closeState.closeAction = CloseAction.none;
