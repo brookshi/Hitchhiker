@@ -5,7 +5,7 @@ import { QueryString } from './query_string';
 import { RecordCategory } from '../common/record_category';
 import { DataMode } from '../common/data_mode';
 import { BodyType } from '../common/string_type';
-import { ParameterType } from '../common/parameter_type';
+import { ParameterType, ReduceAlgorithmType } from '../common/parameter_type';
 import { RecordDoc } from './record_doc';
 import { RecordHistory } from './record_history';
 import { ServerResponse } from 'http';
@@ -75,6 +75,9 @@ export class Record {
 
     @Column('text', { nullable: true })
     parameters: string;
+
+    @Column('int', { default: 0 })
+    reduceAlgorithm: ReduceAlgorithmType;
 
     @Column('int', { default: 0 })
     parameterType: ParameterType;

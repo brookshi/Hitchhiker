@@ -2,7 +2,7 @@ import { DtoHeader } from './dto_header';
 import { RecordCategory } from '../common/record_category';
 import { BodyType } from '../common/string_type';
 import { DtoUser } from './dto_user';
-import { ParameterType } from '../common/parameter_type';
+import { ParameterType, ReduceAlgorithmType } from '../common/parameter_type';
 import { DtoAssert } from './dto_assert';
 import { DtoQueryString, DtoBodyFormData } from './dto_variable';
 import { DataMode } from '../common/data_mode';
@@ -40,6 +40,8 @@ export interface DtoRecord {
     dataMode?: DataMode;
 
     parameters?: string;
+
+    reduceAlgorithm?: ReduceAlgorithmType;
 
     parameterType: ParameterType;
 

@@ -46,6 +46,7 @@ export class RecordService {
         record.bodyType = target.bodyType;
         record.dataMode = target.dataMode;
         record.parameters = target.parameters;
+        record.reduceAlgorithm = target.reduceAlgorithm;
         record.parameterType = target.parameterType;
         record.prescript = target.prescript || '';
         record.assertInfos = target.assertInfos || {};

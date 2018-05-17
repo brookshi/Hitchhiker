@@ -24,6 +24,7 @@ export class CompareUtil {
                 (o.bodyType || '') === (t.bodyType || '') &&
                 (o.parameters || '') === (t.parameters || '') &&
                 o.parameterType === t.parameterType &&
+                o.reduceAlgorithm === t.reduceAlgorithm &&
                 _.isEqual(o.assertInfos, t.assertInfos) &&
                 (o.test || '') === (t.test || '') &&
                 (o.prescript || '') === (t.prescript || ''));

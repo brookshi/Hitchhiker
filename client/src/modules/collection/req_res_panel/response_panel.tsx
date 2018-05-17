@@ -266,7 +266,7 @@ const mapStateToProps = (state: State): ResponsePanelStateProps => {
     const record = getActiveRecordSelector()(state);
     const recordState = getActiveRecordStateSelector()(state);
     const activeKey = state.displayRecordsState.activeKey;
-    const { currParam, paramArr } = StringUtil.parseParameters(record.parameters, record.parameterType, recordState.parameter);
+    const { currParam, paramArr } = StringUtil.parseParameters(record.parameters, record.parameterType, recordState.parameter, record.reduceAlgorithm);
     const currParamStr = JSON.stringify(currParam);
     const resState = state.displayRecordsState.responseState[activeKey];
     const res = !resState ? undefined : (paramArr.length === 0 ? resState['runResult'] : (currParam === allParameter ? resState : resState[currParamStr]));

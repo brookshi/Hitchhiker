@@ -132,7 +132,7 @@ export class StressService {
 
         stress.requests.forEach(i => {
             let record = records[i];
-            const paramArr = StringUtil.parseParameters(record.parameters, record.parameterType);
+            const paramArr = StringUtil.parseParameters(record.parameters, record.parameterType, record.reduceAlgorithm);
             const headers = {};
             const url = StringUtil.stringifyUrl(record.url, record.queryStrings);
 

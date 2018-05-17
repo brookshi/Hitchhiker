@@ -19,7 +19,7 @@ import { RecordState, ParameterStatusState } from '../../../state/collection';
 import { KeyValueEditType } from '../../../common/custom_type';
 import { State } from '../../../state/index';
 import * as _ from 'lodash';
-import { ParameterType } from '../../../common/parameter_type';
+import { ParameterType, ReduceAlgorithmType } from '../../../common/parameter_type';
 import { StringUtil } from '../../../utils/string_util';
 import { RequestStatus } from '../../../common/request_status';
 import AssertJsonView from '../../../components/assert_json_view';
@@ -55,6 +55,8 @@ interface RequestOptionPanelStateProps {
     parameters?: string;
 
     parameterType: ParameterType;
+
+    reduceAlgorithm: ReduceAlgorithmType;
 
     assertInfos?: _.Dictionary<DtoAssert[]>;
 
@@ -170,9 +172,9 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
 
     public render() {
 
-        const { activeTabKey, headers, formDatas, body, parameters, parameterType, assertInfos, test, prescript, headersEditMode, favHeaders, envs, currentEnv, bodyMode } = this.props;
+        const { activeTabKey, headers, formDatas, body, parameters, parameterType, reduceAlgorithm, assertInfos, test, prescript, headersEditMode, favHeaders, envs, currentEnv, bodyMode } = this.props;
         const { isValid, msg } = StringUtil.verifyParameters(parameters || '', parameterType);
-        let paramArr = StringUtil.getUniqParamArr(parameters, parameterType);
+        let paramArr = StringUtil.getUniqParamArr(parameters, parameterType, reduceAlgorithm);
         const { isResValid, obj } = this.hasVaildResponseObj();
 
         return (
@@ -283,7 +285,7 @@ function getRes(state: State) {
     const record = getActiveRecordSelector()(state);
     const recordState = getActiveRecordStateSelector()(state);
     const activeKey = state.displayRecordsState.activeKey;
-    const { currParam, paramArr } = StringUtil.parseParameters(record.parameters, record.parameterType, recordState.parameter);
+    const { currParam, paramArr } = StringUtil.parseParameters(record.parameters, record.parameterType, recordState.parameter, record.reduceAlgorithm);
     const currParamStr = JSON.stringify(currParam);
     const resState = state.displayRecordsState.responseState[activeKey];
     return !resState ? undefined : (paramArr.length === 0 ? resState['runResult'] : (currParam === allParameter ? resState : resState[currParamStr]));
@@ -322,6 +324,7 @@ const mapStateToProps = (state: State): RequestOptionPanelStateProps => {
         bodyType: record.bodyType,
         parameters: record.parameters,
         parameterType: record.parameterType,
+        reduceAlgorithm: record.reduceAlgorithm || ReduceAlgorithmType.none,
         assertInfos: record.assertInfos,
         headersEditMode: getHeadersEditModeSelector()(state),
         currentParam: getActiveRecordStateSelector()(state).parameter,

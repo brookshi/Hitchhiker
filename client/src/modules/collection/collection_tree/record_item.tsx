@@ -42,6 +42,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
             this.props.record.method !== nextProps.record.method ||
             this.props.record.parameters !== nextProps.record.parameters ||
             this.props.record.parameterType !== nextProps.record.parameterType ||
+            this.props.record.reduceAlgorithm !== nextProps.record.reduceAlgorithm ||
             this.props.inFolder !== nextProps.inFolder;
     }
 
@@ -103,7 +104,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
         let { method, name } = record;
         method = method || 'GET';
         const paramReqInfo = StringUtil.verifyParameters(record.parameters || '', record.parameterType);
-        const reqCount = StringUtil.getUniqParamArr(record.parameters || '', record.parameterType).length;
+        const reqCount = StringUtil.getUniqParamArr(record.parameters || '', record.parameterType, record.reduceAlgorithm).length;
 
         return (
             <div

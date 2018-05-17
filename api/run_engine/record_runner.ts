@@ -52,7 +52,7 @@ export class RecordRunner {
                 break;
             }
             const parameters = await RecordRunner.getParametersWithVariables(record);
-            const paramArr = StringUtil.parseParameters(parameters, record.parameterType);
+            const paramArr = StringUtil.parseParameters(parameters, record.parameterType, record.reduceAlgorithm);
             const cm = ConsoleMessage.create(false);
             if (paramArr.length === 0) {
                 runResults.push(await RecordRunner.runRecordWithVW(record, cm));
@@ -74,7 +74,7 @@ export class RecordRunner {
     private static async runRecordParallel(rs: RecordEx[], runResults: BatchRunResult[]) {
         await Promise.all(rs.map(async (r) => {
             const parameters = await RecordRunner.getParametersWithVariables(r);
-            const paramArr = StringUtil.parseParameters(parameters, r.parameterType);
+            const paramArr = StringUtil.parseParameters(parameters, r.parameterType, r.reduceAlgorithm);
             const cm = ConsoleMessage.create(false);
             let result;
             if (paramArr.length === 0) {

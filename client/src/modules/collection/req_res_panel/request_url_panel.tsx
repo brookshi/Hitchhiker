@@ -173,8 +173,8 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
     }
 
     private applyAllVariables: (record: DtoRecord) => DtoRecord | _.Dictionary<DtoRecord> = (record: DtoRecord) => {
-        const { parameters, parameterType } = record;
-        const { currParam, paramArr } = StringUtil.parseParameters(parameters, parameterType, this.props.currentParam);
+        const { parameters, parameterType, reduceAlgorithm } = record;
+        const { currParam, paramArr } = StringUtil.parseParameters(parameters, parameterType, this.props.currentParam, reduceAlgorithm);
         if (paramArr.length === 0) {
             return record;
         }
