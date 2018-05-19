@@ -2,28 +2,68 @@
 	"id": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
 	"name": "Sample",
 	"description": "",
+	"commonPreScript": "const uuid = hitchhiker.require('uuid');\nconst token = uuid.v1(); // token could be set from another request like this: hkr.setEnvVariable('token', token); then use hkr.getEnvVariable('token') to get it.\nhkr.request.headers.my_token = token; // add token to header /  url",
 	"order": [
-		"6e7f60c9-acbc-f6c5-c393-6223d9ec2f5f",
-		"f9bf371f-262b-f9b0-ad74-e829e8efb10a",
-		"7a021e01-90fb-4623-c583-d3d2af6da990",
-		"e3a40f37-337b-65d5-6d06-18f967cd1abb",
-		"d5f04d52-baa5-0c4f-b73c-687ed2c7917e",
-		"871f08b6-7abe-b32f-b328-0f362f12e140",
-		"dd4bbfc4-9d70-a050-6d53-93575939a188"
+		"8285bfab-3e4c-8a00-a08d-b70c3bea1224",
+		"144707b8-e894-c961-a159-7410ff4eae50",
+		"ef07a501-7dd8-b2bf-e16a-949dea361216",
+		"f4dadbb3-9521-f779-b735-96f69456aae5",
+		"62e9e064-9a66-e80e-a733-c0776871eace",
+		"d66b39ce-2030-6b11-6c79-ef2278ee399a",
+		"9f131bb9-31af-d605-6409-5632d2bf3c88"
 	],
-	"folders": [],
-	"folders_order": [],
-	"timestamp": 1510480454919,
+	"folders": [{
+		"name": "script",
+		"description": "",
+		"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
+		"order": [
+			"6e7f60c9-acbc-f6c5-c393-6223d9ec2f5f",
+			"f9bf371f-262b-f9b0-ad74-e829e8efb10a",
+			"7a021e01-90fb-4623-c583-d3d2af6da990",
+			"e3a40f37-337b-65d5-6d06-18f967cd1abb",
+			"d5f04d52-baa5-0c4f-b73c-687ed2c7917e",
+			"871f08b6-7abe-b32f-b328-0f362f12e140",
+			"dd4bbfc4-9d70-a050-6d53-93575939a188",
+			"4fedd3bc-8169-2340-a68d-9a1b60d76632",
+			"681ef210-c497-8034-dd09-c620562731f3"
+		],
+		"owner": "1010955",
+		"folders_order": [],
+		"id": "0593a443-86cf-c303-a1d6-fe3ad9024c46"
+	}],
+	"folders_order": [
+		"0593a443-86cf-c303-a1d6-fe3ad9024c46"
+	],
+	"timestamp": 0,
 	"owner": "1010955",
 	"public": false,
+	"environments": [{
+		"name": "Sample",
+		"values": [{
+				"key": "apihost",
+				"value": "http://httpbin.org",
+				"enabled": true
+			},
+			{
+				"key": "string",
+				"value": "test",
+				"enabled": true
+			}
+		]
+	}],
 	"requests": [{
-			"id": "6e7f60c9-acbc-f6c5-c393-6223d9ec2f5f",
-			"headers": "",
-			"headerData": [],
-			"url": "http://httpbin.org/get?a=b",
+			"id": "144707b8-e894-c961-a159-7410ff4eae50",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [{
+				"key": "Content-Type",
+				"value": "application/json",
+				"enabled": true,
+				"description": ""
+			}],
+			"url": "http://httpbin.org/post?a={{a}}",
 			"queryParams": [{
 				"key": "a",
-				"value": "b",
+				"value": "{{a}}",
 				"equals": true,
 				"description": "",
 				"enabled": true
@@ -31,24 +71,30 @@
 			"preRequestScript": null,
 			"pathVariables": {},
 			"pathVariableData": [],
-			"method": "GET",
-			"data": null,
-			"dataMode": 1,
-			"version": 2,
-			"tests": "const crypto = hitchhiker.require('crypto-js');\n\ntests[`crypto ${crypto.HmacSHA1('test', 'asdf')}`] = true;\n\ntests[`crypto ${crypto.MD5('test')}`] = true;",
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": "",
 			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1510480555818,
-			"name": "crypto",
+			"helperAttributes": "{}",
+			"time": 1526724333877,
+			"name": "parameters with pairwise algorithm",
 			"description": "",
 			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
-			"responses": []
+			"responses": [],
+			"timestamp": null,
+			"isFromCollection": true,
+			"collectionRequestId": "144707b8-e894-c961-a159-7410ff4eae50",
+			"rawModeData": "{\n\t\"string\": \"{{b}}\",\n\t\"integer\": {{c}},\n\t\"boolean\": {{d}}\n}",
+			"parameters": "{\n\t\"a\": [\"a1\", \"a2\", \"a3\"],\n\t\"b\": [\"b1\", \"b2\", \"b3\"],\n\t\"c\": [1, 2, 3],\n\t\"d\": [true, false, true]\n}",
+			"reduceAlgorithm": 1
 		},
 		{
-			"id": "7a021e01-90fb-4623-c583-d3d2af6da990",
+			"id": "4fedd3bc-8169-2340-a68d-9a1b60d76632",
 			"headers": "",
 			"headerData": [],
 			"url": "http://httpbin.org/get?a=b",
+			"folder": "0593a443-86cf-c303-a1d6-fe3ad9024c46",
 			"queryParams": [{
 				"key": "a",
 				"value": "b",
@@ -56,27 +102,263 @@
 				"description": "",
 				"enabled": true
 			}],
-			"preRequestScript": "",
+			"preRequestScript": "// append a query string to url\nhkr.request.url = hkr.request.url + \"&c=d\"; // hkr is a short name of hitchhiker\n\n// request.headers, request.body, request.method also could be changed.",
 			"pathVariables": {},
 			"pathVariableData": [],
 			"method": "GET",
 			"data": null,
-			"dataMode": 1,
-			"version": 2,
-			"tests": "const _ = hitchhiker.require('lodash');\n\nconst a = [1, 2];\n\nconst b= [3, 4];\n\ntests[_.union(a, b).join('-')] = true;",
+			"dataMode": "params",
+			"tests": "",
+			"currentHelper": "normal",
+			"helperAttributes": "{}",
+			"time": 1526725510887,
+			"name": "change request",
+			"description": "",
+			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
+			"responses": [],
+			"timestamp": null
+		},
+		{
+			"id": "62e9e064-9a66-e80e-a733-c0776871eace",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [{
+				"key": "Content-Type",
+				"value": "application/json",
+				"enabled": true,
+				"description": ""
+			}],
+			"url": "http://httpbin.org/get",
+			"queryParams": [],
+			"preRequestScript": "console.log(\"start\");\nconsole.warn(\"warn\");",
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": [],
+			"dataMode": "raw",
+			"tests": "console.log(\"end\");\nconsole.error(\"error\");",
+			"currentHelper": "normal",
+			"helperAttributes": "{}",
+			"time": 1526724623454,
+			"name": "console",
+			"description": "",
+			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
+			"responses": [],
+			"timestamp": null,
+			"isFromCollection": true,
+			"collectionRequestId": "62e9e064-9a66-e80e-a733-c0776871eace",
+			"rawModeData": "{\n\t\"string\": \"{{b}}\",\n\t\"integer\": {{c}},\n\t\"boolean\": {{d}}\n}"
+		},
+		{
+			"id": "681ef210-c497-8034-dd09-c620562731f3",
+			"headers": "",
+			"headerData": [],
+			"url": "http://httpbin.org/get?a=b",
+			"folder": "0593a443-86cf-c303-a1d6-fe3ad9024c46",
+			"queryParams": [{
+				"key": "a",
+				"value": "b",
+				"equals": true,
+				"description": "",
+				"enabled": true
+			}],
+			"preRequestScript": "// check common pre request script in collection setting",
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"tests": "",
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1510481420285,
-			"name": "lodash",
+			"time": 1526730365889,
+			"name": "add token in common pre script",
 			"description": "",
 			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
 			"responses": []
 		},
 		{
-			"id": "871f08b6-7abe-b32f-b328-0f362f12e140",
+			"folder": "0593a443-86cf-c303-a1d6-fe3ad9024c46",
+			"id": "6e7f60c9-acbc-f6c5-c393-6223d9ec2f5f",
+			"name": "crypto",
+			"dataMode": "params",
+			"data": null,
+			"auth": null,
+			"events": [{
+				"listen": "test",
+				"script": {
+					"type": "text/javascript",
+					"exec": [
+						"const crypto = hitchhiker.require('crypto-js');",
+						"",
+						"tests[`crypto ${crypto.HmacSHA1('test', 'asdf')}`] = true;",
+						"",
+						"tests[`crypto ${crypto.MD5('test')}`] = true;"
+					]
+				}
+			}],
+			"rawModeData": null,
+			"descriptionFormat": "html",
+			"description": "",
+			"variables": null,
 			"headers": "",
+			"method": "GET",
+			"pathVariables": {},
+			"url": "http://httpbin.org/get?a=b",
+			"preRequestScript": null,
+			"tests": "const crypto = hitchhiker.require('crypto-js');\n\ntests[`crypto ${crypto.HmacSHA1('test', 'asdf')}`] = true;\n\ntests[`crypto ${crypto.MD5('test')}`] = true;",
+			"currentHelper": null,
+			"helperAttributes": null,
+			"queryParams": [{
+				"key": "a",
+				"value": "b",
+				"equals": true,
+				"description": "",
+				"enabled": true
+			}],
 			"headerData": [],
+			"pathVariableData": [],
+			"responses": [],
+			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
+			"isFromCollection": true,
+			"collectionRequestId": "6e7f60c9-acbc-f6c5-c393-6223d9ec2f5f"
+		},
+		{
+			"folder": "0593a443-86cf-c303-a1d6-fe3ad9024c46",
+			"id": "7a021e01-90fb-4623-c583-d3d2af6da990",
+			"name": "lodash",
+			"dataMode": "params",
+			"data": null,
+			"auth": null,
+			"events": [{
+				"listen": "test",
+				"script": {
+					"type": "text/javascript",
+					"exec": [
+						"const _ = hitchhiker.require('lodash');",
+						"",
+						"const a = [1, 2];",
+						"",
+						"const b= [3, 4];",
+						"",
+						"tests[_.union(a, b).join('-')] = true;"
+					]
+				}
+			}],
+			"rawModeData": null,
+			"descriptionFormat": null,
+			"description": "",
+			"variables": null,
+			"headers": "",
+			"method": "GET",
+			"pathVariables": {},
+			"url": "http://httpbin.org/get?a=b",
+			"preRequestScript": null,
+			"tests": "const _ = hitchhiker.require('lodash');\n\nconst a = [1, 2];\n\nconst b= [3, 4];\n\ntests[_.union(a, b).join('-')] = true;",
+			"currentHelper": null,
+			"helperAttributes": null,
+			"queryParams": [{
+				"key": "a",
+				"value": "b",
+				"equals": true,
+				"description": "",
+				"enabled": true
+			}],
+			"headerData": [],
+			"pathVariableData": [],
+			"responses": [],
+			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0"
+		},
+		{
+			"id": "8285bfab-3e4c-8a00-a08d-b70c3bea1224",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [{
+				"key": "Content-Type",
+				"value": "application/json",
+				"enabled": true,
+				"description": ""
+			}],
+			"url": "http://httpbin.org/post?a={{a}}",
+			"queryParams": [{
+				"key": "a",
+				"value": "{{a}}",
+				"equals": true,
+				"description": "",
+				"enabled": true
+			}],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": "",
+			"currentHelper": "normal",
+			"helperAttributes": "{}",
+			"time": 1526724338356,
+			"name": "parameters",
+			"description": "",
+			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
+			"responses": [],
+			"timestamp": null,
+			"isFromCollection": true,
+			"collectionRequestId": "8285bfab-3e4c-8a00-a08d-b70c3bea1224",
+			"rawModeData": "{\n\t\"string\": \"{{b}}\",\n\t\"integer\": {{c}},\n\t\"boolean\": {{d}}\n}",
+			"parameters": "{\n\t\"a\": [\"a1\", \"a2\", \"a3\"],\n\t\"b\": [\"b1\", \"b2\", \"b3\"],\n\t\"c\": [1, 2, 3],\n\t\"d\": [true, false, true]\n}"
+		},
+		{
+			"folder": "0593a443-86cf-c303-a1d6-fe3ad9024c46",
+			"id": "871f08b6-7abe-b32f-b328-0f362f12e140",
+			"name": "request in request",
+			"dataMode": "params",
+			"data": null,
+			"auth": null,
+			"events": [{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const request = hitchhiker.require('request');",
+							"",
+							"function getData() {",
+							"    return new Promise((resolve, reject) => {",
+							"            const req = request(\"http://httpbin.org/get?a=request in request\", (err, res, body) => {",
+							"                resolve({ err: err, response: res, body: body });",
+							"            });",
+							"        });",
+							"}",
+							"",
+							"const res = await getData(); // MUST use async/await",
+							"",
+							"hitchhiker.setEnvVariable('resBody', res.body);"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const body = hitchhiker.getEnvVariable('resBody');",
+							"",
+							"const obj = JSON.parse(body);",
+							"",
+							"tests[obj.args.a] = true;"
+						]
+					}
+				}
+			],
+			"rawModeData": null,
+			"descriptionFormat": null,
+			"description": "",
+			"variables": null,
+			"headers": "",
+			"method": "GET",
+			"pathVariables": {},
 			"url": "http://httpbin.org/get?a={{resBody}}",
+			"preRequestScript": "const request = hitchhiker.require('request');\n\nfunction getData() {\n    return new Promise((resolve, reject) => {\n            const req = request(\"http://httpbin.org/get?a=request in request\", (err, res, body) => {\n                resolve({ err: err, response: res, body: body });\n            });\n        });\n}\n\nconst res = await getData(); // MUST use async/await\n\nhitchhiker.setEnvVariable('resBody', res.body);",
+			"tests": "const body = hitchhiker.getEnvVariable('resBody');\n\nconst obj = JSON.parse(body);\n\ntests[obj.args.a] = true;",
+			"currentHelper": null,
+			"helperAttributes": null,
 			"queryParams": [{
 				"key": "a",
 				"value": "{{resBody}}",
@@ -84,58 +366,110 @@
 				"description": "",
 				"enabled": true
 			}],
-			"preRequestScript": "const request = hitchhiker.require('request');\n\nfunction getData() {\n    return new Promise((resolve, reject) => {\n            const req = request(\"http://httpbin.org/get?a=request in request\", (err, res, body) => {\n                resolve({ err: err, response: res, body: body });\n            });\n        });\n}\n\nconst res = await getData(); // MUST use async/await\n\nhitchhiker.setEnvVariable('resBody', res.body);",
+			"headerData": [],
+			"pathVariableData": [],
+			"responses": [],
+			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0"
+		},
+		{
+			"id": "9f131bb9-31af-d605-6409-5632d2bf3c88",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [{
+				"key": "Content-Type",
+				"value": "application/x-www-form-urlencoded",
+				"description": "",
+				"enabled": true
+			}],
+			"url": "http://httpbin.org/post",
+			"queryParams": [],
+			"preRequestScript": "",
 			"pathVariables": {},
 			"pathVariableData": [],
-			"method": "GET",
-			"data": null,
-			"dataMode": 1,
-			"version": 2,
-			"tests": "const body = hitchhiker.getEnvVariable('resBody');\n\nconst obj = JSON.parse(body);\n\ntests[obj.args.a] = true;",
+			"method": "POST",
+			"data": [{
+					"key": "uesrname",
+					"value": "brook",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "password",
+					"value": "123456",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"tests": "",
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1510481527045,
-			"name": "request in request",
+			"time": 1526735583132,
+			"name": "form data",
 			"description": "",
 			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
 			"responses": []
 		},
 		{
+			"folder": "0593a443-86cf-c303-a1d6-fe3ad9024c46",
 			"id": "d5f04d52-baa5-0c4f-b73c-687ed2c7917e",
-			"headers": "",
-			"headerData": [],
-			"url": "http://httpbin.org/get?a=b",
-			"queryParams": [{
-				"key": "a",
-				"value": "b",
-				"equals": true,
-				"description": "",
-				"enabled": true
-			}],
-			"preRequestScript": "",
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "GET",
-			"data": null,
-			"dataMode": 1,
-			"version": 2,
-			"tests": "const xlsx = hitchhiker.require('xlsx');\n\nconst workbook = hitchhiker.readFileByReader('test.xlsx', xlsx.readFile); // read excel file in global_data/data by using readFileByReader\n\ntests[workbook.SheetNames[0]] = true;\n\ntests[workbook.Sheets[workbook.SheetNames[0]]['A1'].v] = true;",
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1510481490142,
 			"name": "read excel",
+			"dataMode": "params",
+			"data": null,
+			"auth": null,
+			"events": [{
+				"listen": "test",
+				"script": {
+					"type": "text/javascript",
+					"exec": [
+						"const xlsx = hitchhiker.require('xlsx');",
+						"",
+						"const workbook = hitchhiker.readFileByReader('test.xlsx', xlsx.readFile); // read excel file in global_data/data by using readFileByReader",
+						"",
+						"tests[workbook.SheetNames[0]] = true;",
+						"",
+						"tests[workbook.Sheets[workbook.SheetNames[0]]['A1'].v] = true;"
+					]
+				}
+			}],
+			"rawModeData": null,
+			"descriptionFormat": null,
 			"description": "",
-			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
-			"responses": []
-		},
-		{
-			"id": "dd4bbfc4-9d70-a050-6d53-93575939a188",
+			"variables": null,
 			"headers": "",
-			"headerData": [],
+			"method": "GET",
+			"pathVariables": {},
 			"url": "http://httpbin.org/get?a=b",
+			"preRequestScript": null,
+			"tests": "const xlsx = hitchhiker.require('xlsx');\n\nconst workbook = hitchhiker.readFileByReader('test.xlsx', xlsx.readFile); // read excel file in global_data/data by using readFileByReader\n\ntests[workbook.SheetNames[0]] = true;\n\ntests[workbook.Sheets[workbook.SheetNames[0]]['A1'].v] = true;",
+			"currentHelper": null,
+			"helperAttributes": null,
 			"queryParams": [{
 				"key": "a",
 				"value": "b",
+				"equals": true,
+				"description": "",
+				"enabled": true
+			}],
+			"headerData": [],
+			"pathVariableData": [],
+			"responses": [],
+			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0"
+		},
+		{
+			"id": "d66b39ce-2030-6b11-6c79-ef2278ee399a",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [{
+				"key": "Content-Type",
+				"value": "application/json",
+				"enabled": true,
+				"description": ""
+			}],
+			"url": "{{apihost}}/put?a={{string}}",
+			"queryParams": [{
+				"key": "a",
+				"value": "{{string}}",
 				"equals": true,
 				"description": "",
 				"enabled": true
@@ -143,23 +477,164 @@
 			"preRequestScript": "",
 			"pathVariables": {},
 			"pathVariableData": [],
-			"method": "GET",
-			"data": null,
-			"dataMode": 1,
-			"version": 2,
-			"tests": "const uuid = hitchhiker.require('uuid');\n\ntests[uuid.v4()] = true;\n\ntests[uuid.v1()] = true;",
+			"method": "PUT",
+			"data": [],
+			"dataMode": "raw",
+			"tests": "",
 			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1510481546798,
-			"name": "uuid",
+			"helperAttributes": "{}",
+			"time": 1526725723432,
+			"name": "environment variable",
 			"description": "",
 			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
-			"responses": []
+			"responses": [],
+			"timestamp": null,
+			"rawModeData": "{\n\t\"str\": \"{{string}}\"\n}"
 		},
 		{
-			"id": "e3a40f37-337b-65d5-6d06-18f967cd1abb",
+			"folder": "0593a443-86cf-c303-a1d6-fe3ad9024c46",
+			"id": "dd4bbfc4-9d70-a050-6d53-93575939a188",
+			"name": "uuid",
+			"dataMode": "params",
+			"data": null,
+			"auth": null,
+			"events": [{
+				"listen": "test",
+				"script": {
+					"type": "text/javascript",
+					"exec": [
+						"const uuid = hitchhiker.require('uuid');",
+						"",
+						"tests[uuid.v4()] = true;",
+						"",
+						"tests[uuid.v1()] = true;"
+					]
+				}
+			}],
+			"rawModeData": null,
+			"descriptionFormat": null,
+			"description": "",
+			"variables": null,
 			"headers": "",
+			"method": "GET",
+			"pathVariables": {},
+			"url": "http://httpbin.org/get?a=b",
+			"preRequestScript": null,
+			"tests": "const uuid = hitchhiker.require('uuid');\n\ntests[uuid.v4()] = true;\n\ntests[uuid.v1()] = true;",
+			"currentHelper": null,
+			"helperAttributes": null,
+			"queryParams": [{
+				"key": "a",
+				"value": "b",
+				"equals": true,
+				"description": "",
+				"enabled": true
+			}],
 			"headerData": [],
+			"pathVariableData": [],
+			"responses": [],
+			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
+			"isFromCollection": true,
+			"collectionRequestId": "dd4bbfc4-9d70-a050-6d53-93575939a188"
+		},
+		{
+			"folder": "0593a443-86cf-c303-a1d6-fe3ad9024c46",
+			"id": "e3a40f37-337b-65d5-6d06-18f967cd1abb",
+			"name": "read / save / remove File",
+			"dataMode": "params",
+			"data": null,
+			"auth": null,
+			"events": [{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"hitchhiker.saveFile('test.txt', 'test file content'); // save content",
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const value = hitchhiker.readFile('test.txt');  // read file content, support custom reader by using readFileByReader",
+							"",
+							"tests[value] = true;",
+							"",
+							"hitchhiker.removeFile('test.json'); // remove file"
+						]
+					}
+				}
+			],
+			"rawModeData": null,
+			"descriptionFormat": null,
+			"description": "",
+			"variables": null,
+			"headers": "",
+			"method": "GET",
+			"pathVariables": {},
+			"url": "http://httpbin.org/get?a=b",
+			"preRequestScript": "hitchhiker.saveFile('test.txt', 'test file content'); // save content\n",
+			"tests": "const value = hitchhiker.readFile('test.txt');  // read file content, support custom reader by using readFileByReader\n\ntests[value] = true;\n\nhitchhiker.removeFile('test.json'); // remove file",
+			"currentHelper": null,
+			"helperAttributes": null,
+			"queryParams": [{
+				"key": "a",
+				"value": "b",
+				"equals": true,
+				"description": "",
+				"enabled": true
+			}],
+			"headerData": [],
+			"pathVariableData": [],
+			"responses": [],
+			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0"
+		},
+		{
+			"id": "ef07a501-7dd8-b2bf-e16a-949dea361216",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [{
+				"key": "Content-Type",
+				"value": "application/json",
+				"enabled": true,
+				"description": ""
+			}],
+			"url": "http://httpbin.org/patch?querystring=test",
+			"queryParams": [{
+				"key": "querystring",
+				"value": "test",
+				"equals": true,
+				"description": "",
+				"enabled": true
+			}],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "PATCH",
+			"data": [],
+			"dataMode": "raw",
+			"tests": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\ntests[\"Query string is right\"] = responseObj.args.querystring === \"test\";\n\ntests[\"contains json header\"] = responseHeaders[\"connection\"] === \"close\";\n\ntests[\"response time is less than 500ms\"] = responseTime < 500;",
+			"currentHelper": "normal",
+			"helperAttributes": "{}",
+			"time": 1526725442770,
+			"name": "assert in test",
+			"description": "",
+			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
+			"responses": [],
+			"timestamp": null,
+			"rawModeData": "{\n\t\"string\": \"{{b}}\",\n\t\"integer\": {{c}},\n\t\"boolean\": {{d}}\n}"
+		},
+		{
+			"id": "f4dadbb3-9521-f779-b735-96f69456aae5",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [{
+				"key": "Content-Type",
+				"value": "application/json",
+				"enabled": true,
+				"description": ""
+			}],
 			"url": "http://httpbin.org/get?a=b",
 			"queryParams": [{
 				"key": "a",
@@ -168,27 +643,85 @@
 				"description": "",
 				"enabled": true
 			}],
-			"preRequestScript": "hitchhiker.saveFile('test.txt', 'test file content'); // save content\n",
 			"pathVariables": {},
 			"pathVariableData": [],
+			"preRequestScript": null,
 			"method": "GET",
-			"data": null,
-			"dataMode": 1,
-			"version": 2,
-			"tests": "const value = hitchhiker.readFile('test.txt');  // read file content, support custom reader by using readFileByReader\n\ntests[value] = true;\n\nhitchhiker.removeFile('test.json'); // remove file",
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1510481465887,
-			"name": "read / save / remove File",
-			"description": "",
 			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
-			"responses": []
+			"data": [],
+			"dataMode": "raw",
+			"name": "assert base on ui",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1526724712374,
+			"version": 2,
+			"responses": [],
+			"tests": "",
+			"currentHelper": "normal",
+			"helperAttributes": "{}",
+			"isFromCollection": true,
+			"collectionRequestId": "f4dadbb3-9521-f779-b735-96f69456aae5",
+			"timestamp": null,
+			"rawModeData": "{\n\t\"test\": \"test\"\n}",
+			"assertInfos": {
+				"root/url": [{
+					"name": "from httpbin",
+					"value": "http://httpbin.org",
+					"target": ["url", "root"],
+					"function": "startsWith"
+				}],
+				"root/args/a": [{
+					"name": "query string a=b",
+					"value": "b",
+					"target": ["a", "args", "root"],
+					"function": "=="
+				}]
+			}
 		},
 		{
+			"folder": "0593a443-86cf-c303-a1d6-fe3ad9024c46",
 			"id": "f9bf371f-262b-f9b0-ad74-e829e8efb10a",
+			"name": "runtime variable",
+			"dataMode": "params",
+			"data": null,
+			"auth": null,
+			"events": [{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"hitchhiker.setEnvVariable('value', 'test'); // set env variable"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const value = hitchhiker.getEnvVariable('value'); // get env variable",
+							"",
+							"tests[value] = true;",
+							"",
+							"hitchhiker.removeEnvVariable('value'); // remove env variable",
+							"",
+							"tests[hitchhiker.environment] = true; // get current selected env"
+						]
+					}
+				}
+			],
+			"rawModeData": null,
+			"descriptionFormat": null,
+			"description": "",
+			"variables": null,
 			"headers": "",
-			"headerData": [],
+			"method": "GET",
+			"pathVariables": {},
 			"url": "http://httpbin.org/get?a={{value}}",
+			"preRequestScript": "hitchhiker.setEnvVariable('value', 'test'); // set env variable",
+			"tests": "const value = hitchhiker.getEnvVariable('value'); // get env variable\n\ntests[value] = true;\n\nhitchhiker.removeEnvVariable('value'); // remove env variable\n\ntests[hitchhiker.environment] = true; // get current selected env",
+			"currentHelper": null,
+			"helperAttributes": null,
 			"queryParams": [{
 				"key": "a",
 				"value": "{{value}}",
@@ -196,21 +729,10 @@
 				"description": "",
 				"enabled": true
 			}],
-			"preRequestScript": "hitchhiker.setEnvVariable('value', 'test'); // set env variable",
-			"pathVariables": {},
+			"headerData": [],
 			"pathVariableData": [],
-			"method": "GET",
-			"data": null,
-			"dataMode": 1,
-			"version": 2,
-			"tests": "const value = hitchhiker.getEnvVariable('value'); // get env variable\n\ntests[value] = true;\n\nhitchhiker.removeEnvVariable('value'); // remove env variable\n\ntests[hitchhiker.environment] = true; // get current selected env",
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1510481057584,
-			"name": "environment",
-			"description": "",
-			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0",
-			"responses": []
+			"responses": [],
+			"collectionId": "a8f80c44-cedd-8096-0618-aa1cc140bdb0"
 		}
 	]
 }

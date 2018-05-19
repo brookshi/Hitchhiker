@@ -9,4 +9,6 @@ export interface ConsoleMsg {
     type: 'log' | 'info' | 'warn' | 'error' | any;
 
     message: string;
+
+    custom: boolean;
 }

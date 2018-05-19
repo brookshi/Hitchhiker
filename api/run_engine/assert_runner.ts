@@ -33,7 +33,10 @@ export class AssertRunner {
         } else if (['true', 'false'].find(o => o === func)) {
             return target === (func === 'true' ? true : false);
         } else {
-            return eval(target[func](eval(value)));
+            try {
+                value = eval(value);
+            } catch (e) { }
+            return eval(target[func](value));
         }
     }
 

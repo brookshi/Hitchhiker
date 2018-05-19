@@ -13,7 +13,7 @@ import { RecordCategory } from '../../common/record_category';
 import { MetadataType } from '../../common/metadata_type';
 import { ProjectService } from '../project_service';
 import { Collection } from '../../models/collection';
-import { DtoVariable } from '../../interfaces/dto_variable';
+import { DtoVariable, DtoBodyFormData } from '../../interfaces/dto_variable';
 import { Environment } from '../../models/environment';
 import { VariableService } from '../variable_service';
 import { DataMode } from '../../common/data_mode';
@@ -54,8 +54,7 @@ export class PostmanImport implements RequestsImport {
     }
 
     async parsePostmanEnvV1(owner: User, projectId: string, data: any): Promise<Environment[]> {
-        const type = this.getMetadataCategory(data);
-        if (type !== MetadataType.PostmanAllV1 || !data.environments) {
+        if (!data.environments) {
             return [];
         }
 
@@ -86,7 +85,7 @@ export class PostmanImport implements RequestsImport {
         let sort = await RecordService.getMaxSort();
         const dtoCollection = {
             ...data,
-            commonPreScript: '',
+            commonPreScript: data.commonPreScript || '',
             projectId: projectId,
             id: StringUtil.generateUID()
         };
@@ -127,7 +126,7 @@ export class PostmanImport implements RequestsImport {
         dtoRecord.sort = sort;
         dtoRecord.dataMode = DataMode.raw;
         dtoRecord.category = RecordCategory.folder;
-        dtoRecord.id = StringUtil.generateUID();
+        f.id = dtoRecord.id = StringUtil.generateUID();
         return dtoRecord;
     }
 
@@ -137,8 +136,9 @@ export class PostmanImport implements RequestsImport {
         dtoRecord.sort = sort;
         dtoRecord.headers = this.parseHeaders(r.headers);
         dtoRecord.body = this.parseBody(r);
+        dtoRecord.formDatas = this.parseFormData(r.data);
         dtoRecord.test = r.tests;
-        dtoRecord.dataMode = DataMode.raw;
+        dtoRecord.dataMode = r.dataMode === 'urlencoded' ? DataMode.urlencoded : DataMode.raw;
         dtoRecord.category = RecordCategory.record;
         const folder = folders ? folders.find(f => f.order && !!f.order.find(o => o === dtoRecord.id)) : undefined;
         dtoRecord.pid = folder ? folder.id : '';
@@ -148,7 +148,14 @@ export class PostmanImport implements RequestsImport {
     }
 
     private parseBody(data: PostmanRecord): string {
-        return _.isString(data.rawModeData || data.data) ? (data.rawModeData || data.data) : (_.isArray(data.data) && data.data.length > 0 ? JSON.stringify(data.data, null, 4) : '');
+        return _.isString(data.rawModeData || data.data) ? (data.rawModeData || data.data) : '';
+    }
+
+    private parseFormData(data: any): DtoBodyFormData[] {
+        if (!_.isArray(data)) {
+            return;
+        }
+        return (data as any[]).map((d, i) => ({ id: StringUtil.generateUID(), key: d.key, value: d.value, isActive: d.enabled, description: d.description, sort: i }));
     }
 
     private parseHeaders(headers: string | DtoHeader[]): DtoHeader[] {

@@ -18,6 +18,8 @@ export interface PostmanCollectionV1 {
 
     description: string;
 
+    commonPreScript: string;
+
     folders: PostmanRecord[];
 
     requests: PostmanRecord[];
@@ -30,6 +32,8 @@ export interface PostmanRecord extends DtoRecord {
     folder: string;
 
     rawModeData: string;
+
+    dataMode: DataMode & string;
 
     data: any;
 

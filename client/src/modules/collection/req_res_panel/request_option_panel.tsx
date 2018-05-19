@@ -225,7 +225,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                 </TabPane>
                 <TabPane
                     tab={(
-                        <Badge style={normalBadgeStyle} dot={!!body && body.length > 0} count="" >
+                        <Badge style={normalBadgeStyle} dot={(!!body && body.length > 0) || (formDatas && formDatas.length > 0)} count="" >
                             {Msg('Collection.Body')}
                         </Badge>
                     )}

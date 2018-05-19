@@ -7,6 +7,7 @@ import { Setting } from '../utils/setting';
 import { StringUtil } from '../utils/string_util';
 import { RecordService } from './record_service';
 import { PostmanImport } from './importer/postman_import';
+import * as _ from 'lodash';
 
 export class SampleService {
 
@@ -23,15 +24,13 @@ export class SampleService {
 
         SampleService.init();
 
-        const collection = await new PostmanImport().parsePostmanCollectionV1(owner, projectId, SampleService.sampleCollection);
+        const collection = await new PostmanImport().parsePostmanCollectionV1(owner, projectId, _.cloneDeep(SampleService.sampleCollection));
 
         await CollectionService.save(collection);
 
         await Promise.all(collection.records.map(r => RecordService.saveRecordHistory(RecordService.createRecordHistory(r, owner))));
 
-        let apiHost = (<string>Setting.instance.appApi).replace('http://', '').replace('https://', '');
-        apiHost = apiHost.substr(0, apiHost.length - 1);
-        const dtoEnv: DtoEnvironment = { id: StringUtil.generateUID(), name: 'Sample Env', project: { id: projectId }, variables: [{ id: StringUtil.generateUID(), key: 'apihost', value: apiHost, isActive: true, sort: 0 }] };
+        const dtoEnv: DtoEnvironment = { id: StringUtil.generateUID(), name: 'Sample Env', project: { id: projectId }, variables: [{ id: StringUtil.generateUID(), key: 'apihost', value: 'http://httpbin.org', isActive: true, sort: 0 }, { id: StringUtil.generateUID(), key: 'string', value: 'test', isActive: true, sort: 1 }] };
 
         await EnvironmentService.create(dtoEnv);
     }

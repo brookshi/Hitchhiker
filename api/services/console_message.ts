@@ -18,11 +18,11 @@ export class ConsoleMessage {
 
     push(message: string, type: string = 'info', force?: boolean) {
         if (force || this.valid) {
-            this.msgs.push({ time: new Date(), message, type });
+            this.msgs.push({ time: new Date(), message, type, custom: false });
         }
     }
 
-    pushArray(msgs: ConsoleMsg[], force?: boolean) {
+    pushArray(msgs: ConsoleMsg[], isCustom?: boolean, force?: boolean) {
         if (force || this.valid) {
             this.msgs.push(...msgs);
         }

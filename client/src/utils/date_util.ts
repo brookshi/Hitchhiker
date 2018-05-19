@@ -31,7 +31,7 @@ export class DateUtil {
 
     static getDisplayTime(date: Date): string {
         date = new Date(date);
-        return `${this.zeroPrefix(date.getHours())}:${this.zeroPrefix(date.getMinutes())}:${this.zeroPrefix(date.getSeconds())} ${this.zeroPrefix(date.getMilliseconds(), 3)}`;
+        return `${this.zeroPrefix(date.getHours())}:${this.zeroPrefix(date.getMinutes())}:${this.zeroPrefix(date.getSeconds())}.${this.zeroPrefix(date.getMilliseconds(), 3)}`;
     }
 
     private static zeroPrefix(n: number, count: number = 2) {
