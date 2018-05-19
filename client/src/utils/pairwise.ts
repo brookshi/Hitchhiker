@@ -1,15 +1,13 @@
 
 export class PairwiseStrategy {
 
-    static readonly instance: PairwiseStrategy = new PairwiseStrategy();
-
-    GetTestCasesByObj(obj: _.Dictionary<any[]>) {
+    static GetTestCasesByObj(obj: _.Dictionary<any[]>) {
         const keys = Object.keys(obj);
         const source = new Array<Array<any>>();
         keys.forEach(k => {
             source.push(obj[k]);
         });
-        const testCaseArr = this.GetTestCases(source);
+        const testCaseArr = new PairwiseStrategy().GetTestCases(source);
         const testCases = new Array<any>();
         testCaseArr.forEach(t => {
             const testCase = {};
@@ -29,8 +27,8 @@ export class PairwiseStrategy {
         let pairwiseTestCases = new PairwiseTestCaseGenerator().GetTestCases(dimensions);
 
         for (let pairwiseTestCase of pairwiseTestCases) {
-            let testData = new Array<any>(pairwiseTestCase.Features.Length);
-            for (let i = 0; i < pairwiseTestCase.Features.Length; i++) {
+            let testData = new Array<any>();
+            for (let i = 0; i < pairwiseTestCase.Features.length; i++) {
                 testData[i] = valueSet[i][pairwiseTestCase.Features[i]];
             }
             testCases.push(testData);
@@ -54,7 +52,7 @@ export class PairwiseStrategy {
     }
 
     CreateDimensions(valueSet: Array<any>[]): number[] {
-        let dimensions = new Array<number>(valueSet.length);
+        let dimensions = new Array<number>();
         for (let i = 0; i < valueSet.length; i++) {
             dimensions[i] = valueSet[i].length;
         }
@@ -92,7 +90,7 @@ class PairwiseTestCaseGenerator {
     }
 
     private GetNextRandomNumber(): number {
-        return this._prng.Next() >> 1;
+        return Math.abs(this._prng.Next() >> 1);
     }
 
     private CreateAllTuples(): void {
@@ -149,7 +147,8 @@ class PairwiseTestCaseGenerator {
     private CreateRandomTestCase(tuple: FeatureTuple): TestCaseInfo {
         let testCaseInfo = new TestCaseInfo(this._dimensions.length);
         for (let i = 0; i < this._dimensions.length; i++) {
-            testCaseInfo.Features[i] = this.GetNextRandomNumber() % this._dimensions[i];
+            const num = this.GetNextRandomNumber();
+            testCaseInfo.Features[i] = num % this._dimensions[i];
         }
         for (let j = 0; j < tuple.Length; j++) {
             testCaseInfo.Features[tuple.get_Item(j).Dimension] = tuple.get_Item(j).Feature;
@@ -207,7 +206,7 @@ class PairwiseTestCaseGenerator {
     }
 
     private MaximizeCoverageForDimension(testCase: TestCaseInfo, dimension: number, bestCoverage: number): number {
-        let bestFeatures = new Array<number>(this._dimensions[dimension]);
+        let bestFeatures = new Array<number>();
 
         for (let i = 0; i < this._dimensions[dimension]; i++) {
             testCase.Features[dimension] = i;
@@ -221,7 +220,10 @@ class PairwiseTestCaseGenerator {
                 bestFeatures.push(i);
             }
         }
-        testCase.Features[dimension] = bestFeatures[this.GetNextRandomNumber() % bestFeatures.length];
+
+        if (bestFeatures.length > 0) {
+            testCase.Features[dimension] = bestFeatures[this.GetNextRandomNumber() % bestFeatures.length];
+        }
 
         return bestCoverage;
     }
@@ -232,7 +234,7 @@ class PairwiseTestCaseGenerator {
 
         for (let i = 0; i < list.length; i++) {
             if (testCase.IsTupleCovered(list[i])) {
-                result = result + 1;
+                result++;
             }
         }
         return result;
@@ -242,9 +244,9 @@ class PairwiseTestCaseGenerator {
         for (let i = 0; i < this._uncoveredTuples.length; i++) {
             for (let j = 0; j < this._uncoveredTuples[i].length; j++) {
                 let list = this._uncoveredTuples[i][j];
-                for (let k = list.length - 1; k >= 0; k = k - 1) {
+                for (let k = list.length - 1; k >= 0; k--) {
                     if (testCase.IsTupleCovered(list[k])) {
-                        list.splice(k);
+                        list.splice(k, 1);
                     }
                 }
             }
@@ -354,8 +356,8 @@ class FleaRand {
         for (let i = 0; i < this._r.length; i++) {
             a = this._m[b % this._m.length];
             this._m[b % this._m.length] = d;
-            d = (c << 19) + (c >> 13) + b;
-            c = b ^ this._m[i];
+            d = Math.abs((c << 19) + (c >> 13) + b);
+            c = Math.abs(b ^ this._m[i]);
             b = a + d;
             this._r[i] = c;
         }

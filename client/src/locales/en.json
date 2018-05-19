@@ -179,6 +179,7 @@
     "Collection.CloseExceptActived": "Close except Actived",
     "Collection.CloseSaved": "Close Saved",
     "Collection.CloseAll": "Close All",
+    "Collection.ReduceAlgorithm": "Pairwise Algorithm",
 
     "Project.DeleteEnvironment": "Delete environment",
     "Project.DeleteThisEnvironment": "delete environment: {name}",

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { Tabs, Badge, Radio, Select, Icon } from 'antd';
+import { Tabs, Badge, Radio, Select, Icon, Checkbox } from 'antd';
 import RequestTabExtra from './request_tab_extra';
 import { normalBadgeStyle } from '../../../style/theme';
 import { DtoHeader } from '../../../../../api/interfaces/dto_header';
@@ -210,6 +210,12 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                             <Radio value={ParameterType.ManyToMany}>{ParameterType[ParameterType.ManyToMany]}</Radio>
                             <Radio value={ParameterType.OneToOne}>{ParameterType[ParameterType.OneToOne]}</Radio>
                         </RadioGroup>
+                        <Checkbox
+                            checked={reduceAlgorithm === ReduceAlgorithmType.pairwise}
+                            onChange={e => this.props.changeRecord({ reduceAlgorithm: (e.target as any).checked ? ReduceAlgorithmType.pairwise : ReduceAlgorithmType.none })}
+                        >
+                            {Msg('Collection.ReduceAlgorithm')}
+                        </Checkbox>
                         <span>
                             {isValid ? Msg('Collection.ParameterRequest', { length: paramArr.length }) : msg}
                             {isValid ? this.currentParam(paramArr) : ''}

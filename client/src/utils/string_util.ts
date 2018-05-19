@@ -235,7 +235,7 @@ export class StringUtil {
                 }
             });
         } else if (reduceAlgorithm === ReduceAlgorithmType.pairwise) {
-            return PairwiseStrategy.instance.GetTestCasesByObj(paramObj);
+            return PairwiseStrategy.GetTestCasesByObj(paramObj);
         } else {
             Object.keys(paramObj).forEach((key, index) => {
                 let temp = [...paramArr];

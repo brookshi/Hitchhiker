@@ -4,6 +4,7 @@ import { Log } from '../../utils/log';
 import { RecordRunner } from '../record_runner';
 import { StressMessageType } from '../../common/stress_type';
 import * as _ from 'lodash';
+import { ConsoleMessage } from "../../services/console_message";
 
 Log.init();
 
@@ -47,6 +48,7 @@ async function runRecordRepeat() {
         if (isFinish) {
             break;
         }
-        await RecordRunner.runRecordExs(testCase.records, true, () => isFinish);
+        const cm = ConsoleMessage.create(false);
+        await RecordRunner.runRecordExs(testCase.records, true, cm, () => isFinish);
     }
 }

@@ -26,27 +26,28 @@ type BatchRunResult = RunResult | _.Dictionary<RunResult>;
 export class RecordRunner {
 
     static async runRecords(rs: Record[], environmentId: string, needOrder: boolean = false, orderRecordIds: string = '', applyCookies?: boolean, trace?: (msg: string) => void): Promise<Array<RunResult | _.Dictionary<RunResult>>> {
-        const recordExs = await RecordService.prepareRecordsForRun(rs, environmentId, undefined, needOrder ? orderRecordIds : undefined, trace);
-        return await RecordRunner.runRecordExs(recordExs, needOrder);
+        const cm = ConsoleMessage.create(false);
+        const recordExs = await RecordService.prepareRecordsForRun(rs, environmentId, cm, needOrder ? orderRecordIds : undefined, trace);
+        return await RecordRunner.runRecordExs(recordExs, needOrder, cm);
     }
 
-    static async runRecordExs(rs: RecordEx[], needOrder: boolean, checkNeedStop?: () => boolean): Promise<Array<RunResult | _.Dictionary<RunResult>>> {
+    static async runRecordExs(rs: RecordEx[], needOrder: boolean, cm: ConsoleMessage, checkNeedStop?: () => boolean): Promise<Array<RunResult | _.Dictionary<RunResult>>> {
         const runResults: Array<RunResult | _.Dictionary<RunResult>> = [];
         if (rs.length === 0) {
             return runResults;
         }
         const vid = rs[0].vid;
         if (needOrder) {
-            await RecordRunner.runRecordSeries(rs, runResults, checkNeedStop);
+            await RecordRunner.runRecordSeries(rs, runResults, cm, checkNeedStop);
         } else {
-            await RecordRunner.runRecordParallel(rs, runResults);
+            await RecordRunner.runRecordParallel(rs, runResults, cm);
         }
         UserVariableManager.clearVariables(vid);
         UserVariableManager.clearCookies(vid);
         return runResults;
     }
 
-    private static async runRecordSeries(records: RecordEx[], runResults: BatchRunResult[], checkNeedStop?: () => boolean) {
+    private static async runRecordSeries(records: RecordEx[], runResults: BatchRunResult[], cm: ConsoleMessage, checkNeedStop?: () => boolean) {
         for (let record of records) {
             if (checkNeedStop && checkNeedStop()) {
                 break;
@@ -71,7 +72,7 @@ export class RecordRunner {
         }
     }
 
-    private static async runRecordParallel(rs: RecordEx[], runResults: BatchRunResult[]) {
+    private static async runRecordParallel(rs: RecordEx[], runResults: BatchRunResult[], cm: ConsoleMessage) {
         await Promise.all(rs.map(async (r) => {
             const parameters = await RecordRunner.getParametersWithVariables(r);
             const paramArr = StringUtil.parseParameters(parameters, r.parameterType, r.reduceAlgorithm);
