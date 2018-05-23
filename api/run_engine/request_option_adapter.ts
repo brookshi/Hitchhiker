@@ -24,7 +24,7 @@ export class RequestOptionAdapter {
             method: record.method,
             headers: RecordService.formatKeyValue(record.headers),
             form: record.dataMode === DataMode.urlencoded ? RecordService.formatKeyValue(record.formDatas) : undefined,
-            body: record.body,
+            body: record.dataMode === DataMode.urlencoded ? null : record.body,
             strictSSL: reqStrictSSL,
             followRedirect: reqFollowRedirect,
             time: true,
@@ -68,7 +68,7 @@ export class RequestOptionAdapter {
                 url: ${option.url}
                 headers: ${Object.keys(option.headers || []).map(k => `${k || ''}:${option.headers[k] || ''}`).join('\n                         ')}
                 body: ${option.body || ''}
-                form: ${option.form || ''}
+                form: ${JSON.stringify(option.form || '')}
                 strictSSL: ${option.strictSSL}
                 followRedirect: ${option.followRedirect},
                 timeout: ${option.timeout},

@@ -103,7 +103,7 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
 
     private importPostman = (file: File) => {
         if (!this.state.selectedProjectInDlg) {
-            message.warning(Msg('Header.SelectProjectFirst'), 3);
+            message.warning(LocalesString.get('Header.SelectProjectFirst'), 3);
             return;
         }
         const fr = new FileReader();

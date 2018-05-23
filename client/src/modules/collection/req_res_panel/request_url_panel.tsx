@@ -105,7 +105,7 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         if (this.props.record.name.trim() !== '') {
             return true;
         }
-        message.warning(Msg('Collection.MissName'), 3);
+        message.warning(LocalesString.get('Collection.MissName'), 3);
         return false;
     }
 

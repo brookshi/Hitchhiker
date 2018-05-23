@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { Tabs, Badge, Radio, Select, Icon, Checkbox } from 'antd';
+import { Tabs, Badge, Radio, Select, Icon, Checkbox, Button, message } from 'antd';
 import RequestTabExtra from './request_tab_extra';
 import { normalBadgeStyle } from '../../../style/theme';
 import { DtoHeader } from '../../../../../api/interfaces/dto_header';
@@ -26,7 +26,9 @@ import AssertJsonView from '../../../components/assert_json_view';
 import { DtoAssert } from '../../../../../api/interfaces/dto_assert';
 import { DtoEnvironment } from '../../../../../api/interfaces/dto_environment';
 import Msg from '../../../locales';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import { DtoBodyFormData } from '../../../../../api/interfaces/dto_variable';
+import LocalesString from '../../../locales/string';
 
 const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
@@ -120,19 +122,39 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
     private currentParam = (arr: any[]) => {
         const { currentParam } = this.props;
         const currParam = arr[Number.parseInt(currentParam)] ? currentParam : allParameter;
+        let paramStr = '';
+        if (currParam === allParameter) {
+            paramStr = arr.map(a => this.generateParamStr(a)).join('\n');
+        } else {
+            paramStr = this.generateParamStr(arr[Number.parseInt(currentParam)]);
+        }
         return (
-            <Select className="req-res-tabs-param-title-select" value={currParam} onChange={this.onCurrentParamChanged}>
-                <Option key={allParameter} value={allParameter}>{Msg('Collection.AllParameter')}</Option>
-                {
-                    arr.map((e, i) => (
-                        <Option key={i.toString()} value={i.toString()}>
-                            {this.getParamStatusIcon(StringUtil.toString(e))}
-                            {StringUtil.toString(e)}
-                        </Option>
-                    ))
-                }
-            </Select>
+            <span>
+                <Select className="req-res-tabs-param-title-select" dropdownMatchSelectWidth={false} value={currParam} onChange={this.onCurrentParamChanged}>
+                    <Option key={allParameter} value={allParameter}>{Msg('Collection.AllParameter')}</Option>
+                    {
+                        arr.map((e, i) => (
+                            <Option key={i.toString()} value={i.toString()}>
+                                {this.getParamStatusIcon(StringUtil.toString(e))}
+                                {StringUtil.toString(e)}
+                            </Option>
+                        ))
+                    }
+                </Select>
+                <CopyToClipboard text={paramStr} onCopy={() => message.success(LocalesString.get('Collection.ParamCopied'), 3)}>
+                    <Button
+                        className="req-copy-btn"
+                        style={{ marginLeft: 4 }}
+                        type="primary"
+                        icon="copy"
+                    />
+                </CopyToClipboard>
+            </span>
         );
+    }
+
+    private generateParamStr(param: any) {
+        return Object.keys(param).map(k => `"{{${k}}}"=="${param[k]}"`).join('&&');
     }
 
     private getParamStatusIcon = (param: string) => {

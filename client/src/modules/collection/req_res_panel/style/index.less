@@ -156,7 +156,7 @@
     line-height: 36px;
 
     .req-res-tabs-param-title-select{
-        width: calc(100% - 450px);
+        width: calc(100% - 470px);
     }
 }
 
@@ -299,7 +299,9 @@
 }
 
 .res-console-p{
-    line-height: 2;
+    line-height: 2;    
+    word-wrap: break-word;
+    white-space: pre-wrap;
 }
 
 .res-console-error {
@@ -312,4 +314,19 @@
 
 .res-console-time{
     margin-right:8px;
+}
+
+.req-copy-btn{ 
+    border: 0px;
+    font-size: 14px;
+    background: transparent;
+    color: @place-holder-color;
+    &:hover {
+        color: @border-color-dark;
+        background: transparent;
+    }
+    &:focus {
+        color: @place-holder-color;
+        background: transparent;
+    }
 }

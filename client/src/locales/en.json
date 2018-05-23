@@ -180,6 +180,7 @@
     "Collection.CloseSaved": "Close Saved",
     "Collection.CloseAll": "Close All",
     "Collection.ReduceAlgorithm": "Pairwise Algorithm",
+    "Collection.ParamCopied": "Parameter copied, could be used in test script!",
 
     "Project.DeleteEnvironment": "Delete environment",
     "Project.DeleteThisEnvironment": "delete environment: {name}",
