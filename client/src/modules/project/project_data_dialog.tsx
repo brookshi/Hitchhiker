@@ -5,6 +5,7 @@ import * as _ from 'lodash';
 import { ProjectFileType, ProjectFileTypes } from '../../common/custom_type';
 import { Urls } from '../../utils/urls';
 import Msg from '../../locales';
+import LocalesString from '../../locales/string';
 
 interface ProjectDataDialogProps {
 
@@ -53,9 +54,9 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
             const { addFile, projectId, type } = this.props;
             const fileNameWithoutExt = this.removeExt(info.file.name);
             addFile(projectId, fileNameWithoutExt, `${projectId}/${fileNameWithoutExt}`, type);
-            message.success(Msg('Project.UploadFileSuccess', { name: info.file.name }));
+            message.success(LocalesString.get('Project.UploadFileSuccess', { name: info.file.name }));
         } else if (info.file.status === 'error') {
-            message.error(Msg('Project.UploadFileFail', { name: info.file.name }));
+            message.error(LocalesString.get('Project.UploadFileFail', { name: info.file.name }));
         }
     }
 

@@ -180,6 +180,7 @@
     "Collection.CloseSaved": "关掉已经保存的标签",
     "Collection.CloseAll": "关掉所有标签",
     "Collection.ReduceAlgorithm": "Pairwise算法",
+    "Collection.ParamCopied": "Parameter复制成功, 可以用在test脚本里!",
 
     "Project.DeleteEnvironment": "删除环境",
     "Project.DeleteThisEnvironment": "删除环境: {name}",

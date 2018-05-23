@@ -275,7 +275,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                     {this.getCellDisplay(headers)}
                 </Tooltip>
                 {headers ? (
-                    <CopyToClipboard text={beautifyHeaders} onCopy={() => message.success(Msg('Schedule.HeadersCopied'), 3)}>
+                    <CopyToClipboard text={beautifyHeaders} onCopy={() => message.success(LocalesString.get('Schedule.HeadersCopied'), 3)}>
                         <Button
                             className="schedule-sub-tab-btn"
                             style={{ marginLeft: 8 }}
@@ -297,7 +297,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                     {this.getCellDisplay(body)}
                 </Tooltip>
                 {body ? (
-                    <CopyToClipboard text={beautifyBody} onCopy={() => message.success(Msg('Schedule.BodyCopied'), 3)}>
+                    <CopyToClipboard text={beautifyBody} onCopy={() => message.success(LocalesString.get('Schedule.BodyCopied'), 3)}>
                         <Button
                             className="schedule-sub-tab-btn"
                             style={{ marginLeft: 8 }}
@@ -318,7 +318,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                     {_.keys(runResult.tests).length > 0 ? this.getCellDisplay(tests) : ''}
                 </Tooltip>
                 {tests ? (
-                    <CopyToClipboard text={_.keys(runResult.tests).map(k => `${k}: ${runResult.tests[k] ? pass() : fail()}`).join('\n')} onCopy={() => message.success(Msg('Schedule.TestCopied'), 3)}>
+                    <CopyToClipboard text={_.keys(runResult.tests).map(k => `${k}: ${runResult.tests[k] ? pass() : fail()}`).join('\n')} onCopy={() => message.success(LocalesString.get('Schedule.TestCopied'), 3)}>
                         <Button
                             className="schedule-sub-tab-btn"
                             style={{ marginLeft: 8 }}

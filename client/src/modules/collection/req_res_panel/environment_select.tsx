@@ -14,6 +14,7 @@ import { ConflictType } from '../../../common/conflict_type';
 import Msg from '../../../locales';
 import { CloseAction } from '../../../common/custom_type';
 import { BatchCloseType } from '../../../action/ui';
+import LocalesString from '../../../locales/string';
 
 const Option = Select.Option;
 
@@ -107,7 +108,7 @@ class EnvironmentSelect extends React.Component<EnvironmentSelectProps, Environm
                     try {
                         const record = CurlImport.do(value);
                         if (!record) {
-                            message.warning(Msg('Collection.ParsecURLFailed'));
+                            message.warning(LocalesString.get('Collection.ParsecURLFailed'));
                             return;
                         }
                         const recordState: RecordState = {
