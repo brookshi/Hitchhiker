@@ -18,13 +18,13 @@
 
 #### 一步一步部署:
 
-先确保机器有安装: nodejs 7.60+, 推荐用最新LTS版本（8.9） 以及数据库 `mysql 5.7+` (支持json列);
+先确保机器有安装: nodejs 7.60+, 推荐用最新LTS版本以及数据库 `mysql 5.7+` (支持json列);
 
 > 进入mysql， 创建db: `hitchhiker-prod`或其他名字（注意编码用utf8），修改变量`max_allowed_packet=200M`
 > 创建DB的脚本: CREATE DATABASE IF NOT EXISTS \`hitchhiker-prod\` default charset utf8 COLLATE utf8_general_ci;
 > 修改变量需要把`max_allowed_packet=200M`加到 my.ini 文件[mysqld] Section下，具体参考：[change max_allowed_packet](https://stackoverflow.com/questions/8062496/how-to-change-max-allowed-packet-size)
 
-1. 下载安装包 [https://github.com/brookshi/Hitchhiker/releases/download/v0.11/Hitchhiker.zip](https://github.com/brookshi/Hitchhiker/releases/download/v0.11/Hitchhiker.zip); 
+1. 下载安装包 [https://github.com/brookshi/Hitchhiker/releases/download/v0.12/Hitchhiker.zip](https://github.com/brookshi/Hitchhiker/releases/download/v0.12/Hitchhiker.zip); 
 下载速度慢的可以去阿里云下载 http://hitchhiker.oss-cn-hongkong.aliyuncs.com/Hitchhiker.zip
 
 2. 解压并在build目录下（即setup.js的目录）执行命令`node setup.js`(windows), `sudo node setup.js`(linux);
