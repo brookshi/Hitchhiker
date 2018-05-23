@@ -415,6 +415,8 @@ export class RecordService {
         return `                method: ${record.method}
                 url: ${record.url}
                 headers: ${record.headers.map(h => `${h.key || ''}:${h.value || ''}`).join('\n                         ')}
-                body: ${record.body || ''}`;
+                
+                body: ${record.body || ''}
+                form: ${(record.formDatas || []).map(f => `${f.key || ''}:${f.value || ''}`).join('\n                      ')}`;
     }
 }
