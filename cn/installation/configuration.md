@@ -41,7 +41,7 @@ Hitchhiker的很多设置可以在appconfig.json里设置，也有对应的环�
         "mailOnlyForFail": true // 只在失败时发邮件   HITCHHIKER_SCHEDULE_MAILFORFAIL
     },
     "stress": {
-        "stressType": "node", // 压力测试的类型，默认为node，内置的，还有go，需要部署hitchhiker-node，设为none时禁用
+        "stressType": "node", // 压力测试的类型，默认为node，内置的，还有go，需要部署hitchhiker-node，设为none时禁用   HITCHHIKER_STRESS_TYPE
         "storeMaxCount": 5,  // 压力测试表最大长度  HITCHHIKER_STRESS_COUNT
         "stressPort": 11010,  // 压力测试的端口  HITCHHIKER_STRESS_PORT
         "stressUpdateInterval": 1000  // 压力测试实时更新时的间隔（毫秒）  HITCHHIKER_STRESS_UPDATE_INTERVAL

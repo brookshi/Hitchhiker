@@ -1,12 +1,12 @@
 version: '2'
 services:
   hitchhiker:
-    image: brookshi/hitchhiker:v0.11
+    image: brookshi/hitchhiker:v0.12
     container_name: hitchhiker
     environment:
       - HITCHHIKER_DB_HOST=hitchhiker-mysql
       - HITCHHIKER_APP_HOST=http://localhost:8080/ # should change before deploying.
-      # add environment variable
+      # add environment variable to config
     ports:
       - "8080:8080"
       - "11010:11010"

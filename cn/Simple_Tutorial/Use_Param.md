@@ -57,3 +57,7 @@ Parameters 本质上是一个JSON格式的对象，你需要以下面这种格�
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/param_send_all.png)
 
 ![](https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/simple_tutorial/param_send_one.png)
+
+#### 使用Pairwise算法
+
+Pairwise算法可以在做到不太降低覆盖率的情况（大概覆盖70%-80%）下大量减少case，因为在Many to Many时，如果参数过多，生成的case数量很大，写assert就很不容易，而Pairwise算法可以解决这块。

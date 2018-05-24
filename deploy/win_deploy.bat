@@ -1,3 +1,5 @@
+REM ** 如果您打算部署Hitchhiker，请忽略这个脚本，部署请参考：http://doc.hitchhiker-api.com/cn/installation/  如果是开发，可以参考脚本搭开发环境
+REM ** if you try to deploy Hitchhiker, please ignore this file, reference to: http://doc.hitchhiker-api.com/cn/installation/ 
 REM ensure mysql is installed with user:'root' password: 'hitchhiker888' and create database 'hitchhiker-prod'
 REM replace myhost with your ip
 

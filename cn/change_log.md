@@ -1,3 +1,20 @@
+#### 0.12 2018-05-23
+
+**Features:**
+
+* \#119 增加几个批量关闭标签的功能（全部关闭，关闭保存，关闭当前标签外的所有）
+* \#147 response增加一个Console(日志)用于显示请求执行过程及脚本里调用的console，这样方便调试脚本和变量
+* \#123 对Parameters里的many to many增加算法选项：pairwise，用于减少用例
+* \#174 压缩请求返回的数据
+* \#128 对于docker，给global_data下面的project做持久化（破坏性改动，之前上传的在新版本需要再上传一次）
+* \#133 在Test里获取hitchhiker.request
+* \#121 给新用户增加更多例子
+
+**Bugs:**
+
+* \#152 修复上传的project libs对于自动化测试无效
+
+
 #### 0.11 2018-04-28
 
 **Features:**
@@ -6,7 +23,7 @@
 * \#110 支持Common Pre Request Script里用getEnvVariable拿环境变量
 * \#124 以Key-value形式展示和编辑以及描述url的 Query 字符串
 * \#12  body里支持key-value形式展示和编辑以及描述form数据
-* \#122 parameters里面增加一个Beautify功能吗
+* \#122 parameters里面增加一个Beautify功能
 * \#127 Schedules 页面样式优化
 * 增加request描述编辑
 

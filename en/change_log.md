@@ -1,3 +1,19 @@
+#### 0.12 2018-05-23
+
+**Features:**
+
+* \#119 Add tab function: close all, close all but actived, close all saved
+* \#147 Add Console tab for response to display request execution process information, it make debug script and variable earier
+* \#123 Add Pairwise algorithm for many to many of parameters to reduce case
+* \#174 Compress response
+* \#128 Add volumn for project lib & data for docker
+* \#133 Could get hitchhiker.request in Test script
+* \#121 More samples for new user
+
+**Bugs:**
+
+* \#152 fixed new uploaded project libs invalid for scheduler
+
 #### 0.11 2018-04-28
 
 **Features:**
