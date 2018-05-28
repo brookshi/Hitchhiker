@@ -100,12 +100,20 @@ class ResponsePanel extends React.Component<ResponsePanelProps, ResponsePanelSta
         return (
             <div>
                 {
-                    consoleMsgs.map(m => (
-                        <pre className={`res-console-p res-console-${m.type}`}>
-                            <span className="res-console-time">{`${DateUtil.getDisplayTime(m.time)}:`}</span>
-                            {m.custom ? <strong>{m.message}</strong> : m.message}
-                        </pre>)
-                    )
+                    consoleMsgs.map((m, i) => {
+                        let msg = m.message;
+                        if (typeof m.message === 'object') {
+                            try {
+                                msg = JSON.stringify(m.message);
+                            } catch (e) { msg = e.toString(); }
+                        }
+                        return (
+                            <pre key={i} className={`res-console-p res-console-${m.type}`}>
+                                <span className="res-console-time">{`${DateUtil.getDisplayTime(m.time)}:`}</span>
+                                {m.custom ? <strong>{msg}</strong> : msg}
+                            </pre>
+                        );
+                    })
                 }
             </div>
         );
