@@ -57,7 +57,9 @@ gulp.task('copyTemplate', function () {
 });
 
 gulp.task('copyGlobalData', function () {
-    fs.removeSync(path.join(__dirname, 'build/global_data'));
+    let globalPath = path.join(__dirname, 'build/global_data');
+    fs.removeSync(globalPath);
+    fs.mkdirpSync(`${globalPath}/project`);
     return gulp.src('./api/global_data/**/*.*')
         .pipe(gulp.dest('./build/global_data'));
 });
