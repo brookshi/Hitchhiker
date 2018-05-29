@@ -20,7 +20,7 @@
     "mysql": "2.13.0",
     "nodemailer": "^4.4.1",
     "reflect-metadata": "^0.1.8",
-    "request": "^2.81.0",
+    "request": "2.81.0",
     "shortid": "^2.2.6",
     "typeorm": "0.1.0-alpha.31",
     "typescript": "2.3.3",
