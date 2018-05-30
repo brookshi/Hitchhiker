@@ -13,6 +13,8 @@ import { User } from '../../models/user';
 import { CollectionService } from '../collection_service';
 import { ProjectService } from '../project_service';
 import { DtoCollection } from '../../interfaces/dto_collection';
+import { DtoBodyFormData } from '../../interfaces/dto_variable';
+import { DataMode } from '../../common/data_mode';
 
 export class SwaggerImport implements RequestsImport {
 
@@ -73,6 +75,7 @@ export class SwaggerImport implements RequestsImport {
     private createRecordsForFolder(path: string, methodDatas: any, schemes: any, folderId: string, collectionId: string, sort: number): Record[] {
         return _.keys(methodDatas).map(method => {
             const methodData = methodDatas[method];
+            const formData = this.parseFormData(methodData);
             return RecordService.fromDto({
                 id: StringUtil.generateUID(),
                 name: methodData.summary || methodData.operationId || '',
@@ -83,7 +86,8 @@ export class SwaggerImport implements RequestsImport {
                 url: this.parseUrl(path, methodData, schemes),
                 method: method.toUpperCase(),
                 headers: this.parseHeaders(methodData),
-                body: this.parseFormData(methodData),
+                formDatas: formData,
+                dataMode: formData.length > 0 ? DataMode.urlencoded : DataMode.raw,
                 sort: ++sort
             });
         });
@@ -102,14 +106,14 @@ export class SwaggerImport implements RequestsImport {
         return url;
     }
 
-    private parseFormData(methodData: any): string {
-        let formDatas: string[] = [];
+    private parseFormData(methodData: any): DtoBodyFormData[] {
+        let formDatas: DtoBodyFormData[] = [];
         if (methodData.parameters) {
-            methodData.parameters.filter(p => p.in === 'formData').forEach(p => {
-                formDatas.push(`${p.name}={{${p.name}}}`);
+            methodData.parameters.filter(p => p.in === 'formData').forEach((p, i) => {
+                formDatas.push({ id: undefined, key: p.name, value: `{{${p.name}}`, description: p.description, isActive: true, sort: i });//`${p.name}={{${p.name}}}`);
             });
         }
-        return formDatas.join('&');
+        return formDatas;
     }
 
     private parseHeaders(methodData: any): Header[] {
@@ -123,7 +127,7 @@ export class SwaggerImport implements RequestsImport {
         }
         if (methodData.parameters) {
             methodData.parameters.filter(p => p.in === 'header').forEach((h, i) => {
-                headers.push({ key: h.name, value: `{{${h.name}}}`, isActive: true, sort: i + sort + 1 });
+                headers.push({ key: h.name, value: `{{${h.name}}}`, description: h.description, isActive: true, sort: i + sort + 1 });
             });
         }
         return headers.map(h => HeaderService.fromDto(h));
