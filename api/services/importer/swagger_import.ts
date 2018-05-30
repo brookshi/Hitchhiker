@@ -91,7 +91,7 @@ export class SwaggerImport implements RequestsImport {
 
     private parseUrl(path: string, methodData: any, schemes: any): string {
         path = path.replace('{', ':').replace('}', '');
-        let url = `${schemes.length > 0 ? schemes[0] : 'http'}://${this.baseUrl}${path}`;
+        let url = `${(schemes || []).length > 0 ? schemes[0] : 'http'}://${this.baseUrl}${path}`;
 
         if (methodData.parameters) {
             methodData.parameters.filter(p => p.in === 'query').forEach(p => {
