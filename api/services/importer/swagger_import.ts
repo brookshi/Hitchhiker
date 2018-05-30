@@ -15,13 +15,17 @@ import { ProjectService } from '../project_service';
 import { DtoCollection } from '../../interfaces/dto_collection';
 import { DtoBodyFormData } from '../../interfaces/dto_variable';
 import { DataMode } from '../../common/data_mode';
+import { Environment } from '../../models/environment';
+import { VariableService } from '../variable_service';
+import { EnvironmentService } from '../environment_service';
 
 export class SwaggerImport implements RequestsImport {
 
     baseUrl: string;
 
     async import(swaggerData: any, projectId: string, user: User): Promise<void> {
-        this.baseUrl = `${swaggerData.host}${swaggerData.basePath}`;
+        const env = this.createEnv(projectId, `${swaggerData.host}${swaggerData.basePath}`);
+        this.baseUrl = '{{host}}';
         let sort = await RecordService.getMaxSort();
         const dtoCollection: DtoCollection = {
             name: swaggerData.info.title,
@@ -39,6 +43,27 @@ export class SwaggerImport implements RequestsImport {
         await CollectionService.save(collection);
 
         await Promise.all(collection.records.map(r => RecordService.saveRecordHistory(RecordService.createRecordHistory(r, user))));
+
+        await EnvironmentService.save(env);
+    }
+
+    private createEnv(projectId: string, host: string): Environment {
+        const env = new Environment();
+        env.name = 'swagger env';
+        env.id = StringUtil.generateUID();
+        env.variables = [];
+        env.project = ProjectService.create(projectId);
+
+        const variable = VariableService.fromDto({
+            id: StringUtil.generateUID(),
+            key: 'host',
+            value: host,
+            isActive: true,
+            sort: 0
+        });
+        variable.environment = env;
+        env.variables.push(variable);
+        return env;
     }
 
     private createRecords(swaggerData: any, collectionId: string, sort: number): Record[] {
@@ -110,7 +135,7 @@ export class SwaggerImport implements RequestsImport {
         let formDatas: DtoBodyFormData[] = [];
         if (methodData.parameters) {
             methodData.parameters.filter(p => p.in === 'formData').forEach((p, i) => {
-                formDatas.push({ id: undefined, key: p.name, value: `{{${p.name}}`, description: p.description, isActive: true, sort: i });//`${p.name}={{${p.name}}}`);
+                formDatas.push({ id: undefined, key: p.name, value: `{{${p.name}}`, description: p.description, isActive: true, sort: i });
             });
         }
         return formDatas;
