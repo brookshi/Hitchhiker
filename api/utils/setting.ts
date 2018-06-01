@@ -22,7 +22,7 @@ export class Setting {
         files.forEach(file => {
             const filePath = path.join(frontEndJSFolder, file);
             let content = fs.readFileSync(filePath, 'utf8');
-            content = content.replace('HITCHHIKER_APP_HOST', this.appHost).replace(/hitchhiker_.+/g, `hitchhiker_${this.appLanguage}`);
+            content = content.replace('HITCHHIKER_APP_HOST', this.appHost).replace(/hitchhiker_\w+?(?=")/g, `hitchhiker_${this.appLanguage}`);
             fs.writeFileSync(filePath, content, { encoding: 'utf8' });
         });
     }
