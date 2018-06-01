@@ -9,7 +9,7 @@ import { LocaleProvider } from 'antd';
 import { addLocaleData, IntlProvider } from 'react-intl';
 import { GlobalVar } from './utils/global_var';
 
-const appLocale = l.language[GlobalVar.instance.lang];
+const appLocale = l.language[GlobalVar.instance.lang] || l.language['en'];
 
 addLocaleData(appLocale.data);
 

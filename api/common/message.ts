@@ -7,6 +7,6 @@ export class Message {
     static zh = require('../locales/zh.json');
 
     static get(id: string) {
-        return this[Setting.instance.appLanguage][id];
+        return (this[Setting.instance.appLanguage] || this['en'])[id];
     }
 }    

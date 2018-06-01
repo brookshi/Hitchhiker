@@ -16,7 +16,7 @@ export default class LocalesString {
     }
 
     static getSpecial(id: string, values?: {}) {
-        let content = this[`${GlobalVar.instance.lang}Messages`][id];
+        let content = (this[`${GlobalVar.instance.lang}Messages`] || this['enMessages'])[id];
         if (values !== undefined) {
             Object.keys(values).forEach(k => {
                 content = content.replace(`{${k}}`, values[k]);
