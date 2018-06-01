@@ -1,3 +1,16 @@
+#### 0.12.1 2018-06-01
+
+**Features:**
+
+* \#149 Improve swagger importer
+
+**Bugs:**
+
+* \#172 Use default lang 'en' if set nonsupport lang in setting
+* \#192 Error while using request lib: cannot find module 'hawk'
+* \#189 Exception while using console.log to display object
+
+
 #### 0.12 2018-05-23
 
 **Features:**

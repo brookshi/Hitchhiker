@@ -24,7 +24,7 @@
 > 创建DB的脚本: CREATE DATABASE IF NOT EXISTS \`hitchhiker-prod\` default charset utf8 COLLATE utf8_general_ci;
 > 修改变量需要把`max_allowed_packet=200M`加到 my.ini 文件[mysqld] Section下，具体参考：[change max_allowed_packet](https://stackoverflow.com/questions/8062496/how-to-change-max-allowed-packet-size)
 
-1. 下载安装包 [https://github.com/brookshi/Hitchhiker/releases/download/v0.12/Hitchhiker.zip](https://github.com/brookshi/Hitchhiker/releases/download/v0.12/Hitchhiker.zip); 
+1. 下载安装包 [https://github.com/brookshi/Hitchhiker/releases/download/v0.12.1/Hitchhiker.zip](https://github.com/brookshi/Hitchhiker/releases/download/v0.12.1/Hitchhiker.zip); 
 下载速度慢的可以去阿里云下载 http://hitchhiker.oss-cn-hongkong.aliyuncs.com/Hitchhiker.zip
 
 2. 解压并在build目录下（即setup.js的目录）执行命令`node setup.js`(windows), `sudo node setup.js`(linux);

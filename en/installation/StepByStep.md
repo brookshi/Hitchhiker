@@ -24,7 +24,7 @@ Dependence: nodejs 7.60+, recommend use LTS (8.9) and `mysql 5.7+` with json col
 > create DB: CREATE DATABASE IF NOT EXISTS \`hitchhiker-prod\` default charset utf8 COLLATE utf8_general_ci;
 > change variable: add `max_allowed_packet=200M` under [mysqld] section in /my.conf file, refer to：[change max_allowed_packet](https://stackoverflow.com/questions/8062496/how-to-change-max-allowed-packet-size)
 
-1. Download app package from [https://github.com/brookshi/Hitchhiker/releases/download/v0.12/Hitchhiker.zip](https://github.com/brookshi/Hitchhiker/releases/download/v0.12/Hitchhiker.zip);
+1. Download app package from [https://github.com/brookshi/Hitchhiker/releases/download/v0.12.1/Hitchhiker.zip](https://github.com/brookshi/Hitchhiker/releases/download/v0.12.1/Hitchhiker.zip);
 
 2. Unzip and run command `node setup.js`(windows), `sudo node setup.js`(linux) in `build` folder;
 
