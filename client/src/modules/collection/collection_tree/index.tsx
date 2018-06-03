@@ -92,6 +92,10 @@ interface CollectionListState {
     isCommonSettingDlgOpen: boolean;
 
     currentOperatedCollection?: DtoCollection;
+
+    currentOperatedFolder?: DtoRecord;
+
+    commonSettingType: 'Collection' | 'Folder';
 }
 
 class CollectionList extends React.Component<CollectionListProps, CollectionListState> {
@@ -107,7 +111,8 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             isProjectSelectedDlgOpen: false,
             newCollectionName: newCollectionName(),
             shareCollectionId: '',
-            isCommonSettingDlgOpen: false
+            isCommonSettingDlgOpen: false,
+            commonSettingType: 'Collection'
         };
     }
 
@@ -225,11 +230,15 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     }
 
     private saveCommonSetting = (commonSetting: DtoCommonSetting) => {
-        const { currentOperatedCollection } = this.state;
-        if (!currentOperatedCollection) {
+        const { currentOperatedCollection, currentOperatedFolder, commonSettingType } = this.state;
+        if (!currentOperatedCollection && !currentOperatedFolder) {
             return;
         }
-        this.props.updateCollection({ ...currentOperatedCollection, commonSetting });
+        if (commonSettingType === 'Collection') {
+            this.props.updateCollection({ ...currentOperatedCollection, commonSetting });
+        } else {
+            this.props.updateRecord({ ...currentOperatedFolder, ...commonSetting });
+        }
         this.setState({ ...this.state, isCommonSettingDlgOpen: false });
     }
 
@@ -256,6 +265,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                                 onNameChanged={(name) => this.changeFolderName(r, name)}
                                 moveRecordToFolder={this.moveRecordToFolder}
                                 moveToCollection={this.moveToCollection}
+                                editCommonSetting={() => this.setState({ ...this.state, isCommonSettingDlgOpen: true, commonSettingType: 'Folder', currentOperatedFolder: r })}
                             />
                         )}
                     >
@@ -291,16 +301,27 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     }
 
     private get commonSettingDialog() {
-        const { isCommonSettingDlgOpen, currentOperatedCollection } = this.state;
-        if (!currentOperatedCollection) {
-            return;
+        const { isCommonSettingDlgOpen, currentOperatedCollection, currentOperatedFolder, commonSettingType } = this.state;
+        let commonSetting: DtoCommonSetting;
+
+        if (commonSettingType === 'Collection') {
+            if (!currentOperatedCollection) {
+                return;
+            }
+            commonSetting = { ...currentOperatedCollection.commonSetting, prescript: currentOperatedCollection.commonSetting ? currentOperatedCollection.commonSetting.prescript : currentOperatedCollection.commonPreScript };
+        } else {
+            if (!currentOperatedFolder) {
+                return;
+            }
+            commonSetting = { prescript: currentOperatedFolder.prescript || '', headers: currentOperatedFolder.headers || [], test: currentOperatedFolder.test || '' };
         }
+
         return (
             <CommonSettingDialog
-                type="Collection"
+                type={commonSettingType}
                 isOpen={isCommonSettingDlgOpen}
                 onOk={this.saveCommonSetting}
-                commonSetting={{ ...currentOperatedCollection.commonSetting, prescript: currentOperatedCollection.commonSetting ? currentOperatedCollection.commonSetting.prescript : currentOperatedCollection.commonPreScript }}
+                commonSetting={commonSetting}
                 onCancel={() => this.setState({ ...this.state, isCommonSettingDlgOpen: false })}
             />
         );
@@ -373,7 +394,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                                                 moveToCollection={this.moveToCollection}
                                                 createRecord={this.createRecord}
                                                 shareCollection={id => this.setState({ ...this.state, isProjectSelectedDlgOpen: true, projectSelectedDlgMode: ProjectSelectedDialogType.share, shareCollectionId: id })}
-                                                editCommonSetting={() => this.setState({ ...this.state, isCommonSettingDlgOpen: true, currentOperatedCollection: c })}
+                                                editCommonSetting={() => this.setState({ ...this.state, isCommonSettingDlgOpen: true, commonSettingType: 'Collection', currentOperatedCollection: c })}
                                                 editReqStrictSSL={() => this.props.updateCollection({ ...c, reqStrictSSL: !c.reqStrictSSL })}
                                                 editReqFollowRedirect={() => this.props.updateCollection({ ...c, reqFollowRedirect: !c.reqFollowRedirect })}
                                             />

@@ -362,24 +362,45 @@ export class RecordService {
             .execute();
     }
 
+    private static async findAllParentFolders(record: Record): Promise<Record[]> {
+        const parents = new Array<Record>();
+        const findParent = async (id: string) => {
+            const p = await this.getById(id, true);
+            if (p) {
+                parents.splice(0, 0, p);
+                if (p.pid) {
+                    findParent(p.pid);
+                }
+            }
+        }
+        await findParent(record.pid);
+        return parents;
+    }
+
     static async combineScriptAndHeaders(record: Record): Promise<Record> {
         const { globalFunction } = (await ProjectService.getProjectByCollectionId(record.collection.id)) || { globalFunction: '' };
+        const parents = await this.findAllParentFolders(record);
 
         const prescript = `
             ${globalFunction || ''};
             ${record.collection ? record.collection.compatibleCommonPreScript() : ''};
+            ${parents.map(p => p.prescript || '').join(';\n')};
             ${record.prescript || ''};
         `;
 
         const test = `
             ${globalFunction || ''};
             ${record.collection.commonTest()};
+            ${parents.map(p => p.test || '').join(';\n')};
             ${record.test || ''};
         `;
 
+        const parentHeaders = new Array<Header>();
+        parents.forEach(p => parentHeaders.push(...p.headers));
+
         return {
             ...record,
-            headers: [...record.collection.commonHeaders().map(h => HeaderService.fromDto(h)), ...record.headers],
+            headers: [...record.collection.commonHeaders().map(h => HeaderService.fromDto(h)), ...parentHeaders, ...record.headers],
             prescript,
             test
         };

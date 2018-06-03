@@ -24,6 +24,8 @@ interface RecordFolderProps {
     moveRecordToFolder(record: DtoRecord, collectionId?: string, folderId?: string);
 
     moveToCollection(folder: DtoRecord, collectionId?: string);
+
+    editCommonSetting();
 }
 
 interface RecordFolderState {
@@ -59,6 +61,9 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
                 <Menu.Item key="createRecord">
                     <Icon type="file" /> {Msg('Collection.CreateRequest')}
                 </Menu.Item>
+                <Menu.Item key="commonSetting">
+                    <Icon type="code-o" /> {Msg('Collection.commonSetting')}
+                </Menu.Item>
                 <Menu.Item key="delete">
                     <Icon type="delete" /> {Msg('Common.Delete')}
                 </Menu.Item>
@@ -80,6 +85,8 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
             this.itemWithMenu.edit();
         }
     }
+
+    commonSetting = () => this.props.editCommonSetting();
 
     private checkTransferFlag = (e, flag) => {
         return e.dataTransfer.types.indexOf(flag) > -1;

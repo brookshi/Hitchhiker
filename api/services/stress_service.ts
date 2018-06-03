@@ -130,7 +130,7 @@ export class StressService {
         const { globalFunction } = (await ProjectService.getProjectByCollectionId(stress.collectionId)) || { globalFunction: '' };
         const requestBodyList = new Array<RequestBody>();
 
-        stress.requests.forEach(i => {
+        stress.requests.forEach(i => { // TODO: used for go node in stress, should remove requestBodyList
             let record = records[i];
             const paramArr = StringUtil.parseParameters(record.parameters, record.parameterType, record.reduceAlgorithm);
             const headers = {};

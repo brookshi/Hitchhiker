@@ -57,7 +57,7 @@ export function userState(state: UserInfoState = userInfoDefaultValue, action: a
             return { ...state, changePasswordState: { status: RequestStatus.pending, message: '' } };
         }
         case SessionInvalidType: {
-            return { ...state, loginState: { status: RequestStatus.failed, message: LocalesString.get('FindPassword.SessionInvalid') } };
+            return { ...state, loginState: { status: RequestStatus.failed, message: LocalesString.get('Login.SessionInvalid') } };
         }
         default:
             return state;
