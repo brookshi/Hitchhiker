@@ -33,6 +33,7 @@ export class CollectionService {
         collection.reqStrictSSL = dtoCollection.reqStrictSSL;
         collection.reqFollowRedirect = dtoCollection.reqFollowRedirect;
         collection.description = dtoCollection.description;
+        collection.commonSetting = dtoCollection.commonSetting;
         collection.project = new Project();
         collection.project.id = dtoCollection.projectId;
         collection.records = [];
@@ -58,16 +59,14 @@ export class CollectionService {
         const connection = await ConnectionManager.getInstance();
 
         await connection.getRepository(Collection)
-            .createQueryBuilder('collection')
-            .where('id=:id', { id: dtoCollection.id })
-            .update({
+            .update({ id: dtoCollection.id }, {
                 name: dtoCollection.name,
                 description: dtoCollection.description,
                 commonPreScript: dtoCollection.commonPreScript,
                 reqStrictSSL: !!dtoCollection.reqStrictSSL,
-                reqFollowRedirect: !!dtoCollection.reqFollowRedirect
-            })
-            .execute();
+                reqFollowRedirect: !!dtoCollection.reqFollowRedirect,
+                commonSetting: dtoCollection.commonSetting
+            });
         return { success: true, message: Message.get('collectionUpdateSuccess') };
     }
 

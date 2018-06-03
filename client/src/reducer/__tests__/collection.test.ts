@@ -114,7 +114,7 @@ test('delete collection', () => {
 
     let oldState = {
         ...collectionDefaultValue, collectionsInfo: {
-            ...collectionDefaultValue.collectionsInfo, collections: { ['cid_1']: { id: 'cid_1', name: 'c1', commonPreScript: '', projectId: 'pid', description: '' }, ['cid_2']: { id: 'cid_2', name: 'c2', commonPreScript: '', projectId: 'pid', description: '' } }, records: {
+            ...collectionDefaultValue.collectionsInfo, collections: { ['cid_1']: { id: 'cid_1', name: 'c1', commonPreScript: '', commonSetting: { prescript: '', test: '', headers: [] }, projectId: 'pid', description: '' }, ['cid_2']: { id: 'cid_2', name: 'c2', commonPreScript: '', commonSetting: { prescript: '', test: '', headers: [] }, projectId: 'pid', description: '' } }, records: {
                 ['cid_1']: {
                     ['rid_2']: { id: 'rid_2', collectionId: 'cid_1', name: 'r2', category: RecordCategory.folder, parameterType: ParameterType.ManyToMany },
                     ['rid_3']: { id: 'rid_3', pid: 'rid_2', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }
@@ -131,7 +131,7 @@ test('delete collection', () => {
     expect(state).toEqual({
         ...collectionDefaultValue, collectionsInfo: {
             ...collectionDefaultValue.collectionsInfo,
-            collections: { ['cid_2']: { id: 'cid_2', name: 'c2', commonPreScript: '', projectId: 'pid', description: '' } },
+            collections: { ['cid_2']: { id: 'cid_2', name: 'c2', commonPreScript: '', commonSetting: { prescript: '', test: '', headers: [] }, projectId: 'pid', description: '' } },
             records: {
                 ['cid_2']: {
                     ['rid_1']: { id: 'rid_1', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }

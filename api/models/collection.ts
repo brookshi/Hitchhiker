@@ -2,6 +2,7 @@ import { Entity, PrimaryColumn, Column, CreateDateColumn, OneToOne, OneToMany, J
 import { Record } from './record';
 import { User } from './user';
 import { Project } from './project';
+import { DtoCommonSetting } from '../interfaces/dto_collection';
 
 @Entity()
 export class Collection {
@@ -40,6 +41,15 @@ export class Collection {
 
     @Column({ default: true })
     public: boolean;
+
+    @Column('json', { nullable: true })
+    commonSetting: DtoCommonSetting;
+
+    compatibleCommonPreScript = () => this.commonSetting ? (this.commonSetting.prescript || '') : (this.commonPreScript || '');
+
+    commonTest = () => this.commonSetting ? (this.commonSetting.test || '') : '';
+
+    commonHeaders = () => this.commonSetting ? (this.commonSetting.headers || []) : [];
 
     @CreateDateColumn()
     createDate: Date;

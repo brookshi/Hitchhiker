@@ -362,23 +362,24 @@ export class RecordService {
             .execute();
     }
 
-    static async combineScript(record: Record): Promise<Record> {
+    static async combineScriptAndHeaders(record: Record): Promise<Record> {
         const { globalFunction } = (await ProjectService.getProjectByCollectionId(record.collection.id)) || { globalFunction: '' };
-        const commonPreScript = record.collection ? record.collection.commonPreScript : '';
 
         const prescript = `
             ${globalFunction || ''};
-            ${commonPreScript || ''};
+            ${record.collection ? record.collection.compatibleCommonPreScript() : ''};
             ${record.prescript || ''};
         `;
 
         const test = `
             ${globalFunction || ''};
+            ${record.collection.commonTest()};
             ${record.test || ''};
         `;
 
         return {
             ...record,
+            headers: [...record.collection.commonHeaders().map(h => HeaderService.fromDto(h)), ...record.headers],
             prescript,
             test
         };
@@ -396,7 +397,7 @@ export class RecordService {
 
         for (let r of records) {
             cm.push('Combine scripts');
-            let newRecord = { ...(await RecordService.combineScript(r)) };
+            let newRecord = { ...(await RecordService.combineScriptAndHeaders(r)) };
             cm.push('Get project info');
             const { id: pid } = (await ProjectService.getProjectByCollectionId(r.collection.id)) || { id: '' };
             cm.push('Apply environment variables');

@@ -29,7 +29,7 @@ interface CollectionItemProps {
 
     shareCollection(collectionId: string);
 
-    editPreRequestScript();
+    editCommonSetting();
 
     editReqStrictSSL();
 
@@ -88,8 +88,8 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
                 {/*<Menu.Item key="share">
                     <Icon type="share-alt" /> Share
                 </Menu.Item>*/}
-                <Menu.Item key="editPreRequestScript">
-                    <Icon type="code-o" /> {Msg('Collection.CommonPreRequestScript')}
+                <Menu.Item key="commonSetting">
+                    <Icon type="code-o" /> {Msg('Collection.commonSetting')}
                 </Menu.Item>
                 <Menu.Item key="editReqStrictSSL">
                     <span>
@@ -128,7 +128,7 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
 
     createRecord = () => this.props.createRecord({ ...getDefaultRecord(false), collectionId: this.props.collection.id, id: StringUtil.generateUID() });
 
-    editPreRequestScript = () => this.props.editPreRequestScript();
+    commonSetting = () => this.props.editCommonSetting();
 
     editReqStrictSSL = () => this.props.editReqStrictSSL();
 

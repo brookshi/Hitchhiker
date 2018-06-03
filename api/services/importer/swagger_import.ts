@@ -30,6 +30,7 @@ export class SwaggerImport implements RequestsImport {
         const dtoCollection: DtoCollection = {
             name: swaggerData.info.title,
             commonPreScript: '',
+            commonSetting: { prescript: '', test: '', headers: [] },
             projectId: projectId,
             id: StringUtil.generateUID(),
             description: swaggerData.info.description

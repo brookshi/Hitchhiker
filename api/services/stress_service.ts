@@ -190,12 +190,13 @@ export class StressService {
         return ScriptTransform.toES5(isPre ? (
             `
                 ${globalFunction || ''}
-                ${record.collection.commonPreScript || ''}
+                ${record.collection.compatibleCommonPreScript()}
                 ${record.prescript || ''}
             `
         ) : (
                 `
                 ${globalFunction || ''}
+                ${record.collection.commonTest()}
                 ${record.test || ''}
             `
             ));

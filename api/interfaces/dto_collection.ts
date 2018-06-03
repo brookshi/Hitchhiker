@@ -1,4 +1,5 @@
 import { DtoRecord } from './dto_record';
+import { DtoHeader } from './dto_header';
 
 export interface DtoCollection {
 
@@ -14,7 +15,18 @@ export interface DtoCollection {
 
     projectId: string;
 
+    commonSetting: DtoCommonSetting;
+
     description: string;
+}
+
+export interface DtoCommonSetting {
+
+    prescript: string;
+
+    test: string;
+
+    headers: DtoHeader[];
 }
 
 export interface DtoCollectionWithRecord {

@@ -7,7 +7,7 @@ import RecordItem from './record_item';
 import CollectionItem from './collection_item';
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 import * as _ from 'lodash';
-import { DtoCollection } from '../../../../../api/interfaces/dto_collection';
+import { DtoCollection, DtoCommonSetting } from '../../../../../api/interfaces/dto_collection';
 import { RecordCategory } from '../../../common/record_category';
 import { actionCreator } from '../../../action';
 import { DeleteCollectionType, SaveCollectionType, SelectedProjectChangedType, CollectionOpenKeysType } from '../../../action/collection';
@@ -19,7 +19,7 @@ import { getProjectsIdNameStateSelector, getDisplayCollectionSelector } from './
 import { newCollectionName, allProject } from '../../../common/constants';
 import RecordTimeline from '../../../components/record_timeline';
 import { ShowTimelineType, CloseTimelineType } from '../../../action/ui';
-import ScriptDialog from '../../../components/script_dialog';
+import CommonSettingDialog from '../../../components/common_setting_dialog';
 import Msg from '../../../locales';
 import './style/index.less';
 import LocalesString from '../../../locales/string';
@@ -89,7 +89,7 @@ interface CollectionListState {
 
     shareCollectionId: string;
 
-    isScriptDlgOpen: boolean;
+    isCommonSettingDlgOpen: boolean;
 
     currentOperatedCollection?: DtoCollection;
 }
@@ -107,7 +107,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             isProjectSelectedDlgOpen: false,
             newCollectionName: newCollectionName(),
             shareCollectionId: '',
-            isScriptDlgOpen: false
+            isCommonSettingDlgOpen: false
         };
     }
 
@@ -195,6 +195,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             id: StringUtil.generateUID(),
             name: this.state.newCollectionName,
             commonPreScript: '',
+            commonSetting: { prescript: '', test: '', headers: [] },
             projectId: this.state.selectedProjectInDlg,
             description: ''
         };
@@ -223,13 +224,13 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         console.log('share');
     }
 
-    private saveCommonPreScript = (code: string) => {
+    private saveCommonSetting = (commonSetting: DtoCommonSetting) => {
         const { currentOperatedCollection } = this.state;
         if (!currentOperatedCollection) {
             return;
         }
-        this.props.updateCollection({ ...currentOperatedCollection, commonPreScript: code });
-        this.setState({ ...this.state, isScriptDlgOpen: false });
+        this.props.updateCollection({ ...currentOperatedCollection, commonSetting });
+        this.setState({ ...this.state, isCommonSettingDlgOpen: false });
     }
 
     private loopRecords = (data: DtoRecord[], cid: string, inFolder: boolean = false) => {
@@ -289,18 +290,18 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         );
     }
 
-    private get commonPreScriptDialog() {
-        const { isScriptDlgOpen, currentOperatedCollection } = this.state;
+    private get commonSettingDialog() {
+        const { isCommonSettingDlgOpen, currentOperatedCollection } = this.state;
         if (!currentOperatedCollection) {
             return;
         }
         return (
-            <ScriptDialog
-                title={`${currentOperatedCollection.name} - ${LocalesString.get('Collection.CommonPreRequestScript')}`}
-                isOpen={isScriptDlgOpen}
-                onOk={this.saveCommonPreScript}
-                value={currentOperatedCollection.commonPreScript || ''}
-                onCancel={() => this.setState({ ...this.state, isScriptDlgOpen: false })}
+            <CommonSettingDialog
+                type="Collection"
+                isOpen={isCommonSettingDlgOpen}
+                onOk={this.saveCommonSetting}
+                commonSetting={{ ...currentOperatedCollection.commonSetting, prescript: currentOperatedCollection.commonSetting ? currentOperatedCollection.commonSetting.prescript : currentOperatedCollection.commonPreScript }}
+                onCancel={() => this.setState({ ...this.state, isCommonSettingDlgOpen: false })}
             />
         );
     }
@@ -372,7 +373,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                                                 moveToCollection={this.moveToCollection}
                                                 createRecord={this.createRecord}
                                                 shareCollection={id => this.setState({ ...this.state, isProjectSelectedDlgOpen: true, projectSelectedDlgMode: ProjectSelectedDialogType.share, shareCollectionId: id })}
-                                                editPreRequestScript={() => this.setState({ ...this.state, isScriptDlgOpen: true, currentOperatedCollection: c })}
+                                                editCommonSetting={() => this.setState({ ...this.state, isCommonSettingDlgOpen: true, currentOperatedCollection: c })}
                                                 editReqStrictSSL={() => this.props.updateCollection({ ...c, reqStrictSSL: !c.reqStrictSSL })}
                                                 editReqFollowRedirect={() => this.props.updateCollection({ ...c, reqFollowRedirect: !c.reqFollowRedirect })}
                                             />
@@ -419,7 +420,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                 {this.collectionMenu}
                 {this.projectSelectedDialog}
                 {this.timelineDialog}
-                {this.commonPreScriptDialog}
+                {this.commonSettingDialog}
             </div>
         );
     }
