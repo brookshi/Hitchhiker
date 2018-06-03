@@ -372,7 +372,7 @@ export class RecordService {
                     findParent(p.pid);
                 }
             }
-        }
+        };
         await findParent(record.pid);
         return parents;
     }

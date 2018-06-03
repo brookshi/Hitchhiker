@@ -214,7 +214,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                         onHeadersChanged={this.onHeadersChanged}
                         isAutoComplete={true}
                         headers={_.sortBy(_.cloneDeep(headers) || [], 'sort')}
-                        showFav={true}
+                        showFav={false}
                         showDescription={true}
                         favHeaders={favHeaders}
                     />
