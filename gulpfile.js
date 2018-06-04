@@ -39,7 +39,7 @@ gulp.task('package', ['release'], function () {
     archive.finalize();
 });
 
-gulp.task('release', ['copy', 'copyTemplate', 'copyGlobalData', 'copyLocales']);
+gulp.task('release', ['copy', 'copyTemplate', 'copyGlobalData', 'copyLocales', 'createBackupFolder']);
 
 gulp.task('copy', ['compilerClient'], function () {
     return gulp.src('./client/build/**/*.*')
@@ -68,6 +68,12 @@ gulp.task('copyLocales', function () {
     fs.removeSync(path.join(__dirname, 'build/locales'));
     return gulp.src('./api/locales/**/*.*')
         .pipe(gulp.dest('./build/locales'));
+});
+
+gulp.task('createBackupFolder', function () {
+    const backupFolder = path.join(__dirname, 'build/backup');
+    fs.rmdirSync(backupFolder);
+    fs.mkdirSync(backupFolder, 0o666);
 });
 
 gulp.task('compilerClient', ['compilerServer'], function (cb) {

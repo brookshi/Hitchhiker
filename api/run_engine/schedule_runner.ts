@@ -23,6 +23,7 @@ import { StringUtil } from '../utils/string_util';
 import { Sandbox } from './sandbox';
 import { Setting } from '../utils/setting';
 import { ValidateUtil } from '../utils/validate_util';
+import { BackupService } from '../services/backup_service';
 
 export class ScheduleRunner {
 
@@ -38,6 +39,9 @@ export class ScheduleRunner {
         Log.info('get records by collection ids.');
         const recordDict = await RecordService.getByCollectionIds(_.sortedUniq(schedules.map(s => s.collectionId)));
         await Promise.all(schedules.map(schedule => this.runSchedule(schedule, recordDict[schedule.collectionId], true)));
+
+        Log.info('backup db start.');
+        await BackupService.backupDB();
     }
 
     async runSchedule(schedule: Schedule, records?: Record[], isScheduleRun?: boolean, trace?: (msg: string) => void): Promise<any> {

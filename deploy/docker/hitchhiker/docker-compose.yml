@@ -13,3 +13,4 @@ services:
       - hitchhiker-mysql:hitchhiker-mysql
     volumes:
       - /my/hitchhiker/data:/usr/src/Hitchhiker/build/global_data/project
+      - /my/hitchhiker/backup:/usr/src/Hitchhiker/build/backup
