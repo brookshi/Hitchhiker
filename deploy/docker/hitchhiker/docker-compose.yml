@@ -14,3 +14,4 @@ services:
     volumes:
       - /my/hitchhiker/data:/usr/src/Hitchhiker/build/global_data/project
       - /my/hitchhiker/backup:/usr/src/Hitchhiker/build/backup
+      - /my/hitchhiker/logs:/usr/src/Hitchhiker/build/logs

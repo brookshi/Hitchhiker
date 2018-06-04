@@ -12,6 +12,7 @@ services:
       - /my/hitchhiker/public:/usr/src/Hitchhiker/build/public
       - /my/hitchhiker/data:/usr/src/Hitchhiker/build/global_data/project
       - /my/hitchhiker/backup:/usr/src/Hitchhiker/build/backup
+      - /my/hitchhiker/logs:/usr/src/Hitchhiker/build/logs
     links:
       - hitchhiker-mysql
   hitchhiker-mysql:
