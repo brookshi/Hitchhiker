@@ -75,7 +75,7 @@ export default class UserController extends BaseController {
         }
 
         const user = <User>(<any>ctx).session.user;
-        if (user.password !== info.oldPassword) {// TODO: md5
+        if (user.password !== StringUtil.md5Password(info.oldPassword)) {
             return { success: false, message: Message.get('userOldPwdIncorrect') };
         }
 

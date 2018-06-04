@@ -17,7 +17,7 @@ export class UserService {
         const user = new User();
         user.name = name;
         user.email = email;
-        user.password = password;// TODO: md5, StringUtil.md5(password);
+        user.password = StringUtil.md5Password(password);
         user.id = StringUtil.generateUID();
         return user;
     }
@@ -29,7 +29,7 @@ export class UserService {
 
     static async checkUser(email: string, pwd: string): Promise<ResObject> {
         const user = await UserService.getUserByEmail(email, true);
-        if (user && user.password === pwd) {// TODO: md5
+        if (user && user.password === StringUtil.md5Password(pwd)) {
             if (user.isActive) {
                 const userInfo = await UserProjectService.getUserInfo(user);
                 return { success: true, message: '', result: userInfo };
@@ -159,7 +159,7 @@ export class UserService {
         const connection = await ConnectionManager.getInstance();
         await connection.getRepository(User)
             .createQueryBuilder('user')
-            .update({ password: newPwd })
+            .update({ password: StringUtil.md5Password(newPwd) })
             .where('id=:id')
             .setParameter('id', id)
             .execute();

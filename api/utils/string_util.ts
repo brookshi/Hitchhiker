@@ -16,6 +16,10 @@ export class StringUtil {
         return crypto.createHash('md5').update(str).digest('hex');
     }
 
+    static md5Password(password: string): string {
+        return Setting.instance.encryptPassword ? this.md5(password) : password;
+    }
+
     static encrypt(str: string): string {
         const cipher = crypto.createCipher('aes-256-cbc', Setting.instance.app.encryptKey);
         let rst = cipher.update(str, 'utf8', 'base64');

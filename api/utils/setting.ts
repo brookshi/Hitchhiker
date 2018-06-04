@@ -79,6 +79,10 @@ export class Setting {
         return this._setting.db;
     }
 
+    get encryptPassword() {
+        return this.getValidBoolean(process.env.HITCHHIKER_ENCRYPT_PASSWORD, this._setting.encryptPassword);
+    }
+
     get scheduleDuration() {
         return this.getValidNum(process.env.HITCHHIKER_SCHEDULE_DURATION, this.schedule.duration);
     }
@@ -207,6 +211,6 @@ export class Setting {
     }
 
     private getValidBoolean(envVar: any, spare: boolean) {
-        return envVar === undefined ? spare : (envVar === '1');
+        return envVar === undefined ? spare : (envVar === '1' || envVar === 'true');
     }
 }
