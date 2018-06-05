@@ -115,14 +115,14 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
             type: 'scatter',
             symbol: 'rect',
             silent: true,
-            symbolSize: [30, 5],
+            symbolSize: [30, 3],
             z: 20
         };
         return {
-            color: ['#2EC7C9', '#FAD860', '#3FB0F0', '#FF817C', '#9BCA63'],
+            color: ['#2EC7C9', '#FAD860', '#3FB0F0', '#FF817C', '#9BCA63', '#333333', '#0066CC', '#FFFF00', '#FF33CC', '#FF6600'],
             legend: {
                 top: 30,
-                data: ['Average DNS', 'Average Connect', 'Average Request', 'Max', 'Min']
+                data: ['AverageDNS', 'AverageConnect', 'AverageRequest', 'Max', 'Min', 'Stddev', 'p95', 'p90', 'p75', 'p50'].map(s => LocalesString.get(`Common.${s}`))
             },
             ...this.commonBarOption,
             xAxis: [{ ...this.commonBarOption.xAxis[0], data: names }],
@@ -149,6 +149,26 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
                 name: LocalesString.get('Common.Min'),
                 ...baseScatterOption,
                 data: _.values(data).map(d => d.statistics ? _.round(d.statistics.low, 2) : 0)
+            }, {
+                name: LocalesString.get('Common.Stddev'),
+                ...baseScatterOption,
+                data: _.values(data).map(d => d.statistics ? _.round(d.statistics.stddev || 0, 2) : 0)
+            }, {
+                name: LocalesString.get('Common.p95'),
+                ...baseScatterOption,
+                data: _.values(data).map(d => d.statistics ? _.round(d.statistics.p95, 2) : 0)
+            }, {
+                name: LocalesString.get('Common.p90'),
+                ...baseScatterOption,
+                data: _.values(data).map(d => d.statistics ? _.round(d.statistics.p90, 2) : 0)
+            }, {
+                name: LocalesString.get('Common.p75'),
+                ...baseScatterOption,
+                data: _.values(data).map(d => d.statistics ? _.round(d.statistics.p75, 2) : 0)
+            }, {
+                name: LocalesString.get('Common.p50'),
+                ...baseScatterOption,
+                data: _.values(data).map(d => d.statistics ? _.round(d.statistics.p50, 2) : 0)
             }]
         };
     }
@@ -174,7 +194,7 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
             color: ['#FFB980', '#FA827D', '#E87C25', '#3FB0F0'],
             legend: {
                 top: 30,
-                data: [LocalesString.get('Stress.TestFailed'), LocalesString.get('Stress.NoResponse'), LocalesString.get('Stress.ServerError500')]
+                data: ['TestFailed', 'NoResponse', 'ServerError500'].map(s => LocalesString.get(`Stress.${s}`))
             },
             ...this.commonBarOption,
             xAxis: [{ ...this.commonBarOption.xAxis[0], data: names }],

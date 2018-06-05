@@ -67,6 +67,11 @@
     "Common.invalid": "无效",
     "Common.Value": "值",
     "Common.RetryMessage": "{type}失败, {errMsg}, 将在{delay}秒后重试",
+    "Common.Stddev": "标准差",
+    "Common.p95": "95%",
+    "Common.p90": "90%",
+    "Common.p75": "75%",
+    "Common.p50": "50%",
 
     "Login.Desc.Title": "专为团队打造的API测试工具",
     "Login.Desc.Content": "Hitchhiker是一款{opensource}的Restful API测试工具。您可以把它部署在局域网，它会帮助您和您的团队轻松管理、测试API。{break} {break}更多功能 (文档, Api Mock等)正在开发中，敬请期待。",
