@@ -132,6 +132,8 @@ export interface StressResStatisticsTime {
     p90: number;
 
     p95: number;
+
+    stddev: number;
 }
 
 export interface StressResFailedInfo {

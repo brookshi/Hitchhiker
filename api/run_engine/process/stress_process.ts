@@ -13,6 +13,7 @@ import { Stress } from '../../models/stress';
 import { StressFailedInfo } from '../../models/stress_failed_info';
 import { StressService } from '../../services/stress_service';
 import { StringUtil } from '../../utils/string_util';
+import { MathUtil } from '../../utils/math_util';
 
 type WorkerInfoEx = WorkerInfo & { socket: WS };
 
@@ -361,6 +362,7 @@ function buildDurationStatistics() {
             p75: reqElapse[Math.floor(reqElapse.length * 0.75)],
             p90: reqElapse[Math.floor(reqElapse.length * 0.9)],
             p95: reqElapse[Math.floor(reqElapse.length * 0.95)],
+            stddev: MathUtil.stddev(reqElapse)
         };
     });
 }

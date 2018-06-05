@@ -11,4 +11,13 @@ export class MathUtil {
         }
         return result;
     }
+
+    static stddev(data: number[]): number {
+        if (!data || data.length === 0) {
+            return 0;
+        }
+        var mean = data.reduce((p, c) => p + c, 0) / data.length;
+        var deviations = data.map(x => x - mean);
+        return Math.sqrt(deviations.map(x => x * x).reduce((p, c) => p + c, 0) / data.length);
+    }
 }
