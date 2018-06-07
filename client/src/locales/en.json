@@ -303,8 +303,8 @@
     "Stress.SocketClose": "Socket is closed, please refresh to connect",
     "Stress.NewName": "New Stress Test",
     "Stress.CurrentTask": "Current Task",
-    "Stress.Diagram": "Display diagram",
-    "Stress.Table": "Display table",
+    "Stress.Diagram": "Diagram mode",
+    "Stress.Table": "Table mode",
 
     "Component.assert": " assert ",
     "Component.NewAssertItem": "New assert item",

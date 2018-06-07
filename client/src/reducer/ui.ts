@@ -1,7 +1,7 @@
 import { EditEnvType } from '../action/project';
-import { UIState, AppUIState, appUIDefaultValue, ReqResUIState, uiDefaultValue, SyncState, syncDefaultValue, TimelineState, timelineDefaultValue, CloseState, closeDefaultValue } from '../state/ui';
+import { UIState, AppUIState, appUIDefaultValue, ReqResUIState, uiDefaultValue, SyncState, syncDefaultValue, TimelineState, timelineDefaultValue, CloseState, closeDefaultValue, StressState } from '../state/ui';
 import { combineReducers } from 'redux';
-import { ResizeLeftPanelType, UpdateLeftPanelType, SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType, SwitchHeadersEditModeType, CloseTimelineType, DisplayQueryStringType, ToggleRequestDescriptionType, BatchCloseType } from '../action/ui';
+import { ResizeLeftPanelType, UpdateLeftPanelType, SelectReqTabType, SelectResTabType, ToggleReqPanelVisibleType, ResizeResHeightType, SwitchHeadersEditModeType, CloseTimelineType, DisplayQueryStringType, ToggleRequestDescriptionType, BatchCloseType, TableDisplayType } from '../action/ui';
 import { SyncType, SyncSuccessType, SyncRetryType, ResetSyncMsgType, SyncFailedType } from '../action/index';
 import { RemoveTabType, SaveRecordType } from '../action/record';
 import { SyncUserDataType } from '../action/user';
@@ -14,7 +14,8 @@ export function uiState(state: UIState = uiDefaultValue, action: any): UIState {
         reqResUIState,
         syncState,
         timelineState,
-        closeState
+        closeState,
+        stressState
     })(state, action);
 }
 
@@ -134,6 +135,16 @@ function closeState(state: CloseState = closeDefaultValue, action: any): CloseSt
         case BatchCloseType: {
             const { activedTab, closeAction } = action.value;
             return { activedTabBeforeClose: activedTab, closeAction };
+        }
+        default:
+            return state;
+    }
+}
+
+function stressState(state: StressState = {}, action: any): StressState {
+    switch (action.type) {
+        case TableDisplayType: {
+            return { ...state, tableDisplay: action.value };
         }
         default:
             return state;

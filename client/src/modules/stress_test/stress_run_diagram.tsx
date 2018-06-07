@@ -16,7 +16,7 @@ import 'echarts/lib/component/grid';
 import 'echarts/lib/component/title';
 import 'echarts/lib/component/legend';
 import { unknownName } from '../../common/constants';
-import { Table, Tooltip } from 'antd';
+import { Table, Tooltip, Button } from 'antd';
 import LocalesString from '../../locales/string';
 
 interface StressTableDisplay {
@@ -65,6 +65,8 @@ interface StressRunDiagramProps {
     needProgress: boolean;
 
     displayTable: boolean;
+
+    switchDisplayMode(tableDisplay: boolean);
 }
 
 interface StressRunDiagramState { }
@@ -286,7 +288,7 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
 
     private tableDisplay = () => {
 
-        const { runState, displayTable } = this.props;
+        const { runState } = this.props;
         if (!runState) {
             return;
         }
@@ -315,7 +317,6 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
 
         return (
             <div>
-                <div>{LocalesString.get(displayTable ? 'Stress.Table' : 'Stress.Diagram')}</div>
                 <StressTable
                     className="schedule-sub-table"
                     bordered={true}
@@ -344,11 +345,21 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
     }
 
     public render() {
-        const { runState, needProgress, displayTable } = this.props;
+        const { runState, needProgress, displayTable, switchDisplayMode } = this.props;
 
         if (runState) {
             return (
                 <div >
+                    <div>
+                        <Button
+                            className="stress-result-btn"
+                            type="primary"
+                            icon={displayTable ? 'bar-chart' : 'bars'}
+                            onClick={() => switchDisplayMode(!displayTable)}
+                        >
+                            {LocalesString.get(displayTable ? 'Stress.Diagram' : 'Stress.Table')}
+                        </Button>
+                    </div>
                     {needProgress ? <ReactEchartsCore echarts={echarts} style={{ height: 130 }} option={this.getProgressOption(runState.names, runState.reqProgress, runState.totalCount, runState.doneCount, runState.tps)} /> : ''}
                     {displayTable ? this.tableDisplay() : (
                         <div>

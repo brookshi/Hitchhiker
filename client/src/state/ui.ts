@@ -52,6 +52,11 @@ export interface CloseState {
     activedTabBeforeClose: string;
 }
 
+export interface StressState {
+
+    tableDisplay?: boolean;
+}
+
 export interface UIState {
 
     appUIState: AppUIState;
@@ -63,6 +68,8 @@ export interface UIState {
     timelineState: TimelineState;
 
     closeState: CloseState;
+
+    stressState: StressState;
 }
 
 export const appUIDefaultValue: AppUIState = {
@@ -99,5 +106,6 @@ export const uiDefaultValue = {
     reqResUIState: {},
     syncState: syncDefaultValue,
     timelineState: timelineDefaultValue,
-    closeState: closeDefaultValue
+    closeState: closeDefaultValue,
+    stressState: {}
 };

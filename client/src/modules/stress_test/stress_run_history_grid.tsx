@@ -19,6 +19,10 @@ interface StressRunHistoryGridProps {
     records: _.Dictionary<DtoRecord>;
 
     runState?: StressRunResult;
+
+    tableDisplay?: boolean;
+
+    switchDisplayMode(tableDisplay: boolean);
 }
 
 interface StressRecordDisplay {
@@ -45,18 +49,20 @@ class StressRecordColumn extends Table.Column<StressRecordDisplay> { }
 class StressRunHistoryGrid extends React.Component<StressRunHistoryGridProps, StressRunHistoryGridState> {
 
     private expandedInfo = (record: StressRecordDisplay) => {
+        const { records, tableDisplay, switchDisplayMode } = this.props;
         return (
             <StressRunDiagram
                 runState={record.result}
-                records={this.props.records}
+                records={records}
                 needProgress={false}
-                displayTable={true}
+                displayTable={!!tableDisplay}
+                switchDisplayMode={switchDisplayMode}
             />
         );
     }
 
     public render() {
-        const { runState, records, stressRecords } = this.props;
+        const { runState, records, stressRecords, tableDisplay, switchDisplayMode } = this.props;
         const stressRecordDisplay = !stressRecords || stressRecords.length === 0 ? [] : stressRecords.map((r, i) => ({
             id: i,
             runDate: r.createDate,
@@ -72,7 +78,8 @@ class StressRunHistoryGrid extends React.Component<StressRunHistoryGridProps, St
                     runState={runState}
                     records={records}
                     needProgress={true}
-                    displayTable={true}
+                    displayTable={!!tableDisplay}
+                    switchDisplayMode={switchDisplayMode}
                 />
                 <StressRecordTable
                     bordered={true}
