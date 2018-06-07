@@ -18,6 +18,7 @@ import 'echarts/lib/component/legend';
 import { unknownName } from '../../common/constants';
 import { Table, Tooltip, Button } from 'antd';
 import LocalesString from '../../locales/string';
+import { StringUtil } from '../../utils/string_util';
 
 interface StressTableDisplay {
 
@@ -60,9 +61,13 @@ interface StressRunDiagramProps {
 
     runState?: StressRunResult;
 
+    name: string;
+
     records: _.Dictionary<DtoRecord>;
 
     needProgress: boolean;
+
+    runDate?: Date;
 
     displayTable: boolean;
 
@@ -276,11 +281,37 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
         };
     }
 
+    private getTableHtml = () => {
+        const tableDiv = document.getElementById('stress-table');
+        const defaultTable = '<table />';
+
+        if (!tableDiv) {
+            return defaultTable;
+        }
+        const findTable: (parent: Element) => (Element | undefined) = (parent: Element) => {
+            if (parent.tagName.toLowerCase() === 'table') {
+                return parent;
+            }
+            if (!parent.children) {
+                return undefined;
+            }
+            for (let i = 0; i < parent.children.length; i++) {
+                const table = findTable(parent.children.item(i));
+                if (table) {
+                    return table;
+                }
+            }
+            return undefined;
+        };
+        const table = findTable(tableDiv);
+        return table ? table.outerHTML : defaultTable;
+    }
+
     private getNameDisplay = (value: any) => {
         return (
             <span>
                 <Tooltip overlayClassName="schedule-sub-table-tooltip" placement="top" title={value}>
-                    {value ? (value.length < 15 ? value : `${value.substr(0, 15)}...`) : ''}
+                    {value}
                 </Tooltip>
             </span>
         );
@@ -316,7 +347,7 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
         });
 
         return (
-            <div>
+            <div id="stress-table">
                 <StressTable
                     className="schedule-sub-table"
                     bordered={true}
@@ -328,7 +359,7 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
                     <StressTableColumn
                         title={LocalesString.get('Common.Name')}
                         dataIndex="name"
-                        width="150"
+                        width="200"
                         render={this.getNameDisplay}
                     />
                     {
@@ -342,6 +373,14 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
                 </StressTable>
             </div>
         );
+    }
+
+    private generateExcel = () => {
+        const { name, runDate } = this.props;
+        var link = document.createElement('a');
+        link.download = `${name}-${(runDate || new Date()).toLocaleString()}.xls`;
+        link.href = StringUtil.toBase64Excel(this.getTableHtml());
+        link.click();
     }
 
     public render() {
@@ -359,6 +398,18 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
                         >
                             {LocalesString.get(displayTable ? 'Stress.Diagram' : 'Stress.Table')}
                         </Button>
+                        {
+                            needProgress || !displayTable ? '' : (
+                                <Button
+                                    className="stress-result-btn"
+                                    style={{ float: 'right', marginRight: 8 }}
+                                    type="primary"
+                                    icon="download"
+                                    onClick={() => this.generateExcel()}
+                                >
+                                    Excel
+                                </Button>
+                            )}
                     </div>
                     {needProgress ? <ReactEchartsCore echarts={echarts} style={{ height: 130 }} option={this.getProgressOption(runState.names, runState.reqProgress, runState.totalCount, runState.doneCount, runState.tps)} /> : ''}
                     {displayTable ? this.tableDisplay() : (

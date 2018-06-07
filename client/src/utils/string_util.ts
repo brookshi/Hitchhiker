@@ -14,6 +14,17 @@ export class StringUtil {
         return `${uuid.v1()}-${shortId.generate()}`;
     }
 
+    static base64(s: string) {
+        return window.btoa(s);
+    };
+
+    static toBase64Excel(table: string): string {
+        const uri = 'data:application/vnd.ms-excel;base64,';
+        const template = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Worksheet</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body>${table}</body></html>`;
+
+        return uri + this.base64(template);
+    }
+
     static urlRegex(): RegExp {
         const protocol = `(?:(?:[a-z]+:)?//)`;
         const auth = '(?:\\S+(?::\\S*)?@)?';
