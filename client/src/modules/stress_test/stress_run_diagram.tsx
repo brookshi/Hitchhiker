@@ -16,7 +16,45 @@ import 'echarts/lib/component/grid';
 import 'echarts/lib/component/title';
 import 'echarts/lib/component/legend';
 import { unknownName } from '../../common/constants';
+import { Table, Tooltip } from 'antd';
 import LocalesString from '../../locales/string';
+
+interface StressTableDisplay {
+
+    name: string;
+
+    averageDns: number;
+
+    averageConnect: number;
+
+    averageRequest: number;
+
+    high: number;
+
+    low: number;
+
+    stddev: number;
+
+    p95: number;
+
+    p90: number;
+
+    p75: number;
+
+    p50: number;
+
+    errRatio: number;
+
+    testFailed: number;
+
+    noRes: number;
+
+    m500: number;
+}
+
+class StressTable extends Table<StressTableDisplay> { }
+
+class StressTableColumn extends Table.Column<StressTableDisplay> { }
 
 interface StressRunDiagramProps {
 
@@ -25,6 +63,8 @@ interface StressRunDiagramProps {
     records: _.Dictionary<DtoRecord>;
 
     needProgress: boolean;
+
+    displayTable: boolean;
 }
 
 interface StressRunDiagramState { }
@@ -234,15 +274,88 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
         };
     }
 
+    private getNameDisplay = (value: any) => {
+        return (
+            <span>
+                <Tooltip overlayClassName="schedule-sub-table-tooltip" placement="top" title={value}>
+                    {value ? (value.length < 15 ? value : `${value.substr(0, 15)}...`) : ''}
+                </Tooltip>
+            </span>
+        );
+    }
+
+    private tableDisplay = () => {
+
+        const { runState, displayTable } = this.props;
+        if (!runState) {
+            return;
+        }
+
+        const titles = ['AverageDNS', 'AverageConnect', 'AverageRequest', 'Max', 'Min', 'Stddev', 'p95', 'p90', 'p75', 'p50'].map(s => LocalesString.get(`Common.${s}`)).concat(['ErrRatio', 'TestFailed', 'NoResponse', 'ServerError500'].map(s => LocalesString.get(`Stress.${s}`)));
+
+        const dataIndexs = ['averageDns', 'averageConnect', 'averageRequest', 'high', 'low', 'stddev', 'p95', 'p90', 'p75', 'p50', 'errRatio', 'testFailed', 'noRes', 'm500'];
+
+        const keys = Object.keys(runState.stressReqDuration);
+        const dataSource = keys.map<StressTableDisplay>(d => {
+
+            const m500 = runState.stressFailedResult.m500[d] || 0;
+            const testFailed = runState.stressFailedResult.testFailed[d] || 0;
+            const noRes = runState.stressFailedResult.noRes[d] || 0;
+
+            return {
+                id: d,
+                name: runState.names[d],
+                m500: m500,
+                testFailed: testFailed,
+                noRes: noRes,
+                errRatio: (m500 + testFailed + noRes) * 100 / (runState.totalCount / keys.length),
+                ...runState.stressReqDuration[d].statistics
+            };
+        });
+
+        return (
+            <div>
+                <div>{LocalesString.get(displayTable ? 'Stress.Table' : 'Stress.Diagram')}</div>
+                <StressTable
+                    className="schedule-sub-table"
+                    bordered={true}
+                    size="small"
+                    rowKey="id"
+                    dataSource={dataSource}
+                    pagination={false}
+                >
+                    <StressTableColumn
+                        title={LocalesString.get('Common.Name')}
+                        dataIndex="name"
+                        width="150"
+                        render={this.getNameDisplay}
+                    />
+                    {
+                        titles.map((t, i) => (<StressTableColumn
+                            key={t}
+                            title={t}
+                            dataIndex={dataIndexs[i]}
+                            render={(text, record) => _.round((text || 0), 2)}
+                        />))
+                    }
+                </StressTable>
+            </div>
+        );
+    }
+
     public render() {
-        const { runState, needProgress } = this.props;
+        const { runState, needProgress, displayTable } = this.props;
 
         if (runState) {
             return (
                 <div >
                     {needProgress ? <ReactEchartsCore echarts={echarts} style={{ height: 130 }} option={this.getProgressOption(runState.names, runState.reqProgress, runState.totalCount, runState.doneCount, runState.tps)} /> : ''}
-                    <ReactEchartsCore echarts={echarts} style={{ height: 350 }} option={this.getDurationOption(runState.reqProgress.map(r => (runState.names[r.id] || r.id)), runState.stressReqDuration)} />
-                    <ReactEchartsCore echarts={echarts} style={{ height: 400 }} option={this.getFailedOption(runState.reqProgress.map(r => r.id), runState.names, runState.stressFailedResult, runState.totalCount)} />
+                    {displayTable ? this.tableDisplay() : (
+                        <div>
+                            <ReactEchartsCore echarts={echarts} style={{ height: 350 }} option={this.getDurationOption(runState.reqProgress.map(r => (runState.names[r.id] || r.id)), runState.stressReqDuration)} />
+                            <ReactEchartsCore echarts={echarts} style={{ height: 400 }} option={this.getFailedOption(runState.reqProgress.map(r => r.id), runState.names, runState.stressFailedResult, runState.totalCount)} />
+                        </div>
+                    )}
                 </div>
             );
         } else {

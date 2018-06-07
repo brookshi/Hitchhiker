@@ -50,6 +50,7 @@ class StressRunHistoryGrid extends React.Component<StressRunHistoryGridProps, St
                 runState={record.result}
                 records={this.props.records}
                 needProgress={false}
+                displayTable={true}
             />
         );
     }
@@ -71,6 +72,7 @@ class StressRunHistoryGrid extends React.Component<StressRunHistoryGridProps, St
                     runState={runState}
                     records={records}
                     needProgress={true}
+                    displayTable={true}
                 />
                 <StressRecordTable
                     bordered={true}

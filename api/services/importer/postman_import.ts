@@ -85,7 +85,8 @@ export class PostmanImport implements RequestsImport {
         let sort = await RecordService.getMaxSort();
         const dtoCollection = {
             ...data,
-            commonPreScript: data.commonPreScript || '',
+            commonPreScript: '',
+            commonSetting: { prescript: data.commonPreScript || '', test: '', headers: [] },
             projectId: projectId,
             id: StringUtil.generateUID()
         };
