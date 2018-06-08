@@ -162,7 +162,7 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
             type: 'scatter',
             symbol: 'rect',
             silent: true,
-            symbolSize: [30, 3],
+            symbolSize: [30 * 20 / names.length, 3],
             z: 20
         };
         return {
