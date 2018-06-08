@@ -6,7 +6,7 @@ var gulp = require('gulp'),
     path = require('path'),
     archiver = require('archiver');
 
-gulp.task('build', ['copyTemplate', 'copyGlobalData', 'copyLocales']);
+gulp.task('build', ['copyTemplate', 'copyGlobalData', 'copyLocales', 'createBackupFolder']);
 
 gulp.task('package', ['release'], function () {
     const keepFiles = ['build', 'node_modules', 'appconfig.json', 'gulpfile.js', 'logconfig.json', 'mail.json', 'pm2.json', 'sample collection.json', 'tsconfig.json'];
@@ -72,7 +72,9 @@ gulp.task('copyLocales', function () {
 
 gulp.task('createBackupFolder', function () {
     const backupFolder = path.join(__dirname, 'build/backup');
-    fs.rmdirSync(backupFolder);
+    if (fs.existsSync(backupFolder)) {
+        fs.removeSync(backupFolder);
+    }
     fs.mkdirSync(backupFolder, 0o666);
 });
 
