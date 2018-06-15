@@ -6,7 +6,7 @@
 * \#112 More detail information of stress test result
 * \#107 Auto dump mysql database to prevent data loss
 * \#194 Volumn logs to host for docker
-* \#118 Support encrypt password of user account in db
+* \#118 Support encrypt password of user account in db (env variable: HITCHHIKER_ENCRYPT_PASSWORD)
 
 **Bugs:**
 

@@ -9,6 +9,7 @@ Hitchhiker的很多设置可以在appconfig.json里设置，也有对应的环�
         "api": "http://localhost:81/api/",  // API接口，调试用， 环境变量使用上面的
         "language": "en",  // 语言，中文：zh， 英文：en， HITCHHIKER_APP_LANG
         "encryptKey": "hitchhikerapi",  
+        "encryptPassword": false,  // 是否对数据库里的用户密码加密， HITCHHIKER_ENCRYPT_PASSWORD
         "defaultPassword": "123456",  // 新帐号的默认密码
         "tempUser": "test@test.test", // use without login时使用的用户账号
         "tempDelKey": "test",

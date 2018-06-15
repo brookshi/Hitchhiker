@@ -4,9 +4,12 @@
 
 * \#93 folder 级和 collection 级的通用设置 request 基本信息，支持header, pre request script, test
 * \#112 增加Stress Test结果的细节展示功能，支持表格/图表
-* \#107 Auto dump mysql database to prevent data loss
-* \#194 volumn logs to host for docker
-* \#118 加一个环境变量来控制是否对数据库的密码加密
+* \#107 自动备份数据库，防止数据丢失
+* \#194 把docker内的日志volumn到host
+* \#118 加一个环境变量 HITCHHIKER_ENCRYPT_PASSWORD 来控制是否对数据库里的用户密码加密， 默认是关闭，对于老用户来说开了这个功能，会影响已经系统里现有的账号，导致不能登录。
+有两个方案：
+第一种： 如果账号用的邮箱是有效邮箱的话，可以用找回密码功能重置密码。
+第二种： 可以用一个简单的密码，比如123456，注册一个新用户，这个密码在数据库里会是一个md5格式的字符串，在数据库里update所有用户的密码，改成这个md5，这样所有用户就都可以用123456这个密码来登录然后修改密码。需要注意的是，直接操作数据库前先备份一下。
 
 **Bugs:**
 

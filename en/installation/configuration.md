@@ -11,6 +11,7 @@ when type of variable is boolean, use 1 for true and 0 for false.
         "api": "http://localhost:81/api/",  // API interface, used for debug， Env Variable same as above
         "language": "en",  // language, en for english, zh for chinese, HITCHHIKER_APP_LANG
         "encryptKey": "hitchhikerapi",  
+        "encryptPassword": false,  // encrypt password of user account,  HITCHHIKER_ENCRYPT_PASSWORD
         "defaultPassword": "123456",  // default password for new user
         "tempUser": "test@test.test", // email for `use without login`
         "tempDelKey": "test",
