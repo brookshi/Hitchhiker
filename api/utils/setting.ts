@@ -116,7 +116,8 @@ export class Setting {
     }
 
     get stressHost() {
-        let host = this.appHost.replace(/^http(s?):\/\//g, 'ws://');
+        let host = process.env.HITCHHIKER_STRESS_HOST || this._setting.stress.stressHost;
+        host = host || this.appHost.replace(/^http(s?):\/\//g, 'ws://');
         if (/:\d+/.test(host)) {
             host = host.replace(/:\d+/, `:${this.stressPort}`);
         } else {

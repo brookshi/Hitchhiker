@@ -41,6 +41,7 @@
     "stress": {
         "type": "node",
         "storeMaxCount": 5,
+        "stressHost": "",
         "stressPort": 11010,
         "stressUpdateInterval": 1000
     },
