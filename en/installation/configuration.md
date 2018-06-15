@@ -45,6 +45,7 @@ when type of variable is boolean, use 1 for true and 0 for false.
     "stress": {
         "type": "node",  // stress type, support node and go,  HITCHHIKER_STRESS_TYPE
         "storeMaxCount": 5,  // max length of stress test list, HITCHHIKER_STRESS_COUNT
+        "stressHost": "",  // host of stress test，if empty, use host of app without port, HITCHHIKER_STRESS_HOST
         "stressPort": 11010,  // port of stres test, HITCHHIKER_STRESS_PORT
         "stressUpdateInterval": 1000  // stress test update interval (second), HITCHHIKER_STRESS_UPDATE_INTERVAL
     },

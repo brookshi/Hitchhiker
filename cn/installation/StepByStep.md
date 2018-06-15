@@ -1,6 +1,8 @@
 系统的参数可以参考：[配置文件](configuration.md), 环境变量可以写到pm2.json里
 
-### 重要：如果是升级，记得保留build目录下的pm2.json，这里有你所有的配置，如果覆盖了需要重新设置
+### 重要：如果是升级，下载安装包覆盖掉现有目录，然后使用命令：pm2 restart hitchhiker 即可，不需要再次走安装流程。但要记得保留build目录下的pm2.json，这里有你所有的配置，如果覆盖了需要重新安装
+
+### 另外，安装碰到问题，可以参考最下方的问答，一般可以解决。
 
 ```json
 {
@@ -24,7 +26,7 @@
 > 创建DB的脚本: CREATE DATABASE IF NOT EXISTS \`hitchhiker-prod\` default charset utf8 COLLATE utf8_general_ci;
 > 修改变量需要把`max_allowed_packet=200M`加到 my.ini 文件[mysqld] Section下，具体参考：[change max_allowed_packet](https://stackoverflow.com/questions/8062496/how-to-change-max-allowed-packet-size)
 
-1. 下载安装包 [https://github.com/brookshi/Hitchhiker/releases/download/v0.12.1/Hitchhiker.zip](https://github.com/brookshi/Hitchhiker/releases/download/v0.12.1/Hitchhiker.zip); 
+1. 下载安装包 [https://github.com/brookshi/Hitchhiker/releases/download/v0.13/Hitchhiker.zip](https://github.com/brookshi/Hitchhiker/releases/download/v0.13/Hitchhiker.zip); 
 下载速度慢的可以去阿里云下载 http://hitchhiker.oss-cn-hongkong.aliyuncs.com/Hitchhiker.zip
 
 2. 解压并在build目录下（即setup.js的目录）执行命令`node setup.js`(windows), `sudo node setup.js`(linux);

@@ -1,3 +1,19 @@
+#### 0.13 2018-06-15
+
+**Features:**
+
+* \#93 Common header/pre request script/test for requests in folder and collection
+* \#112 More detail information of stress test result
+* \#107 Auto dump mysql database to prevent data loss
+* \#194 Volumn logs to host for docker
+* \#118 Support encrypt password of user account in db
+
+**Bugs:**
+
+* \#197 Cookie invalid sometimes while syncing data
+* \#117 Remove header's favorite function
+
+
 #### 0.12.1 2018-06-01
 
 **Features:**

@@ -18,7 +18,7 @@ Hitchhiker 是一款开源的 Restful Api 测试工具，支持Schedule, 数据�
 * 易部署 (支持 docker, windows, linux), 数据都存在自己这里，不会上传及丢失
 * 会记往任何修改，不用怕没保存时session失效或系统重启
 * 支持导入Postman v1 collections
-* 分布式压力测试
+* 压力测试
 * 自动同步Team成员的Collection数据
 * Api文档 (计划中...)
 

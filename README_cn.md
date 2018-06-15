@@ -58,7 +58,7 @@ Api Mock | ✘ | ✔
 只在Chrome(推荐)和Firefox下测试过，其他的暂不考虑。
 这个工具的用户应该是Developer或QA，没理由没有Chrome和Firefox中的一个。
 
-## 微信群
+## 微信
 
 <img src='https://raw.githubusercontent.com/brookshi/images/master/Hitchhiker/hitchhiker_wx.jpg' width='400'/>
 

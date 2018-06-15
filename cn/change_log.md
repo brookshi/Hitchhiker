@@ -1,3 +1,19 @@
+#### 0.13 2018-06-15
+
+**Features:**
+
+* \#93 folder 级和 collection 级的通用设置 request 基本信息，支持header, pre request script, test
+* \#112 增加Stress Test结果的细节展示功能，支持表格/图表
+* \#107 Auto dump mysql database to prevent data loss
+* \#194 volumn logs to host for docker
+* \#118 加一个环境变量来控制是否对数据库的密码加密
+
+**Bugs:**
+
+* \#197 刷新时正在同步更新session会导致cookie失效
+* \#117 轻微bug: header中收藏的key 取消收藏以后,还会提示
+
+
 #### 0.12.1 2018-06-01
 
 **Features:**

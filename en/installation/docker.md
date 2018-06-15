@@ -7,7 +7,7 @@ If you want to use another port, should replace all 8080.
 version: '2'
 services:
   hitchhiker:
-    image: brookshi/hitchhiker:v0.12.1
+    image: brookshi/hitchhiker:v0.13
     container_name: hitchhiker
     environment:
       - HITCHHIKER_DB_HOST=hitchhiker-mysql
@@ -18,6 +18,8 @@ services:
       - "11010:11010"
     volumes:
       - /my/hitchhiker/data:/usr/src/Hitchhiker/build/global_data/project
+      - /my/hitchhiker/backup:/usr/src/Hitchhiker/build/backup
+      - /my/hitchhiker/logs:/usr/src/Hitchhiker/build/logs
     links:
       - hitchhiker-mysql:hitchhiker-mysql
   hitchhiker-mysql:

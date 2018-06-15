@@ -21,7 +21,7 @@ Go to [http://www.hitchhiker-api.com](http://www.hitchhiker-api.com) for test，
 * Easy to deploy (support docker, windows, linux), keep data in your control, never lose data
 * All changed will be auto saved in local cache even if refresh page
 * Support importing Postman v1 collections
-* Distributed stress test
+* Load test
 * Sync collection data of team automatically
 * Api Document (in future)
 
