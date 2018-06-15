@@ -42,12 +42,22 @@ export default class UserController extends BaseController {
 
     @POST()
     async login(ctx: Koa.Context, @BodyParam body: DtoUser): Promise<ResObject> {
-        let checkLogin = await UserService.checkUser(body.email, body.password);
+        const checkLogin = await this.tryLogin(body);
+
         if (!checkLogin.success) {
             return checkLogin;
         }
 
         SessionService.login(ctx, (<User>checkLogin.result.user).id);
+
+        return checkLogin;
+    }
+
+    private async tryLogin(user: DtoUser) {
+        let checkLogin = await UserService.checkUser(user.email, user.password);
+        if (!checkLogin.success) {
+            return checkLogin;
+        }
 
         checkLogin.message = Message.get('userLoginSuccess');
         (<User>checkLogin.result.user).password = undefined;
@@ -58,7 +68,7 @@ export default class UserController extends BaseController {
     @GET('/user/me')
     async getUserInfo(ctx: Koa.Context): Promise<ResObject> {
         const user = <User>(<any>ctx).session.user;
-        return await this.login(ctx, user);
+        return await this.tryLogin(user);
     }
 
     @GET('/user/logout')

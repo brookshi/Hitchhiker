@@ -162,7 +162,7 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
             type: 'scatter',
             symbol: 'rect',
             silent: true,
-            symbolSize: [30, 3],
+            symbolSize: [30 * 20 / names.length, 3],
             z: 20
         };
         return {
@@ -326,7 +326,8 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
 
         const titles = ['AverageDNS', 'AverageConnect', 'AverageRequest', 'Max', 'Min', 'Stddev', 'p95', 'p90', 'p75', 'p50'].map(s => LocalesString.get(`Common.${s}`)).concat(['ErrRatio', 'TestFailed', 'NoResponse', 'ServerError500'].map(s => LocalesString.get(`Stress.${s}`)));
 
-        const dataIndexs = ['averageDns', 'averageConnect', 'averageRequest', 'high', 'low', 'stddev', 'p95', 'p90', 'p75', 'p50', 'errRatio', 'testFailed', 'noRes', 'm500'];
+        const errDataIndexs = ['errRatio', 'testFailed', 'noRes', 'm500'];
+        const dataIndexs = ['averageDns', 'averageConnect', 'averageRequest', 'high', 'low', 'stddev', 'p95', 'p90', 'p75', 'p50'].concat(errDataIndexs);
 
         const keys = Object.keys(runState.stressReqDuration);
         const dataSource = keys.map<StressTableDisplay>(d => {
@@ -367,12 +368,16 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
                             key={t}
                             title={t}
                             dataIndex={dataIndexs[i]}
-                            render={(text, record) => _.round((text || 0), 2)}
+                            render={(text, record) => this.highlightCellIfNeed(text, errDataIndexs, dataIndexs[i])}
                         />))
                     }
                 </StressTable>
             </div>
         );
+    }
+
+    private highlightCellIfNeed = (text: number, errDataIndexs: string[], index: string) => {
+        return text > 0 && errDataIndexs.some(e => e === index) ? (<span style={{ color: 'red', fontWeight: 'bold' }}>{_.round((text || 0), 2)}</span>) : _.round((text || 0), 2);
     }
 
     private generateExcel = () => {
