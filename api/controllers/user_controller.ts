@@ -42,7 +42,7 @@ export default class UserController extends BaseController {
 
     @POST()
     async login(ctx: Koa.Context, @BodyParam body: DtoUser): Promise<ResObject> {
-        const checkLogin = await this.tryLogin(body);
+        const checkLogin = await this.tryLogin(body, false, );
 
         if (!checkLogin.success) {
             return checkLogin;
@@ -53,8 +53,8 @@ export default class UserController extends BaseController {
         return checkLogin;
     }
 
-    private async tryLogin(user: DtoUser) {
-        let checkLogin = await UserService.checkUser(user.email, user.password);
+    private async tryLogin(user: DtoUser, isMd5Pwd: boolean) {
+        let checkLogin = await UserService.checkUser(user.email, user.password, isMd5Pwd);
         if (!checkLogin.success) {
             return checkLogin;
         }
@@ -68,7 +68,7 @@ export default class UserController extends BaseController {
     @GET('/user/me')
     async getUserInfo(ctx: Koa.Context): Promise<ResObject> {
         const user = <User>(<any>ctx).session.user;
-        return await this.tryLogin(user);
+        return await this.tryLogin(user, true);
     }
 
     @GET('/user/logout')

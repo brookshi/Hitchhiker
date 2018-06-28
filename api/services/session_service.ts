@@ -57,7 +57,7 @@ export class SessionService {
             if (match) {
                 const info = Buffer.from(match[1], 'base64').toString();
                 const [user, pwd] = info.split(':');
-                const checkRst = await UserService.checkUser(user, pwd);
+                const checkRst = await UserService.checkUser(user, pwd, false);
                 validUser = checkRst.success;
             }
         }

@@ -27,9 +27,9 @@ export class UserService {
         await connection.getRepository(User).save(user);
     }
 
-    static async checkUser(email: string, pwd: string): Promise<ResObject> {
+    static async checkUser(email: string, pwd: string, isMd5Pwd: boolean): Promise<ResObject> {
         const user = await UserService.getUserByEmail(email, true);
-        if (user && user.password === StringUtil.md5Password(pwd)) {
+        if (user && (isMd5Pwd || user.password === StringUtil.md5Password(pwd))) {
             if (user.isActive) {
                 const userInfo = await UserProjectService.getUserInfo(user);
                 return { success: true, message: '', result: userInfo };

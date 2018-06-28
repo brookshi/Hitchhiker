@@ -80,7 +80,7 @@ export class Setting {
     }
 
     get encryptPassword() {
-        return this.getValidBoolean(process.env.HITCHHIKER_ENCRYPT_PASSWORD, this._setting.encryptPassword);
+        return this.getValidBoolean(process.env.HITCHHIKER_ENCRYPT_PASSWORD, this._setting.app.encryptPassword);
     }
 
     get scheduleDuration() {
