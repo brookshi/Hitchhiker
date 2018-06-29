@@ -3,7 +3,10 @@ import './style/index.less';
 
 interface FontIconProps {
     text: string;
+
     color: string;
+
+    size?: number;
 }
 
 interface FontIconState { }
@@ -14,7 +17,8 @@ class FontIcon extends React.Component<FontIconProps, FontIconState> {
             <span
                 className="font-icon"
                 style={{
-                    color: this.props.color
+                    color: this.props.color,
+                    fontSize: this.props.size || 12
                 }}
             >
                 {this.props.text}

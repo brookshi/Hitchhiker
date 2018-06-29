@@ -5,6 +5,10 @@ import { HttpMethodType } from '../../common/http_method';
 interface HttpMethodIconProps {
 
     httpMethod: HttpMethodType;
+
+    needTextMapping?: boolean;
+
+    fontSize?: number;
 }
 
 interface HttpMethodIconState { }
@@ -27,12 +31,16 @@ class HttpMethodIcon extends React.Component<HttpMethodIconProps, HttpMethodIcon
     };
 
     get method() {
-        return HttpMethodIcon.textMapping[this.props.httpMethod] || this.props.httpMethod;
+        const { httpMethod, needTextMapping } = this.props;
+        if (!needTextMapping) {
+            return httpMethod;
+        }
+        return HttpMethodIcon.textMapping[httpMethod] || httpMethod;
     }
 
     public render() {
         return (
-            <FontIcon color={this.color()} text={this.method} />
+            <FontIcon size={this.props.fontSize} color={this.color()} text={this.method} />
         );
     }
 
