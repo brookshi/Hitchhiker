@@ -30,7 +30,7 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
                 <div className="document-header-name">{name}</div>
                 {
                     headers.map(h => (
-                        <div key={h.id}>
+                        <div key={h.id} className="document-header-row">
                             <div className="col-2 document-header-key">{h.key}</div>
                             <div className="col-2 document-header-value">{h.value}</div>
                             <div className="col-6 document-header-desc">{h.description}</div>
