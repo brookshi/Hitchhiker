@@ -8,6 +8,7 @@ import * as _ from 'lodash';
 import { DtoHeader } from '../../../../api/interfaces/dto_header';
 import HttpMethodIcon from '../../components/font_icon/http_method_icon';
 import './style/index.less';
+import { DataMode } from '../../common/custom_type';
 
 interface ApiDocumentStateProps {
 
@@ -26,7 +27,7 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
 
     private renderHeaders = (name: string, headers: DtoHeader[]) => {
         return (
-            <div>
+            <div className="document-block">
                 <div className="document-header-name">{name}</div>
                 {
                     headers.map(h => (
@@ -41,6 +42,38 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
         );
     }
 
+    private recordName = (name?: string, method?: string) => {
+        return (
+            <div className="document-record-name">
+                <span className="document-method-icon">
+                    <HttpMethodIcon fontSize={16} httpMethod={(method || 'GET').toUpperCase()} />
+                </span>
+                {name || ''}
+            </div>
+        );
+    }
+
+    private recordUrl = (url?: string) => <div className="document-record-url">{url || ''}</div>;
+
+    private recordDesc = (description?: string) => <div className="document-record-desc">{description || ''}</div>;
+
+    private recordParams = (queryStrings?: DtoHeader[]) => queryStrings && queryStrings.length > 0 ? <div>{(this.renderHeaders('PARAMS', queryStrings || []))}</div> : '';
+
+    private recordHeaders = (headers?: DtoHeader[]) => headers && headers.length > 0 ? <div>{(this.renderHeaders('HEADERS', headers || []))}</div> : '';
+
+    private recordBody = (dataMode?: DataMode, body?: string, formData?: DtoHeader[]) => {
+        if (dataMode === DataMode.urlencoded) {
+            return formData && formData.length > 0 ? <div>{(this.renderHeaders('FORM DATA', formData || []))}</div> : '';
+        } else {
+            return body ? (
+                <div className="document-block">
+                    <div className="document-header-name">BODY</div>
+                    <div>{body || ''}</div>
+                </div>
+            ) : '';
+        }
+    }
+
     public render() {
         const records = _.sortBy(_.values(this.props.records[this.props.collections[0].id]), r => r.name);
         return (
@@ -48,17 +81,12 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
                 {
                     records.map(r => (
                         <div id={r.id} key={r.id} className="document-record">
-                            <div className="document-record-name">
-                                <span className="document-method-icon">
-                                    <HttpMethodIcon fontSize={16} httpMethod={(r.method || 'GET').toUpperCase()} />
-                                </span>
-                                {r.name || ''}
-                            </div>
-                            <div className="document-record-url">{r.url || ''}</div>
-                            <div className="document-record-desc">{r.description || ''}</div>
-                            <div>{(this.renderHeaders('PARAMS', r.queryStrings || []))}</div>
-                            <div>{(this.renderHeaders('HEADERS', r.headers || []))}</div>
-                            <div>{r.body || ''}</div>
+                            {this.recordName(r.name, r.method)}
+                            {this.recordUrl(r.url)}
+                            {this.recordDesc(r.description)}
+                            {this.recordParams(r.queryStrings)}
+                            {this.recordHeaders(r.headers)}
+                            {this.recordBody(r.dataMode, r.body, r.formDatas)}
                         </div>
                     ))
                 }
