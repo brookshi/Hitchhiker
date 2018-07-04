@@ -7,6 +7,7 @@ import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import * as _ from 'lodash';
 import { DtoHeader } from '../../../../api/interfaces/dto_header';
 import HttpMethodIcon from '../../components/font_icon/http_method_icon';
+import HighlightCode from '../../components/highlight_code';
 import './style/index.less';
 import { DataMode } from '../../common/custom_type';
 
@@ -30,7 +31,7 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
             <div className="document-block">
                 <div className="document-header-name">{name}</div>
                 {
-                    headers.map(h => (
+                    headers.filter(h => h.isActive).map(h => (
                         <div key={h.id} className="document-header-row">
                             <div className="col-2 document-header-key">{h.key}</div>
                             <div className="col-2 document-header-value">{h.value}</div>
@@ -68,7 +69,7 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
             return body ? (
                 <div className="document-block">
                     <div className="document-header-name">BODY</div>
-                    <div>{body || ''}</div>
+                    <div className="document-code">{<HighlightCode code={body || ''} />}</div>
                 </div>
             ) : '';
         }
