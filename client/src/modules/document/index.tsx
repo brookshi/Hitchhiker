@@ -9,35 +9,19 @@ import * as _ from 'lodash';
 import { DtoHeader } from '../../../../api/interfaces/dto_header';
 import HttpMethodIcon from '../../components/font_icon/http_method_icon';
 import HighlightCode from '../../components/highlight_code';
+import SiderLayout from '../../components/sider_layout';
 import './style/index.less';
 import { DataMode } from '../../common/custom_type';
-import { Layout } from 'antd';
-import Splitter from '../../components/splitter';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { actionCreator } from '../../action/index';
-import { ResizeLeftPanelType, UpdateLeftPanelType } from '../../action/ui';
-
-const { Content, Sider } = Layout;
 
 interface ApiDocumentStateProps {
 
     collections: DtoCollection[];
 
     records: _.Dictionary<_.Dictionary<DtoRecord>>;
-
-    collapsed: boolean;
-
-    leftPanelWidth: number;
-
-    activeModule: string;
 }
 
-interface ApiDocumentDispatchProps {
-
-    resizeLeftPanel(width: number);
-
-    updateLeftPanelStatus(collapsed: boolean, activeModule: string);
-}
+interface ApiDocumentDispatchProps { }
 
 type ApiDocumentProps = ApiDocumentStateProps & ApiDocumentDispatchProps;
 
@@ -94,28 +78,13 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
         }
     }
 
-    private onCollapse = (collapsed) => {
-        this.props.updateLeftPanelStatus(collapsed, collapsed ? '' : this.props.activeModule);
-    }
-
     public render() {
-        const { collapsed, leftPanelWidth } = this.props;
         const records = _.sortBy(_.values(this.props.records[this.props.collections[0].id]), r => r.name);
 
         return (
-            <Layout className="main-panel">
-                <Sider
-                    className="main-sider"
-                    style={{ minWidth: collapsed ? 0 : leftPanelWidth }}
-                    collapsible={true}
-                    collapsedWidth="0.1"
-                    collapsed={collapsed}
-                    onCollapse={this.onCollapse}
-                >
-                    <CollectionList />
-                </Sider>
-                <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
-                <Content style={{ marginTop: 4 }}>
+            <SiderLayout
+                sider={<CollectionList />}
+                content={(
                     <PerfectScrollbar>
                         <div className="document-main">
                             {
@@ -132,8 +101,8 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
                             }
                         </div>
                     </PerfectScrollbar>
-                </Content>
-            </Layout>
+                )}
+            />
         );
     }
 }
@@ -143,24 +112,17 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
 
     const mapStateToProps: (state: State) => ApiDocumentStateProps = state => {
         const { collectionsInfo } = state.collectionState;
-        const { leftPanelWidth, collapsed, activeModule } = state.uiState.appUIState;
 
         return {
             collections: getCollections(state),
-            records: collectionsInfo.records,
-            leftPanelWidth,
-            collapsed,
-            activeModule
+            records: collectionsInfo.records
         };
     };
     return mapStateToProps;
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): ApiDocumentDispatchProps => {
-    return {
-        resizeLeftPanel: (width) => dispatch(actionCreator(ResizeLeftPanelType, width)),
-        updateLeftPanelStatus: (collapsed, activeModule) => dispatch(actionCreator(UpdateLeftPanelType, { collapsed, activeModule }))
-    };
+    return {};
 };
 
 export default connect(

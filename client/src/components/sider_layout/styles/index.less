@@ -1,0 +1,15 @@
+@import '../../../style/colors.less';
+
+.main-panel {
+    background: @panel-background;
+}
+
+.main-sider {
+    border-right: @border-color-dark 1px solid;
+    box-shadow: 1px 2px 5px 0px @border-color-dark;
+    z-index: 20;
+    background: @panel-background;
+    .ant-layout-sider-children {
+      height: 100%;
+    }
+}

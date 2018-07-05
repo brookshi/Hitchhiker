@@ -1,14 +1,11 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { Layout } from 'antd';
-import Splitter from '../../components/splitter';
 import ProjectList from './project_list';
 import Members from './members';
 import Environments from './environments';
 import { DtoProject } from '../../../../api/interfaces/dto_project';
 import { State } from '../../state';
 import { actionCreator } from '../../action';
-import { UpdateLeftPanelType, ResizeLeftPanelType } from '../../action/ui';
 import { EditEnvType, DisbandProjectType, QuitProjectType, SaveProjectType, RemoveUserType, InviteMemberType, SaveEnvironmentType, DelEnvironmentType, ActiveProjectType, EditEnvCompletedType, SaveLocalhostMappingType, SaveGlobalFunctionType, DeleteProjectFileType, AddProjectFileType } from '../../action/project';
 import { DtoUser } from '../../../../api/interfaces/dto_user';
 import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
@@ -18,16 +15,11 @@ import { localhost } from '../../common/constants';
 import { StringUtil } from '../../utils/string_util';
 import { ProjectFileType } from '../../common/custom_type';
 import { ProjectFiles } from '../../../../api/interfaces/dto_project_data';
-
-const { Content, Sider } = Layout;
+import SiderLayout from '../../components/sider_layout';
 
 interface ProjectStateProps {
 
     activeProject: string;
-
-    collapsed: boolean;
-
-    leftPanelWidth: number;
 
     user: DtoUser;
 
@@ -43,10 +35,6 @@ interface ProjectStateProps {
 }
 
 interface ProjectDispatchProps {
-
-    resizeLeftPanel(width: number);
-
-    collapsedLeftPanel(collapsed: boolean);
 
     disbandProject(project: DtoProject);
 
@@ -123,76 +111,65 @@ class Project extends React.Component<ProjectProps, ProjectState> {
 
     public render() {
         const project = this.getSelectedProject();
-        const { user, collapsed, collapsedLeftPanel, projects, leftPanelWidth, disbandProject, quitProject, selectProject, updateProject, createProject, removeUser, invite, createEnv, updateEnv, delEnv, isEditEnvDlgOpen, editedEnvironment, activeProject, editEnvCompleted, editEnv, changeLocalhost, saveGlobalFunc, deleteFile, addFile, projectFiles } = this.props;
+        const { user, projects, disbandProject, quitProject, selectProject, updateProject, createProject, removeUser, invite, createEnv, updateEnv, delEnv, isEditEnvDlgOpen, editedEnvironment, activeProject, editEnvCompleted, editEnv, changeLocalhost, saveGlobalFunc, deleteFile, addFile, projectFiles } = this.props;
 
         return (
-            <Layout className="main-panel">
-                <Sider
-                    className="main-sider"
-                    style={{ minWidth: collapsed ? 0 : leftPanelWidth }}
-                    collapsible={true}
-                    collapsedWidth="0.1"
-                    collapsed={collapsed}
-                    onCollapse={collapsedLeftPanel}
-                >
-                    <ProjectList
-                        activeProject={activeProject}
-                        selectProject={(id) => selectProject(id)}
-                        user={user}
-                        projects={projects}
-                        disbandProject={disbandProject}
-                        quitProject={quitProject}
-                        updateProject={updateProject}
-                        createProject={createProject}
-                        saveGlobalFunc={saveGlobalFunc}
-                        deleteFile={deleteFile}
-                        addFile={addFile}
-                        projectFiles={projectFiles}
-                    />
-                </Sider>
-                <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
-                <Content className="project-right-panel">
-                    {
-                        project && project.isMe ? '' : (
-                            <div>
-                                <Members
-                                    activeProject={activeProject}
-                                    isOwner={this.isSelectProjectOwn()}
-                                    members={this.getSelectProjectMembers()}
-                                    removeUser={removeUser}
-                                    changeLocalhost={changeLocalhost}
-                                    invite={invite}
-                                />
-                                <div style={{ height: 12 }} />
-                            </div>
-                        )
-                    }
-                    <Environments
-                        environments={this.getSelectProjectEnvironments()}
-                        createEnv={createEnv}
-                        updateEnv={updateEnv}
-                        activeProject={activeProject}
-                        delEnv={envId => delEnv(envId, activeProject)}
-                        isEditEnvDlgOpen={isEditEnvDlgOpen}
-                        editedEnvironment={editedEnvironment}
-                        editEnvCompleted={editEnvCompleted}
-                        editEnv={editEnv}
-                    />
-                </Content>
-            </Layout>
+            <SiderLayout
+                sider={<ProjectList
+                    activeProject={activeProject}
+                    selectProject={(id) => selectProject(id)}
+                    user={user}
+                    projects={projects}
+                    disbandProject={disbandProject}
+                    quitProject={quitProject}
+                    updateProject={updateProject}
+                    createProject={createProject}
+                    saveGlobalFunc={saveGlobalFunc}
+                    deleteFile={deleteFile}
+                    addFile={addFile}
+                    projectFiles={projectFiles}
+                />}
+                content={(
+                    <div className="project-right-panel">
+                        {
+                            project && project.isMe ? '' : (
+                                <div>
+                                    <Members
+                                        activeProject={activeProject}
+                                        isOwner={this.isSelectProjectOwn()}
+                                        members={this.getSelectProjectMembers()}
+                                        removeUser={removeUser}
+                                        changeLocalhost={changeLocalhost}
+                                        invite={invite}
+                                    />
+                                    <div style={{ height: 12 }} />
+                                </div>
+                            )
+                        }
+                        <Environments
+                            environments={this.getSelectProjectEnvironments()}
+                            createEnv={createEnv}
+                            updateEnv={updateEnv}
+                            activeProject={activeProject}
+                            delEnv={envId => delEnv(envId, activeProject)}
+                            isEditEnvDlgOpen={isEditEnvDlgOpen}
+                            editedEnvironment={editedEnvironment}
+                            editEnvCompleted={editEnvCompleted}
+                            editEnv={editEnv}
+                        />
+                    </div>
+                )}
+            />
         );
     }
 }
 
 const mapStateToProps = (state: State): ProjectStateProps => {
-    const { leftPanelWidth, collapsed } = state.uiState.appUIState;
     const { activeProject, projects } = state.projectState;
     const user = state.userState.userInfo as DtoUser;
 
     return {
         activeProject,
-        leftPanelWidth,
-        collapsed,
         user,
         projects: _.chain(projects).values<DtoProject>().sortBy('name').sortBy(t => t.owner.id !== user.id).sortBy(t => t.isMe ? 0 : 1).value(),
         environments: state.environmentState.environments,
@@ -204,8 +181,6 @@ const mapStateToProps = (state: State): ProjectStateProps => {
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): ProjectDispatchProps => {
     return {
-        resizeLeftPanel: (width) => dispatch(actionCreator(ResizeLeftPanelType, width)),
-        collapsedLeftPanel: (collapsed) => dispatch(actionCreator(UpdateLeftPanelType, collapsed)),
         disbandProject: (project) => { dispatch(actionCreator(DisbandProjectType, project)); },
         quitProject: (project) => { dispatch(actionCreator(QuitProjectType, project)); },
         updateProject: (project) => dispatch(actionCreator(SaveProjectType, { isNew: false, project })),
