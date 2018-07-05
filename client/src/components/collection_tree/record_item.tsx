@@ -1,13 +1,13 @@
 import React from 'react';
-import HttpMethodIcon from '../../../components/font_icon/http_method_icon';
-import ItemWithMenu from '../../../components/item_with_menu';
+import HttpMethodIcon from '../font_icon/http_method_icon';
+import ItemWithMenu from '../item_with_menu';
 import './style/index.less';
 import { Menu, Icon, Badge } from 'antd';
-import { confirmDlg } from '../../../components/confirm_dialog/index';
-import { DtoRecord } from '../../../../../api/interfaces/dto_record';
-import { StringUtil } from '../../../utils/string_util';
-import Msg from '../../../locales';
-import LocalesString from '../../../locales/string';
+import { confirmDlg } from '../confirm_dialog/index';
+import { DtoRecord } from '../../../../api/interfaces/dto_record';
+import { StringUtil } from '../../utils/string_util';
+import Msg from '../../locales';
+import LocalesString from '../../locales/string';
 
 interface RecordItemProps {
 

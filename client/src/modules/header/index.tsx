@@ -8,7 +8,7 @@ import { actionCreator, ResetSyncMsgType } from '../../action/index';
 import { LogoutType, ChangePasswordType } from '../../action/user';
 import ChangePasswordDialog from './change_password_dialog';
 import { Password } from '../../../../api/interfaces/password';
-import { getProjectsIdNameStateSelector } from '../collection/collection_tree/selector';
+import { getProjectsIdNameStateSelector } from '../../components/collection_tree/selector';
 import { ImportDataType } from '../../action/collection';
 import Msg from '../../locales';
 import LocalesString from '../../locales/string';

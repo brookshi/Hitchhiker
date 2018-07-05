@@ -2,7 +2,7 @@ import React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { Layout } from 'antd';
 import Splitter from '../../components/splitter';
-import CollectionList from './collection_tree';
+import CollectionList from '../../components/collection_tree';
 import ReqResPanel from './req_res_panel';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { actionCreator } from '../../action/index';

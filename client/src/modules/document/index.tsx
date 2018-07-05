@@ -2,7 +2,8 @@ import React from 'react';
 import { connect, Dispatch, MapStateToPropsFactory } from 'react-redux';
 import { State } from '../../state/index';
 import { DtoCollection } from '../../../../api/interfaces/dto_collection';
-import { getDisplayCollectionSelector } from '../collection/collection_tree/selector';
+import { getDisplayCollectionSelector } from '../../components/collection_tree/selector';
+import CollectionList from '../../components/collection_tree';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import * as _ from 'lodash';
 import { DtoHeader } from '../../../../api/interfaces/dto_header';
@@ -10,15 +11,33 @@ import HttpMethodIcon from '../../components/font_icon/http_method_icon';
 import HighlightCode from '../../components/highlight_code';
 import './style/index.less';
 import { DataMode } from '../../common/custom_type';
+import { Layout } from 'antd';
+import Splitter from '../../components/splitter';
+import PerfectScrollbar from 'react-perfect-scrollbar';
+import { actionCreator } from '../../action/index';
+import { ResizeLeftPanelType, UpdateLeftPanelType } from '../../action/ui';
+
+const { Content, Sider } = Layout;
 
 interface ApiDocumentStateProps {
 
     collections: DtoCollection[];
 
     records: _.Dictionary<_.Dictionary<DtoRecord>>;
+
+    collapsed: boolean;
+
+    leftPanelWidth: number;
+
+    activeModule: string;
 }
 
-interface ApiDocumentDispatchProps { }
+interface ApiDocumentDispatchProps {
+
+    resizeLeftPanel(width: number);
+
+    updateLeftPanelStatus(collapsed: boolean, activeModule: string);
+}
 
 type ApiDocumentProps = ApiDocumentStateProps & ApiDocumentDispatchProps;
 
@@ -75,23 +94,46 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
         }
     }
 
+    private onCollapse = (collapsed) => {
+        this.props.updateLeftPanelStatus(collapsed, collapsed ? '' : this.props.activeModule);
+    }
+
     public render() {
+        const { collapsed, leftPanelWidth } = this.props;
         const records = _.sortBy(_.values(this.props.records[this.props.collections[0].id]), r => r.name);
+
         return (
-            <div className="document-main">
-                {
-                    records.map(r => (
-                        <div id={r.id} key={r.id} className="document-record">
-                            {this.recordName(r.name, r.method)}
-                            {this.recordUrl(r.url)}
-                            {this.recordDesc(r.description)}
-                            {this.recordParams(r.queryStrings)}
-                            {this.recordHeaders(r.headers)}
-                            {this.recordBody(r.dataMode, r.body, r.formDatas)}
+            <Layout className="main-panel">
+                <Sider
+                    className="main-sider"
+                    style={{ minWidth: collapsed ? 0 : leftPanelWidth }}
+                    collapsible={true}
+                    collapsedWidth="0.1"
+                    collapsed={collapsed}
+                    onCollapse={this.onCollapse}
+                >
+                    <CollectionList />
+                </Sider>
+                <Splitter resizeCollectionPanel={this.props.resizeLeftPanel} />
+                <Content style={{ marginTop: 4 }}>
+                    <PerfectScrollbar>
+                        <div className="document-main">
+                            {
+                                records.map(r => (
+                                    <div id={r.id} key={r.id} className="document-record">
+                                        {this.recordName(r.name, r.method)}
+                                        {this.recordUrl(r.url)}
+                                        {this.recordDesc(r.description)}
+                                        {this.recordParams(r.queryStrings)}
+                                        {this.recordHeaders(r.headers)}
+                                        {this.recordBody(r.dataMode, r.body, r.formDatas)}
+                                    </div>
+                                ))
+                            }
                         </div>
-                    ))
-                }
-            </div>
+                    </PerfectScrollbar>
+                </Content>
+            </Layout>
         );
     }
 }
@@ -101,10 +143,14 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
 
     const mapStateToProps: (state: State) => ApiDocumentStateProps = state => {
         const { collectionsInfo } = state.collectionState;
+        const { leftPanelWidth, collapsed, activeModule } = state.uiState.appUIState;
 
         return {
             collections: getCollections(state),
             records: collectionsInfo.records,
+            leftPanelWidth,
+            collapsed,
+            activeModule
         };
     };
     return mapStateToProps;
@@ -112,7 +158,8 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): ApiDocumentDispatchProps => {
     return {
-        // ...mapDispatchToProps
+        resizeLeftPanel: (width) => dispatch(actionCreator(ResizeLeftPanelType, width)),
+        updateLeftPanelStatus: (collapsed, activeModule) => dispatch(actionCreator(UpdateLeftPanelType, { collapsed, activeModule }))
     };
 };
 

@@ -1,13 +1,13 @@
 import React from 'react';
 import { Icon, Menu } from 'antd';
-import ItemWithMenu from '../../../components/item_with_menu';
+import ItemWithMenu from '../item_with_menu';
 import './style/index.less';
-import { DtoRecord } from '../../../../../api/interfaces/dto_record';
-import { confirmDlg } from '../../../components/confirm_dialog/index';
-import { getDefaultRecord } from '../../../state/collection';
-import { StringUtil } from '../../../utils/string_util';
-import Msg from '../../../locales';
-import LocalesString from '../../../locales/string';
+import { DtoRecord } from '../../../../api/interfaces/dto_record';
+import { confirmDlg } from '../confirm_dialog/index';
+import { getDefaultRecord } from '../../state/collection';
+import { StringUtil } from '../../utils/string_util';
+import Msg from '../../locales';
+import LocalesString from '../../locales/string';
 
 interface RecordFolderProps {
 
