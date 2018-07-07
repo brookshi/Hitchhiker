@@ -19,6 +19,8 @@ interface CollectionItemProps {
 
     recordCount: number;
 
+    readOnly: boolean;
+
     onNameChanged(name: string);
 
     deleteCollection();
@@ -161,7 +163,7 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
     }
 
     public render() {
-        const { onNameChanged, collection, recordCount } = this.props;
+        const { onNameChanged, collection, recordCount, readOnly } = this.props;
         return (
             <div
                 className={this.state.isDragOver ? 'folder-item-container' : ''}
@@ -176,6 +178,7 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
                     name={collection.name}
                     subName={<div>{Msg('Collection.Request', { count: recordCount })}</div>}
                     menu={this.getMenu()}
+                    disableMenu={readOnly}
                 />
             </div>
         );

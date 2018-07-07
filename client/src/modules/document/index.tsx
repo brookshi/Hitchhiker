@@ -13,21 +13,39 @@ import SiderLayout from '../../components/sider_layout';
 import './style/index.less';
 import { DataMode } from '../../common/custom_type';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { DocumentActiveRecordType, DocumentSelectedProjectChangedType, DocumentCollectionOpenKeysType, ScrollDocumentType } from '../../action/document';
+import { actionCreator } from '../../action/index';
+import { RecordCategory } from '../../common/record_category';
 
 interface ApiDocumentStateProps {
 
     collections: DtoCollection[];
 
     records: _.Dictionary<_.Dictionary<DtoRecord>>;
+
+    activeKey: string;
+
+    openKeys: string[];
+
+    selectedProject: string;
+
+    scrollTop: number;
+
+    changeByScroll: boolean;
 }
 
-interface ApiDocumentDispatchProps { }
+interface ApiDocumentDispatchProps {
+
+    onScroll(y: number);
+}
 
 type ApiDocumentProps = ApiDocumentStateProps & ApiDocumentDispatchProps;
 
 interface ApiDocumentState { }
 
 class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
+
+    container: any;
 
     private renderHeaders = (name: string, headers: DtoHeader[]) => {
         return (
@@ -78,17 +96,67 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
         }
     }
 
+    public componentDidUpdate(prevProps: ApiDocumentProps, prevState: ApiDocumentState) {
+        if (!this.props.changeByScroll) {
+            location.hash = this.props.activeKey;
+        }
+    }
+
+    public componentDidMount() {
+        if (this.container && this.container._container) {
+            this.container._container.scrollTop = this.props.scrollTop;
+        }
+    }
+
+    private onScrollY = ref => {
+        this.props.onScroll(ref.scrollTop);
+    }
+
+    private getSortedRecords = (collectionId: string | null) => {
+        if (!collectionId || !this.props.records[collectionId]) {
+            return [];
+        }
+        let sortRecords = _.chain(this.props.records[collectionId]).values<DtoRecord>().sortBy(['category', 'name']).value();
+        let topLvRecords = sortRecords.filter(r => !r.pid);
+        for (let i = topLvRecords.length - 1; i >= 0; i--) {
+            if (topLvRecords[i].category === RecordCategory.folder) {
+                let children = sortRecords.filter(r => r.pid === topLvRecords[i].id);
+                topLvRecords.splice(i, 1, ...children);
+            }
+        }
+        return topLvRecords;
+    }
+
     public render() {
-        const records = _.sortBy(_.values(this.props.records[this.props.collections[0].id]), r => r.name);
+
+        const { activeKey, selectedProject, openKeys, collections } = this.props;
+        let keys = [...openKeys];
+        if (!keys || keys.length === 0) {
+            keys = collections.length > 0 ? [collections[0].id] : [];
+        }
+        let collectionIds = keys.filter(k => collections.find(c => c.id === k));
+        let collectionId = collectionIds.length > 0 ? collectionIds[0] : (collections.length > 0 ? collections[0].id : null);
+        let sortRecords = this.getSortedRecords(collectionId);
 
         return (
             <SiderLayout
-                sider={<CollectionList />}
+                sider={
+                    <CollectionList
+                        readOnly={true}
+                        activeKey={activeKey}
+                        openKeys={keys}
+                        selectedProject={selectedProject}
+                        onlyOneOpenKey={true}
+                        activeRecordType={DocumentActiveRecordType}
+                        collectionOpenKeysType={DocumentCollectionOpenKeysType}
+                        selectedProjectChangedType={DocumentSelectedProjectChangedType}
+                    />
+                }
                 content={(
-                    <PerfectScrollbar>
+                    <PerfectScrollbar ref={ele => this.container = ele} onScrollY={this.onScrollY}>
                         <div className="document-main">
                             {
-                                records.map(r => (
+                                sortRecords.map(r => (
                                     <div id={r.id} key={r.id} className="document-record">
                                         {this.recordName(r.name, r.method)}
                                         {this.recordUrl(r.url)}
@@ -112,17 +180,25 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
 
     const mapStateToProps: (state: State) => ApiDocumentStateProps = state => {
         const { collectionsInfo } = state.collectionState;
+        const { documentActiveRecord, documentCollectionOpenKeys, documentSelectedProject, scrollTop, changeByScroll } = state.documentState;
 
         return {
             collections: getCollections(state),
-            records: collectionsInfo.records
+            records: collectionsInfo.records,
+            activeKey: documentActiveRecord,
+            openKeys: documentCollectionOpenKeys,
+            selectedProject: documentSelectedProject,
+            scrollTop,
+            changeByScroll
         };
     };
     return mapStateToProps;
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): ApiDocumentDispatchProps => {
-    return {};
+    return {
+        onScroll: (scrollTop) => dispatch(actionCreator(ScrollDocumentType, scrollTop))
+    };
 };
 
 export default connect(

@@ -15,6 +15,8 @@ interface RecordItemProps {
 
     inFolder: boolean;
 
+    readOnly: boolean;
+
     deleteRecord();
 
     duplicateRecord();
@@ -100,7 +102,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
     }
 
     public render() {
-        let { record, inFolder } = this.props;
+        let { record, inFolder, readOnly } = this.props;
         let { method, name } = record;
         method = method || 'GET';
         const paramReqInfo = StringUtil.verifyParameters(record.parameters || '', record.parameterType);
@@ -108,7 +110,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
 
         return (
             <div
-                draggable={true}
+                draggable={!readOnly}
                 onDragStart={this.dragStart}
                 onDragOver={this.dragOver}
                 onDrop={this.drop}
@@ -124,6 +126,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
                     )}
                     name={name}
                     menu={this.getMenu()}
+                    disableMenu={readOnly}
                 />
             </div>
         );

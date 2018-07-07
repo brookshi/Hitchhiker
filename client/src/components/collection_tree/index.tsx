@@ -10,8 +10,8 @@ import * as _ from 'lodash';
 import { DtoCollection, DtoCommonSetting } from '../../../../api/interfaces/dto_collection';
 import { RecordCategory } from '../../common/record_category';
 import { actionCreator } from '../../action';
-import { DeleteCollectionType, SaveCollectionType, SelectedProjectChangedType, CollectionOpenKeysType } from '../../action/collection';
-import { DeleteRecordType, SaveRecordType, RemoveTabType, ActiveRecordType, MoveRecordType, SaveAsRecordType } from '../../action/record';
+import { DeleteCollectionType, SaveCollectionType } from '../../action/collection';
+import { DeleteRecordType, SaveRecordType, RemoveTabType, MoveRecordType, SaveAsRecordType } from '../../action/record';
 import { StringUtil } from '../../utils/string_util';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { ProjectSelectedDialogMode, ProjectSelectedDialogType } from '../../common/custom_type';
@@ -27,19 +27,32 @@ import LocalesString from '../../locales/string';
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
 
-interface CollectionListStateProps {
+interface OwnProps {
+
+    readOnly: boolean;
+
+    activeRecordType: string;
+
+    collectionOpenKeysType: string;
+
+    selectedProjectChangedType: string;
+
+    activeKey: string;
+
+    openKeys: string[];
+
+    selectedProject: string;
+
+    onlyOneOpenKey?: boolean;
+}
+
+interface CollectionListStateProps extends OwnProps {
 
     collections: DtoCollection[];
 
     records: _.Dictionary<_.Dictionary<DtoRecord>>;
 
-    activeKey: string;
-
     projects: { id: string, name: string }[];
-
-    openKeys: string[];
-
-    selectedProject: string;
 
     timelineRecord?: DtoRecord;
 
@@ -48,7 +61,7 @@ interface CollectionListStateProps {
 
 interface CollectionListDispatchProps {
 
-    activeRecord: (record: DtoRecord) => void;
+    activeRecord: (type: string, record: DtoRecord) => void;
 
     deleteRecord(id: string, records: _.Dictionary<DtoRecord>);
 
@@ -66,9 +79,9 @@ interface CollectionListDispatchProps {
 
     moveRecord(record: DtoRecord);
 
-    openKeysChanged(openKeys: string[]);
+    openKeysChanged(type: string, openKeys: string[]);
 
-    selectProject(projectid: string);
+    selectProject(type: string, projectid: string);
 
     showTimeLine(id: string);
 
@@ -138,13 +151,13 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             openKeys.push(record.pid);
         }
         if (openKeys.length !== this.props.openKeys.length) {
-            this.props.openKeysChanged(openKeys);
+            this.props.openKeysChanged(this.props.collectionOpenKeysType, openKeys);
         }
 
         this.props.createRecord(record);
 
         if (record && record.category === RecordCategory.record) {
-            this.props.activeRecord(record);
+            this.props.activeRecord(this.props.activeRecordType, record);
         }
     }
 
@@ -176,7 +189,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     private getProjectMenu = () => {
         const projects = this.props.projects;
         return (
-            <Menu style={{ minWidth: 150 }} onClick={e => this.props.selectProject(e.key)} selectedKeys={[this.props.selectedProject]}>
+            <Menu style={{ minWidth: 150 }} onClick={e => this.props.selectProject(this.props.selectedProjectChangedType, e.key)} selectedKeys={[this.props.selectedProject]}>
                 <Menu.Item key={allProject}>{allProject}</Menu.Item>
                 {projects.map(t => <Menu.Item key={t.id}>{t.name}</Menu.Item>)}
             </Menu>
@@ -243,7 +256,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     }
 
     private loopRecords = (data: DtoRecord[], cid: string, inFolder: boolean = false) => {
-        const { openKeys, records, deleteRecord, showTimeLine } = this.props;
+        const { openKeys, records, deleteRecord, showTimeLine, readOnly } = this.props;
 
         return data.map(r => {
             const recordStyle = { height: '30px', lineHeight: '30px' };
@@ -266,6 +279,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                                 moveRecordToFolder={this.moveRecordToFolder}
                                 moveToCollection={this.moveToCollection}
                                 editCommonSetting={() => this.setState({ ...this.state, isCommonSettingDlgOpen: true, commonSettingType: 'Folder', currentOperatedFolder: r })}
+                                readOnly={readOnly}
                             />
                         )}
                     >
@@ -283,6 +297,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                         duplicateRecord={() => this.duplicateRecord(r)}
                         deleteRecord={() => deleteRecord(r.id, records[cid])}
                         showTimeline={() => showTimeLine(r.id)}
+                        readOnly={readOnly}
                     />
                 </MenuItem>
             );
@@ -361,20 +376,32 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         );
     }
 
+    private openKeysChanged = (keys) => {
+        const { collectionOpenKeysType, openKeysChanged, openKeys, onlyOneOpenKey, collections } = this.props;
+        if (onlyOneOpenKey) {
+            let latestOpenKey = keys.find(key => openKeys.indexOf(key) === -1);
+            let isCollectionKey = !!collections.find(c => c.id === latestOpenKey);
+            if (isCollectionKey) {
+                keys = [...openKeys.filter(k => !collections.find(c => c.id === k)), latestOpenKey];
+            }
+        }
+        openKeysChanged(collectionOpenKeysType, keys);
+    }
+
     private get collectionMenu() {
-        const { collections, records, activeKey, openKeys, deleteCollection, openKeysChanged, activeRecord } = this.props;
+        const { collections, records, activeRecordType, activeKey, openKeys, deleteCollection, activeRecord, readOnly } = this.props;
 
         return (
             <div className="collection-tree-container">
                 <PerfectScrollbar>
                     <Menu
                         className="collection-tree"
-                        onOpenChange={openKeysChanged}
+                        onOpenChange={this.openKeysChanged}
                         mode="inline"
                         inlineIndent={0}
-                        openKeys={openKeys}
+                        openKeys={openKeys || []}
                         selectedKeys={[activeKey]}
-                        onSelect={param => activeRecord(param.item.props.data)}
+                        onSelect={param => activeRecord(activeRecordType, param.item.props.data)}
                     >
                         {
                             collections.map(c => {
@@ -397,6 +424,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                                                 editCommonSetting={() => this.setState({ ...this.state, isCommonSettingDlgOpen: true, commonSettingType: 'Collection', currentOperatedCollection: c })}
                                                 editReqStrictSSL={() => this.props.updateCollection({ ...c, reqStrictSSL: !c.reqStrictSSL })}
                                                 editReqFollowRedirect={() => this.props.updateCollection({ ...c, reqFollowRedirect: !c.reqFollowRedirect })}
+                                                readOnly={readOnly}
                                             />
                                         )}
                                     >
@@ -427,9 +455,13 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                         </a>
                     </Dropdown>
                 </span>
-                <Tooltip mouseEnterDelay={1} placement="bottom" title={Msg('Collection.Create')}>
-                    <Button className="icon-btn" type="primary" icon="folder-add" onClick={this.addCollection} />
-                </Tooltip>
+                {
+                    this.props.readOnly ? '' : (
+                        <Tooltip mouseEnterDelay={1} placement="bottom" title={Msg('Collection.Create')}>
+                            <Button className="icon-btn" type="primary" icon="folder-add" onClick={this.addCollection} />
+                        </Tooltip>
+                    )
+                }
             </div>
         );
     }
@@ -439,31 +471,29 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             <div className="collection-panel">
                 {this.collectionHeader}
                 {this.collectionMenu}
-                {this.projectSelectedDialog}
-                {this.timelineDialog}
-                {this.commonSettingDialog}
+                {this.props.readOnly ? '' : this.projectSelectedDialog}
+                {this.props.readOnly ? '' : this.timelineDialog}
+                {this.props.readOnly ? '' : this.commonSettingDialog}
             </div>
         );
     }
 }
 
-const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any, ownProps: any) => {
-    const getProjects = getProjectsIdNameStateSelector();
+const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any) => {
     const getCollections = getDisplayCollectionSelector();
+    const getProjects = getProjectsIdNameStateSelector();
 
-    const mapStateToProps: (state: State) => CollectionListStateProps = state => {
-        const { collectionsInfo, selectedProject } = state.collectionState;
+    const mapStateToProps: (state: State, ownProps: any) => CollectionListStateProps = (state, ownProps) => {
+        const { collectionsInfo } = state.collectionState;
         const { record, isShow } = state.uiState.timelineState;
 
         return {
             collections: getCollections(state),
             records: collectionsInfo.records,
-            activeKey: state.displayRecordsState.activeKey,
             projects: getProjects(state),
-            openKeys: state.collectionState.openKeys,
-            selectedProject,
             timelineRecord: record,
-            isTimelineDlgOpen: isShow
+            isTimelineDlgOpen: isShow,
+            ...ownProps
         };
     };
     return mapStateToProps;
@@ -471,7 +501,7 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
 
 const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps => {
     return {
-        activeRecord: (record) => dispatch(actionCreator(ActiveRecordType, record)),
+        activeRecord: (type, record) => dispatch(actionCreator(type, record)),
         deleteRecord: (id, records) => {
             const record = records[id];
             if (record.category === RecordCategory.folder) {
@@ -488,8 +518,8 @@ const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps
         duplicateRecord: (record) => dispatch(actionCreator(SaveAsRecordType, { isNew: true, record })),
         createRecord: (record) => dispatch(actionCreator(SaveAsRecordType, { isNew: true, record })),
         moveRecord: record => dispatch(actionCreator(MoveRecordType, { record })),
-        openKeysChanged: openKeys => dispatch(actionCreator(CollectionOpenKeysType, openKeys)),
-        selectProject: projectId => dispatch(actionCreator(SelectedProjectChangedType, projectId)),
+        openKeysChanged: (type, openKeys) => dispatch(actionCreator(type, openKeys)),
+        selectProject: (type, projectId) => dispatch(actionCreator(type, projectId)),
         showTimeLine: id => dispatch(actionCreator(ShowTimelineType, id)),
         closeTimeLine: () => dispatch(actionCreator(CloseTimelineType))
     };
@@ -498,4 +528,4 @@ const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps
 export default connect(
     makeMapStateToProps,
     mapDispatchToProps,
-)(CollectionList);
+)(CollectionList) as any;

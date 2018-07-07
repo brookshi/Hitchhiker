@@ -6,6 +6,7 @@ import { CollectionState, DisplayRecordsState, collectionDefaultValue, displayRe
 import { LocalDataState, localDataDefaultValue } from './local_data';
 import { ScheduleState, scheduleDefaultValue } from './schedule';
 import { StressTestState, stressDefaultValue } from './stress';
+import { DocumentState, documentDefaultValue } from './document';
 
 export interface State {
 
@@ -27,7 +28,7 @@ export interface State {
 
     stressTestState: StressTestState;
 
-    // documentState: DocumentState;
+    documentState: DocumentState;
 
     // mockState: MockState;
 }
@@ -50,5 +51,7 @@ export const defaultState: State = {
 
     scheduleState: scheduleDefaultValue,
 
-    stressTestState: stressDefaultValue
+    stressTestState: stressDefaultValue,
+
+    documentState: documentDefaultValue
 };

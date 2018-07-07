@@ -15,6 +15,8 @@ interface RecordFolderProps {
 
     isOpen: boolean;
 
+    readOnly: boolean;
+
     deleteRecord();
 
     createRecord(record: DtoRecord);
@@ -124,7 +126,7 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
         return (
             <div
                 className={this.state.isDragOver ? 'folder-item-container' : ''}
-                draggable={!this.state.isEdit}
+                draggable={!this.props.readOnly && !this.state.isEdit}
                 onDragStart={this.dragStart}
                 onDragOver={this.dragOver}
                 onDragLeave={this.dragLeave}
@@ -144,6 +146,7 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
                     )}
                     name={this.props.folder.name}
                     menu={this.getMenu()}
+                    disableMenu={this.props.readOnly}
                 />
             </div>
         );

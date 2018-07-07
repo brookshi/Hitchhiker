@@ -23,6 +23,7 @@ import { newRecordFlag } from '../common/constants';
 import { ShowTimelineType, BatchCloseType } from '../action/ui';
 import { CompareUtil } from '../utils/compare_util';
 import { CloseAction } from '../common/custom_type';
+import { documentState } from './document';
 
 export const reduceReducers = (...reducers) => {
     return (state, action) =>
@@ -42,7 +43,8 @@ export function rootReducer(state: State, action: any): State {
         projectState,
         environmentState,
         scheduleState,
-        stressTestState
+        stressTestState,
+        documentState
     })(state, action);
 
     const finalState = multipleStateReducer(intermediateState, action);
