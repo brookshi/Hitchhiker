@@ -16,6 +16,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import { DocumentActiveRecordType, DocumentSelectedProjectChangedType, DocumentCollectionOpenKeysType, ScrollDocumentType } from '../../action/document';
 import { actionCreator } from '../../action/index';
 import { RecordCategory } from '../../common/record_category';
+import { mainTpl } from './templates/main';
 
 interface ApiDocumentStateProps {
 
@@ -127,8 +128,19 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
         return topLvRecords;
     }
 
-    public render() {
+    private download = () => {
+        var eleLink = document.createElement('a');
+        eleLink.download = 'document.html';
+        eleLink.style.display = 'none';
 
+        var blob = new Blob([mainTpl.replace('{{body}}', (document.getElementById('document-main') || { innerHTML: '' }).innerHTML)]);
+        eleLink.href = URL.createObjectURL(blob);
+        document.body.appendChild(eleLink);
+        eleLink.click();
+        document.body.removeChild(eleLink);
+    }
+
+    private generageView() {
         const { activeKey, selectedProject, openKeys, collections } = this.props;
         let keys = [...openKeys];
         if (!keys || keys.length === 0) {
@@ -152,26 +164,35 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
                         selectedProjectChangedType={DocumentSelectedProjectChangedType}
                     />
                 }
-                content={(
-                    <PerfectScrollbar ref={ele => this.container = ele} onScrollY={this.onScrollY}>
-                        <div className="document-main">
-                            {
-                                sortRecords.map(r => (
-                                    <div id={r.id} key={r.id} className="document-record">
-                                        {this.recordName(r.name, r.method)}
-                                        {this.recordUrl(r.url)}
-                                        {this.recordDesc(r.description)}
-                                        {this.recordParams(r.queryStrings)}
-                                        {this.recordHeaders(r.headers)}
-                                        {this.recordBody(r.dataMode, r.body, r.formDatas)}
-                                    </div>
-                                ))
-                            }
-                        </div>
-                    </PerfectScrollbar>
-                )}
+                content={this.generateDoc(sortRecords)}
             />
         );
+    }
+
+    private generateDoc(sortRecords: DtoRecord[]) {
+        return (
+            <PerfectScrollbar ref={ele => this.container = ele} onScrollY={this.onScrollY}>
+                <div className=""><button onClick={() => this.download()} >download</button></div>
+                <div id="document-main" className="document-main">
+                    {
+                        sortRecords.map(r => (
+                            <div id={r.id} key={r.id} className="document-record">
+                                {this.recordName(r.name, r.method)}
+                                {this.recordUrl(r.url)}
+                                {this.recordDesc(r.description)}
+                                {this.recordParams(r.queryStrings)}
+                                {this.recordHeaders(r.headers)}
+                                {this.recordBody(r.dataMode, r.body, r.formDatas)}
+                            </div>
+                        ))
+                    }
+                </div>
+            </PerfectScrollbar>
+        );
+    }
+
+    public render() {
+        return this.generageView();
     }
 }
 
