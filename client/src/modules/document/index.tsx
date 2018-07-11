@@ -140,7 +140,7 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
         document.body.removeChild(eleLink);
     }
 
-    private generageView() {
+    private generateView() {
         const { activeKey, selectedProject, openKeys, collections } = this.props;
         let keys = [...openKeys];
         if (!keys || keys.length === 0) {
@@ -192,7 +192,7 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
     }
 
     public render() {
-        return this.generageView();
+        return this.generateView();
     }
 }
 

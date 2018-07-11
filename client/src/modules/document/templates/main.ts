@@ -5,10 +5,10 @@ export const mainTpl = `<!DOCTYPE html>
 	<style>
 		body {
 			font-size: 12px;
+			font-family: SourceCodePro, Arial, "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", Helvetica, "Helvetica Neue For Number", sans-serif;
 		}
 
 		.font-icon {
-			font-family: SourceCodePro, Arial, "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", Helvetica, "Helvetica Neue For Number", sans-serif;
 			font-size: 10px;
 			font-weight: bold;
 			margin: auto;
