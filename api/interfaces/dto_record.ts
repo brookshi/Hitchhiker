@@ -52,6 +52,8 @@ export interface DtoRecord {
     sort?: number;
 
     description?: string;
+
+    children?: DtoRecord[];
 }
 
 export interface DtoRecordHistory {

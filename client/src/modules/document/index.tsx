@@ -17,6 +17,7 @@ import { DocumentActiveRecordType, DocumentSelectedProjectChangedType, DocumentC
 import { actionCreator } from '../../action/index';
 import { RecordCategory } from '../../common/record_category';
 import { mainTpl } from './templates/main';
+import { TemplateUtil } from '../../utils/template_util';
 
 interface ApiDocumentStateProps {
 
@@ -113,7 +114,7 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
         this.props.onScroll(ref.scrollTop);
     }
 
-    private getSortedRecords = (collectionId: string | null) => {
+    private getSortedRecords = (collectionId: string | null, useForDownload: boolean = false) => {
         if (!collectionId || !this.props.records[collectionId]) {
             return [];
         }
@@ -122,7 +123,11 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
         for (let i = topLvRecords.length - 1; i >= 0; i--) {
             if (topLvRecords[i].category === RecordCategory.folder) {
                 let children = sortRecords.filter(r => r.pid === topLvRecords[i].id);
-                topLvRecords.splice(i, 1, ...children);
+                if (useForDownload) {
+                    topLvRecords[i].children = children;
+                } else {
+                    topLvRecords.splice(i + 1, 0, ...children);
+                }
             }
         }
         return topLvRecords;
@@ -132,8 +137,18 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
         var eleLink = document.createElement('a');
         eleLink.download = 'document.html';
         eleLink.style.display = 'none';
+        let doc = (document.getElementById('document-main') || { innerHTML: '' }).innerHTML;
 
-        var blob = new Blob([mainTpl.replace('{{body}}', (document.getElementById('document-main') || { innerHTML: '' }).innerHTML)]);
+        const { openKeys, collections } = this.props;
+        let keys = [...openKeys];
+        if (!keys || keys.length === 0) {
+            keys = collections.length > 0 ? [collections[0].id] : [];
+        }
+        let collectionIds = keys.filter(k => collections.find(c => c.id === k));
+        let collectionId = collectionIds.length > 0 ? collectionIds[0] : (collections.length > 0 ? collections[0].id : null);
+
+        let data = { doc, collectionName: 'test', records: this.getSortedRecords(collectionId, true) };
+        var blob = new Blob([TemplateUtil.apply(mainTpl, data)]);
         eleLink.href = URL.createObjectURL(blob);
         document.body.appendChild(eleLink);
         eleLink.click();
@@ -175,7 +190,7 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
                 <div className=""><button onClick={() => this.download()} >download</button></div>
                 <div id="document-main" className="document-main">
                     {
-                        sortRecords.map(r => (
+                        sortRecords.filter(r => r.category !== RecordCategory.folder).map(r => (
                             <div id={r.id} key={r.id} className="document-record">
                                 {this.recordName(r.name, r.method)}
                                 {this.recordUrl(r.url)}

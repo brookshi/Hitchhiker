@@ -5,7 +5,20 @@ export const mainTpl = `<!DOCTYPE html>
 	<style>
 		body {
 			font-size: 12px;
-			font-family: SourceCodePro, Arial, "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", Helvetica, "Helvetica Neue For Number", sans-serif;
+			font-family: Arial, "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", Helvetica, "Helvetica Neue For Number", sans-serif;
+			padding: 0;
+			margin: 0;
+			overflow: hidden;
+		}
+
+		body::after {
+			display: block;
+			content: '';
+			clear: both;
+		}
+
+		li {
+			list-style-type: none;
 		}
 
 		.font-icon {
@@ -182,12 +195,150 @@ export const mainTpl = `<!DOCTYPE html>
 			font-weight: bold;
 		}
 	</style>
+    <style>
+
+        a {
+            text-decoration-line: none;
+            color: black;
+        }
+
+        a:hover {
+            color: blue;
+        }
+
+        .document-folder-title {
+            line-height: 30px;
+            cursor: pointer;
+        }
+
+        .document-folder-icon {
+            vertical-align: -5;
+        }
+
+        .font-icon {
+            font-size: 10px;
+            font-weight: bold;
+            margin: auto;
+            margin-top: 1px;
+        }
+
+        ul {
+            padding: 0;
+            margin: 0;
+        }
+
+        .document-folder-content {
+            padding-left: 25px;
+        }
+
+        .document-collection {
+            line-height: 30px;
+            background: #ddd;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            vertical-align: middle;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        #aside {
+            width: 360px;
+            float: left;
+            padding: 16px;
+            background: #f1f1f1;
+            overflow: auto;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        #main {
+            margin-left: 360px;
+            height: 100%;
+        }
+    </style>
+
+    <script>
+        function expandFolder() {
+            var folders = document.getElementsByClassName('document-folder-title');
+            for (var f of folders) {
+                f.addEventListener('click', function () {
+                    var classes = Array.prototype.slice.call(f.classList);
+                    var isExpand = classes.indexOf('doc-folder-open') > -1;
+                    if (isExpand) {
+                        f.classList.remove('doc-folder-open');
+                        f.classList.add('doc-folder-close');
+                        f.nextElementSibling.style.display = 'none';
+                        document.getElementById('icon_close').style.display = '';
+                        document.getElementById('icon_open').style.display = 'none';
+                    } else {
+                        f.classList.add('doc-folder-open');
+                        f.classList.remove('doc-folder-close');
+                        f.nextElementSibling.style.display = '';
+                        document.getElementById('icon_open').style.display = '';
+                        document.getElementById('icon_close').style.display = 'none';
+                    }
+                });
+            }
+        }
+    </script>
 </head>
 
 <body>
-	<div>
-		{{body}}
-	</div>
+<div id="aside">
+        <div class="document-collection">
+            {{this.CollectionName}}
+        </div>
+        <ul>
+            {{for(let r of this.records){if(r.category===10){}}
+            <li class="document-folder">
+                <div class="document-folder-title">
+                    <svg id="icon_close" class="document-folder-icon" width="20px" height="20px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="#333333" d="M892 248H515.008q-2.016-0.992-3.008-2.016l-16-56q-4.992-26.016-27.008-43.488t-48-17.504H133.984q-28 0-48.512 20.512T64.96 200v624.992q0 28.992 20.512 49.504t48.512 20.512h758.016q28.992 0 48.992-20 20.992-20.992 20.992-51.008V317.984q0-28.992-20.512-49.504t-49.504-20.512z m-760-48q0-4 2.016-4h287.008q3.008 0 6.016 2.496t4 5.504L446.048 256H132.032V200z m762.016 624.992q0 0.992-0.992 2.016 0 0.992-0.992 0.992H134.016q-2.016 0-2.016-4V327.008h762.016v498.016z"
+                        />
+                    </svg>
+                    <svg id="icon_open" style="display:none" class="document-folder-icon" width="20px" height="20px" viewBox="0 0 1024 1024"
+                        version="1.1" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="#333333" d="M960 384.4V264c0-39.8-32.2-72-72-72H489l-25-77.9C454.5 84.2 426.8 64 395.4 64H72C32.2 64 0 96.2 0 136v688.3c0 3.5 0.3 7 0.8 10.4 0 0.1 0 0.3 0.1 0.4 0.2 1 0.3 2 0.5 3 0.1 0.3 0.1 0.6 0.2 0.8 0.2 0.8 0.4 1.7 0.6 2.5 0.1 0.5 0.3 1 0.4 1.5l0.3 1.2c0.3 1.1 0.6 2.1 1 3.1v0.1c3.7 10.8 9.9 20.4 18 28.2l0.2 0.2c0.8 0.7 1.5 1.4 2.3 2.1 0.4 0.3 0.8 0.7 1.1 1 0.4 0.3 0.7 0.6 1.1 0.9 0.6 0.5 1.3 1 2 1.6 0.2 0.1 0.4 0.3 0.6 0.4 0.8 0.6 1.7 1.2 2.5 1.8 0.1 0 0.1 0.1 0.2 0.1 9.4 6.3 20.4 10.6 32.5 11.8 0.2 0 0.3 0 0.5 0.1 1.1 0.1 2.1 0.2 3.2 0.2h0.6c1.1 0 2.2 0.1 3.3 0.1h788c33 0 61.8-22.5 69.9-54.5l92-368c10.6-42.6-19.3-84.2-61.9-88.9zM72 136h323.2l41.2 128H888v120H164c-33 0-61.8 22.5-69.9 54.5L72 527.3V136z m788 688H72l92-368h788l-92 368z"
+                        />
+                    </svg>
+                    {{r.name}}
+                </div>
+                <ul class="document-folder-content" style="display: none" role="menu">
+                    {{for(let c of r.children){}}
+                    <li class="document-item" style="line-height: 30px; padding-left: 0px;">
+                        <span class="record record-in-folder item-with-menu">
+                            <span class="record-icon">
+                                <span class="font-icon" style="color: rgb(0, 230, 118); font-size: 12px;">{{c.method||'GET'}}</span>
+                            </span>
+                            <a class="item-with-menu-name" href="#{{c.id}}">
+                                {{c.name}}
+                            </a>
+                        </span>
+                    </li>
+                    {{}}}
+                </ul>
+            </li>
+            {{}else{}}
+            <li class="document-item" style="line-height: 30px; padding-left: 0px;">
+                <span class="record  item-with-menu">
+                    <span class="record-icon">
+                        <span class="font-icon" style="color: rgb(0, 230, 118); font-size: 12px;">{{r.method||'GET'}}</span>
+                    </span>
+                    <a class="item-with-menu-name" href="#{{r.id}}">
+                        {{r.name}}
+                    </a>
+                </span>
+            </li>
+            {{}}}
+            {{}}}
+        </ul>
+    </div>
+    <div id="main">
+		{{this.doc}}
+    </div>
+    <script>
+        expandFolder();
+    </script>
 </body>
 
 </html>`;
