@@ -16,7 +16,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import { DocumentActiveRecordType, DocumentSelectedProjectChangedType, DocumentCollectionOpenKeysType, ScrollDocumentType } from '../../action/document';
 import { actionCreator } from '../../action/index';
 import { RecordCategory } from '../../common/record_category';
-import { mainTpl } from './templates/main';
+import { mainTpl } from './templates/default';
 import { TemplateUtil } from '../../utils/template_util';
 
 interface ApiDocumentStateProps {
