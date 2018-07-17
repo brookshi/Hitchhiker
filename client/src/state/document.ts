@@ -4,6 +4,8 @@ export interface DocumentState {
 
     documentActiveRecord: string;
 
+    activeEnv: _.Dictionary<string>;
+
     documentCollectionOpenKeys: string[];
 
     documentSelectedProject: string;
@@ -16,6 +18,7 @@ export interface DocumentState {
 export const documentDefaultValue: DocumentState = {
     documentActiveRecord: '',
     documentCollectionOpenKeys: [],
+    activeEnv: {},
     documentSelectedProject: allProject,
     scrollTop: 0,
     changeByScroll: false

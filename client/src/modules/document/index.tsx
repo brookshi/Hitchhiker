@@ -13,11 +13,16 @@ import SiderLayout from '../../components/sider_layout';
 import './style/index.less';
 import { DataMode } from '../../common/custom_type';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { DocumentActiveRecordType, DocumentSelectedProjectChangedType, DocumentCollectionOpenKeysType, ScrollDocumentType } from '../../action/document';
+import { DocumentActiveRecordType, DocumentSelectedProjectChangedType, DocumentCollectionOpenKeysType, ScrollDocumentType, DocumentActiveEnvIdType } from '../../action/document';
 import { actionCreator } from '../../action/index';
 import { RecordCategory } from '../../common/record_category';
 import { mainTpl } from './templates/default';
 import { TemplateUtil } from '../../utils/template_util';
+import EnvironmentSelect from '../../components/environment_select';
+import { Button } from 'antd';
+import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
+import { noEnvironment } from '../../common/constants';
+import LocalesString from "../../locales/string";
 
 interface ApiDocumentStateProps {
 
@@ -34,6 +39,10 @@ interface ApiDocumentStateProps {
     scrollTop: number;
 
     changeByScroll: boolean;
+
+    activeEnv: _.Dictionary<string>;
+
+    environments: _.Dictionary<DtoEnvironment[]>;
 }
 
 interface ApiDocumentDispatchProps {
@@ -134,21 +143,18 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
     }
 
     private download = () => {
-        var eleLink = document.createElement('a');
+        const eleLink = document.createElement('a');
         eleLink.download = 'document.html';
         eleLink.style.display = 'none';
-        let doc = (document.getElementById('document-main') || { innerHTML: '' }).innerHTML;
+        const doc = (document.getElementById('document-main') || { innerHTML: '' }).innerHTML;
+        const activeCollection = this.getActiveCollection();
 
-        const { openKeys, collections } = this.props;
-        let keys = [...openKeys];
-        if (!keys || keys.length === 0) {
-            keys = collections.length > 0 ? [collections[0].id] : [];
+        if (!activeCollection) {
+            return;
         }
-        let collectionIds = keys.filter(k => collections.find(c => c.id === k));
-        let collectionId = collectionIds.length > 0 ? collectionIds[0] : (collections.length > 0 ? collections[0].id : null);
 
-        let data = { doc, collectionName: 'test', records: this.getSortedRecords(collectionId, true) };
-        var blob = new Blob([TemplateUtil.apply(mainTpl, data)]);
+        const data = { doc, collectionName: 'test', records: this.getSortedRecords(activeCollection.id, true) };
+        const blob = new Blob([TemplateUtil.apply(mainTpl, data)]);
         eleLink.href = URL.createObjectURL(blob);
         document.body.appendChild(eleLink);
         eleLink.click();
@@ -156,14 +162,15 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
     }
 
     private generateView() {
-        const { activeKey, selectedProject, openKeys, collections } = this.props;
-        let keys = [...openKeys];
-        if (!keys || keys.length === 0) {
-            keys = collections.length > 0 ? [collections[0].id] : [];
+        const keys = this.getOpenKeys();
+        const activeCollection = this.getActiveCollection();
+
+        if (!activeCollection) {
+            return null;
         }
-        let collectionIds = keys.filter(k => collections.find(c => c.id === k));
-        let collectionId = collectionIds.length > 0 ? collectionIds[0] : (collections.length > 0 ? collections[0].id : null);
-        let sortRecords = this.getSortedRecords(collectionId);
+
+        const { activeKey, selectedProject } = this.props;
+        const sortRecords = this.getSortedRecords(activeCollection.id);
 
         return (
             <SiderLayout
@@ -184,10 +191,53 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
         );
     }
 
+    private getOpenKeys = () => {
+        const { openKeys, collections } = this.props;
+        let keys = [...openKeys];
+        if (!keys || keys.length === 0) {
+            keys = collections.length > 0 ? [collections[0].id] : [];
+        }
+        return keys;
+    }
+
+    private getActiveCollection = () => {
+        const { collections } = this.props;
+        let keys = this.getOpenKeys();
+        return collections.find(c => keys.indexOf(c.id) >= 0) || (collections.length > 0 ? collections[0] : null);
+    }
+
     private generateDoc(sortRecords: DtoRecord[]) {
+
+        const { activeEnv, environments } = this.props;
+        const activeCollection = this.getActiveCollection();
+
+        if (!activeCollection) {
+            return null;
+        }
+
+        const activeProjectId = activeCollection.projectId;
+
         return (
             <PerfectScrollbar ref={ele => this.container = ele} onScrollY={this.onScrollY}>
-                <div className=""><button onClick={() => this.download()} >download</button></div>
+                <div className="document-toolbar">
+                    <span>{LocalesString.get('Project.Environments')}: </span>
+                    <EnvironmentSelect
+                        className="document-toolbar-env"
+                        activeEnvId={activeEnv[activeProjectId] || noEnvironment}
+                        activeRecordProjectId={activeCollection.projectId}
+                        switchEnvType={DocumentActiveEnvIdType}
+                        envs={environments[activeProjectId]}
+                        onlyEnvSelect={true}
+                    />
+                    <Button
+                        className="document-toolbar-btn"
+                        onClick={() => this.download()}
+                        icon="download"
+                        type="primary"
+                    >
+                        {LocalesString.get('Common.Download')}
+                    </Button>
+                </div>
                 <div id="document-main" className="document-main">
                     {
                         sortRecords.filter(r => r.category !== RecordCategory.folder).map(r => (
@@ -216,7 +266,7 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
 
     const mapStateToProps: (state: State) => ApiDocumentStateProps = state => {
         const { collectionsInfo } = state.collectionState;
-        const { documentActiveRecord, documentCollectionOpenKeys, documentSelectedProject, scrollTop, changeByScroll } = state.documentState;
+        const { documentActiveRecord, documentCollectionOpenKeys, documentSelectedProject, scrollTop, changeByScroll, activeEnv } = state.documentState;
 
         return {
             collections: getCollections(state),
@@ -225,7 +275,9 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
             openKeys: documentCollectionOpenKeys,
             selectedProject: documentSelectedProject,
             scrollTop,
-            changeByScroll
+            changeByScroll,
+            activeEnv,
+            environments: state.environmentState.environments
         };
     };
     return mapStateToProps;

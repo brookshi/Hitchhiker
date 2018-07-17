@@ -6,7 +6,7 @@ import RequestNamePanel from './request_name_panel';
 import RequestQueryStringPanel from './request_query_string_panel';
 import ResponsePanel from './response_panel'; import { Tabs, Badge, Modal, Button } from 'antd';
 import * as _ from 'lodash';
-import EnvironmentSelect from './environment_select';
+import EnvironmentSelect from '../../../components/environment_select';
 import './style/index.less';
 import { RecordState } from '../../../state/collection';
 import { actionCreator } from '../../../action/index';
@@ -14,11 +14,12 @@ import { ActiveTabType, SaveRecordType, AddTabType, RemoveTabType } from '../../
 import { DtoRecord } from '../../../../../api/interfaces/dto_record';
 import { State } from '../../../state/index';
 import { ResizeResHeightType, BatchCloseType } from '../../../action/ui';
-import { getReqActiveTabKeySelector, getIsResPanelMaximumSelector, getActiveRecordStateSelector, getResHeightSelector, getActiveReqResUIStateSelector } from './selector';
+import { getReqActiveTabKeySelector, getIsResPanelMaximumSelector, getActiveRecordStateSelector, getResHeightSelector, getActiveReqResUIStateSelector, getActiveEnvIdSelector, getActiveRecordProjectIdSelector, getProjectEnvsSelector } from './selector';
 import { newRecordFlag } from '../../../common/constants';
 import { ConflictType } from '../../../common/conflict_type';
 import Msg from '../../../locales';
 import { CloseAction } from '../../../common/custom_type';
+import { SwitchEnvType } from '../../../action/project';
 
 interface ReqResPanelStateProps {
 
@@ -39,6 +40,12 @@ interface ReqResPanelStateProps {
     closeAction: CloseAction;
 
     activedTabBeforeClose: string;
+
+    activeEnvId: string;
+
+    activeRecordProjectId: string;
+
+    envs: Array<{ id: string, name: string }>;
 }
 
 interface ReqResPanelDispatchProps {
@@ -188,7 +195,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
 
     public render() {
 
-        const { recordStates, activeKey, activeTab, isResPanelMaximum, displayQueryString } = this.props;
+        const { recordStates, activeKey, activeTab, isResPanelMaximum, displayQueryString, activeEnvId, activeRecordProjectId, envs } = this.props;
 
         return (
             <div className="request-tab" ref={ele => this.reqResPanel = ele}>
@@ -199,7 +206,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
                     onEdit={this.onEdit}
                     animated={false}
                     hideAdd={true}
-                    tabBarExtraContent={<EnvironmentSelect />}
+                    tabBarExtraContent={<EnvironmentSelect activeEnvId={activeEnvId} envs={envs} activeRecordProjectId={activeRecordProjectId} switchEnvType={SwitchEnvType} />}
                 >
                     {
                         _.keys(recordStates).map(key => {
@@ -248,7 +255,10 @@ const mapStateToProps = (state: State): ReqResPanelStateProps => {
         activeReqTab: getReqActiveTabKeySelector()(state),
         resHeight: getResHeightSelector()(state),
         closeAction,
-        activedTabBeforeClose
+        activedTabBeforeClose,
+        activeEnvId: getActiveEnvIdSelector()(state),
+        activeRecordProjectId: getActiveRecordProjectIdSelector()(state),
+        envs: getProjectEnvsSelector()(state)
     };
 };
 

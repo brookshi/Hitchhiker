@@ -72,6 +72,7 @@
     "Common.p90": "90th",
     "Common.p75": "75th",
     "Common.p50": "50th",
+    "Common.Download": "download",
 
     "Login.Desc.Title": "Api integrated testing tool for team",
     "Login.Desc.Content": "Hitchhiker is an {opensource} Restful Api integrated testing tool. You can deploy it in your local server. It make easier to manage Api with your team. {break} {break}More useful features (Document, Api Mock etc.) will come in future.",

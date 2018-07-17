@@ -1,39 +1,48 @@
 import React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { Button, Tooltip, Select, Dropdown, Menu, message } from 'antd';
-import { noEnvironment, newRequestName, allParameter } from '../../../common/constants';
-import { getProjectEnvsSelector, getActiveEnvIdSelector, getActiveRecordProjectIdSelector } from './selector';
-import { actionCreator } from '../../../action/index';
-import { AddTabType } from '../../../action/record';
-import { SwitchEnvType, EditEnvType } from '../../../action/project';
-import { State } from '../../../state/index';
-import ScriptDialog from '../../../components/script_dialog';
-import { RecordState } from '../../../state/collection';
-import { CurlImport } from '../../../utils/curl_import';
-import { ConflictType } from '../../../common/conflict_type';
-import Msg from '../../../locales';
-import { CloseAction } from '../../../common/custom_type';
-import { BatchCloseType } from '../../../action/ui';
-import LocalesString from '../../../locales/string';
+import { noEnvironment, newRequestName, allParameter } from '../../common/constants';
+import { actionCreator } from '../../action/index';
+import { AddTabType } from '../../action/record';
+import { EditEnvType } from '../../action/project';
+import { State } from '../../state/index';
+import ScriptDialog from '../script_dialog';
+import { RecordState } from '../../state/collection';
+import { CurlImport } from '../../utils/curl_import';
+import { ConflictType } from '../../common/conflict_type';
+import Msg from '../../locales';
+import { CloseAction } from '../../common/custom_type';
+import { BatchCloseType } from '../../action/ui';
+import LocalesString from '../../locales/string';
+import './style/index.less';
 
 const Option = Select.Option;
 
-interface EnvironmentSelectStateProps {
+interface OwnProps {
 
     envs: Array<{ id: string, name: string }>;
-
-    activeTab: string;
 
     activeEnvId: string;
 
     activeRecordProjectId: string;
+
+    switchEnvType: string;
+
+    onlyEnvSelect?: boolean;
+
+    className?: string;
+}
+
+interface EnvironmentSelectStateProps extends OwnProps {
+
+    activeTab: string;
 }
 
 interface EnvironmentSelectDispatchProps {
 
     addTab(newRequestState?: RecordState);
 
-    switchEnv(projectId: string, envId: string);
+    switchEnv(type: string, projectId: string, envId: string);
 
     editEnv(projectId: string, envId: string);
 
@@ -90,7 +99,7 @@ class EnvironmentSelect extends React.Component<EnvironmentSelectProps, Environm
     }
 
     private onEnvChanged = (value) => {
-        this.props.switchEnv(this.props.activeRecordProjectId, value);
+        this.props.switchEnv(this.props.switchEnvType, this.props.activeRecordProjectId, value);
     }
 
     private editEnv = () => {
@@ -133,17 +142,24 @@ class EnvironmentSelect extends React.Component<EnvironmentSelectProps, Environm
 
     public render() {
 
-        const { envs, activeEnvId } = this.props;
+        const { envs, activeEnvId, onlyEnvSelect, className } = this.props;
+        const style = onlyEnvSelect ? { border: 0 } : {};
 
         return (
-            <div>
-                <Tooltip mouseEnterDelay={1} placement="left" title="new tab">
-                    <Button className="record-add-btn" type="primary" icon="plus" onClick={() => this.props.addTab()} />
-                </Tooltip>
-                <Dropdown overlay={this.tabMenu}>
-                    <Button className="record-add-btn" type="primary" icon="ellipsis" />
-                </Dropdown>
-                <span className="req-tab-extra-env">
+            <div className={className}>
+                {
+                    !onlyEnvSelect ? (
+                        <span>
+                            <Tooltip mouseEnterDelay={1} placement="left" title="new tab">
+                                <Button className="record-add-btn" type="primary" icon="plus" onClick={() => this.props.addTab()} />
+                            </Tooltip>
+                            <Dropdown overlay={this.tabMenu}>
+                                <Button className="record-add-btn" type="primary" icon="ellipsis" />
+                            </Dropdown>
+                        </span>
+                    ) : ''
+                }
+                <span className="req-tab-extra-env" style={style}>
                     <Select value={activeEnvId} className="req-tab-extra-env-select" onChange={(this.onEnvChanged)}>
                         <Option key={noEnvironment} value={noEnvironment}>No Environment</Option>
                         {
@@ -152,10 +168,10 @@ class EnvironmentSelect extends React.Component<EnvironmentSelectProps, Environm
                             ))
                         }
                     </Select>
-                    <Button className="record-add-btn" icon="edit" onClick={this.editEnv} />
+                    {onlyEnvSelect ? '' : <Button className="record-add-btn" icon="edit" onClick={this.editEnv} />}
                 </span>
                 {
-                    this.commonPreScriptDialog
+                    onlyEnvSelect ? '' : this.commonPreScriptDialog
                 }
             </div>
         );
@@ -163,15 +179,10 @@ class EnvironmentSelect extends React.Component<EnvironmentSelectProps, Environm
 }
 
 const makeMapStateToProps = () => {
-    const getProjectEnvs = getProjectEnvsSelector();
-    const getActiveEnvId = getActiveEnvIdSelector();
-    const getActiveRecordProjectId = getActiveRecordProjectIdSelector();
-    const mapStateToProps: (state: State) => EnvironmentSelectStateProps = state => {
+    const mapStateToProps: (state: State, ownProps: OwnProps) => EnvironmentSelectStateProps = (state, ownProps) => {
         return {
-            envs: getProjectEnvs(state),
-            activeEnvId: getActiveEnvId(state),
-            activeRecordProjectId: getActiveRecordProjectId(state),
             activeTab: state.displayRecordsState.activeKey,
+            ...ownProps
         };
     };
     return mapStateToProps;
@@ -180,7 +191,7 @@ const makeMapStateToProps = () => {
 const mapDispatchToProps = (dispatch: Dispatch<any>): EnvironmentSelectDispatchProps => {
     return {
         addTab: (newRequestState) => dispatch(actionCreator(AddTabType, newRequestState)),
-        switchEnv: (projectId, envId) => dispatch(actionCreator(SwitchEnvType, { projectId, envId })),
+        switchEnv: (type, projectId, envId) => dispatch(actionCreator(type, { projectId, envId })),
         editEnv: (projectId, envId) => dispatch(actionCreator(EditEnvType, { projectId, envId })),
         setCloseAction: (closeAction, activedTab) => dispatch(actionCreator(BatchCloseType, { closeAction, activedTab }))
     };
@@ -189,4 +200,4 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): EnvironmentSelectDispatchP
 export default connect(
     makeMapStateToProps(),
     mapDispatchToProps,
-)(EnvironmentSelect);
+)(EnvironmentSelect) as any;
