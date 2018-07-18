@@ -22,7 +22,8 @@ import EnvironmentSelect from '../../components/environment_select';
 import { Button } from 'antd';
 import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
 import { noEnvironment } from '../../common/constants';
-import LocalesString from "../../locales/string";
+import LocalesString from '../../locales/string';
+import { StringUtil } from '../../utils/string_util';
 
 interface ApiDocumentStateProps {
 
@@ -75,10 +76,10 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
         );
     }
 
-    private recordName = (name?: string, method?: string) => {
+    private recordName = (id: string, name?: string, method?: string) => {
         return (
             <div className="document-record-name">
-                <span className="document-method-icon">
+                <span id={id} className="document-method-icon">
                     <HttpMethodIcon fontSize={16} httpMethod={(method || 'GET').toUpperCase()} />
                 </span>
                 {name || ''}
@@ -140,6 +141,43 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
             }
         }
         return topLvRecords;
+    }
+
+    private applyEnvironmentVariable = (r: DtoRecord) => {
+        const activeCollection = this.getActiveCollection();
+        if (!activeCollection) {
+            return r;
+        }
+
+        const env = this.props.environments[activeCollection.projectId].find(e => e.id === this.props.activeEnv[activeCollection.projectId]);
+        const variables = {};
+        ((env ? env.variables : []) || []).filter(v => v.isActive).forEach(v => { if (v.key) { variables[v.key] = v.value; } });
+        const record = { ...r };
+
+        record.url = StringUtil.applyTemplate(record.url, variables);
+        record.body = StringUtil.applyTemplate(record.body, variables);
+        record.test = StringUtil.applyTemplate(record.test, variables);
+        record.prescript = StringUtil.applyTemplate(record.prescript, variables);
+
+        record.headers = (r.headers || []).map(header => ({
+            ...header,
+            key: StringUtil.applyTemplate(header.key, variables),
+            value: StringUtil.applyTemplate(header.value, variables)
+        }));
+
+        record.queryStrings = (r.queryStrings || []).map(queryString => ({
+            ...queryString,
+            key: StringUtil.applyTemplate(queryString.key, variables),
+            value: StringUtil.applyTemplate(queryString.value, variables)
+        }));
+
+        record.formDatas = (r.formDatas || []).map(formData => ({
+            ...formData,
+            key: StringUtil.applyTemplate(formData.key, variables),
+            value: StringUtil.applyTemplate(formData.value, variables)
+        }));
+
+        return record;
     }
 
     private download = () => {
@@ -240,16 +278,19 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
                 </div>
                 <div id="document-main" className="document-main">
                     {
-                        sortRecords.filter(r => r.category !== RecordCategory.folder).map(r => (
-                            <div id={r.id} key={r.id} className="document-record">
-                                {this.recordName(r.name, r.method)}
-                                {this.recordUrl(r.url)}
-                                {this.recordDesc(r.description)}
-                                {this.recordParams(r.queryStrings)}
-                                {this.recordHeaders(r.headers)}
-                                {this.recordBody(r.dataMode, r.body, r.formDatas)}
-                            </div>
-                        ))
+                        sortRecords.filter(r => r.category !== RecordCategory.folder).map(record => {
+                            const r = this.applyEnvironmentVariable(record);
+                            return (
+                                <div key={r.id} className="document-record">
+                                    {this.recordName(r.id, r.name, r.method)}
+                                    {this.recordUrl(r.url)}
+                                    {this.recordDesc(r.description)}
+                                    {this.recordParams(r.queryStrings)}
+                                    {this.recordHeaders(r.headers)}
+                                    {this.recordBody(r.dataMode, r.body, r.formDatas)}
+                                </div>
+                            );
+                        })
                     }
                 </div>
             </PerfectScrollbar>

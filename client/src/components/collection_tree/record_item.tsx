@@ -115,7 +115,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
                 onDragOver={this.dragOver}
                 onDrop={this.drop}
             >
-                {paramReqInfo.isValid ? <Badge className="record-item-badge" overflowCount={999} count={reqCount} style={{ backgroundColor: HttpMethodIcon.colorMapping[method.toUpperCase()] }} /> : ''}
+                {paramReqInfo.isValid && !readOnly ? <Badge className="record-item-badge" overflowCount={999} count={reqCount} style={{ backgroundColor: HttpMethodIcon.colorMapping[method.toUpperCase()] }} /> : ''}
                 <ItemWithMenu
                     ref={ele => this.itemWithMenu = ele}
                     className={`record ${inFolder ? 'record-in-folder' : ''}`}

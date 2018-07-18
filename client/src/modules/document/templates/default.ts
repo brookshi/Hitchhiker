@@ -7,10 +7,10 @@ export const mainTpl = `<!DOCTYPE html>
 			height: 100%
 		}
 
-		body {
+		body, code {
 			height: 100%;
 			font-size: 12px;
-			font-family: Arial, "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", Helvetica, "Helvetica Neue For Number", sans-serif;
+			font-family: Consolas,"Courier New", Arial, "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", Helvetica, "Helvetica Neue For Number", sans-serif;
 			padding: 0;
 			margin: 0;
 			overflow: hidden;
@@ -69,7 +69,7 @@ export const mainTpl = `<!DOCTYPE html>
 		}
 
 		.document-header-name {
-			font-size: 13px;
+			font-size: 14px;
 			margin-bottom: 12px;
 			border-bottom: 1px solid #e6e6e6;
 		}
@@ -103,6 +103,8 @@ export const mainTpl = `<!DOCTYPE html>
 			background: #f8f8f8;
 			padding: 6px 10px;
 			border-radius: 4px;
+			max-height: 500px;
+			overflow: auto;
 		}
 
 		.col-2 {
@@ -273,6 +275,19 @@ export const mainTpl = `<!DOCTYPE html>
 			text-align: center;
 		}
 
+		.item-with-menu-name{
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			width: 250px;
+			display: inline-block;
+			vertical-align: bottom;
+		}
+
+		.folder-item-with-menu-name{
+			width: 200px;
+		}
+
         #aside {
             width: 360px;
             float: left;
@@ -287,7 +302,7 @@ export const mainTpl = `<!DOCTYPE html>
             margin-left: 360px;
 			height: 100%;
 			overflow: auto;
-			padding: 32px;
+			padding: 0 32px;
         }
     </style>
 
@@ -346,7 +361,7 @@ export const mainTpl = `<!DOCTYPE html>
 						<span class="record-icon">
 							<span class="font-icon" data-method="{{c.method}}">{{c.method === 'DELETE' ? 'DEL' : c.method === 'OPTION' ? 'OPT' : c.method === 'CONNECT' ? 'CONN' : (c.method ||'GET')}}</span>
 						</span>
-						<a class="item-with-menu-name" href="#{{c.id}}">
+						<a class="item-with-menu-name folder-item-with-menu-name" title="{{c.name}}" href="#{{c.id}}">
 							{{c.name}}
 						</a>
 					</span>
@@ -360,7 +375,7 @@ export const mainTpl = `<!DOCTYPE html>
                     <span class="record-icon">
                         <span class="font-icon" data-method="{{r.method}}" >{{r.method === 'DELETE' ? 'DEL' : r.method === 'OPTION' ? 'OPT' : r.method === 'CONNECT' ? 'CONN' : (r.method ||'GET')}}</span>
                     </span>
-                    <a class="item-with-menu-name" href="#{{r.id}}">
+                    <a class="item-with-menu-name" title="{{r.name}}" href="#{{r.id}}">
                         {{r.name}}
                     </a>
                 </span>

@@ -78,6 +78,32 @@ export class StringUtil {
         return url;
     }
 
+    static applyTemplate(target?: string, variables?: { [key: string]: string }): string {
+        if (!target) {
+            return '';
+        }
+
+        let arr = new Array<string>();
+        let regex = /{{.*?}}/g;
+        let rst;
+        while ((rst = regex.exec(target)) !== null) {
+            arr.push(rst[0]);
+        }
+
+        if (arr.length === 0) {
+            return target;
+        }
+
+        arr.forEach(o => {
+            let key = o.replace('{{', '').replace('}}', '');
+            let variable = (variables || {})[key];
+            if (variable !== undefined) {
+                target = (target || '').replace(o, variable);
+            }
+        });
+        return target;
+    }
+
     static upperFirstAlphabet(word: string): string {
         if (!word) {
             return word;
