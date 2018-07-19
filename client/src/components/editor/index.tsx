@@ -34,7 +34,7 @@ interface EditorState { }
 
 class Editor extends React.Component<EditorProps, EditorState> {
 
-    private offsetHeight = -1;
+    private offsetWidth = -0.5;
 
     private editorEle;
 
@@ -70,15 +70,16 @@ class Editor extends React.Component<EditorProps, EditorState> {
     }
 
     public render() {
-        this.offsetHeight = this.offsetHeight === 1 ? -1 : this.offsetHeight + 1;
+        this.offsetWidth = this.offsetWidth > 0 ? -0.5 : this.offsetWidth + 0.01;
         const { type, value, height, width, readOnly, onChange } = this.props;
-        const activeHeight = (height || 500) + this.offsetHeight;
+        const activeWidth = width ? width + this.offsetWidth + 'px' : `calc(100% - ${this.offsetWidth}`;
+        const activeHeight = height || 500;
 
         let props: any = {
             className: 'req-editor code-editor',
             mode: type,
             theme: 'eclipse',
-            width: width ? width + 'px' : '100%',
+            width: activeWidth,
             height: activeHeight + 'px',
             fontSize: 12,
             showGutter: true,

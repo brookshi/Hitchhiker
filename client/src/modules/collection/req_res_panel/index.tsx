@@ -97,7 +97,17 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     }
 
     componentDidUpdate(prevProps: ReqResPanelProps, prevState: ReqResPanelState) {
-        this.adjustResPanelHeight();
+        const { recordStates, activeKey, activeReqTab } = this.props;
+        const record = recordStates[activeKey].record;
+        const prevRecord = prevProps.recordStates[prevProps.activeKey].record;
+        if ((record.headers || []).length !== (prevRecord.headers || []).length ||
+            (record.formDatas || []).length !== (prevRecord.formDatas || []).length ||
+            (record.queryStrings || []).length !== (prevRecord.queryStrings || []).length ||
+            record.description !== prevRecord.description ||
+            record.dataMode !== prevRecord.dataMode ||
+            activeReqTab !== prevProps.activeReqTab) {
+            this.adjustResPanelHeight();
+        }
     }
 
     componentWillReceiveProps(nextProps: ReqResPanelProps) {

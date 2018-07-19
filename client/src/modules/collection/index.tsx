@@ -43,7 +43,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
                     />
                 }
                 content={(
-                    <div style={{ marginTop: 4 }}>
+                    <div style={{ height: '100%' }}>
                         <PerfectScrollbar>
                             <ReqResPanel />
                         </PerfectScrollbar>

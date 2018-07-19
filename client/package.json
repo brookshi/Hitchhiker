@@ -14,7 +14,7 @@
     "less": "2.7.2",
     "localforage": "1.5.0",
     "react": "15.5.4",
-    "react-ace": "5.8.0",
+    "react-ace": "6.1.4",
     "react-copy-to-clipboard": "5.0.0",
     "react-dom": "15.5.4",
     "react-intl": "2.4.0",
