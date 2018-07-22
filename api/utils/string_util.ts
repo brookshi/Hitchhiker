@@ -98,8 +98,8 @@ export class StringUtil {
     static fixedEncodeURI(url: string) {
         try {
             const uri = this.parseUrl(url);
-            uri.querys.forEach(q => q.value = encodeURIComponent(q.value));
-            return `${uri.url}?${uri.querys.map(q => `${q.key}=${q.value}`).join('&')}`;
+            uri.querys.forEach(q => q.value = q.value == null ? q.value : encodeURIComponent(q.value));
+            return this.stringifyUrl(uri.url, uri.querys.map(q => ({ ...q, isActive: true })));
 
         } catch (e) {
             return url;
