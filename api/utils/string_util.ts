@@ -3,6 +3,7 @@ import { Setting } from './setting';
 import * as uuid from 'uuid';
 import * as shortId from 'shortid';
 import * as URL from 'url';
+import * as queryString from 'querystring';
 import { ParameterType, ReduceAlgorithmType } from '../common/parameter_type';
 import * as _ from 'lodash';
 import { DtoHeader } from '../interfaces/dto_header';
@@ -96,14 +97,9 @@ export class StringUtil {
 
     static fixedEncodeURI(url: string) {
         try {
-            const uri = URL.parse(url, true);
-            uri.search = '';
-            let i = 0;
-            for (let k of _.keys(uri.query)) {
-                uri.search += `${i > 0 ? '&' : ''}${k}=${encodeURIComponent(uri.query[k])}`;
-                i++;
-            }
-            return URL.format(uri);
+            const uri = this.parseUrl(url);
+            uri.querys.forEach(q => q.value = encodeURIComponent(q.value));
+            return `${uri.url}?${uri.querys.map(q => `${q.key}=${q.value}`).join('&')}`;
 
         } catch (e) {
             return url;
@@ -233,5 +229,25 @@ export class StringUtil {
         }
 
         return url;
+    }
+
+    static parseUrl(url: string): { url: string, querys: { key: string, value: string }[] } {
+        const arr = url.split('?');
+        const result = { url: arr[0], querys: new Array<{ key: string, value: string }>() };
+        if (arr.length < 2) {
+            return result;
+        }
+        const queryStr = url.substr(url.indexOf('?'));
+        const matchedQueryStr = queryStr === '?' ? '' : _.get(queryStr.match(/^\?([^#]+)/), '[1]');
+        if (_.isString(matchedQueryStr)) {
+            result.querys = matchedQueryStr.split('&').map(q => {
+                let keyValue = q.split('=');
+                return {
+                    key: _.trim(keyValue[0]) || '',
+                    value: keyValue[1] ? q.substr(q.indexOf('=') + 1) : keyValue[1],
+                };
+            });
+        }
+        return result;
     }
 }
