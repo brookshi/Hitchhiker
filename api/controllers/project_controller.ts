@@ -146,8 +146,8 @@ export default class ProjectController extends BaseController {
             result = { success: results.every(rst => rst.success), message: results.filter(r => !r.success).map(rst => rst.message).join(';') };
         } else {
             const results = await Promise.all(emailArr.map(email => MailService.projectInviterMail(email, user, project)));
-            const success = results.every(rst => !rst.err);
-            result = { success: success, message: results.map(rst => rst.err).join(';') };
+            const success = results.every(rst => !rst || !rst.err);
+            result = { success: success, message: results.map(rst => rst ? rst.err : '').join(';') };
         }
         return result;
     }
