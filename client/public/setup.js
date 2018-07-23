@@ -133,7 +133,6 @@ $("#submit").click(function () {
     if (!postData['HITCHHIKER_APP_HOST'].endsWith('/')) {
         postData['HITCHHIKER_APP_HOST'] = `${postData['HITCHHIKER_APP_HOST']}/`;
     }
-    postData['HITCHHIKER_SCHEDULE_MAILFORFAIL'] = postData['HITCHHIKER_SCHEDULE_MAILFORFAIL'] === "on" ? "1" : "0";
     postData['HITCHHIKER_MAIL_SMTP_TLS'] = postData['HITCHHIKER_MAIL_SMTP_TLS'] === "on" ? "1" : "0";
     postData['HITCHHIKER_MAIL_SMTP_RU'] = postData['HITCHHIKER_MAIL_SMTP_RU'] === "on" ? "1" : "0";
     postData['HITCHHIKER_SYNC_ONOFF'] = postData['HITCHHIKER_SYNC_ONOFF'] === "on" ? "1" : "0";

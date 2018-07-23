@@ -5,7 +5,7 @@ import { noEnvironment } from '../../common/constants';
 import { StringUtil } from '../../utils/string_util';
 import * as _ from 'lodash';
 import { Period, PeriodStr, TimerType, TimerCode } from '../../common/period';
-import { NotificationMode, NotificationStr } from '../../common/notification_mode';
+import { NotificationMode, NotificationStr, MailModeStr, MailMode } from '../../common/notification_mode';
 import { DateUtil } from '../../utils/date_util';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import SortableListComponent from '../../components/sortable_list';
@@ -51,6 +51,8 @@ interface ScheduleEditDialogState {
 
     needOrder: boolean;
 
+    mailIncludeSuccessReq: boolean;
+
     sortedRecords: MatchableRecord[];
 
     environmentNames: _.Dictionary<string>;
@@ -92,6 +94,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
             needCompare: props.schedule.needCompare,
             needOrder: props.schedule.needOrder,
             enableSort: !!props.schedule.collectionId,
+            mailIncludeSuccessReq: props.schedule.mailIncludeSuccessReq,
             sortedRecords,
             environmentNames,
             currentTimerType: props.schedule.timer
@@ -195,6 +198,17 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                 {
                     Object.keys(NotificationMode).filter(k => StringUtil.isNumberString(k)).map(k =>
                         <Option key={k} value={k}>{NotificationStr.convert(parseInt(k) as NotificationMode)}</Option>)
+                }
+            </Select>
+        );
+    }
+
+    private generatMailModeSelect = () => {
+        return (
+            <Select>
+                {
+                    Object.keys(MailMode).filter(k => StringUtil.isNumberString(k)).map(k =>
+                        <Option key={k} value={k}>{MailModeStr.convert(parseInt(k) as MailMode)}</Option>)
                 }
             </Select>
         );
@@ -473,6 +487,35 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                             }],
                             initialValue: schedule.emails ? schedule.emails.split(';') : []
                         })(this.generateEmailsSelect())}
+                    </FormItem>
+                    <FormItem {...formItemLayout} label={Msg('Common.MailMode')}>
+                        <Row gutter={8}>
+                            <Col span={14}>
+                                <FormItem>
+                                    {getFieldDecorator('mailMode', {
+                                        initialValue: schedule.mailMode.toString(),
+                                    })(
+                                        this.generatMailModeSelect()
+                                        )}
+                                </FormItem>
+                            </Col>
+                            <Col span={10}>
+                                <FormItem>
+                                    {getFieldDecorator('mailIncludeSuccessReq', {
+                                        initialValue: schedule.mailIncludeSuccessReq,
+                                    })(
+                                        <Checkbox
+                                            checked={this.state.mailIncludeSuccessReq}
+                                            onChange={e => {
+                                                this.setState({ ...this.state, mailIncludeSuccessReq: (e.target as any).checked });
+                                            }}
+                                        >
+                                            {Msg('Common.MailIncludeSuccessReq')}
+                                        </Checkbox>
+                                        )}
+                                </FormItem>
+                            </Col>
+                        </Row>
                     </FormItem>
                 </Form>
             </Modal>

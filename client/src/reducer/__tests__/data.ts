@@ -1,5 +1,5 @@
 import { Period, TimerType } from '../../common/period';
-import { NotificationMode } from '../../common/notification_mode';
+import { NotificationMode, MailMode } from '../../common/notification_mode';
 
 export const defaultSchedule = {
     id: '123',
@@ -12,6 +12,8 @@ export const defaultSchedule = {
     timer: TimerType.Day,
     hour: 10,
     notification: NotificationMode.me,
+    mailMode: MailMode.mailWhenFail,
+    mailIncludeSuccessReq: false,
     emails: '',
     needOrder: false,
     recordsOrder: '',

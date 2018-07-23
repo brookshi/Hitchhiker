@@ -8,7 +8,7 @@ import { Tooltip, Button, Menu, Checkbox } from 'antd';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import ScheduleEditDialog from './schedule_edit_dialog';
 import { Period, TimerType } from '../../common/period';
-import { NotificationMode } from '../../common/notification_mode';
+import { NotificationMode, MailMode } from '../../common/notification_mode';
 import { noEnvironment, newScheduleName, unknownName } from '../../common/constants';
 import { DateUtil } from '../../utils/date_util';
 import * as _ from 'lodash';
@@ -75,6 +75,8 @@ const createDefaultSchedule: (user: DtoUser) => DtoSchedule = (user: DtoUser) =>
         timer: TimerType.Day,
         hour: DateUtil.localHourToUTC(7),
         notification: NotificationMode.none,
+        mailMode: MailMode.mailWhenFail,
+        mailIncludeSuccessReq: false,
         emails: '',
         needOrder: false,
         recordsOrder: '',

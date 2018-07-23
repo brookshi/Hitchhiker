@@ -25,6 +25,7 @@ const defaultRecordState = {
         name: 'r1',
         isChanged: false,
         parameter: '',
+        parameterStatus: {},
         conflictType: ConflictType.none
     }
 };
@@ -84,7 +85,7 @@ test('record state - save record', () => {
 
     oldState = { ...defaultRecordState, ['123']: { ...defaultRecordState['123'], isChanged: true } };
 
-    expect(recordStates(oldState, actionCreator(SaveRecordType, { isNew: true, oldId: '123', record: { id: '456', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record } }))).toEqual({ ...displayRecordsDefaultValue.recordStates, ['456']: { ...oldState['456'], record: { id: '456', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record }, name: 'r3', isChanged: false, isRequesting: false, parameter: '', conflictType: ConflictType.none } });
+    expect(recordStates(oldState, actionCreator(SaveRecordType, { isNew: true, oldId: '123', record: { id: '456', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record } }))).toEqual({ ...displayRecordsDefaultValue.recordStates, ['456']: { ...oldState['456'], record: { id: '456', collectionId: 'cid_1', name: 'r3', category: RecordCategory.record }, name: 'r3', isChanged: false, isRequesting: false, parameter: '', conflictType: ConflictType.none, parameterStatus: {} } });
 });
 
 test('record state - move record', () => {
@@ -112,7 +113,7 @@ test('record state - active record', () => {
 
 test('record state - change current req param', () => {
 
-    expect(recordStates(defaultRecordState, actionCreator(ChangeCurrentParamType, { id: '123', param: '{"a": 1}' }))).toEqual({ ...displayRecordsDefaultValue.recordStates, ['123']: { record: { id: '123', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }, isRequesting: false, name: 'r1', isChanged: false, parameter: '{"a": 1}', conflictType: ConflictType.none } });
+    expect(recordStates(defaultRecordState, actionCreator(ChangeCurrentParamType, { id: '123', param: '{"a": 1}' }))).toEqual({ ...displayRecordsDefaultValue.recordStates, ['123']: { record: { id: '123', collectionId: 'cid_1', name: 'r1', category: RecordCategory.record, parameterType: ParameterType.ManyToMany }, isRequesting: false, name: 'r1', isChanged: false, parameter: '{"a": 1}', conflictType: ConflictType.none, parameterStatus: {} } });
 });
 
 test('record with res state - save record', () => {

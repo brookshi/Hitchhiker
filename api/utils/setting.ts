@@ -103,10 +103,6 @@ export class Setting {
         return this.getValidNum(process.env.HITCHHIKER_SCHEDULE_PAGESIZE, this.schedule.pageSize);
     }
 
-    get scheduleMailOnlyForFail() {
-        return this.getValidBoolean(process.env.HITCHHIKER_SCHEDULE_MAILFORFAIL, this.schedule.mailOnlyForFail);
-    }
-
     get stressType() {
         return process.env.HITCHHIKER_STRESS_TYPE || this._setting.stress.type;
     }

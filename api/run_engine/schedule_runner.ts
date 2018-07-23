@@ -11,7 +11,7 @@ import { ScheduleRecordService } from '../services/schedule_record_service';
 import { ConnectionManager } from '../services/connection_manager';
 import { EnvironmentService } from '../services/environment_service';
 import { Environment } from '../models/environment';
-import { NotificationMode } from '../interfaces/notification_mode';
+import { NotificationMode, MailMode } from '../interfaces/notification_mode';
 import { UserService } from '../services/user_service';
 import { CollectionService } from '../services/collection_service';
 import { ProjectService } from '../services/project_service';
@@ -71,14 +71,18 @@ export class ScheduleRunner {
             trace(JSON.stringify({ isResult: true, ...record, runDate: new Date(record.runDate + ' UTC') }));
         }
 
-        Log.info('send mails');
-        if (!Setting.instance.scheduleMailOnlyForFail || !record.success) {
+        if (schedule.mailMode !== MailMode.mailWhenFail || !record.success) {
+            Log.info('send mails');
             const mails = await this.getMailsByMode(schedule);
             if (!mails || mails.length === 0) {
                 Log.info('no valid email');
                 return;
             }
-            await MailService.scheduleMail(mails, await this.getRecordInfoForMail(record, records, schedule.environmentId, schedule.compareEnvironmentId));
+            const mailRecords = await this.getRecordInfoForMail(record, records, schedule.environmentId, schedule.compareEnvironmentId);
+            if (!record.schedule.mailIncludeSuccessReq) {
+                mailRecords.runResults = mailRecords.runResults.filter(r => !r.isSuccess);
+            }
+            await MailService.scheduleMail(mails, record);
         }
         Log.info(`run schedule finish`);
     }

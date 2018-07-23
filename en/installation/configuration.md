@@ -40,8 +40,7 @@ when type of variable is boolean, use 1 for true and 0 for false.
         "storeUnit": "count", // store unit, HITCHHIKER_SCHEDULE_STORE_UNIT
         "storeLimit": 50, // store limit, HITCHHIKER_SCHEDULE_STORE_LIMIT
         "storeContent": "forFail",  // value: none, forFail, all; store body/header condition,  HITCHHIKER_SCHEDULE_STORE_CONTENT
-        "pageSize": 20,  // schedule page size in browser,  HITCHHIKER_SCHEDULE_PAGESIZE
-        "mailOnlyForFail": true // only send schedule mail if failed, HITCHHIKER_SCHEDULE_MAILFORFAIL
+        "pageSize": 20  // schedule page size in browser,  HITCHHIKER_SCHEDULE_PAGESIZE
     },
     "stress": {
         "type": "node",  // stress type, support node and go,  HITCHHIKER_STRESS_TYPE

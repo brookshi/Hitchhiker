@@ -1,6 +1,6 @@
 import { DtoScheduleRecord } from './dto_schedule_record';
 import { Period, TimerType } from './period';
-import { NotificationMode } from './notification_mode';
+import { NotificationMode, MailMode } from './notification_mode';
 
 export interface DtoSchedule {
 
@@ -25,6 +25,10 @@ export interface DtoSchedule {
     notification: NotificationMode;
 
     emails?: string;
+
+    mailMode: MailMode;
+
+    mailIncludeSuccessReq: boolean;
 
     needOrder: boolean;
 

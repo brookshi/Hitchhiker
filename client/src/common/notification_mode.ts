@@ -36,3 +36,28 @@ export class NotificationStr {
         }
     }
 }
+
+export enum MailMode {
+
+    mailAlways = 0,
+
+    mailWhenFail = 1,
+}
+
+export class MailModeStr {
+
+    static mailAlways = LocalesString.get('Common.MailAlways');
+
+    static mailWhenFail = LocalesString.get('Common.MailWhenFail');
+
+    static convert(mode: MailMode) {
+        switch (mode) {
+            case MailMode.mailAlways:
+                return MailModeStr.mailAlways;
+            case MailMode.mailWhenFail:
+                return MailModeStr.mailWhenFail;
+            default:
+                return MailMode.mailWhenFail;
+        }
+    }
+}

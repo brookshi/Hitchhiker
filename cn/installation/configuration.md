@@ -38,8 +38,7 @@ Hitchhiker的很多设置可以在appconfig.json里设置，也有对应的环�
         "storeUnit": "count",  //schedule 存储的单位，支持按个数存 count 和按天存: day   HITCHHIKER_SCHEDULE_STORE_UNIT
         "storeLimit": 50, // schedule 存储的大小   HITCHHIKER_SCHEDULE_STORE_LIMIT
         "storeContent": "forFail", // schedule record response 是否存储, all表示所有都存下来, forFail表示只存失败的, none表示都不存（这会很大影响数据库大小和性能）    HITCHHIKER_SCHEDULE_STORE_CONTENT
-        "pageSize": 20,  // schedule record 在浏览器端显示的一页的个数   HITCHHIKER_SCHEDULE_PAGESIZE
-        "mailOnlyForFail": true // 只在失败时发邮件   HITCHHIKER_SCHEDULE_MAILFORFAIL
+        "pageSize": 20  // schedule record 在浏览器端显示的一页的个数   HITCHHIKER_SCHEDULE_PAGESIZE
     },
     "stress": {
         "stressType": "node", // 压力测试的类型，默认为node，内置的，还有go，需要部署hitchhiker-node，设为none时禁用   HITCHHIKER_STRESS_TYPE

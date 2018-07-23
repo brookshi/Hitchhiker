@@ -30,6 +30,8 @@ export class ScheduleService {
         schedule.name = dtoSchedule.name;
         schedule.needOrder = dtoSchedule.needOrder;
         schedule.notification = dtoSchedule.notification;
+        schedule.mailMode = dtoSchedule.mailMode;
+        schedule.mailIncludeSuccessReq = dtoSchedule.mailIncludeSuccessReq;
         schedule.period = dtoSchedule.period;
         schedule.timer = dtoSchedule.timer;
         schedule.recordsOrder = dtoSchedule.recordsOrder;

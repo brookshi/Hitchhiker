@@ -34,3 +34,10 @@ export class NotificationStr {
         }
     }
 }
+
+export enum MailMode {
+
+    mailAlways = 0,
+
+    mailWhenFail = 1,
+}

@@ -35,8 +35,7 @@
         "storeUnit": "count",
         "storeLimit": 50,
         "storeContent": "forFail",
-        "pageSize": 20,
-        "mailOnlyForFail": true
+        "pageSize": 20
     },
     "stress": {
         "type": "node",

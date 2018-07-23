@@ -6,7 +6,7 @@ import { DtoSchedule } from '../../../../api/interfaces/dto_schedule';
 import './style/index.less';
 import { PeriodStr, TimerCode, TimerType } from '../../common/period';
 import { DateUtil } from '../../utils/date_util';
-import { NotificationStr, NotificationMode } from '../../common/notification_mode';
+import { NotificationStr, NotificationMode, MailModeStr } from '../../common/notification_mode';
 import { noEnvironment } from '../../common/constants';
 import Msg from '../../locales';
 import LocalesString from '../../locales/string';
@@ -92,7 +92,7 @@ class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState>
     }
 
     private get scheduleInfo() {
-        const { timer, period, hour, notification, emails, suspend, needCompare } = this.props.schedule;
+        const { timer, period, hour, notification, emails, suspend, needCompare, mailMode, mailIncludeSuccessReq } = this.props.schedule;
         return (
             <div>
                 <div><span>{Msg('Schedule.Collection')}: </span>{this.props.collectionName}</div>
@@ -103,6 +103,8 @@ class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState>
                 <div><span>{Msg('Schedule.Unit')}: </span>{(timer === TimerType.Day ? DateUtil.getDisplayHour : t => DateUtil.getEveryTime(t, TimerType[timer]))(hour, true)}</div>
                 <div><span>{Msg('Common.Notification')}: </span>{NotificationStr.convert(notification)}</div>
                 {notification === NotificationMode.custom ? <div><span>{Msg('Common.Emails')}: </span>{emails}</div> : ''}
+                <div><span>{Msg('Common.MailMode')}: </span>{MailModeStr.convert(mailMode)}</div>
+                <div><span>{Msg('Common.MailIncludeSuccessReq')}: </span>{mailIncludeSuccessReq.toString()}</div>
                 <div><span>{Msg('Schedule.Suspend')}: </span>{suspend.toString()}</div>
             </div>
         );

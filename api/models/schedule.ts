@@ -1,6 +1,6 @@
 import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { Period, TimerType } from '../interfaces/period';
-import { NotificationMode } from '../interfaces/notification_mode';
+import { NotificationMode, MailMode } from '../interfaces/notification_mode';
 import { ScheduleRecord } from './schedule_record';
 
 @Entity()
@@ -38,6 +38,12 @@ export class Schedule {
 
     @Column()
     emails: string;
+
+    @Column('int', { default: 1 })
+    mailMode: MailMode;
+
+    @Column({ default: false })
+    mailIncludeSuccessReq: boolean;
 
     @Column()
     needOrder: boolean;
