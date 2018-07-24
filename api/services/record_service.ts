@@ -254,13 +254,11 @@ export class RecordService {
 
     static async getMaxSort(): Promise<number> {
         const connection = await ConnectionManager.getInstance();
-        const maxSortRecord = await connection.getRepository(Record)
-            .createQueryBuilder('record')
-            .addOrderBy('sort', 'DESC')
-            .getOne();
+        const data = await connection.getRepository(Record)
+            .query('select sort from record order by sort desc limit 1');
         let maxSort = ++RecordService._sort;
-        if (maxSortRecord && maxSortRecord.sort) {
-            maxSort = Math.max(maxSort, maxSortRecord.sort + 1);
+        if (data && data[0] && data[0].sort) {
+            maxSort = Math.max(maxSort, data[0].sort + 1);
             RecordService._sort = maxSort;
         }
         return maxSort;
