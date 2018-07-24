@@ -131,6 +131,12 @@ export class StringUtil {
         } catch (e) {
             return { isValid: false, count, msg: e.toString() };
         }
+
+        if (Array.isArray(paramObj)) {
+            count = paramObj.length;
+            return { isValid: true, count, msg: '' };
+        }
+
         if (parameters !== '' && (!_.isPlainObject(paramObj) || !_.values<any>(paramObj).every(p => _.isArray(p)))) {
             return { isValid: false, count, msg: 'Parameters must be a plain object and children must be a array.' };
         }
@@ -154,6 +160,9 @@ export class StringUtil {
     static getParameterArr(paramObj: any, parameterType: ParameterType, reduceAlgorithm: ReduceAlgorithmType): Array<any> {
         const paramArr = new Array<any>();
         if (parameterType === ParameterType.OneToOne) {
+            if (Array.isArray(paramObj)) {
+                return paramObj;
+            }
             Object.keys(paramObj).forEach((key, index) => {
                 for (let i = 0; i < paramObj[key].length; i++) {
                     paramArr[i] = paramArr[i] || {};
