@@ -1,8 +1,8 @@
 import React from 'react';
-import { connect, Dispatch, MapStateToPropsFactory } from 'react-redux';
+import { connect, Dispatch } from 'react-redux';
 import { State } from '../../state/index';
 import { DtoCollection } from '../../../../api/interfaces/dto_collection';
-import { getDisplayCollectionSelector } from '../../components/collection_tree/selector';
+import { getDocumentDisplayCollectionSelector } from '../../components/collection_tree/selector';
 import { DtoRecord } from '../../../../api/interfaces/dto_record';
 import * as _ from 'lodash';
 import { DtoHeader } from '../../../../api/interfaces/dto_header';
@@ -139,7 +139,7 @@ class DocumentContent extends React.Component<DocumentContentProps, DocumentCont
                         activeEnvId={activeEnv[activeProjectId] || noEnvironment}
                         activeRecordProjectId={activeCollection.projectId}
                         switchEnvType={DocumentActiveEnvIdType}
-                        envs={environments[activeProjectId]}
+                        envs={environments[activeProjectId] || []}
                         onlyEnvSelect={true}
                     />
                     <Button
@@ -178,7 +178,7 @@ class DocumentContent extends React.Component<DocumentContentProps, DocumentCont
             return r;
         }
 
-        const env = this.props.environments[activeCollection.projectId].find(e => e.id === this.props.activeEnv[activeCollection.projectId]);
+        const env = (this.props.environments[activeCollection.projectId] || []).find(e => e.id === this.props.activeEnv[activeCollection.projectId]);
         const variables = {};
         ((env ? env.variables : []) || []).filter(v => v.isActive).forEach(v => { if (v.key) { variables[v.key] = v.value; } });
         const record = { ...r };
@@ -293,25 +293,20 @@ class DocumentContent extends React.Component<DocumentContentProps, DocumentCont
     }
 }
 
-const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any, ownProps: any) => {
-    const getCollections = getDisplayCollectionSelector();
+const mapStateToProps = (state: State): DocumentContentStateProps => {
+    const { collectionsInfo } = state.collectionState;
+    const { documentActiveRecord, documentCollectionOpenKeys, scrollTop, changeByScroll, activeEnv } = state.documentState;
 
-    const mapStateToProps: (state: State) => DocumentContentStateProps = state => {
-        const { collectionsInfo } = state.collectionState;
-        const { documentActiveRecord, documentCollectionOpenKeys, scrollTop, changeByScroll, activeEnv } = state.documentState;
-
-        return {
-            collections: getCollections(state),
-            records: collectionsInfo.records,
-            activeKey: documentActiveRecord,
-            openKeys: documentCollectionOpenKeys,
-            scrollTop,
-            changeByScroll,
-            activeEnv,
-            environments: state.environmentState.environments
-        };
+    return {
+        collections: getDocumentDisplayCollectionSelector()(state),
+        records: collectionsInfo.records,
+        activeKey: documentActiveRecord,
+        openKeys: documentCollectionOpenKeys,
+        scrollTop,
+        changeByScroll,
+        activeEnv,
+        environments: state.environmentState.environments
     };
-    return mapStateToProps;
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): DocumentContentDispatchProps => {
@@ -321,6 +316,6 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): DocumentContentDispatchPro
 };
 
 export default connect(
-    makeMapStateToProps,
+    mapStateToProps,
     mapDispatchToProps,
 )(DocumentContent);

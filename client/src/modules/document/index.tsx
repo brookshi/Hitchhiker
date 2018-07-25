@@ -1,11 +1,9 @@
 import React from 'react';
-import { connect, Dispatch, MapStateToPropsFactory } from 'react-redux';
+import { connect, Dispatch } from 'react-redux';
 import { State } from '../../state/index';
 import { DtoCollection } from '../../../../api/interfaces/dto_collection';
-import { getDisplayCollectionSelector } from '../../components/collection_tree/selector';
+import { getDocumentDisplayCollectionSelector } from '../../components/collection_tree/selector';
 import CollectionList from '../../components/collection_tree';
-import { DtoRecord } from '../../../../api/interfaces/dto_record';
-import * as _ from 'lodash';
 import SiderLayout from '../../components/sider_layout';
 import './style/index.less';
 import { DocumentActiveRecordType, DocumentSelectedProjectChangedType, DocumentCollectionOpenKeysType } from '../../action/document';
@@ -14,8 +12,6 @@ import DocumentContent from './document_content';
 interface ApiDocumentStateProps {
 
     collections: DtoCollection[];
-
-    records: _.Dictionary<_.Dictionary<DtoRecord>>;
 
     activeKey: string;
 
@@ -77,23 +73,16 @@ class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
     }
 }
 
-const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any, ownProps: any) => {
-    const getCollections = getDisplayCollectionSelector();
+const mapStateToProps = (state: State): ApiDocumentStateProps => {
+    const { documentActiveRecord, documentCollectionOpenKeys, documentSelectedProject, changeByScroll } = state.documentState;
 
-    const mapStateToProps: (state: State) => ApiDocumentStateProps = state => {
-        const { collectionsInfo } = state.collectionState;
-        const { documentActiveRecord, documentCollectionOpenKeys, documentSelectedProject, changeByScroll } = state.documentState;
-
-        return {
-            collections: getCollections(state),
-            records: collectionsInfo.records,
-            activeKey: documentActiveRecord,
-            openKeys: documentCollectionOpenKeys,
-            selectedProject: documentSelectedProject,
-            changeByScroll,
-        };
+    return {
+        collections: getDocumentDisplayCollectionSelector()(state),
+        activeKey: documentActiveRecord,
+        openKeys: documentCollectionOpenKeys,
+        selectedProject: documentSelectedProject,
+        changeByScroll,
     };
-    return mapStateToProps;
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>): ApiDocumentDispatchProps => {
@@ -101,6 +90,6 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): ApiDocumentDispatchProps =
 };
 
 export default connect(
-    makeMapStateToProps,
+    mapStateToProps,
     mapDispatchToProps,
 )(ApiDocument);

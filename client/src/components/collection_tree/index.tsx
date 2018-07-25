@@ -15,7 +15,7 @@ import { DeleteRecordType, SaveRecordType, RemoveTabType, MoveRecordType, SaveAs
 import { StringUtil } from '../../utils/string_util';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { ProjectSelectedDialogMode, ProjectSelectedDialogType } from '../../common/custom_type';
-import { getProjectsIdNameStateSelector, getDisplayCollectionSelector } from './selector';
+import { getProjectsIdNameStateSelector } from './selector';
 import { newCollectionName, allProject } from '../../common/constants';
 import RecordTimeline from '../record_timeline';
 import { ShowTimelineType, CloseTimelineType } from '../../action/ui';
@@ -376,8 +376,16 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         );
     }
 
+    private getSelectedProjectCollections = () => {
+        const { collections, selectedProject } = this.props;
+        if (selectedProject === allProject) {
+            return collections;
+        }
+        return _.filter(collections, c => c.projectId === selectedProject);
+    }
+
     private openKeysChanged = (keys) => {
-        const { collectionOpenKeysType, openKeysChanged, openKeys, onlyOneOpenKey, collections } = this.props;
+        const { collections, collectionOpenKeysType, openKeysChanged, openKeys, onlyOneOpenKey } = this.props;
         if (onlyOneOpenKey) {
             let latestOpenKey = keys.find(key => openKeys.indexOf(key) === -1);
             let isCollectionKey = !!collections.find(c => c.id === latestOpenKey);
@@ -389,7 +397,8 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     }
 
     private get collectionMenu() {
-        const { collections, records, activeRecordType, activeKey, openKeys, deleteCollection, activeRecord, readOnly } = this.props;
+        const { records, activeRecordType, activeKey, openKeys, deleteCollection, activeRecord, readOnly } = this.props;
+        const collections = this.getSelectedProjectCollections();
 
         return (
             <div className="collection-tree-container">
@@ -480,15 +489,14 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
 }
 
 const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any) => {
-    const getCollections = getDisplayCollectionSelector();
     const getProjects = getProjectsIdNameStateSelector();
 
-    const mapStateToProps: (state: State, ownProps: any) => CollectionListStateProps = (state, ownProps) => {
+    const mapStateToProps: (state: State, ownProps: OwnProps) => CollectionListStateProps = (state, ownProps) => {
         const { collectionsInfo } = state.collectionState;
         const { record, isShow } = state.uiState.timelineState;
-
+        const collections = _.chain(collectionsInfo.collections).values<DtoCollection>().sortBy('name').value();
         return {
-            collections: getCollections(state),
+            collections,
             records: collectionsInfo.records,
             projects: getProjects(state),
             timelineRecord: record,

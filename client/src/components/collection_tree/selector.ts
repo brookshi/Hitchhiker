@@ -9,6 +9,8 @@ const getProjects = (state: State) => state.projectState.projects;
 
 const getSelectedProject = (state: State) => state.collectionState.selectedProject;
 
+const getDocumentSelectedProject = (state: State) => state.documentState.documentSelectedProject;
+
 const getCollections = (state: State) => state.collectionState.collectionsInfo.collections;
 
 const getUserId = (state: State) => state.userState.userInfo.id;
@@ -28,15 +30,27 @@ export const getProjectsIdNameStateSelector = () => {
     );
 };
 
+export const getDisplayCollectionSelectorForProject = (state: State) => {
+    return projectId => {
+        const collections = getCollections(state);
+        const sortCollections = _.chain(collections).values<DtoCollection>().sortBy('name').value();
+        if (projectId === allProject) {
+            return sortCollections;
+        }
+        return _.filter(sortCollections, c => c.projectId === projectId);
+    };
+};
+
 export const getDisplayCollectionSelector = () => {
     return createSelector(
-        [getSelectedProject, getCollections],
-        (selectedProject, collections) => {
-            const sortCollections = _.chain(collections).values<DtoCollection>().sortBy('name').value();
-            if (selectedProject === allProject) {
-                return sortCollections;
-            }
-            return _.filter(sortCollections, c => c.projectId === selectedProject);
-        }
+        [getSelectedProject, getDisplayCollectionSelectorForProject],
+        (selectedProject, getProjectCollections) => getProjectCollections(selectedProject)
+    );
+};
+
+export const getDocumentDisplayCollectionSelector = () => {
+    return createSelector(
+        [getDocumentSelectedProject, getDisplayCollectionSelectorForProject],
+        (selectedProject, getProjectCollections) => getProjectCollections(selectedProject)
     );
 };
