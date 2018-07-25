@@ -121,7 +121,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
                     className={`record ${inFolder ? 'record-in-folder' : ''}`}
                     icon={(
                         <span className="record-icon">
-                            <HttpMethodIcon httpMethod={method.toUpperCase()} />
+                            <HttpMethodIcon httpMethod={method.toUpperCase()} needTextMapping={true} />
                         </span>
                     )}
                     name={name}
