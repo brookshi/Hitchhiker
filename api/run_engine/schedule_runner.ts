@@ -82,7 +82,7 @@ export class ScheduleRunner {
             if (!record.schedule.mailIncludeSuccessReq) {
                 mailRecords.runResults = mailRecords.runResults.filter(r => !r.isSuccess);
             }
-            await MailService.scheduleMail(mails, record);
+            await MailService.scheduleMail(mails, mailRecords);
         }
         Log.info(`run schedule finish`);
     }
@@ -120,7 +120,7 @@ export class ScheduleRunner {
 
     private getRunResultForMail(runResults: Array<RunResult | _.Dictionary<RunResult>>, envId: string, envNames: _.Dictionary<Environment>, recordDict: _.Dictionary<Record>) {
         const unknownEnv = 'No Environment';
-        const getMailInfo = (r: RunResult) => ({ ...r, isSuccess: this.isSuccess(r), envName: envNames[envId] ? envNames[envId].name : unknownEnv, recordName: this.getRecordDisplayName(recordDict, r.id), duration: r.elapsed });
+        const getMailInfo = (r: RunResult) => ({ ...r, isSuccess: this.isSuccess(r), envName: envNames[envId] ? envNames[envId].name : unknownEnv, recordName: this.getRecordDisplayName(recordDict, r.id), duration: r.elapsed, parameter: r.param });
         return _.flatten(runResults.map(r => this.isRunResult(r) ? getMailInfo(r) : _.values(r).map(rst => getMailInfo(rst))));
     }
 

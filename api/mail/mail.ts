@@ -84,8 +84,8 @@ export class Mail {
         if (record.runResults.length === 0) {
             return '';
         }
-        const rows = record.runResults.map(r => `<tr><td>${r.recordName}</td><td>${r.envName}</td><td>${r.isSuccess}</td><td>${(r.duration / 1000) + 's'}</td><td>${Mail.getRunResultTestDesc(r)}</td><td>${r.error ? r.error.message : ''}</td></tr>`);
-        return `<table style="margin-top: 8px;" Width="100%"><tr style="line-height: 40px; background-color: #EEE"><td>Name</td><td>Environment</td><td>Success</td><td>Duration</td><td>Tests</td><td>Error</td></tr>${rows.join('')}</table>`;
+        const rows = record.runResults.map(r => `<tr><td>${r.recordName}</td><td>${r.parameter}</td><td>${r.envName}</td><td>${r.isSuccess}</td><td>${(r.duration / 1000) + 's'}</td><td>${Mail.getRunResultTestDesc(r)}</td><td>${r.error ? r.error.message : ''}</td></tr>`);
+        return `<table style="margin-top: 8px;" Width="100%"><tr style="line-height: 40px; background-color: #EEE"><td>Name</td><td>Parameter</td><td>Environment</td><td>Success</td><td>Duration</td><td>Tests</td><td>Error</td></tr>${rows.join('')}</table>`;
     }
 
     static getRunResultTestDesc(runResult: MailRunResult): string {

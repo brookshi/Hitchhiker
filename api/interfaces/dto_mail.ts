@@ -15,6 +15,8 @@ export interface MailRunResult {
 
     recordName: string;
 
+    parameter: string;
+
     envName: string;
 
     tests: { [key: string]: boolean };
