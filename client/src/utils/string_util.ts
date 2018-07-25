@@ -321,4 +321,48 @@ export class StringUtil {
             return obj.toString();
         }
     }
+
+    static findTableHtml = (id: string) => {
+        const tableDiv = document.getElementById(id);
+        const defaultTable = '<table />';
+
+        if (!tableDiv) {
+            return defaultTable;
+        }
+        const findTable: (parent: Element) => (Element | undefined) = (parent: Element) => {
+            if (parent.tagName.toLowerCase() === 'table') {
+                return parent;
+            }
+            if (!parent.children) {
+                return undefined;
+            }
+            for (let i = 0; i < parent.children.length; i++) {
+                const table = findTable(parent.children.item(i));
+                if (table) {
+                    return table;
+                }
+            }
+            return undefined;
+        };
+        const table = findTable(tableDiv);
+        return table ? table.outerHTML : defaultTable;
+    }
+
+    static downloadTable = (id: string, name: string) => {
+        const link = document.createElement('a');
+        link.download = `${name}.xls`;
+        link.href = StringUtil.toBase64Excel(StringUtil.findTableHtml(id));
+        link.click();
+    }
+
+    static downloadCSV = (header: Array<string>, datas: Array<any>, name: string) => {
+        const csv = [header, ...datas].map((row, index) => row.map((element) => '\"' + (element || '').replace(/"/g, `""`) + '\"').join(',')).join(`\n`);
+        const blob = new Blob(['', csv], { type: 'text/csv' });
+        const dataURI = `data:text/csv;charset=utf-8,${csv}`;
+        const url = (typeof URL.createObjectURL === 'undefined') ? dataURI : URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = `${name}.csv`;
+        link.href = url;
+        link.click();
+    }
 }

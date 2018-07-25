@@ -281,32 +281,6 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
         };
     }
 
-    private getTableHtml = () => {
-        const tableDiv = document.getElementById('stress-table');
-        const defaultTable = '<table />';
-
-        if (!tableDiv) {
-            return defaultTable;
-        }
-        const findTable: (parent: Element) => (Element | undefined) = (parent: Element) => {
-            if (parent.tagName.toLowerCase() === 'table') {
-                return parent;
-            }
-            if (!parent.children) {
-                return undefined;
-            }
-            for (let i = 0; i < parent.children.length; i++) {
-                const table = findTable(parent.children.item(i));
-                if (table) {
-                    return table;
-                }
-            }
-            return undefined;
-        };
-        const table = findTable(tableDiv);
-        return table ? table.outerHTML : defaultTable;
-    }
-
     private getNameDisplay = (value: any) => {
         return (
             <span>
@@ -382,10 +356,7 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
 
     private generateExcel = () => {
         const { name, runDate } = this.props;
-        var link = document.createElement('a');
-        link.download = `${name}-${(runDate || new Date()).toLocaleString()}.xls`;
-        link.href = StringUtil.toBase64Excel(this.getTableHtml());
-        link.click();
+        StringUtil.downloadTable('stress-table', `${name}-${(runDate || new Date()).toLocaleString()}`);
     }
 
     public render() {

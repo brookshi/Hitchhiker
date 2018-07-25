@@ -126,92 +126,118 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
         });
 
         return (
-            <RunResultTable
-                className="schedule-sub-table"
-                bordered={true}
-                size="small"
-                rowKey="key"
-                onChange={(pagination, filters, sorter) => { this.setState({ ...this.state, isFilter: filters && filters['success'] && filters['success'].length > 0 }); }}
-                dataSource={displayRunResults}
-                pagination={false}
-            >
-                <RunResultColumn
-                    title={Msg('Common.Name')}
-                    dataIndex="id"
-                    render={(text, runResult) => ({ children: this.getRecordDisplayName(runResult.id), props: { rowSpan: runResult.rowSpan } })}
-                />
-                <RunResultColumn
-                    title={Msg('Schedule.Param')}
-                    dataIndex="param"
-                    render={text => this.getParamDisplay(text)}
-                />
-                <RunResultColumn
-                    title={Msg('Schedule.Pass')}
-                    dataIndex="success"
-                    render={(text, runResult) => <Tag color={this.isSuccess(runResult) ? successColor : failColor}>{this.isSuccess(runResult) ? pass() : fail()}</Tag>}
-                    filters={[{
-                        text: pass(),
-                        value: 'true',
-                    }, {
-                        text: fail(),
-                        value: 'false',
-                    }]}
-                    onFilter={(value, runResult) => this.isSuccess(runResult).toString() === value}
-                />
-                <RunResultColumn
-                    title={Msg('Schedule.Duration')}
-                    dataIndex="duration"
-                    render={(text, runResult) => `${runResult.elapsed / 1000} s`}
-                />
-                <RunResultColumn
-                    title={Msg('Common.Environment')}
-                    dataIndex="envId"
-                    render={(text, runResult) => this.getEnvName(runResult.envId)}
-                />
-                <RunResultColumn title={Msg('Schedule.Headers')} dataIndex="headers" render={this.getHeadersDisplay} />
-                <RunResultColumn title={Msg('Schedule.Body')} dataIndex="body" render={this.getBodyDisplay} />
-                <RunResultColumn title={Msg('Schedule.Tests')} dataIndex="tests" render={this.getTestsDisplay} />
-                {
-                    record.result.compare.length === 0 ? '' : (
+            <div className="schedule-subtable">
+                <Button
+                    className="icon-btn excel-btn"
+                    type="primary"
+                    icon="download"
+                    onClick={() => this.generateExcel(displayRunResults, record.runDate)}
+                >
+                    CSV
+                </Button>
+                <div id="schedule-record-table">
+                    <RunResultTable
+                        className="schedule-sub-table"
+                        bordered={true}
+                        size="small"
+                        rowKey="key"
+                        onChange={(pagination, filters, sorter) => { this.setState({ ...this.state, isFilter: filters && filters['success'] && filters['success'].length > 0 }); }}
+                        dataSource={displayRunResults}
+                        pagination={false}
+                    >
                         <RunResultColumn
-                            title={Msg('Schedule.Compare')}
-                            dataIndex="compareResult"
-                            key="compareResult"
-                            render={(text, runResult) => ({
-                                children: (
-                                    <div>
-                                        <div className={runResult.compareResult !== notMatch() ? 'schedule-success' : 'schedule-failed'}>{runResult.compareResult}</div>
-                                        {
-                                            runResult.isOrigin && runResult.compareResult === notMatch() ? (
-                                                <Button
-                                                    className="tab-extra-button"
-                                                    ghost={true}
-                                                    onClick={() => {
-                                                        const compareRunResult = displayRunResults.find(r => r.key === `${runResult.key}c`);
-                                                        if (!compareRunResult) { return; }
-                                                        const contentType = StringUtil.getContentTypeFromHeaders(runResult.headers);
-                                                        this.setState({
-                                                            ...this.state,
-                                                            isDiffDlgOpen: true,
-                                                            diffOriginTitle: `${this.getRecordDisplayName(runResult.id)}(${this.getEnvName(runResult.envId)})`,
-                                                            diffOriginContent: this.getDiffContent(runResult.export, runResult.body, contentType),
-                                                            diffTargetTitle: `${this.getRecordDisplayName(compareRunResult.id)}(${this.getEnvName(compareRunResult.envId)})`,
-                                                            diffTargetContent: this.getDiffContent(compareRunResult.export, compareRunResult.body, contentType),
-                                                        });
-                                                    }}
-                                                >
-                                                    {Msg('Schedule.ViewDiff')}
-                                                </Button>
-                                            ) : ''
-                                        }
-                                    </div>
-                                ), props: { rowSpan: runResult.rowSpan }
-                            })}
+                            title={Msg('Common.Name')}
+                            dataIndex="id"
+                            render={(text, runResult) => ({ children: this.getRecordDisplayName(runResult.id), props: { rowSpan: runResult.rowSpan } })}
                         />
-                    )
-                }
-            </RunResultTable>
+                        <RunResultColumn
+                            title={Msg('Schedule.Param')}
+                            dataIndex="param"
+                            render={text => this.getParamDisplay(text)}
+                        />
+                        <RunResultColumn
+                            title={Msg('Schedule.Pass')}
+                            dataIndex="success"
+                            render={(text, runResult) => <Tag color={this.isSuccess(runResult) ? successColor : failColor}>{this.isSuccess(runResult) ? pass() : fail()}</Tag>}
+                            filters={[{
+                                text: pass(),
+                                value: 'true',
+                            }, {
+                                text: fail(),
+                                value: 'false',
+                            }]}
+                            onFilter={(value, runResult) => this.isSuccess(runResult).toString() === value}
+                        />
+                        <RunResultColumn
+                            title={Msg('Schedule.Duration')}
+                            dataIndex="duration"
+                            render={(text, runResult) => `${runResult.elapsed / 1000} s`}
+                        />
+                        <RunResultColumn
+                            title={Msg('Common.Environment')}
+                            dataIndex="envId"
+                            render={(text, runResult) => this.getEnvName(runResult.envId)}
+                        />
+                        <RunResultColumn title={Msg('Schedule.Headers')} dataIndex="headers" render={this.getHeadersDisplay} />
+                        <RunResultColumn title={Msg('Schedule.Body')} dataIndex="body" render={this.getBodyDisplay} />
+                        <RunResultColumn title={Msg('Schedule.Tests')} dataIndex="tests" render={this.getTestsDisplay} />
+                        {
+                            record.result.compare.length === 0 ? '' : (
+                                <RunResultColumn
+                                    title={Msg('Schedule.Compare')}
+                                    dataIndex="compareResult"
+                                    key="compareResult"
+                                    render={(text, runResult) => ({
+                                        children: (
+                                            <div>
+                                                <div className={runResult.compareResult !== notMatch() ? 'schedule-success' : 'schedule-failed'}>{runResult.compareResult}</div>
+                                                {
+                                                    runResult.isOrigin && runResult.compareResult === notMatch() ? (
+                                                        <Button
+                                                            className="tab-extra-button"
+                                                            ghost={true}
+                                                            onClick={() => {
+                                                                const compareRunResult = displayRunResults.find(r => r.key === `${runResult.key}c`);
+                                                                if (!compareRunResult) { return; }
+                                                                const contentType = StringUtil.getContentTypeFromHeaders(runResult.headers);
+                                                                this.setState({
+                                                                    ...this.state,
+                                                                    isDiffDlgOpen: true,
+                                                                    diffOriginTitle: `${this.getRecordDisplayName(runResult.id)}(${this.getEnvName(runResult.envId)})`,
+                                                                    diffOriginContent: this.getDiffContent(runResult.export, runResult.body, contentType),
+                                                                    diffTargetTitle: `${this.getRecordDisplayName(compareRunResult.id)}(${this.getEnvName(compareRunResult.envId)})`,
+                                                                    diffTargetContent: this.getDiffContent(compareRunResult.export, compareRunResult.body, contentType),
+                                                                });
+                                                            }}
+                                                        >
+                                                            {Msg('Schedule.ViewDiff')}
+                                                        </Button>
+                                                    ) : ''
+                                                }
+                                            </div>
+                                        ), props: { rowSpan: runResult.rowSpan }
+                                    })}
+                                />
+                            )
+                        }
+                    </RunResultTable>
+                </div>
+            </div>
         );
+    }
+
+    private generateExcel = (displayRunResults: Array<DisplayRunResult>, runDate: Date) => {
+        const { schedule } = this.props;
+        const rows = displayRunResults.map(d => ([
+            this.getRecordDisplayName(d.id),
+            d.param || '',
+            this.getEnvName(d.envId),
+            this.isSuccess(d).toString(),
+            `${d.elapsed / 1000} s`,
+            JSON.stringify(d.tests)
+        ]));
+        const headers = ['Name', 'Parameter', 'Environment', 'Pass', 'Duration', 'Tests'];
+        StringUtil.downloadCSV(headers, rows, `${schedule.name}-${(runDate || new Date()).toLocaleString()}`);
     }
 
     private compareExport(originRst: RunResult, compareRst: RunResult): boolean {
