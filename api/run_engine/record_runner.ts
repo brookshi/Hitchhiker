@@ -6,11 +6,8 @@ import { ScriptRunner } from './script_runner';
 import * as _ from 'lodash';
 import { RunResult } from '../interfaces/dto_run_result';
 import { StringUtil } from '../utils/string_util';
-import { ProjectService } from '../services/project_service';
 import { UserVariableManager } from '../services/user_variable_manager';
 import { ResObject } from '../common/res_object';
-import { VariableService } from '../services/variable_service';
-import { EnvironmentService } from '../services/environment_service';
 import { HeaderService } from '../services/header_service';
 import { CollectionService } from '../services/collection_service';
 import { Duration } from '../interfaces/dto_stress_setting';
@@ -25,7 +22,7 @@ type BatchRunResult = RunResult | _.Dictionary<RunResult>;
 
 export class RecordRunner {
 
-    static async runRecords(rs: Record[], environmentId: string, needOrder: boolean = false, orderRecordIds: string = '', applyCookies?: boolean, trace?: (msg: string) => void): Promise<Array<RunResult | _.Dictionary<RunResult>>> {
+    static async runRecords(rs: Record[], environmentId: string, needOrder: boolean = false, orderRecordIds: string = '', _applyCookies?: boolean, trace?: (msg: string) => void): Promise<Array<RunResult | _.Dictionary<RunResult>>> {
         const cm = ConsoleMessage.create(false);
         const recordExs = await RecordService.prepareRecordsForRun(rs, environmentId, cm, needOrder ? orderRecordIds : undefined, trace);
         return await RecordRunner.runRecordExs(recordExs, needOrder, cm);
@@ -292,7 +289,7 @@ export class RecordRunner {
     }
 
     private static request(option: request.Options, serverRes?: ServerResponse, needPipe?: boolean): Promise<{ err: any, response: request.RequestResponse, body: any }> {
-        return new Promise<{ err: any, response: request.RequestResponse, body: any }>((resolve, reject) => {
+        return new Promise<{ err: any, response: request.RequestResponse, body: any }>((resolve) => {
             const req = request(option, (err, res, body) => {
                 resolve({ err: err, response: res, body: body });
             });

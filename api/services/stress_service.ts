@@ -16,7 +16,6 @@ import * as _ from 'lodash';
 import { RecordRunner } from '../run_engine/record_runner';
 import { ProjectService } from './project_service';
 import { EnvironmentService } from './environment_service';
-import { noEnvironment } from '../common/stress_type';
 import { ScriptTransform } from '../utils/script_transform';
 import { ConsoleMessage } from './console_message';
 

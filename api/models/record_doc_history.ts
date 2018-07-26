@@ -8,13 +8,13 @@ export class RecordDocHistory {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(type => RecordDoc, doc => doc.history)
+    @ManyToOne(_type => RecordDoc, doc => doc.history)
     target: RecordDoc;
 
     @Column('json')
     doc: RecordDoc;
 
-    @ManyToOne(type => User)
+    @ManyToOne(_type => User)
     user: User;
 
     @CreateDateColumn()

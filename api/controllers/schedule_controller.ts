@@ -15,12 +15,12 @@ export default class ScheduleController extends BaseController {
     }
 
     @PUT('/schedule')
-    async update( @BodyParam schedule: DtoSchedule): Promise<ResObject> {
+    async update(@BodyParam schedule: DtoSchedule): Promise<ResObject> {
         return ScheduleService.update(schedule);
     }
 
     @DELETE('/schedule/:id')
-    async delete( @PathParam('id') id: string): Promise<ResObject> {
+    async delete(@PathParam('id') id: string): Promise<ResObject> {
         return ScheduleService.delete(id);
     }
 
@@ -31,13 +31,13 @@ export default class ScheduleController extends BaseController {
     }
 
     @GET('/schedule/:id/records')
-    async getSchedulesInPage(ctx: Koa.Context, @PathParam('id') id: string, @QueryParam('pagenum') pageNum: number): Promise<ResObject> {
+    async getSchedulesInPage(@PathParam('id') id: string, @QueryParam('pagenum') pageNum: number): Promise<ResObject> {
         const [schedules] = await ScheduleRecordService.get(id, pageNum);
         return { success: true, message: '', result: schedules };
     }
 
     @GET('/schedule/:id/run')
-    async run( @PathParam('id') id: string): Promise<ResObject> {
+    async run(@PathParam('id') id: string): Promise<ResObject> {
         const schedule = await ScheduleService.getById(id);
         if (!schedule) {
             return { success: false, message: Message.get('scheduleNotExist') };

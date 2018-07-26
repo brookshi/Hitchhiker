@@ -3,7 +3,6 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as archiver from 'archiver';
 import { Log } from './log';
-import * as _ from 'lodash';
 
 export class ScriptTransform {
 
@@ -47,7 +46,7 @@ export class ScriptTransform {
         await archive.finalize();
 
         while (!isClose) {
-            await new Promise((resolve, reject) => {
+            await new Promise((resolve) => {
                 setTimeout(resolve, 100);
             });
         }

@@ -55,7 +55,7 @@ export class CollectionService {
         return { success: true, message: Message.get('collectionCreateSuccess') };
     }
 
-    static async update(dtoCollection: DtoCollection, userId: string): Promise<ResObject> {
+    static async update(dtoCollection: DtoCollection): Promise<ResObject> {
         const connection = await ConnectionManager.getInstance();
 
         await connection.getRepository(Collection)

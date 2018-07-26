@@ -17,7 +17,6 @@ import * as _ from 'lodash';
 import { Setting } from '../utils/setting';
 import { ProjectFolderType } from '../common/string_type';
 import * as multer from 'koa-multer';
-import * as path from 'path';
 import { ProjectDataService } from '../services/project_data_service';
 
 export default class ProjectController extends BaseController {
@@ -28,7 +27,7 @@ export default class ProjectController extends BaseController {
     }
 
     @PUT('/project')
-    async update( @BodyParam info: DtoProject): Promise<ResObject> {
+    async update(@BodyParam info: DtoProject): Promise<ResObject> {
         return await ProjectService.updateProject(info);
     }
 
@@ -38,7 +37,7 @@ export default class ProjectController extends BaseController {
     }
 
     @DELETE('/project/:tid/user/:uid')
-    async removeUser(ctx: Koa.Context, @PathParam('tid') projectId: string, @PathParam('uid') userId: string): Promise<ResObject> {
+    async removeUser(@PathParam('tid') projectId: string, @PathParam('uid') userId: string): Promise<ResObject> {
         return await UserProjectService.quitProject({ userId, projectId });
     }
 
@@ -55,7 +54,7 @@ export default class ProjectController extends BaseController {
     }
 
     @PUT('/project/:pid/localhost/:id/ip/:ip')
-    async updateLocalhost( @PathParam('id') id: string, @PathParam('ip') ip: string) {
+    async updateLocalhost(@PathParam('id') id: string, @PathParam('ip') ip: string) {
         return await ProjectService.updateLocalhostMapping(id, ip);
     }
 
@@ -82,7 +81,7 @@ export default class ProjectController extends BaseController {
     }
 
     @GET('/project/reject')
-    async reject( @QueryParam('projectid') projectId: string, @QueryParam('token') token: string) {
+    async reject(@QueryParam('projectid') projectId: string, @QueryParam('token') token: string) {
         const validateRst = await this.validateInfo(projectId, token);
 
         if (!validateRst.success) {
@@ -169,12 +168,12 @@ export default class ProjectController extends BaseController {
     }
 
     @PUT('/project/:projectId/globalfunc')
-    async updateGlobalFunction( @PathParam('projectId') projectId: string, @BodyParam globalFunc: any) {
+    async updateGlobalFunction(@PathParam('projectId') projectId: string, @BodyParam globalFunc: any) {
         return await ProjectService.updateGlobalFunc(projectId, globalFunc.content);
     }
 
     @DELETE('/project/:projectId/file/:type/:name')
-    deleteProjectFile( @PathParam('projectId') projectId: string, @PathParam('type') type: ProjectFolderType, @PathParam('name') name: string): ResObject {
+    deleteProjectFile(@PathParam('projectId') projectId: string, @PathParam('type') type: ProjectFolderType, @PathParam('name') name: string): ResObject {
         ProjectDataService.instance.removeFile(type, projectId, name);
         return { success: true, message: Message.get('deleteProjectFileSuccess') };
     }
@@ -187,11 +186,11 @@ export default class ProjectController extends BaseController {
 
         let fileName;
         const storage = multer.diskStorage({
-            destination: function (req: any, file: any, cb: any) {
+            destination: function (_req: any, _file: any, cb: any) {
                 ProjectDataService.instance.prepareProjectFolder(projectId);
                 cb(null, ProjectDataService.instance.getProjectFile(projectId, '', type));
             },
-            filename: function (req: any, file: any, cb: any) {
+            filename: function (_req: any, file: any, cb: any) {
                 fileName = file.originalname;
                 cb(null, file.originalname);
             }
@@ -212,7 +211,7 @@ export default class ProjectController extends BaseController {
         }
     }
 
-    private updateFileFilter(type: ProjectFolderType, req: any, file: any, cb: any) {
+    private updateFileFilter(type: ProjectFolderType, _req: any, file: any, cb: any) {
         if (type === 'lib' && !file.originalname.endsWith('.zip')) {
             cb(new Error('only support zip file for js lib.'));
         } else {

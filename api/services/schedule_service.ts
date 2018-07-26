@@ -9,10 +9,8 @@ import { UserCollectionService } from './user_collection_service';
 import { ObjectLiteral } from 'typeorm/common/ObjectLiteral';
 import { ScheduleRecordService } from './schedule_record_service';
 import { ScheduleRecord } from '../models/schedule_record';
-import { Period, TimerType } from '../interfaces/period';
+import { TimerType } from '../interfaces/period';
 import { DateUtil } from '../utils/date_util';
-import { Log } from '../utils/log';
-import { Setting } from '../utils/setting';
 
 export class ScheduleService {
 

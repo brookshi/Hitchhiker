@@ -12,6 +12,6 @@ export class LocalhostMapping {
     @Column({ default: 'localhost' })
     ip: string;
 
-    @ManyToOne(type => Project, project => project.localhosts)
+    @ManyToOne(_type => Project, project => project.localhosts)
     project: Project;
 }

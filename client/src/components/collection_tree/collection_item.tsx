@@ -55,7 +55,7 @@ const createDefaultFolder: (collectionId: string) => DtoRecord = (cid) => {
 
 class CollectionItem extends React.Component<CollectionItemProps, CollectionItemState> {
 
-    private itemWithMenu: ItemWithMenu;
+    private itemWithMenu: ItemWithMenu | null;
 
     constructor(props: CollectionItemProps) {
         super(props);
@@ -75,7 +75,6 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
 
     private getMenu = () => {
         const { reqFollowRedirect, reqStrictSSL } = this.props.collection;
-        const checkStyle = { float: 'right', marginRight: 8 };
         return (
             <Menu className="collection_item_menu" onClick={this.onClickMenu}>
                 <Menu.Item key="edit">
@@ -96,13 +95,13 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
                 <Menu.Item key="editReqStrictSSL">
                     <span>
                         <Icon type="safety" /> {Msg('Collection.RequestStrictSSL')}
-                        <span style={checkStyle}>{reqStrictSSL ? <Icon type="check" /> : ''}</span>
+                        <span className="menu-item-name">{reqStrictSSL ? <Icon type="check" /> : ''}</span>
                     </span>
                 </Menu.Item>
                 <Menu.Item key="editReqFollowRedirect">
                     <span>
                         <Icon type="fork" /> {Msg('Collection.RequestFollowRedirect')}
-                        <span style={checkStyle}>{reqFollowRedirect ? <Icon type="check" /> : ''}</span>
+                        <span className="menu-item-name">{reqFollowRedirect ? <Icon type="check" /> : ''}</span>
                     </span>
                 </Menu.Item>
                 <Menu.Item key="delete">
@@ -147,7 +146,7 @@ class CollectionItem extends React.Component<CollectionItemProps, CollectionItem
         }
     }
 
-    private dragLeave = (e) => {
+    private dragLeave = () => {
         this.setState({ ...this.state, isDragOver: false });
     }
 

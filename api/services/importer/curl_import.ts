@@ -1,10 +1,8 @@
 import { RequestImport } from '../base/request_import';
 import { Record } from '../../models/record';
 import * as yargs from 'yargs';
-import { Header } from '../../models/header';
 import { StringUtil } from '../../utils/string_util';
 import { DtoHeader } from '../../interfaces/dto_header';
-import { HeaderService } from '../header_service';
 import { RecordService } from '../record_service';
 import { RecordCategory } from '../../common/record_category';
 import { ParameterType } from '../../common/parameter_type';

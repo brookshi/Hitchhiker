@@ -5,6 +5,8 @@ import { Input } from 'antd';
 import { DtoError } from '../../../../api/interfaces/dto_error';
 import Msg from '../../locales';
 
+const { TextArea } = Input;
+
 interface ResErrorPanelProps {
     url?: string;
     error?: DtoError;
@@ -22,7 +24,7 @@ class ResErrorPanel extends React.Component<ResErrorPanelProps, ResErrorPanelSta
                 <div className="res-error-header">{Msg('Component.Response')}</div>
                 <div className="res-error-title">{Msg('Component.GetNonResponse')}</div>
                 <div className="res-error-desc">{Msg('Component.GetErrorFromUrl', { url: <span><a>{url}</a></span> })} </div>
-                <Input style={{ cursor: 'text' }} spellCheck={false} type="textarea" disabled={true} value={errorStr} autosize={true} />
+                <TextArea style={{ cursor: 'text' }} spellCheck={false} disabled={true} value={errorStr} autosize={true} />
             </div>
         );
     }

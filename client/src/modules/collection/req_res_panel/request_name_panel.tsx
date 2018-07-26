@@ -61,12 +61,6 @@ class RequestNamePanel extends React.Component<RequestNamePanelProps, RequestNam
     }
 
     private onNameChanged = (value: string) => {
-        let nameValidateStatus = this.state.nameValidateStatus;
-        if ((value as string).trim() === '') {
-            nameValidateStatus = ValidateType.warning;
-        } else if (this.state.nameValidateStatus) {
-            nameValidateStatus = undefined;
-        }
         this.props.changeRecord({ 'name': value });
     }
 
@@ -129,7 +123,7 @@ class RequestNamePanel extends React.Component<RequestNamePanelProps, RequestNam
                                 autosize={true}
                             />
                         </div>
-                    ) : ''
+                    ) : null
                 }
             </div>
         );

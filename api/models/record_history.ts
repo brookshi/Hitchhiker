@@ -8,13 +8,13 @@ export class RecordHistory {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(type => Record, record => record.history)
+    @ManyToOne(_type => Record, record => record.history)
     target: Record;
 
     @Column('json')
     record: Record;
 
-    @ManyToOne(type => User)
+    @ManyToOne(_type => User)
     @JoinColumn({ name: 'userId' })
     user: User;
 

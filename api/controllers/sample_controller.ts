@@ -1,11 +1,10 @@
 import { GET, POST, PUT, DELETE, BodyParam, PathParam, BaseController } from 'webapi-router';
 import { ResObject } from '../common/res_object';
-import * as Koa from 'koa';
 
 export default class SampleController extends BaseController {
 
     @GET('/sample/:id')
-    async getById( @PathParam('id') id: any): Promise<ResObject> {
+    async getById(@PathParam('id') id: any): Promise<ResObject> {
         return {
             success: true,
             message: '',
@@ -17,7 +16,7 @@ export default class SampleController extends BaseController {
     }
 
     @POST('/sample')
-    addSample( @BodyParam body: any): ResObject {
+    addSample(@BodyParam body: any): ResObject {
         return {
             success: true,
             message: 'add sample success.',
@@ -26,7 +25,7 @@ export default class SampleController extends BaseController {
     }
 
     @PUT('/sample')
-    changeSample( @BodyParam body: any): ResObject {
+    changeSample(@BodyParam body: any): ResObject {
         return {
             success: true,
             message: 'update sample success.',
@@ -35,7 +34,7 @@ export default class SampleController extends BaseController {
     }
 
     @DELETE('/sample/:id')
-    delete( @PathParam('id') id: any): ResObject {
+    delete(@PathParam('id') id: any): ResObject {
         return {
             success: true,
             message: `delete sample ${id} success`
@@ -49,12 +48,12 @@ export default class SampleController extends BaseController {
                 array: [100, 102, 104],
                 boolean: true,
                 number: 10000,
-                string: "hitchhiker",
+                string: 'hitchhiker',
                 objArr: [
-                    { name: "111" },
-                    { name: "222" }
+                    { name: '111' },
+                    { name: '222' }
                 ]
             }
-        }
+        };
     }
 }

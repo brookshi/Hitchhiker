@@ -1,4 +1,3 @@
-import * as WS from 'ws';
 import { ScheduleService } from './schedule_service';
 import { ScheduleRunner } from '../run_engine/schedule_runner';
 import { WebSocketHandler } from './base/web_socket_handler';

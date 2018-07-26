@@ -21,6 +21,6 @@ export class BodyFormData {
     @Column('text', { nullable: true })
     description: string;
 
-    @ManyToOne(type => Record, record => record.id)
+    @ManyToOne(_type => Record, record => record.id)
     record: Record;
 }

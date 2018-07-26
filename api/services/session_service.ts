@@ -33,10 +33,10 @@ export class SessionService {
     }
 
     static logout(ctx: Koa.Context) {
-        const userId = (<any>ctx).session.userId;
         if ((<any>ctx).session && (<any>ctx).session.userId) {
-            UserVariableManager.clearVariables((<any>ctx).session.userId);
-            UserVariableManager.clearCookies((<any>ctx).session.userId);
+            const userId = (<any>ctx).session.userId;
+            UserVariableManager.clearVariables(userId);
+            UserVariableManager.clearCookies(userId);
         }
         (<any>ctx).session = null;
     }

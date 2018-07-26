@@ -1,7 +1,6 @@
 import { ResObject } from '../common/res_object';
 import { Environment } from '../models/environment';
 import { ConnectionManager } from './connection_manager';
-import { Variable } from '../models/variable';
 import { Message } from '../common/message';
 import { StringUtil } from '../utils/string_util';
 import { DtoEnvironment } from '../interfaces/dto_environment';

@@ -1,4 +1,4 @@
-import { GET, POST, PUT, DELETE, QueryParam, BodyParam, PathParam, BaseController } from 'webapi-router';
+import { GET, POST, PUT, DELETE, BodyParam, PathParam, BaseController } from 'webapi-router';
 import { ResObject } from '../common/res_object';
 import * as Koa from 'koa';
 import { DtoStress } from '../interfaces/dto_stress';
@@ -12,12 +12,12 @@ export default class StressController extends BaseController {
     }
 
     @PUT('/stress')
-    async update( @BodyParam stress: DtoStress): Promise<ResObject> {
+    async update(@BodyParam stress: DtoStress): Promise<ResObject> {
         return StressService.update(stress);
     }
 
     @DELETE('/stress/:id')
-    async delete( @PathParam('id') id: string): Promise<ResObject> {
+    async delete(@PathParam('id') id: string): Promise<ResObject> {
         return StressService.delete(id);
     }
 

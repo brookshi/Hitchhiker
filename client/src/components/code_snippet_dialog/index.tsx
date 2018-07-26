@@ -63,7 +63,7 @@ class CodeSnippetDialog extends React.Component<CodeSnippetDialogProps, CodeSnip
         this.refresh(this.props.record, language, type);
     }
 
-    public componentWillReceiveProps(nextProps: CodeSnippetDialogProps) {
+    public componentWillReceiveProps() {
         const { type, language } = this.state;
         this.refresh(this.props.record, language, type);
     }

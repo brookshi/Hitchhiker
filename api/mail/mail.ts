@@ -1,7 +1,5 @@
 import { TemplateSetting } from './template_setting';
 import * as request from 'request';
-import * as uuid from 'uuid';
-import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as _ from 'lodash';
 import * as path from 'path';
@@ -103,7 +101,7 @@ export class Mail {
     }
 
     private static sendWithApi(target: string, subject: string, content: string): Promise<any> {
-        return new Promise<{ err: any, response: request.RequestResponse, body: any }>((resolve, reject) => {
+        return new Promise<{ err: any, response: request.RequestResponse, body: any }>(resolve => {
             request({ method: 'post', url: Setting.instance.customMailApi, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ target, subject, content }) }, (err, response, body) => {
                 resolve({ err, response, body });
                 if (err) {
@@ -122,12 +120,6 @@ export class Mail {
             console.error(`${file} does not exist`);
         }
         return fs.readFileSync(file, 'utf-8');
-    }
-
-    private static encode(str: string): string {
-        return encodeURIComponent(str).replace(/[!'()*]/g, c => {
-            return '%' + c.charCodeAt(0).toString(16);
-        });
     }
 
     static transporter = nodeMailer.createTransport({
@@ -152,7 +144,7 @@ export class Mail {
             subject,
             html: content
         };
-        return new Promise((resolve, reject) => Mail.transporter.sendMail(mailOptions, (err, info) => {
+        return new Promise((resolve, reject) => Mail.transporter.sendMail(mailOptions, err => {
             if (err) {
                 Log.error(`mail: ${err.message}`);
                 reject(err);

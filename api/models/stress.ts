@@ -1,5 +1,4 @@
-import { Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, ManyToMany, OneToMany } from 'typeorm';
-import { Project } from './project';
+import { Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, OneToMany } from 'typeorm';
 import { NotificationMode } from '../interfaces/notification_mode';
 import { StressRecord } from './stress_record';
 
@@ -45,7 +44,7 @@ export class Stress {
     @Column()
     ownerId: string;
 
-    @OneToMany(type => StressRecord, stressRecord => stressRecord.stress)
+    @OneToMany(_type => StressRecord, stressRecord => stressRecord.stress)
     stressRecords: StressRecord[];
 
     @Column({ nullable: true })

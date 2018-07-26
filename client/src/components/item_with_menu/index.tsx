@@ -31,7 +31,7 @@ interface ItemWithMenuState {
 }
 
 class ItemWithMenu extends React.Component<ItemWithMenuProps, ItemWithMenuState> {
-    nameInput: Input;
+    nameInput: Input | null;
     needFocus: boolean;
 
     constructor(props: ItemWithMenuProps) {
@@ -43,7 +43,7 @@ class ItemWithMenu extends React.Component<ItemWithMenuProps, ItemWithMenuState>
         };
     }
 
-    componentDidUpdate(prevProps: ItemWithMenuProps, prevState: ItemWithMenuState) {
+    componentDidUpdate(_prevProps: ItemWithMenuProps, _prevState: ItemWithMenuState) {
         if (this.needFocus && this.nameInput) {
             this.nameInput.focus();
             this.needFocus = false;

@@ -44,7 +44,7 @@ export class BackupService {
                 for (let i = 1; i < files.length; i++) {
                     const newFile = path.join(this.backupFolder, files[i]);
                     const newFileDate = fs.statSync(newFile).birthtime;
-                    if (newFileDate > fs.statSync(oldFile).birthtime) {
+                    if (newFileDate > oldFileDate) {
                         oldFile = newFile;
                         oldFileDate = newFileDate;
                     }

@@ -14,17 +14,17 @@ export class Project {
     name: string;
 
     @JoinTable()
-    @ManyToMany(type => User, user => user.projects)
+    @ManyToMany(_type => User, user => user.projects)
     members: User[] = [];
 
     @JoinTable()
-    @OneToMany(type => LocalhostMapping, mapping => mapping.project)
+    @OneToMany(_type => LocalhostMapping, mapping => mapping.project)
     localhosts: LocalhostMapping[];
 
-    @OneToMany(type => Collection, collection => collection.project)
+    @OneToMany(_type => Collection, collection => collection.project)
     collections: Collection[] = [];
 
-    @OneToMany(type => Environment, environment => environment.project)
+    @OneToMany(_type => Environment, environment => environment.project)
     environments: Environment[] = [];
 
     @Column('text', { nullable: true })
@@ -37,7 +37,7 @@ export class Project {
     isMe: boolean;
 
     @JoinColumn()
-    @OneToOne(type => User)
+    @OneToOne(_type => User)
     owner: User;
 
     @CreateDateColumn()

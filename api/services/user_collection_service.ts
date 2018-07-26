@@ -3,7 +3,6 @@ import { CollectionService } from './collection_service';
 import { UserService } from './user_service';
 import { Collection } from '../models/collection';
 import { Record } from '../models/record';
-import * as _ from 'lodash';
 
 export class UserCollectionService {
 

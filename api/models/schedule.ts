@@ -54,7 +54,7 @@ export class Schedule {
     @Column()
     suspend: boolean;
 
-    @OneToMany(type => ScheduleRecord, scheduleRecord => scheduleRecord.schedule)
+    @OneToMany(_type => ScheduleRecord, scheduleRecord => scheduleRecord.schedule)
     scheduleRecords: ScheduleRecord[];
 
     @Column()

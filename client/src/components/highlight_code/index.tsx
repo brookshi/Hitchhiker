@@ -20,7 +20,7 @@ class HighlightCode extends React.Component<HighlightCodeProps, HighlightCodeSta
         hljs.highlightBlock(this.pre);
     }
 
-    public componentDidUpdate(prevProps: HighlightCodeProps, prevState: HighlightCodeState) {
+    public componentDidUpdate(_prevProps: HighlightCodeProps, _prevState: HighlightCodeState) {
         hljs.highlightBlock(this.pre);
     }
 

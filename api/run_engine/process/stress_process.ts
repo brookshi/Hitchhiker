@@ -1,9 +1,8 @@
 import 'reflect-metadata';
 import { Setting } from '../../utils/setting';
 import { Log } from '../../utils/log';
-import * as net from 'net';
 import * as WS from 'ws';
-import { StressRequest, StressUser, WorkerInfo, StressResponse, TestCase, StressMessage, StressResFailedInfo, Duration, StressResStatisticsTime, StressRunResult, StressResFailedStatistics } from '../../interfaces/dto_stress_setting';
+import { StressRequest, StressUser, WorkerInfo, StressResponse, StressMessage, StressResFailedInfo, Duration, StressResStatisticsTime, StressRunResult, StressResFailedStatistics } from '../../interfaces/dto_stress_setting';
 import * as _ from 'lodash';
 import { StressMessageType, WorkerStatus, StressFailedType } from '../../common/stress_type';
 import { RunResult } from '../../interfaces/dto_run_result';
@@ -210,7 +209,7 @@ function startStressProcess() {
             }
         });
 
-        socket.on('close', hadErr => {
+        socket.on('close', () => {
             Log.info(`stress - closed: ${addr}`);
             Reflect.deleteProperty(workers, addr);
             broadcastMsgToUsers(StressMessageType.status);
@@ -254,7 +253,7 @@ function workerUpdated(addr: string, status: WorkerStatus) {
         if (!_.values(workers).some(w => w.status !== WorkerStatus.finish && w.status !== WorkerStatus.idle)) {
             Log.info(`stress - all workers finish/idle`);
             const runResult = buildStressRunResult();
-            storeStressRecord(runResult).then((v) => {
+            storeStressRecord(runResult).then(() => {
                 clearInterval(userUpdateTimer);
                 sendMsgToUser(StressMessageType.finish, currentStressRequest, runResult);
                 reset();

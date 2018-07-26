@@ -83,29 +83,34 @@ class KeyValueListComponent extends React.Component<KeyValueListComponentProps, 
     private DragHandle = SortableHandle(() => <span className="keyvalue-dragicon">☰</span>);
 
     private SortableItem = SortableElement(({ hIndex, header }: SortableElementParam) => {
-        const visibility = { visibility: (hIndex === this.state.headers.length - 1 ? 'hidden' : 'visible') };
+        const canCheck = hIndex !== this.state.headers.length - 1;
         const favStyle = { color: `${header.isFav ? '#f1d500' : '#000'}`, paddingLeft: 4, paddingRight: 8 };
         return (
             <li className="keyvalue-item">
-                <div style={visibility}>
-                    <this.DragHandle />
-                    <Checkbox
-                        key={`cb${header.id}`}
-                        style={this.props.disableActive ? { display: 'none', marginRight: 4 } : { marginRight: 4 }}
-                        onChange={(e) => this.onValueChange('isActive', hIndex, e)}
-                        defaultChecked={header.isActive}
-                    />
-                    {
-                        this.props.showFav ?
-                            <Button className="keyvalue-item-fav-btn" style={favStyle} icon={header.isFav ? 'star' : 'star-o'} onClick={() => this.onValueChange('isFav', hIndex, !header.isFav)} />
-                            : ''
-                    }
-                </div>
+                {
+                    canCheck ? (
+                        <div>
+                            <this.DragHandle />
+                            <Checkbox
+                                key={`cb${header.id}`}
+                                style={this.props.disableActive ? { display: 'none', marginRight: 4 } : { marginRight: 4 }}
+                                onChange={(e) => this.onValueChange('isActive', hIndex, e)}
+                                defaultChecked={header.isActive}
+                            />
+                            {
+                                this.props.showFav ?
+                                    <Button className="keyvalue-item-fav-btn" style={favStyle} icon={header.isFav ? 'star' : 'star-o'} onClick={() => this.onValueChange('isFav', hIndex, !header.isFav)} />
+                                    : ''
+                            }
+                        </div>
+                    ) : null
+                }
+
                 {this.generateInputControl(true, hIndex, header.key)}
                 {this.generateInputControl(false, hIndex, header.value)}
                 {this.props.showDescription ? this.getInput('description', hIndex, header.description) : ''}
 
-                <Icon style={visibility} type="close" onClick={(event) => this.onDelItem(hIndex)} />
+                {canCheck ? <Icon type="close" onClick={() => this.onDelItem(hIndex)} /> : null}
             </li>
         );
     });

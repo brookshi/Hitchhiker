@@ -10,13 +10,13 @@ export class Environment {
     @Column()
     name: string;
 
-    @OneToMany(type => Variable, variable => variable.environment, {
+    @OneToMany(_type => Variable, variable => variable.environment, {
         cascadeInsert: true,
         cascadeUpdate: true
     })
     variables: Variable[] = [];
 
-    @ManyToOne(type => Project, project => project.environments)
+    @ManyToOne(_type => Project, project => project.environments)
     project: Project;
 
     @CreateDateColumn()

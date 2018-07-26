@@ -1,11 +1,5 @@
 import * as Koa from 'koa';
-import Middleware from './middlewares/middleware';
-import { Log } from './utils/log';
-import { ChildProcessManager } from './run_engine/process/child_process_manager';
 import 'reflect-metadata';
-import { WebSocketService } from './services/web_socket_service';
-import { Setting } from './utils/setting';
-import { ProjectDataService } from './services/project_data_service';
 import * as KoaRouter from 'koa-router';
 import * as Bodyparser from 'koa-bodyparser';
 import { execSync } from 'child_process';
@@ -16,15 +10,15 @@ import * as KoaStatic from 'koa-static';
 let app = new Koa();
 const router = new KoaRouter();
 
-router.get('/setup/env', (ctx, next) => {
+router.get('/setup/env', (ctx) => {
     ctx.body = getPm2Obj().apps[0].env;
 });
 
-router.post('/setup/env', (ctx, next) => {
+router.post('/setup/env', (ctx) => {
     const pm2Obj = getPm2Obj();
     pm2Obj.apps[0].env = ctx.request.body;
     pm2Obj.apps[0].script = 'index.js';
-    fs.writeFileSync(getPm2File(), JSON.stringify(pm2Obj), 'utf8');
+    fs.writeFileSync(getPm2File(), JSON.stringify(pm2Obj), { encoding: 'utf8' });
     try {
         execSync('pm2 -V', { encoding: 'utf8' });
     } catch (e) {

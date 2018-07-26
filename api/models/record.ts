@@ -18,17 +18,17 @@ export class Record {
     @PrimaryColumn()
     id: string;
 
-    @ManyToOne(type => Collection, collection => collection.records)
+    @ManyToOne(_type => Collection, collection => collection.records)
     collection: Collection;
 
     @JoinColumn()
-    @OneToOne(type => RecordDoc, doc => doc.record, {
+    @OneToOne(_type => RecordDoc, doc => doc.record, {
         cascadeInsert: true,
         cascadeRemove: true
     })
     doc: RecordDoc;
 
-    @OneToMany(type => RecordHistory, history => history.target)
+    @OneToMany(_type => RecordHistory, history => history.target)
     history: RecordHistory[];
 
     @Column('json')
@@ -49,19 +49,19 @@ export class Record {
     @Column({ nullable: true, default: 'GET' })
     method: string;
 
-    @OneToMany(type => QueryString, queryString => queryString.record, {
+    @OneToMany(_type => QueryString, queryString => queryString.record, {
         cascadeInsert: true,
         cascadeUpdate: true
     })
     queryStrings: QueryString[] = [];
 
-    @OneToMany(type => Header, header => header.record, {
+    @OneToMany(_type => Header, header => header.record, {
         cascadeInsert: true,
         cascadeUpdate: true
     })
     headers: Header[] = [];
 
-    @OneToMany(type => BodyFormData, form => form.record, {
+    @OneToMany(_type => BodyFormData, form => form.record, {
         cascadeInsert: true,
         cascadeUpdate: true
     })

@@ -29,7 +29,7 @@ const processManager = ChildProcessManager.create('stress_nodejs_worker', { coun
 
 processManager.init();
 
-runForHandlers((h, i) => h.call = handleChildProcessMsg);
+runForHandlers(h => h.call = handleChildProcessMsg);
 
 function createWS(): WS {
     return new WS(Setting.instance.stressHost, { perMessageDeflate: false });
@@ -112,7 +112,7 @@ function handleChildProcessMsg(data: any) {
     } else if (data === 'finish' || data === 'error') {
         Log.info(`nodejs stress process - worker status: ${data}`);
         let isAllFinish = true;
-        runForHandlers((h, i) => isAllFinish = isAllFinish && (h as StressNodejsWorkerHandler).isFinish);
+        runForHandlers(h => isAllFinish = isAllFinish && (h as StressNodejsWorkerHandler).isFinish);
         if (isAllFinish) {
             finish();
         }
@@ -150,7 +150,7 @@ function finish() {
 
 function resetHandlerStatus() {
     Log.info(`nodejs stress process - reset handlers status`);
-    runForHandlers((h, i) => (h as StressNodejsWorkerHandler).isFinish = false);
+    runForHandlers(h => (h as StressNodejsWorkerHandler).isFinish = false);
 }
 
 function trace(rst: RunResult) {

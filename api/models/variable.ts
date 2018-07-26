@@ -18,7 +18,7 @@ export class Variable {
     @Column('int')
     sort: number;
 
-    @ManyToOne(type => Environment, env => env.variables)
+    @ManyToOne(_type => Environment, env => env.variables)
     environment: Environment;
 
 }

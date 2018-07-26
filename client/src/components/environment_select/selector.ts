@@ -23,8 +23,8 @@ export const getActiveRecordStateSelector = () => {
 
 export const getActiveRecordSelector = () => {
     return createSelector(
-        [getActiveKey, getActiveRecordStateSelector()],
-        (activeKey, recordState) => {
+        [getActiveRecordStateSelector()],
+        (recordState) => {
             if (!recordState) {
                 throw new Error('miss active record state');
             }

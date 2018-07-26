@@ -8,7 +8,7 @@ export class StressRecord {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(type => Stress, stress => stress.stressRecords)
+    @ManyToOne(_type => Stress, stress => stress.stressRecords)
     stress: Stress;
 
     @Column('json')

@@ -16,7 +16,7 @@ export class User {
     @Column()
     email: string;
 
-    @ManyToMany(type => Project, project => project.members)
+    @ManyToMany(_type => Project, project => project.members)
     projects: Project[] = [];
 
     @Column()

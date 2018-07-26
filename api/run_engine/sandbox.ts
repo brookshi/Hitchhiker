@@ -1,12 +1,10 @@
 import * as _ from 'lodash';
 import * as fs from 'fs';
 import * as path from 'path';
-import { SessionService } from '../services/session_service';
 import { UserVariableManager } from '../services/user_variable_manager';
 import { Setting } from '../utils/setting';
 import { ProjectDataService } from '../services/project_data_service';
 import { ProjectData } from '../interfaces/dto_project_data';
-import { ProjectFolderType } from '../common/string_type';
 import { Record } from '../models/record';
 import { ConsoleMsg } from '../interfaces/dto_res';
 import { StringUtil } from '../utils/string_util';
@@ -89,9 +87,9 @@ export class Sandbox {
         this.variables = UserVariableManager.getVariables(this.vid, this.envId);
     }
 
-    private getProjectFile(file: string, type: ProjectFolderType): string {
-        return path.join(__dirname, `../global_data/${this.projectId}/${type}/${file}`);
-    }
+    // private getProjectFile(file: string, type: ProjectFolderType): string {
+    //     return path.join(__dirname, `../global_data/${this.projectId}/${type}/${file}`);
+    // }
 
     require(lib: string) {
         if (Setting.instance.safeVM) {

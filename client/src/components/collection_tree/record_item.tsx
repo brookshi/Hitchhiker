@@ -32,13 +32,13 @@ interface RecordItemState { }
 
 class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
 
-    private itemWithMenu: ItemWithMenu;
+    private itemWithMenu: ItemWithMenu | null;
 
     constructor(props: RecordItemProps) {
         super(props);
     }
 
-    public shouldComponentUpdate(nextProps: RecordItemProps, nextState: RecordItemState) {
+    public shouldComponentUpdate(nextProps: RecordItemProps, _nextState: RecordItemState) {
         return this.props.record.id !== nextProps.record.id ||
             this.props.record.name !== nextProps.record.name ||
             this.props.record.method !== nextProps.record.method ||

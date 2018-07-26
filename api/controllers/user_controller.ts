@@ -12,13 +12,12 @@ import { Setting } from '../utils/setting';
 import { StringUtil } from '../utils/string_util';
 import { MailService } from '../services/mail_service';
 import { ValidateUtil } from '../utils/validate_util';
-import * as _ from 'lodash';
 import { Password } from '../interfaces/password';
 
 export default class UserController extends BaseController {
 
     @POST('/user')
-    async register( @BodyParam body: DtoUser): Promise<ResObject> {
+    async register(@BodyParam body: DtoUser): Promise<ResObject> {
         return await UserService.createUser(body.name, body.email, body.password);
     }
 
@@ -32,7 +31,7 @@ export default class UserController extends BaseController {
     }
 
     @DELETE('/user/temp')
-    async deleteTempUser( @QueryParam('key') key: string) {
+    async deleteTempUser(@QueryParam('key') key: string) {
         if (key !== Setting.instance.app.tempDelKey) {
             return;
         }
@@ -93,7 +92,7 @@ export default class UserController extends BaseController {
     }
 
     @GET('/user/findpwd')
-    async findPwd( @QueryParam('email') email: string): Promise<ResObject> {
+    async findPwd(@QueryParam('email') email: string): Promise<ResObject> {
         let checkRst = ValidateUtil.checkEmail(email);
         if (!checkRst.success) {
             return checkRst;

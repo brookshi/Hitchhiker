@@ -2,9 +2,6 @@ import * as childProcess from 'child_process';
 import { Log } from '../../utils/log';
 import * as _ from 'lodash';
 import * as path from 'path';
-import { TestCase, StressResponse, StressRequest } from '../../interfaces/dto_stress_setting';
-import * as WS from 'ws';
-import { StressMessageType } from '../../common/stress_type';
 import { BaseProcessHandler } from './base_process_handler';
 import { ScheduleProcessHandler } from './schedule_process_handler';
 import { StressProcessHandler } from './stress_process_handler';
@@ -52,7 +49,7 @@ export class ChildProcessManager {
 
     init() {
         this.processHandlerMapping = {};
-        _.keys(this.processConfigs).forEach(c => _.times(this.processConfigs[c].count, n => this.createChildProcess(c)));
+        _.keys(this.processConfigs).forEach(c => _.times(this.processConfigs[c].count, () => this.createChildProcess(c)));
         process.on('exit', () => _.values(this.processHandlerMapping).forEach(p => {
             if (p instanceof Array) {
                 p.forEach(cp => cp.process.kill());

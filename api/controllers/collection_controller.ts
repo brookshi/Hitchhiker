@@ -3,15 +3,13 @@ import { UserCollectionService } from '../services/user_collection_service';
 import { GET, POST, PUT, DELETE, BodyParam, PathParam, BaseController } from 'webapi-router';
 import { ResObject } from '../common/res_object';
 import * as Koa from 'koa';
-import { DtoCollection, DtoCollectionWithRecord } from '../interfaces/dto_collection';
+import { DtoCollection } from '../interfaces/dto_collection';
 import { SessionService } from '../services/session_service';
 import { Message } from '../common/message';
-import { EnvironmentService } from '../services/environment_service';
 import * as _ from 'lodash';
 import { RecordService } from '../services/record_service';
 import { DtoRecord } from '../interfaces/dto_record';
 import { Importer } from '../services/base/request_import';
-import { ImportType } from '../common/string_type';
 
 export default class CollectionController extends BaseController {
 
@@ -38,17 +36,17 @@ export default class CollectionController extends BaseController {
     }
 
     @PUT('/collection')
-    async update(ctx: Koa.Context, @BodyParam collection: DtoCollection): Promise<ResObject> {
-        return await CollectionService.update(collection, SessionService.getUserId(ctx));
+    async update(@BodyParam collection: DtoCollection): Promise<ResObject> {
+        return await CollectionService.update(collection);
     }
 
     @DELETE('/collection/:id')
-    async delete(ctx: Koa.Context, @PathParam('id') id: string): Promise<ResObject> {
+    async delete(@PathParam('id') id: string): Promise<ResObject> {
         return await CollectionService.delete(id);
     }
 
     @GET('/collection/share/:collectionid/to/:projectid')
-    async share(ctx: Koa.Context, @PathParam('collectionid') collectionId: string, @PathParam('projectid') projectId: string): Promise<ResObject> {
+    async share(@PathParam('collectionid') collectionId: string, @PathParam('projectid') projectId: string): Promise<ResObject> {
         return await CollectionService.shareCollection(collectionId, projectId);
     }
 

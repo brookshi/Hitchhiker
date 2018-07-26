@@ -8,10 +8,10 @@ export class RecordDoc {
     @PrimaryColumn()
     id: string;
 
-    @OneToOne(type => Record, record => record.doc)
+    @OneToOne(_type => Record, record => record.doc)
     record: Record;
 
-    @OneToMany(type => RecordDocHistory, history => history.target)
+    @OneToMany(_type => RecordDocHistory, history => history.target)
     history: RecordDocHistory[];
 
     @Column({ nullable: true })

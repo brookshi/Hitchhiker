@@ -21,7 +21,7 @@ ProjectDataService.instance.init();
 
 ChildProcessManager.default.init();
 
-app.use(Middleware(app));
+app.use(Middleware());
 
 const server = app.listen(Setting.instance.appPort);
 

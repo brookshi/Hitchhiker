@@ -39,7 +39,7 @@ interface RecordFolderState {
 
 class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState> {
 
-    private itemWithMenu: ItemWithMenu;
+    private itemWithMenu: ItemWithMenu | null;
 
     constructor(props: RecordFolderProps) {
         super(props);
@@ -105,7 +105,7 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
         }
     }
 
-    private dragLeave = (e) => {
+    private dragLeave = () => {
         this.setState({ ...this.state, isDragOver: false });
     }
 

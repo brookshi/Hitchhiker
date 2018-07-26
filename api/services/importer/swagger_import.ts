@@ -2,7 +2,6 @@ import { RequestsImport } from '../base/request_import';
 import { Record } from '../../models/record';
 import * as _ from 'lodash';
 import { StringUtil } from '../../utils/string_util';
-import { Collection } from '../../models/collection';
 import { RecordCategory } from '../../common/record_category';
 import { RecordService } from '../record_service';
 import { ParameterType } from '../../common/parameter_type';

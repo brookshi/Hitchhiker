@@ -22,7 +22,7 @@ export class ConsoleMessage {
         }
     }
 
-    pushArray(msgs: ConsoleMsg[], isCustom?: boolean, force?: boolean) {
+    pushArray(msgs: ConsoleMsg[], _isCustom?: boolean, force?: boolean) {
         if (force || this.valid) {
             this.msgs.push(...msgs);
         }

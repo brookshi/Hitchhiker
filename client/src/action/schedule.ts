@@ -59,10 +59,10 @@ function initScheduleWS(id: string) {
                 emitter(actionCreator(ScheduleChunkDataType, { id, data }));
             }
         };
-        socket.onopen = (ev: Event) => {
+        socket.onopen = () => {
             socket.send(id);
         };
-        socket.onclose = (ev: CloseEvent) => {
+        socket.onclose = () => {
             setTimeout(() => {
                 emitter(END);
             }, 2000);

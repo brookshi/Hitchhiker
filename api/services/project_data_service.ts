@@ -1,9 +1,6 @@
 import * as _ from 'lodash';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import { SessionService } from '../services/session_service';
-import { UserVariableManager } from '../services/user_variable_manager';
-import { Setting } from '../utils/setting';
 import { ProjectData } from '../interfaces/dto_project_data';
 import { ProjectFolderType } from '../common/string_type';
 import * as AdmZip from 'adm-zip';
@@ -101,7 +98,6 @@ export class ProjectDataService {
         if (!fs.existsSync(projectFile)) {
             return;
         }
-        const projectFolder = this.getProjectFolder(pid);
         const targetFile = this.removeExt(projectFile, 'zip');
         new AdmZip(projectFile).extractAllTo(targetFile, true);
         if (!this._pJsFiles[pid]) {

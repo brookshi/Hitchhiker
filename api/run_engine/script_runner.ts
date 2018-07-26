@@ -1,14 +1,10 @@
 import * as request from 'request';
 import * as _ from 'lodash';
-import * as fs from 'fs';
-import * as path from 'path';
-import { ProjectService } from '../services/project_service';
 import { Setting } from '../utils/setting';
 import { Sandbox } from './sandbox';
-import * as freeVM from 'vm';
 import { ResObject } from '../common/res_object';
 import { Log } from '../utils/log';
-import { Record, RecordEx } from '../models/record';
+import { RecordEx } from '../models/record';
 import { ConsoleMsg } from '../interfaces/dto_res';
 const { NodeVM: safeVM } = require('vm2');
 
@@ -71,7 +67,7 @@ export class ScriptRunner {
                 }`;
             const vm = new safeVM({ timeout: Setting.instance.scriptTimeout, sandbox });
             const runWithCallback = vm.run(code);
-            return new Promise<ResObject>((resolve, reject) => {
+            return new Promise<ResObject>((resolve) => {
                 runWithCallback((err) => {
                     if (err) {
                         Log.error(err);

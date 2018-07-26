@@ -1,5 +1,4 @@
 import { BaseProcessHandler } from './base_process_handler';
-import { ChildProcess } from 'child_process';
 import { StressMessageType } from '../../common/stress_type';
 import { Log } from '../../utils/log';
 

@@ -19,7 +19,6 @@ import { MailService } from '../services/mail_service';
 import { Log } from '../utils/log';
 import { DateUtil } from '../utils/date_util';
 import { RecordCategory } from '../common/record_category';
-import { StringUtil } from '../utils/string_util';
 import { Sandbox } from './sandbox';
 import { Setting } from '../utils/setting';
 import { ValidateUtil } from '../utils/validate_util';

@@ -98,7 +98,7 @@ export class MailService {
     }
 
     private static send(option: request.Options): Promise<any> {
-        return new Promise<{ err: any, response: request.RequestResponse, body: any }>((resolve, reject) => {
+        return new Promise<{ err: any, response: request.RequestResponse, body: any }>((resolve) => {
             request(option, (err, response, body) => {
                 resolve({ err, response, body });
                 if (err) {

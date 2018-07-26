@@ -1,6 +1,5 @@
-import { Record, RecordEx } from '../models/record';
+import { RecordEx } from '../models/record';
 import { Options, OptionsWithUrl } from 'request';
-import { VariableService } from '../services/variable_service';
 import { RecordService } from '../services/record_service';
 import { ProjectService } from '../services/project_service';
 import { StringUtil } from '../utils/string_util';

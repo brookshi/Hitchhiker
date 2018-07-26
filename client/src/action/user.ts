@@ -82,7 +82,7 @@ export function* login() {
 }
 
 export function* tempUse() {
-    yield takeLatest(TempUseType, function* (action: any) {
+    yield takeLatest(TempUseType, function* () {
         try {
             yield put(actionCreator(LoginPendingType));
             const res = yield call(RequestManager.post, Urls.getUrl('user/temp'), {});
@@ -103,7 +103,7 @@ export function* tempUse() {
 }
 
 export function* getUserInfo() {
-    yield takeLatest(GetUserInfoType, function* (action: any) {
+    yield takeLatest(GetUserInfoType, function* () {
         try {
             yield put(actionCreator(LoginPendingType));
             const res = yield call(RequestManager.get, Urls.getUrl('user/me'));

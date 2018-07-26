@@ -55,7 +55,7 @@ export class StressWS {
                 dispatch(actionCreator(StressStatusType, data));
             }
         };
-        this.socket.onclose = (ev: CloseEvent) => {
+        this.socket.onclose = () => {
             console.error(LocalesString.get('Stress.SocketError'));
             console.log(LocalesString.get('Stress.Reconnect'));
             setTimeout(() => this.initStressWS(this.dispatch), 3000);

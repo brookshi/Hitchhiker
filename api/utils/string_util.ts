@@ -3,7 +3,6 @@ import { Setting } from './setting';
 import * as uuid from 'uuid';
 import * as shortId from 'shortid';
 import * as URL from 'url';
-import * as queryString from 'querystring';
 import { ParameterType, ReduceAlgorithmType } from '../common/parameter_type';
 import * as _ from 'lodash';
 import { DtoHeader } from '../interfaces/dto_header';
@@ -163,7 +162,7 @@ export class StringUtil {
             if (Array.isArray(paramObj)) {
                 return paramObj;
             }
-            Object.keys(paramObj).forEach((key, index) => {
+            Object.keys(paramObj).forEach((key) => {
                 for (let i = 0; i < paramObj[key].length; i++) {
                     paramArr[i] = paramArr[i] || {};
                     paramArr[i][key] = paramObj[key][i];
@@ -172,7 +171,7 @@ export class StringUtil {
         } else if (reduceAlgorithm === ReduceAlgorithmType.pairwise) {
             return PairwiseStrategy.GetTestCasesByObj(paramObj);
         } else {
-            Object.keys(paramObj).forEach((key, index) => {
+            Object.keys(paramObj).forEach((key) => {
                 let temp = [...paramArr];
                 paramArr.splice(0, paramArr.length);
                 for (let i = 0; i < paramObj[key].length; i++) {

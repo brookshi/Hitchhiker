@@ -12,7 +12,7 @@ export class Collection {
     @Column()
     name: string;
 
-    @OneToMany(type => Record, record => record.collection, {
+    @OneToMany(_type => Record, record => record.collection, {
         cascadeInsert: true
     })
     records: Record[];
@@ -30,10 +30,10 @@ export class Collection {
     description: string;
 
     @JoinColumn()
-    @OneToOne(type => User)
+    @OneToOne(_type => User)
     owner: User;
 
-    @ManyToOne(type => Project, project => project.collections)
+    @ManyToOne(_type => Project, project => project.collections)
     project: Project;
 
     @Column({ default: false })

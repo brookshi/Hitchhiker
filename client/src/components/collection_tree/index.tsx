@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect, Dispatch, MapStateToPropsFactory } from 'react-redux';
+import { connect, MapStateToPropsFactory } from 'react-redux';
 import { Menu, Dropdown, Icon, Button, Modal, TreeSelect, Input, Tooltip } from 'antd';
 import { State } from '../../state';
 import RecordFolder from './record_folder';
@@ -114,8 +114,8 @@ interface CollectionListState {
 class CollectionList extends React.Component<CollectionListProps, CollectionListState> {
 
     private currentNewFolder: DtoRecord | undefined;
-    private folderRefs: _.Dictionary<RecordFolder> = {};
-    private newCollectionNameRef: Input;
+    private folderRefs: _.Dictionary<RecordFolder | null> = {};
+    private newCollectionNameRef: Input | null;
 
     constructor(props: CollectionListProps) {
         super(props);
@@ -129,10 +129,13 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         };
     }
 
-    componentDidUpdate(prevProps: CollectionListProps, prevState: CollectionListState) {
-        if (this.currentNewFolder && this.folderRefs[this.currentNewFolder.id]) {
-            this.folderRefs[this.currentNewFolder.id].edit();
-            this.currentNewFolder = undefined;
+    componentDidUpdate(_prevProps: CollectionListProps, _prevState: CollectionListState) {
+        if (this.currentNewFolder) {
+            const folderRef = this.folderRefs[this.currentNewFolder.id];
+            if (folderRef) {
+                folderRef.edit();
+                this.currentNewFolder = undefined;
+            }
         }
     }
 
@@ -244,12 +247,12 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
 
     private saveCommonSetting = (commonSetting: DtoCommonSetting) => {
         const { currentOperatedCollection, currentOperatedFolder, commonSettingType } = this.state;
-        if (!currentOperatedCollection && !currentOperatedFolder) {
-            return;
-        }
+
         if (commonSettingType === 'Collection') {
-            this.props.updateCollection({ ...currentOperatedCollection, commonSetting });
-        } else {
+            if (currentOperatedCollection) {
+                this.props.updateCollection({ ...currentOperatedCollection, commonSetting });
+            }
+        } else if (currentOperatedFolder) {
             this.props.updateRecord({ ...currentOperatedFolder, ...commonSetting });
         }
         this.setState({ ...this.state, isCommonSettingDlgOpen: false });
@@ -458,7 +461,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             <div className="small-toolbar">
                 <span>{Msg('App.Project')}:</span>
                 <span>
-                    <Dropdown overlay={this.getProjectMenu()} trigger={['click']} style={{ width: 200 }}>
+                    <Dropdown overlay={this.getProjectMenu()} trigger={['click']}>
                         <a className="ant-dropdown-link" href="#">
                             {this.getCurrentProject().name} <Icon type="down" />
                         </a>
@@ -488,7 +491,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
     }
 }
 
-const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any) => {
+const makeMapStateToProps: MapStateToPropsFactory<any, any, any> = () => {
     const getProjects = getProjectsIdNameStateSelector();
 
     const mapStateToProps: (state: State, ownProps: OwnProps) => CollectionListStateProps = (state, ownProps) => {
@@ -507,7 +510,7 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
     return mapStateToProps;
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<{}>): CollectionListDispatchProps => {
+const mapDispatchToProps = (dispatch: any): CollectionListDispatchProps => {
     return {
         activeRecord: (type, record) => dispatch(actionCreator(type, record)),
         deleteRecord: (id, records) => {

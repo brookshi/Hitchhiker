@@ -1,5 +1,4 @@
 import { RequestsImport } from '../base/request_import';
-import { Record } from '../../models/record';
 import * as _ from 'lodash';
 import { User } from '../../models/user';
 import { RecordService } from '../record_service';
@@ -53,7 +52,7 @@ export class PostmanImport implements RequestsImport {
         return await Promise.all(data.collections.map(c => this.parsePostmanCollectionV1(owner, projectId, c)));
     }
 
-    async parsePostmanEnvV1(owner: User, projectId: string, data: any): Promise<Environment[]> {
+    async parsePostmanEnvV1(_owner: User, projectId: string, data: any): Promise<Environment[]> {
         if (!data.environments) {
             return [];
         }

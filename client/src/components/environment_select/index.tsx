@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { Button, Tooltip, Select, Dropdown, Menu, message } from 'antd';
 import { noEnvironment, newRequestName, allParameter } from '../../common/constants';
 import { actionCreator } from '../../action/index';
@@ -188,7 +188,7 @@ const makeMapStateToProps = () => {
     return mapStateToProps;
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): EnvironmentSelectDispatchProps => {
+const mapDispatchToProps = (dispatch: any): EnvironmentSelectDispatchProps => {
     return {
         addTab: (newRequestState) => dispatch(actionCreator(AddTabType, newRequestState)),
         switchEnv: (type, projectId, envId) => dispatch(actionCreator(type, { projectId, envId })),

@@ -1,4 +1,3 @@
-import * as Koa from 'koa';
 import * as Compose from 'koa-compose';
 import * as Bodyparser from 'koa-bodyparser';
 import * as Session from 'koa-session-minimal';
@@ -12,7 +11,7 @@ import * as Path from 'path';
 import asyncInit from './async_init';
 import * as Compress from 'koa-compress';
 
-export default function middleware(context: Koa) {
+export default function middleware() {
     const ctrlRouter = new WebApiRouter();
     return Compose(
         [
