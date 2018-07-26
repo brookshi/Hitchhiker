@@ -58,7 +58,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/brookshi/ApiTester.git"
+    "url": "git+https://github.com/brookshi/Hitchhiker.git"
   },
   "keywords": [
     "api",
@@ -66,9 +66,9 @@
     "restful"
   ],
   "author": "brook",
-  "license": "Apache-2.0",
+  "license": "GPL2.0+",
   "bugs": {
-    "url": "https://github.com/brookshi/ApiTester/issues"
+    "url": "https://github.com/brookshi/Hitchhiker/issues"
   },
-  "homepage": "https://github.com/brookshi/ApiTester#readme"
+  "homepage": "https://github.com/brookshi/Hitchhiker#readme"
 }

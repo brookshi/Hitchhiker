@@ -28,7 +28,7 @@ interface StressItemState { }
 
 class StressItem extends React.Component<StressItemProps, StressItemState> {
 
-    private itemWithMenu: ItemWithMenu;
+    private itemWithMenu: ItemWithMenu | null;
 
     private getMenu = () => {
         const { isOwner, isRunning } = this.props;

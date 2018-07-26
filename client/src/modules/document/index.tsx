@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { State } from '../../state/index';
 import { DtoCollection } from '../../../../api/interfaces/dto_collection';
 import { getDocumentDisplayCollectionSelector } from '../../components/collection_tree/selector';
@@ -85,7 +85,7 @@ const mapStateToProps = (state: State): ApiDocumentStateProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): ApiDocumentDispatchProps => {
+const mapDispatchToProps = (): ApiDocumentDispatchProps => {
     return {};
 };
 

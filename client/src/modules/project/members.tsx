@@ -50,7 +50,7 @@ class MemberColumn extends Table.Column<Member> { }
 
 class Members extends React.Component<MembersProps, MembersState> {
 
-    private inviteEmailInput: Select;
+    private inviteEmailInput: Select | null;
 
     constructor(props: MembersProps) {
         super(props);

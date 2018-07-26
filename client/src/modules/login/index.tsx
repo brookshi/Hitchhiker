@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { Row, Col } from 'antd';
 import './style/index.less';
 import { State } from '../../state/index';
@@ -157,7 +157,7 @@ const mapStateToProps = (state: State): LoginPageStateProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): LoginPageDispatchProps => {
+const mapDispatchToProps = (dispatch: any): LoginPageDispatchProps => {
     return {
         login: (value) => dispatch(actionCreator(LoginType, value)),
         getUserInfo: () => dispatch(actionCreator(GetUserInfoType)),

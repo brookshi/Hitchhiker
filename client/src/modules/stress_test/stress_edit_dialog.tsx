@@ -277,9 +277,6 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
             labelCol: { span: 3 },
             wrapperCol: { span: 19 },
         };
-        const stressColStyle = {
-            textAlign: 'right'
-        };
         return (
             <Modal
                 visible={isEditDlgOpen}
@@ -295,7 +292,7 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                             rules: [{ required: true, message: LocalesString.get('Stress.EnterName') }],
                         })(
                             <Input spellCheck={false} />
-                            )}
+                        )}
                     </FormItem>
                     <FormItem {...formItemLayout} required={true} label={Msg('Stress.Collection')}>
                         {getFieldDecorator('collectionId', {
@@ -303,7 +300,7 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                             rules: [{ required: true, message: LocalesString.get('Stress.SelectCollection') }],
                         })(
                             this.generateCollectionSelect()
-                            )}
+                        )}
                     </FormItem>
                     <FormItem {...formItemLayout} required={true} label={Msg('Stress.Requests')}>
                         {getFieldDecorator('requests', {
@@ -315,7 +312,7 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                             <div className="stress-dlg-list">
                                 {this.generateSortRecordsList()}
                             </div>
-                            )}
+                        )}
                     </FormItem>
                     <FormItem {...formItemLayout} label={Msg('Stress.Repeat')}>
                         <Row gutter={8}>
@@ -325,40 +322,40 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                                         initialValue: stress.repeat,
                                     })(
                                         <InputNumber className="stress-dlg-input-number" min={1} />
-                                        )}
+                                    )}
                                 </FormItem>
                             </Col>
-                            <Col span={3} style={stressColStyle}>{Msg('Stress.Concurrency')}: </Col>
+                            <Col span={3} className="stress-dlg-col">{Msg('Stress.Concurrency')}: </Col>
                             <Col span={3}>
                                 <FormItem>
                                     {getFieldDecorator('concurrencyCount', {
                                         initialValue: stress.concurrencyCount,
                                     })(
                                         <InputNumber className="stress-dlg-input-number" min={1} />
-                                        )}
+                                    )}
                                 </FormItem>
                             </Col>
-                            <Col span={2} style={stressColStyle}>{Msg('Stress.QPS')}: </Col>
+                            <Col span={2} className="stress-dlg-col">{Msg('Stress.QPS')}: </Col>
                             <Col span={3}>
                                 <FormItem>
                                     {getFieldDecorator('qps', {
                                         initialValue: stress.qps,
                                     })(
                                         <InputNumber className="stress-dlg-input-number" min={0} />
-                                        )}
+                                    )}
                                 </FormItem>
                             </Col>
-                            <Col span={3} style={stressColStyle}>{Msg('Stress.Timeout')}: </Col>
+                            <Col span={3} className="stress-dlg-col">{Msg('Stress.Timeout')}: </Col>
                             <Col span={3}>
                                 <FormItem>
                                     {getFieldDecorator('timeout', {
                                         initialValue: stress.timeout,
                                     })(
                                         <InputNumber className="stress-dlg-input-number" min={0} />
-                                        )}
+                                    )}
                                 </FormItem>
                             </Col>
-                            <Col span={1} style={stressColStyle} />
+                            <Col span={1} className="stress-dlg-col" />
                             <Col span={3}>
                                 <FormItem>
                                     {getFieldDecorator('keepAlive', {
@@ -366,7 +363,7 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                                         initialValue: stress.keepAlive,
                                     })(
                                         <Checkbox>{Msg('Stress.KeepAlive')}</Checkbox>
-                                        )}
+                                    )}
                                 </FormItem>
                             </Col>
                         </Row>
@@ -376,14 +373,14 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                             initialValue: stress.environmentId,
                         })(
                             this.generateEnvSelect()
-                            )}
+                        )}
                     </FormItem>
                     <FormItem {...formItemLayout} label={Msg('Common.Notification')} style={{ display: 'none' }}>
                         {getFieldDecorator('notification', {
                             initialValue: stress.notification.toString(),
                         })(
                             this.generateNotificationSelect()
-                            )}
+                        )}
                     </FormItem>
                     <FormItem style={{ display: this.state.showEmails ? '' : 'none' }} {...formItemLayout} label={Msg('Common.Emails')}>
                         {getFieldDecorator('emails', {

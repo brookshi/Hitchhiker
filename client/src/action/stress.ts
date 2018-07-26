@@ -4,7 +4,6 @@ import { StressMessageType } from '../common/stress_type';
 import { takeEvery, put, takeLatest } from 'redux-saga/effects';
 import { syncAction, actionCreator } from './index';
 import { HttpMethod } from '../common/http_method';
-import { Dispatch } from 'react-redux';
 import message from 'antd/lib/message';
 import LocalesString from '../locales/string';
 
@@ -30,9 +29,9 @@ export class StressWS {
 
     private socket: WebSocket;
 
-    private dispatch: Dispatch<any>;
+    private dispatch: any;
 
-    initStressWS(dispatch: Dispatch<any>) {
+    initStressWS(dispatch: any) {
         this.dispatch = dispatch;
         this.socket = new WebSocket(Urls.getWebSocket('stresstest'));
         this.socket.onmessage = (ev: MessageEvent) => {

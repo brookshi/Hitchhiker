@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import RequestUrlPanel from './request_url_panel';
 import RequestOptionPanel from './request_option_panel';
 import RequestNamePanel from './request_name_panel';
@@ -272,7 +272,7 @@ const mapStateToProps = (state: State): ReqResPanelStateProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): ReqResPanelDispatchProps => {
+const mapDispatchToProps = (dispatch: any): ReqResPanelDispatchProps => {
     return {
         activeTab: (key) => dispatch(actionCreator(ActiveTabType, key)),
         addTab: () => dispatch(actionCreator(AddTabType)),

@@ -31,7 +31,7 @@ interface ProjectItemState { }
 
 class ProjectItem extends React.Component<ProjectItemProps, ProjectItemState> {
 
-    private itemWithMenu: ItemWithMenu;
+    private itemWithMenu: ItemWithMenu | null;
 
     constructor(props: ProjectItemProps) {
         super(props);

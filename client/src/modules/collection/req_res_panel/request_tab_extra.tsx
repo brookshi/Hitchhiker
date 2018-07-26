@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { Button, Dropdown, Icon, Menu } from 'antd';
 import { KeyValueEditType, KeyValueEditMode } from '../../../common/custom_type';
 import { bodyTypes } from '../../../common/body_type';
@@ -110,7 +110,7 @@ class RequestTabExtra extends React.Component<RequestTabExtraProps, RequestTabEx
                 return (
                     <span>
                         <Button className="tab-extra-button" style={{ marginRight: 12 }} onClick={this.onBeautifyBody}>{Msg('Collection.Beautify')}</Button>
-                        <Dropdown overlay={this.getBodyTypeMenu()} trigger={['click']} style={{ width: 200 }}>
+                        <Dropdown className="tab-extra-dropdown" overlay={this.getBodyTypeMenu()} trigger={['click']}>
                             <a className="ant-dropdown-link" href="#">
                                 {this.currentBodyType()} <Icon type="down" />
                             </a>
@@ -151,7 +151,7 @@ const mapStateToProps = (state: State): RequestTabExtraStateProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): RequestTabExtraDispatchProps => {
+const mapDispatchToProps = (dispatch: any): RequestTabExtraDispatchProps => {
     return {
         changeRecord: (record) => dispatch(actionCreator(UpdateDisplayRecordType, record)),
         switchHeadersEditMode: (recordId, mode) => dispatch(actionCreator(SwitchHeadersEditModeType, { recordId, mode }))

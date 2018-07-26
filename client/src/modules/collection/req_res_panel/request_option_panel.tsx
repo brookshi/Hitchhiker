@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { Tabs, Badge, Radio, Select, Icon, Checkbox, Button, message } from 'antd';
 import RequestTabExtra from './request_tab_extra';
 import { normalBadgeStyle } from '../../../style/theme';
@@ -92,7 +92,7 @@ interface RequestOptionPanelState { }
 
 class RequestOptionPanel extends React.Component<RequestOptionPanelProps, RequestOptionPanelState> {
 
-    private bodyEditor: Editor;
+    private bodyEditor: Editor | null;
 
     shouldComponentUpdate(nextProps: RequestOptionPanelProps, nextState: RequestOptionPanelState) {
         return !_.isEqual(_.omit(this.props, _.functionsIn(this.props)), _.omit(nextProps, _.functionsIn(nextProps)));
@@ -364,7 +364,7 @@ const mapStateToProps = (state: State): RequestOptionPanelStateProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): RequestOptionPanelDispatchProps => {
+const mapDispatchToProps = (dispatch: any): RequestOptionPanelDispatchProps => {
     return {
         selectReqTab: (recordId, tab) => dispatch(actionCreator(SelectReqTabType, { recordId, tab })),
         changeRecord: (value) => dispatch(actionCreator(UpdateDisplayRecordPropertyType, value)),

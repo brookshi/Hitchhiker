@@ -42,7 +42,7 @@ interface ScheduleItemState { }
 
 class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState> {
 
-    private itemWithMenu: ItemWithMenu;
+    private itemWithMenu: ItemWithMenu | null;
 
     private getMenu = () => {
         return (

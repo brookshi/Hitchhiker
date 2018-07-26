@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import CollectionList from '../../components/collection_tree';
 import ReqResPanel from './req_res_panel';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -62,7 +62,7 @@ const mapStateToProps = (state: State): CollectionStateProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): CollectionDispatchProps => {
+const mapDispatchToProps = (): CollectionDispatchProps => {
     return {};
 };
 

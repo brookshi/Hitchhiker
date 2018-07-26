@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import ProjectList from './project_list';
 import Members from './members';
 import Environments from './environments';
@@ -179,7 +179,7 @@ const mapStateToProps = (state: State): ProjectStateProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): ProjectDispatchProps => {
+const mapDispatchToProps = (dispatch: any): ProjectDispatchProps => {
     return {
         disbandProject: (project) => { dispatch(actionCreator(DisbandProjectType, project)); },
         quitProject: (project) => { dispatch(actionCreator(QuitProjectType, project)); },

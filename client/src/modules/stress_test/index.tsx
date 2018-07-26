@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import StressList from './stress_list';
 import { DtoStress } from '../../../../api/interfaces/dto_stress';
 import { DtoUser } from '../../../../api/interfaces/dto_user';
@@ -119,7 +119,7 @@ const mapStateToProps = (state: State): StressStateProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): StressDispatchProps => {
+const mapDispatchToProps = (dispatch: any): StressDispatchProps => {
     return {
         createStress: (stress) => dispatch(actionCreator(SaveStressType, { isNew: true, stress })),
         updateStress: (stress) => dispatch(actionCreator(SaveStressType, { isNew: false, stress })),

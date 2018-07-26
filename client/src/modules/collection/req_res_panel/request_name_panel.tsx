@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { Form, Alert, Icon } from 'antd';
 import { ValidateStatus, ValidateType } from '../../../common/custom_type';
 import { actionCreator } from '../../../action/index';
@@ -145,7 +145,7 @@ const mapStateToProps = (state: State): RequestNamePanelStateProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): RequestNamePanelDispatchProps => {
+const mapDispatchToProps = (dispatch: any): RequestNamePanelDispatchProps => {
     return {
         changeRecord: (value) => dispatch(actionCreator(UpdateDisplayRecordPropertyType, value)),
         showTimeLine: (id) => dispatch(actionCreator(ShowTimelineType, id)),

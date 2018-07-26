@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { Tabs, Button, Tag, Icon } from 'antd';
 import Editor from '../../../components/editor';
 import './style/index.less';
@@ -290,7 +290,7 @@ const mapStateToProps = (state: State): ResponsePanelStateProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): ResponsePanelDispatchProps => {
+const mapDispatchToProps = (dispatch: any): ResponsePanelDispatchProps => {
     return {
         selectResTab: (recordId, tab) => dispatch(actionCreator(SelectResTabType, { recordId, tab })),
         toggleResPanelMaximize: (recordId, visible) => dispatch(actionCreator(ToggleReqPanelVisibleType, { recordId, visible })),

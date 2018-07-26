@@ -304,7 +304,7 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
         const dataIndexs = ['averageDns', 'averageConnect', 'averageRequest', 'high', 'low', 'stddev', 'p95', 'p90', 'p75', 'p50'].concat(errDataIndexs);
 
         const keys = Object.keys(runState.stressReqDuration);
-        const dataSource = keys.map<StressTableDisplay>(d => {
+        const dataSource = keys.map<any>(d => {
 
             const m500 = runState.stressFailedResult.m500[d] || 0;
             const testFailed = runState.stressFailedResult.testFailed[d] || 0;

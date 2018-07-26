@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import ScheduleList from './schedule_list';
 import { DtoSchedule } from '../../../../api/interfaces/dto_schedule';
 import { DtoUser } from '../../../../api/interfaces/dto_user';
@@ -133,7 +133,7 @@ const mapStateToProps = (state: State): ScheduleStateProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): ScheduleDispatchProps => {
+const mapDispatchToProps = (dispatch: any): ScheduleDispatchProps => {
     return {
         createSchedule: (schedule) => dispatch(actionCreator(SaveScheduleType, { isNew: true, schedule })),
         updateSchedule: (schedule) => dispatch(actionCreator(SaveScheduleType, { isNew: false, schedule })),

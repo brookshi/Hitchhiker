@@ -50,7 +50,7 @@ class EnvironmentColumn extends Table.Column<DtoEnvironment> { }
 
 class Environments extends React.Component<EnvironmentsProps, EnvironmentsState> {
 
-    private envNameInput: Input;
+    private envNameInput: Input | null;
 
     constructor(props: EnvironmentsProps) {
         super(props);

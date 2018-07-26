@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import KeyValueList from '../../../components/key_value';
 import { KeyValueEditType } from '../../../common/custom_type';
 import { DtoQueryString } from '../../../../../api/interfaces/dto_variable';
@@ -66,7 +66,7 @@ const mapStateToProps = (state: any): RequestQueryStringPanelStateProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): RequestQueryStringPanelDispatchProps => {
+const mapDispatchToProps = (dispatch: any): RequestQueryStringPanelDispatchProps => {
     return {
         changeRecord: (value) => dispatch(actionCreator(UpdateDisplayRecordPropertyType, value)),
     };

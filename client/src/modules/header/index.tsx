@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, Dispatch, MapStateToPropsFactory } from 'react-redux';
+import { connect, MapStateToPropsFactory } from 'react-redux';
 import './style/index.less';
 import { Icon, Badge, notification, Dropdown, Menu, Modal, Upload, TreeSelect, message } from 'antd';
 import { State } from '../../state/index';
@@ -201,7 +201,7 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
     }
 }
 
-const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any, ownProps: any) => {
+const makeMapStateToProps: MapStateToPropsFactory<any, any, any> = () => {
     const getProjects = getProjectsIdNameStateSelector();
 
     const mapStateToProps: (state: State) => HeaderPanelStateProps = state => {
@@ -219,7 +219,7 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
     return mapStateToProps;
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<HeaderPanelProps>): HeaderPanelDispatchProps => {
+const mapDispatchToProps = (dispatch: any): HeaderPanelDispatchProps => {
     return {
         logout: (userId, needClearCache) => dispatch(actionCreator(LogoutType, { userId, needClearCache })),
         onChangePassword: (password) => dispatch(actionCreator(ChangePasswordType, password)),

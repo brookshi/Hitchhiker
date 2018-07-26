@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, Dispatch, MapStateToPropsFactory } from 'react-redux';
+import { connect, MapStateToPropsFactory } from 'react-redux';
 import { Button, Dropdown, Select, Menu, Modal, TreeSelect, message } from 'antd';
 import { HttpMethod } from '../../../common/http_method';
 import { getActiveRecordSelector, getActiveRecordStateSelector, getActiveEnvIdSelector, getCollectionTreeDataSelector, getActiveReqResUIStateSelector } from './selector';
@@ -312,7 +312,7 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
     }
 }
 
-const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any, ownProps: any) => {
+const makeMapStateToProps: MapStateToPropsFactory<any, any, any> = () => {
     const getRecordState = getActiveRecordStateSelector();
     const getActiveEnvId = getActiveEnvIdSelector();
     const getActiveRecord = getActiveRecordSelector();
@@ -333,7 +333,7 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
     return mapStateToProps;
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): RequestUrlPanelDispatchProps => {
+const mapDispatchToProps = (dispatch: any): RequestUrlPanelDispatchProps => {
     return {
         changeRecord: (record) => dispatch(actionCreator(UpdateDisplayRecordType, record)),
         save: (record, isNew, oldId) => dispatch(actionCreator(SaveRecordType, { isNew, record, oldId })),

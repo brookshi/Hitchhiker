@@ -10,7 +10,7 @@ import ApiDocument from './modules/document';
 import ApiMock from './modules/api_mock';
 import './style/perfect-scrollbar.min.css';
 import { State } from './state';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { actionCreator } from './action';
 import { UpdateLeftPanelType } from './action/ui';
 import LoginPage from './modules/login';
@@ -159,7 +159,7 @@ const mapStateToProps = (state: State): AppStateProps => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): AppDispatchProps => {
+const mapDispatchToProps = (dispatch: any): AppDispatchProps => {
   return {
     updateLeftPanelStatus: (collapsed, activeModule) => dispatch(actionCreator(UpdateLeftPanelType, { collapsed, activeModule }))
   };

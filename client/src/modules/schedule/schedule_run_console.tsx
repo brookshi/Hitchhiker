@@ -22,7 +22,7 @@ interface ScheduleConsoleState { }
 
 class ScheduleRunConsole extends React.Component<ScheduleConsoleProps, ScheduleConsoleState> {
 
-    private consoleLastView: HTMLDivElement;
+    private consoleLastView: HTMLDivElement | null;
 
     public componentDidUpdate(prevProps: ScheduleConsoleProps, prevState: ScheduleConsoleState) {
         this.scrollToBottom();

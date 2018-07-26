@@ -64,7 +64,7 @@ const createDefaultProject = (user: DtoUser) => {
 class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
 
     private currentNewProject: DtoProject | undefined;
-    private projectRefs: _.Dictionary<ProjectItem> = {};
+    private projectRefs: _.Dictionary<ProjectItem | null> = {};
 
     constructor(props: ProjectListProps) {
         super(props);
@@ -76,9 +76,12 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
     }
 
     componentDidUpdate(prevProps: ProjectListProps, prevState: ProjectListState) {
-        if (this.currentNewProject && this.projectRefs[this.currentNewProject.id]) {
-            this.projectRefs[this.currentNewProject.id].edit();
-            this.currentNewProject = undefined;
+        if (this.currentNewProject) {
+            const projectRef = this.projectRefs[this.currentNewProject.id];
+            if (projectRef) {
+                projectRef.edit();
+                this.currentNewProject = undefined;
+            }
         }
     }
 

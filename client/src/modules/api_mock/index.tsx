@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 
 interface ApiMockStateProps { }
 
@@ -26,7 +26,7 @@ const mapStateToProps = (state: any): ApiMockStateProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): ApiMockDispatchProps => {
+const mapDispatchToProps = (): ApiMockDispatchProps => {
     return {
         // ...mapDispatchToProps
     };
