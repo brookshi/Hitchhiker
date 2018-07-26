@@ -1,6 +1,6 @@
 import React from 'react';
 import { Table, Upload, Button, message, Modal, Popconfirm } from 'antd';
-import { ProjectData, ProjectFiles } from '../../../../api/interfaces/dto_project_data';
+import { ProjectData, ProjectFiles } from '../../../../api/src/interfaces/dto_project_data';
 import * as _ from 'lodash';
 import { ProjectFileType, ProjectFileTypes } from '../../common/custom_type';
 import { Urls } from '../../utils/urls';

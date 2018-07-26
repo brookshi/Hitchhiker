@@ -1,4 +1,4 @@
-import { RunResult } from '../../../api/interfaces/dto_run_result';
+import { RunResult } from '../../../api/src/interfaces/dto_run_result';
 
 export interface ScheduleStatistics {
 

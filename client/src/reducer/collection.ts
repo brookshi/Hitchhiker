@@ -4,7 +4,7 @@ import { combineReducers } from 'redux';
 import * as _ from 'lodash';
 import { RecordCategory } from '../common/record_category';
 import { CollectionState, collectionDefaultValue, RecordState, DisplayRecordsState, displayRecordsDefaultValue, getNewRecordState } from '../state/collection';
-import { DtoCollectionWithRecord } from '../../../api/interfaces/dto_collection';
+import { DtoCollectionWithRecord } from '../../../api/src/interfaces/dto_collection';
 import { RequestStatus } from '../common/request_status';
 import { LoginSuccessType } from '../action/user';
 import { ConflictType } from '../common/conflict_type';

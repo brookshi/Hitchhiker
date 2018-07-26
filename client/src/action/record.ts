@@ -4,7 +4,7 @@ import { HttpMethod } from '../common/http_method';
 import { syncAction, actionCreator, SessionInvalidType } from './index';
 import { Urls } from '../utils/urls';
 import * as _ from 'lodash';
-import { RunResult } from '../../../api/interfaces/dto_run_result';
+import { RunResult } from '../../../api/src/interfaces/dto_run_result';
 
 export const AddTabType = 'add tab';
 

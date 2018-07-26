@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { Setting } from '../../utils/setting';
 import { Log } from '../../utils/log';
 import * as WS from 'ws';
-import { StressRequest, StressUser, WorkerInfo, StressResponse, StressMessage, StressResFailedInfo, Duration, StressResStatisticsTime, StressRunResult, StressResFailedStatistics } from '../../interfaces/dto_stress_setting';
+import { WorkerInfo, StressResponse, StressMessage, StressResFailedInfo, Duration, StressResStatisticsTime, StressRunResult, StressResFailedStatistics } from '../../interfaces/dto_stress_setting';
 import * as _ from 'lodash';
 import { StressMessageType, WorkerStatus, StressFailedType } from '../../common/stress_type';
 import { RunResult } from '../../interfaces/dto_run_result';
@@ -13,6 +13,7 @@ import { StressFailedInfo } from '../../models/stress_failed_info';
 import { StressService } from '../../services/stress_service';
 import { StringUtil } from '../../utils/string_util';
 import { MathUtil } from '../../utils/math_util';
+import { StressRequest, StressUser } from '../../interfaces/stress_case_info';
 
 type WorkerInfoEx = WorkerInfo & { socket: WS };
 

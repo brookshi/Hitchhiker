@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from 'react';
-import { DtoHeader } from '../../../../api/interfaces/dto_header';
+import { DtoHeader } from '../../../../api/src/interfaces/dto_header';
 import { KeyValuePair } from '../../common/key_value_pair';
 import { Input } from 'antd';
 import { StringUtil } from '../../utils/string_util';

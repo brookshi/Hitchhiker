@@ -1,5 +1,5 @@
 import React from 'react';
-import { DtoRecord } from '../../../../api/interfaces/dto_record';
+import { DtoRecord } from '../../../../api/src/interfaces/dto_record';
 import { Modal, Menu, Dropdown, Button, Icon, message } from 'antd';
 import Editor from '../editor';
 import { HAR } from '../../common/har';

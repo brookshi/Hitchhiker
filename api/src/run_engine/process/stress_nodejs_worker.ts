@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { TestCase, StressRequest } from '../../interfaces/dto_stress_setting';
+import { TestCase, StressRequest } from '../../interfaces/stress_case_info';
 import { Log } from '../../utils/log';
 import { RecordRunner } from '../record_runner';
 import { StressMessageType } from '../../common/stress_type';

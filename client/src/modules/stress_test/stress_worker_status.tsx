@@ -1,6 +1,6 @@
 import React from 'react';
 import './style/index.less';
-import { WorkerInfo } from '../../../../api/interfaces/dto_stress_setting';
+import { WorkerInfo } from '../../../../api/src/interfaces/dto_stress_setting';
 import Indicator from '../../components/indicator';
 import { State } from '../../state/index';
 import { connect } from 'react-redux';

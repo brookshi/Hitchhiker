@@ -72,7 +72,7 @@ module.exports = {
   appIndexJs: resolveApp('src/index.tsx'),
   appPackageJson: resolveApp('package.json'),
   appSrc: resolveApp('src'),
-  interfaceSrc: resolveApp('../api/interfaces'),
+  interfaceSrc: resolveApp('../api/src/interfaces'),
   yarnLockFile: resolveApp('yarn.lock'),
   testsSetup: resolveApp('src/setupTests.ts'),
   appNodeModules: resolveApp('node_modules'),

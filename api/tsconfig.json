@@ -5,12 +5,11 @@
         "module": "commonjs",
         "target": "ES6",
         "outDir": "build",
-        "rootDir": "api",
+        "rootDir": "src",
         "sourceMap": true,
         "watch": true
     },
     "exclude": [
-        "./client/**/*",
         "node_modules"
     ]
 }

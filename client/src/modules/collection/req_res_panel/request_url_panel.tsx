@@ -6,18 +6,18 @@ import { getActiveRecordSelector, getActiveRecordStateSelector, getActiveEnvIdSe
 import { actionCreator } from '../../../action/index';
 import { SaveRecordType, SaveAsRecordType, SendRequestType, UpdateDisplayRecordType } from '../../../action/record';
 import { State } from '../../../state/index';
-import { DtoRecord } from '../../../../../api/interfaces/dto_record';
+import { DtoRecord } from '../../../../../api/src/interfaces/dto_record';
 import { newRecordFlag, allParameter } from '../../../common/constants';
 import { StringUtil } from '../../../utils/string_util';
 import { TreeData } from 'antd/lib/tree-select/interface';
 import * as _ from 'lodash';
-import { DtoHeader } from '../../../../../api/interfaces/dto_header';
+import { DtoHeader } from '../../../../../api/src/interfaces/dto_header';
 import CodeSnippetDialog from '../../../components/code_snippet_dialog';
 import Msg from '../../../locales';
 import LoInput from '../../../locales/input';
 import LocalesString from '../../../locales/string';
 import { DisplayQueryStringType } from '../../../action/ui';
-import { DtoQueryString, DtoBodyFormData } from '../../../../../api/interfaces/dto_variable';
+import { DtoQueryString, DtoBodyFormData } from '../../../../../api/src/interfaces/dto_variable';
 
 const DButton = Dropdown.Button as any;
 const Option = Select.Option;

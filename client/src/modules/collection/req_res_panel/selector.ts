@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import { State } from '../../../state';
 import { noEnvironment } from '../../../common/constants';
 import { reqResUIDefaultValue } from '../../../state/ui';
-import { DtoCollection } from '../../../../../api/interfaces/dto_collection';
+import { DtoCollection } from '../../../../../api/src/interfaces/dto_collection';
 import { RecordCategory } from '../../../common/record_category';
 import { TreeData } from 'antd/lib/tree-select/interface';
 import * as _ from 'lodash';

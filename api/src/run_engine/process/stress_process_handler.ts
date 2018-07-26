@@ -1,7 +1,8 @@
 import { BaseProcessHandler } from './base_process_handler';
-import { StressResponse, StressRequest } from '../../interfaces/dto_stress_setting';
+import { StressResponse } from '../../interfaces/dto_stress_setting';
 import { StressMessageType } from '../../common/stress_type';
 import { Log } from '../../utils/log';
+import { StressRequest } from '../../interfaces/stress_case_info';
 
 export class StressProcessHandler extends BaseProcessHandler {
 

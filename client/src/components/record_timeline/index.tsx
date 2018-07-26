@@ -1,7 +1,7 @@
 import React from 'react';
 import './style/index.less';
 import { Timeline, Modal } from 'antd';
-import { DtoRecord, DtoRecordHistory } from '../../../../api/interfaces/dto_record';
+import { DtoRecord, DtoRecordHistory } from '../../../../api/src/interfaces/dto_record';
 import { StringUtil } from '../../utils/string_util';
 import { unknownName } from '../../common/constants';
 import * as _ from 'lodash';

@@ -7,7 +7,7 @@ import { RequestState } from '../../state/request';
 import { actionCreator, ResetSyncMsgType } from '../../action/index';
 import { LogoutType, ChangePasswordType } from '../../action/user';
 import ChangePasswordDialog from './change_password_dialog';
-import { Password } from '../../../../api/interfaces/password';
+import { Password } from '../../../../api/src/interfaces/password';
 import { getProjectsIdNameStateSelector } from '../../components/collection_tree/selector';
 import { ImportDataType } from '../../action/collection';
 import Msg from '../../locales';

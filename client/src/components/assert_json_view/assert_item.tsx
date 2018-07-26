@@ -1,9 +1,9 @@
 import React from 'react';
-import { DtoAssert } from '../../../../api/interfaces/dto_assert';
+import { DtoAssert } from '../../../../api/src/interfaces/dto_assert';
 import { Select } from 'antd';
 import { AssertType, AssertTypeFuncMapping } from './assert_funcs';
 import { allEnvironment, noEnvironment } from '../../common/constants';
-import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
+import { DtoEnvironment } from '../../../../api/src/interfaces/dto_environment';
 import Msg from '../../locales';
 import LoInput from '../../locales/input';
 

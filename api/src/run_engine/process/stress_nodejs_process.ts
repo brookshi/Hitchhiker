@@ -3,13 +3,14 @@ import * as WS from 'ws';
 import * as OS from 'os';
 import * as path from 'path';
 import { Log } from '../../utils/log';
-import { StressMessage, TestCase, StressRequest } from '../../interfaces/dto_stress_setting';
+import { StressMessage } from '../../interfaces/dto_stress_setting';
 import { WorkerStatus, StressMessageType } from '../../common/stress_type';
 import { RunResult } from '../../interfaces/dto_run_result';
 import { ChildProcessManager } from './child_process_manager';
 import { MathUtil } from '../../utils/math_util';
 import { StressNodejsWorkerHandler } from './stress_nodejs_worker_handler';
 import { BaseProcessHandler } from './base_process_handler';
+import { TestCase, StressRequest } from '../../interfaces/stress_case_info';
 
 const restartDelay: number = 10 * 1000;
 

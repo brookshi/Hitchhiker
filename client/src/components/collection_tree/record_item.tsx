@@ -4,7 +4,7 @@ import ItemWithMenu from '../item_with_menu';
 import './style/index.less';
 import { Menu, Icon, Badge } from 'antd';
 import { confirmDlg } from '../confirm_dialog/index';
-import { DtoRecord } from '../../../../api/interfaces/dto_record';
+import { DtoRecord } from '../../../../api/src/interfaces/dto_record';
 import { StringUtil } from '../../utils/string_util';
 import Msg from '../../locales';
 import LocalesString from '../../locales/string';

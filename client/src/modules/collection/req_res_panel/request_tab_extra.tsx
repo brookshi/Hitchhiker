@@ -10,7 +10,7 @@ import { getActiveRecordSelector, getReqActiveTabKeySelector, getHeadersEditMode
 import { actionCreator } from '../../../action/index';
 import { UpdateDisplayRecordType } from '../../../action/record';
 import { State } from '../../../state/index';
-import { DtoRecord } from '../../../../../api/interfaces/dto_record';
+import { DtoRecord } from '../../../../../api/src/interfaces/dto_record';
 import { SwitchHeadersEditModeType } from '../../../action/ui';
 import Msg from '../../../locales';
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import { Table, Tooltip } from 'antd';
-import { DtoStressRecord } from '../../../../api/interfaces/dto_stress_record';
+import { DtoStressRecord } from '../../../../api/src/interfaces/dto_stress_record';
 import * as _ from 'lodash';
-import { DtoRecord } from '../../../../api/interfaces/dto_record';
+import { DtoRecord } from '../../../../api/src/interfaces/dto_record';
 import './style/index.less';
-import { StressRunResult, StressResFailedStatistics } from '../../../../api/interfaces/dto_stress_setting';
+import { StressRunResult, StressResFailedStatistics } from '../../../../api/src/interfaces/dto_stress_setting';
 import StressRunDiagram from './stress_run_diagram';
-import { DtoStress } from '../../../../api/interfaces/dto_stress';
+import { DtoStress } from '../../../../api/src/interfaces/dto_stress';
 import Msg from '../../locales';
 import LocalesString from '../../locales/string';
 

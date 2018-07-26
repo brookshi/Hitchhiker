@@ -1,5 +1,5 @@
 import { StringUtil } from './string_util';
-import { DtoRecord } from '../../../api/interfaces/dto_record';
+import { DtoRecord } from '../../../api/src/interfaces/dto_record';
 import * as words from 'shellwords';
 import { getDefaultRecord } from '../state/collection';
 

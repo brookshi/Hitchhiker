@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { State } from '../../state/index';
-import { DtoCollection } from '../../../../api/interfaces/dto_collection';
+import { DtoCollection } from '../../../../api/src/interfaces/dto_collection';
 import { getDocumentDisplayCollectionSelector } from '../../components/collection_tree/selector';
 import CollectionList from '../../components/collection_tree';
 import SiderLayout from '../../components/sider_layout';

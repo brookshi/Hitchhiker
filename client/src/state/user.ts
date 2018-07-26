@@ -1,4 +1,4 @@
-import { DtoResUser } from '../../../api/interfaces/dto_res';
+import { DtoResUser } from '../../../api/src/interfaces/dto_res';
 import { RequestState, requestStateDefaultValue } from './request';
 
 export interface UserInfoState {

@@ -1,7 +1,7 @@
 import React from 'react';
-import { RunResult } from '../../../../api/interfaces/dto_run_result';
+import { RunResult } from '../../../../api/src/interfaces/dto_run_result';
 import { noEnvironment, unknownName, pass, fail } from '../../common/constants';
-import { DtoRecord } from '../../../../api/interfaces/dto_record';
+import { DtoRecord } from '../../../../api/src/interfaces/dto_record';
 import * as _ from 'lodash';
 import * as ReactDOM from 'react-dom';
 import Msg from '../../locales';

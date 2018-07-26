@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Tabs, Badge, Radio, Select, Icon, Checkbox, Button, message } from 'antd';
 import RequestTabExtra from './request_tab_extra';
 import { normalBadgeStyle } from '../../../style/theme';
-import { DtoHeader } from '../../../../../api/interfaces/dto_header';
+import { DtoHeader } from '../../../../../api/src/interfaces/dto_header';
 import { actionCreator } from '../../../action/index';
 import { SelectReqTabType } from '../../../action/ui';
 import { KeyValueEditMode, DataMode } from '../../../common/custom_type';
@@ -14,7 +14,7 @@ import { UpdateDisplayRecordPropertyType, ChangeCurrentParamType } from '../../.
 import { bodyTypes } from '../../../common/body_type';
 import { defaultBodyType, allParameter, noEnvironment } from '../../../common/constants';
 import { getActiveRecordSelector, getReqActiveTabKeySelector, getHeadersEditModeSelector, getActiveRecordStateSelector, getProjectEnvsSelector, getActiveEnvIdSelector } from './selector';
-import { DtoRecord } from '../../../../../api/interfaces/dto_record';
+import { DtoRecord } from '../../../../../api/src/interfaces/dto_record';
 import { RecordState, ParameterStatusState } from '../../../state/collection';
 import { KeyValueEditType } from '../../../common/custom_type';
 import { State } from '../../../state/index';
@@ -23,11 +23,11 @@ import { ParameterType, ReduceAlgorithmType } from '../../../common/parameter_ty
 import { StringUtil } from '../../../utils/string_util';
 import { RequestStatus } from '../../../common/request_status';
 import AssertJsonView from '../../../components/assert_json_view';
-import { DtoAssert } from '../../../../../api/interfaces/dto_assert';
-import { DtoEnvironment } from '../../../../../api/interfaces/dto_environment';
+import { DtoAssert } from '../../../../../api/src/interfaces/dto_assert';
+import { DtoEnvironment } from '../../../../../api/src/interfaces/dto_environment';
 import Msg from '../../../locales';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { DtoBodyFormData } from '../../../../../api/interfaces/dto_variable';
+import { DtoBodyFormData } from '../../../../../api/src/interfaces/dto_variable';
 import LocalesString from '../../../locales/string';
 
 const TabPane = Tabs.TabPane;

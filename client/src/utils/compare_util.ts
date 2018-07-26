@@ -1,4 +1,4 @@
-import { DtoRecord } from '../../../api/interfaces/dto_record';
+import { DtoRecord } from '../../../api/src/interfaces/dto_record';
 import { StringUtil } from './string_util';
 import * as _ from 'lodash';
 

@@ -1,4 +1,5 @@
-import { DtoEnvironment } from '../../../api/interfaces/dto_environment';
+import { DtoEnvironment } from '../../../api/src/interfaces/dto_environment';
+import * as _ from 'lodash';
 
 export interface EnvironmentState {
 

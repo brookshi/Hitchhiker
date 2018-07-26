@@ -11,7 +11,7 @@
     "allowJs": true,
     "jsx": "preserve",
     "moduleResolution": "node",
-    "rootDir": "./",
+    "rootDir": "src",
     "forceConsistentCasingInFileNames": false,
     "noImplicitReturns": true,
     "noImplicitThis": true,
@@ -32,8 +32,8 @@
     "scripts",
     "acceptance-tests",
     "webpack",
-    "jest",
-    "src/setupTests.ts"
+    "src/setupTests.ts",
+    "api"
   ],
   "types": [
     "typePatches"

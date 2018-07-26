@@ -2,7 +2,7 @@ import React from 'react';
 import ItemWithMenu from '../../components/item_with_menu';
 import { Menu, Icon } from 'antd';
 import { confirmDlg } from '../../components/confirm_dialog/index';
-import { DtoStress } from '../../../../api/interfaces/dto_stress';
+import { DtoStress } from '../../../../api/src/interfaces/dto_stress';
 import Msg from '../../locales';
 import './style/index.less';
 import LocalesString from '../../locales/string';

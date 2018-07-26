@@ -6,7 +6,7 @@ import { ParameterType, ReduceAlgorithmType } from '../common/parameter_type';
 import * as _ from 'lodash';
 import { allParameter } from '../common/constants';
 import LocalesString from '../locales/string';
-import { DtoHeader } from '../../../api/interfaces/dto_header';
+import { DtoHeader } from '../../../api/src/interfaces/dto_header';
 import { PairwiseStrategy } from './pairwise';
 
 export class StringUtil {

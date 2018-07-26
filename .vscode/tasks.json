@@ -9,7 +9,7 @@
         "dependsOn": ["gulp"],
         "args": [
             "-p",
-            "."
+            "api"
         ],
         "problemMatcher": "$tsc-watch"
     }]

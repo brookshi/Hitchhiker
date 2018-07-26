@@ -1,5 +1,5 @@
 import { Urls } from '../utils/urls';
-import { StressResponse } from '../../../api/interfaces/dto_stress_setting';
+import { StressResponse } from '../../../api/src/interfaces/dto_stress_setting';
 import { StressMessageType } from '../common/stress_type';
 import { takeEvery, put, takeLatest } from 'redux-saga/effects';
 import { syncAction, actionCreator } from './index';

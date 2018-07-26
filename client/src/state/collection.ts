@@ -1,6 +1,6 @@
-import { DtoCollectionWithRecord } from '../../../api/interfaces/dto_collection';
-import { DtoRecord } from '../../../api/interfaces/dto_record';
-import { RunResult } from '../../../api/interfaces/dto_run_result';
+import { DtoCollectionWithRecord } from '../../../api/src/interfaces/dto_collection';
+import { DtoRecord } from '../../../api/src/interfaces/dto_record';
+import { RunResult } from '../../../api/src/interfaces/dto_run_result';
 import { StringUtil } from '../utils/string_util';
 import { RecordCategory } from '../common/record_category';
 import { requestStateDefaultValue, RequestState } from './request';
@@ -8,6 +8,7 @@ import { allProject, newRecordFlag, newRequestName, allParameter } from '../comm
 import { ParameterType } from '../common/parameter_type';
 import { RequestStatus } from '../common/request_status';
 import { ConflictType } from '../common/conflict_type';
+import * as _ from 'lodash';
 
 export function getDefaultRecord(isInit: boolean = false): DtoRecord {
     return {

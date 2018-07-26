@@ -42,7 +42,7 @@ gulp.task('package', ['release'], function () {
 gulp.task('release', ['copy', 'copyTemplate', 'copyGlobalData', 'copyLocales', 'createBackupFolder']);
 
 gulp.task('copy', ['compilerClient'], function () {
-    return gulp.src('./client/build/**/*.*')
+    return gulp.src('../client/build/**/*.*')
         .pipe(gulp.dest('./build/public'))
         .on('end', function () {
             gulp.src('./pm2.json')
@@ -51,8 +51,9 @@ gulp.task('copy', ['compilerClient'], function () {
 });
 
 gulp.task('copyTemplate', function () {
+    console.log(__dirname);
     fs.removeSync(path.join(__dirname, 'build/mail/templates'));
-    return gulp.src('./api/mail/templates/**/*.*')
+    return gulp.src('./src/mail/templates/**/*.*')
         .pipe(gulp.dest('./build/mail/templates'));
 });
 
@@ -60,13 +61,13 @@ gulp.task('copyGlobalData', function () {
     let globalPath = path.join(__dirname, 'build/global_data');
     fs.removeSync(globalPath);
     fs.mkdirpSync(`${globalPath}/project`);
-    return gulp.src('./api/global_data/**/*.*')
+    return gulp.src('./src/global_data/**/*.*')
         .pipe(gulp.dest('./build/global_data'));
 });
 
 gulp.task('copyLocales', function () {
     fs.removeSync(path.join(__dirname, 'build/locales'));
-    return gulp.src('./api/locales/**/*.*')
+    return gulp.src('./src/locales/**/*.*')
         .pipe(gulp.dest('./build/locales'));
 });
 
@@ -79,7 +80,7 @@ gulp.task('createBackupFolder', function () {
 });
 
 gulp.task('compilerClient', ['compilerServer'], function (cb) {
-    process.chdir('./client');
+    process.chdir('../client');
     exec('yarn build', function (err, stdout, stderr) {
         console.log(stdout);
         console.log(stderr);
@@ -97,9 +98,9 @@ gulp.task('compilerServer', ['config'], function (cb) {
 });
 
 gulp.task('config', [], function () {
-    return gulp.src('./client/src/utils/urls.ts')
+    return gulp.src('../client/src/utils/urls.ts')
         .pipe(replace('http://localhost:3000/', 'HITCHHIKER_APP_HOST'))
-        .pipe(gulp.dest('./client/src/utils/'))
+        .pipe(gulp.dest('../client/src/utils/'))
         .on('end', function () {
             gulp.src('./appconfig.json')
                 .pipe(replace('localhost:3000', `localhost:8080`))
@@ -108,9 +109,9 @@ gulp.task('config', [], function () {
                 .pipe(replace('DEV', `PROD`))
                 .pipe(gulp.dest('./'))
                 .on('end', function () {
-                    gulp.src('./client/package.json')
+                    gulp.src('../client/package.json')
                         .pipe(replace('localhost:81', `localhost:8080`))
-                        .pipe(gulp.dest('./client/'));
+                        .pipe(gulp.dest('../client/'));
                 });
         });
 });
