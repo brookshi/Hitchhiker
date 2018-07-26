@@ -29,6 +29,7 @@ import 'echarts/lib/component/toolbox';
 import 'echarts/lib/component/markPoint';
 import 'echarts/lib/component/markLine';
 import LocalesString from '../../locales/string';
+import { DownloadUtil } from '../../utils/download_util';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -232,12 +233,12 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
             this.getRecordDisplayName(d.id),
             d.param || '',
             this.getEnvName(d.envId),
-            this.isSuccess(d).toString(),
+            this.isSuccess(d) ? pass() : fail(),
             `${d.elapsed / 1000} s`,
             JSON.stringify(d.tests)
         ]));
-        const headers = ['Name', 'Parameter', 'Environment', 'Pass', 'Duration', 'Tests'];
-        StringUtil.downloadCSV(headers, rows, `${schedule.name}-${(runDate || new Date()).toLocaleString()}`);
+        const headers = [LocalesString.get('Common.Name'), LocalesString.get('Schedule.Param'), LocalesString.get('Common.Environment'), LocalesString.get('Schedule.Pass'), LocalesString.get('Schedule.Duration'), LocalesString.get('Schedule.Tests')];
+        DownloadUtil.downloadCSV(headers, rows, `${schedule.name}-${(runDate || new Date()).toLocaleString()}`);
     }
 
     private compareExport(originRst: RunResult, compareRst: RunResult): boolean {

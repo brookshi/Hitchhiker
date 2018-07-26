@@ -22,6 +22,7 @@ import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
 import { noEnvironment } from '../../common/constants';
 import LocalesString from '../../locales/string';
 import { StringUtil } from '../../utils/string_util';
+import { DownloadUtil } from '../../utils/download_util';
 
 interface DocumentContentStateProps {
 
@@ -263,9 +264,6 @@ class DocumentContent extends React.Component<DocumentContentProps, DocumentCont
     }
 
     private download = () => {
-        const eleLink = document.createElement('a');
-        eleLink.download = 'document.html';
-        eleLink.style.display = 'none';
         const doc = (document.getElementById('document-main') || { innerHTML: '' }).innerHTML;
         const activeCollection = this.getActiveCollection(this.props);
 
@@ -274,11 +272,8 @@ class DocumentContent extends React.Component<DocumentContentProps, DocumentCont
         }
 
         const data = { doc, collectionName: activeCollection.name, records: this.getSortedRecords(activeCollection.id, true) };
-        const blob = new Blob([TemplateUtil.apply(mainTpl, data)]);
-        eleLink.href = URL.createObjectURL(blob);
-        document.body.appendChild(eleLink);
-        eleLink.click();
-        document.body.removeChild(eleLink);
+
+        DownloadUtil.download('document.html', TemplateUtil.apply(mainTpl, data), '');
     }
 
     public render() {

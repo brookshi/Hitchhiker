@@ -18,7 +18,7 @@ import 'echarts/lib/component/legend';
 import { unknownName } from '../../common/constants';
 import { Table, Tooltip, Button } from 'antd';
 import LocalesString from '../../locales/string';
-import { StringUtil } from '../../utils/string_util';
+import { DownloadUtil } from '../../utils/download_util';
 
 interface StressTableDisplay {
 
@@ -356,7 +356,7 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
 
     private generateExcel = () => {
         const { name, runDate } = this.props;
-        StringUtil.downloadTable('stress-table', `${name}-${(runDate || new Date()).toLocaleString()}`);
+        DownloadUtil.downloadTable('stress-table', `${name}-${(runDate || new Date()).toLocaleString()}`);
     }
 
     public render() {
