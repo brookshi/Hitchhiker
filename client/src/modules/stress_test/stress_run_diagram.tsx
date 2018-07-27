@@ -2,7 +2,7 @@ import React from 'react';
 import { DtoRecord } from '../../common/interfaces/dto_record';
 import * as _ from 'lodash';
 import './style/index.less';
-import { StressRunResult, StressReqProgress, StressResFailedStatistics } from '../../common/interfaces/dto_stress_setting';
+import { StressRunResult, StressReqProgress, StressResFailedStatistics, Duration, StressResStatisticsTime } from '../../common/interfaces/dto_stress_setting';
 import ReactEchartsCore from 'echarts-for-react/lib/core';
 import echarts from 'echarts/lib/echarts';
 import 'echarts/lib/chart/effectScatter';

@@ -4,8 +4,8 @@ var autoprefixer = require('autoprefixer');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-var InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
-var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
+//var InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
+// var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 var getClientEnvironment = require('./env');
 var paths = require('./paths');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -141,83 +141,165 @@ module.exports = {
       {
         test: /\.(ts|tsx)$/,
         include: paths.appSrc,
-        use: [
-          'babel-loader',
-          {
-            loader: 'awesome-typescript-loader'
-          }
-        ]
+        use: ['babel-loader', {
+          loader: 'awesome-typescript-loader'
+        }]
       },
       // "postcss" loader applies autoprefixer to our CSS.
       // "css" loader resolves paths in CSS and adds assets as dependencies.
       // "style" loader turns CSS into JS modules that inject <style> tags.
       // In production, we use a plugin to extract that CSS to a file, but
       // in development "style" loader enables hot editing of CSS.
-      // {
-      //   test: /\.css$/,
-      //   loader: 'style!css?importLoaders=1!postcss'
-      // },
+      {
+        test: /\.css$/,
+        loader: [{
+          loader: 'css-loader',
+          options: {
+            importLoaders: 1
+          }
+        }, {
+          loader: 'postcss-loader',
+          options: {
+            sourceMap: true,
+            plugins: function () {
+              return [];
+            }
+          }
+        }]
+      },
       {
         test: /\.css$/,
         use: ExtractTextPlugin.extract(
-          `${require.resolve('css-loader')}` +
-          `?sourceMap&-restructuring&modules` +
-          `${require.resolve('postcss-loader')}`
+          [{
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+              modules: true
+            }
+          }, {
+            loader: 'postcss-loader',
+            options: {
+              sourceMap: true,
+              plugins: function () {
+                return [];
+              }
+            }
+          }]
         )
       },
       {
         test: /\.less$/,
         include: paths.appSrc,
         use: [
-          'style-loader',
           'css-loader',
-          'postcss-loader',
-          'less-loader?strictMath=true'
+          {
+            loader: 'postcss-loader',
+            options: {
+              sourceMap: true,
+              plugins: function () {
+                return [];
+              }
+            }
+          },
+          {
+            loader: 'less-loader',
+            options: {
+              strictMath: true
+            }
+          }
         ]
       },
       {
         test: /\.less$/,
         exclude: paths.appSrc,
-        use: ExtractTextPlugin.extract(
-          `${require.resolve('css-loader')}?` +
-          `sourceMap&modules` +
-          `${require.resolve('postcss-loader')}!` +
-          `${require.resolve('less-loader')}?` +
-          `{"sourceMap":true,"modifyVars":${JSON.stringify(theme)}}`
-        )
+        use: ExtractTextPlugin.extract([
+          // 'css-loader',
+          // 'less-loader',
+          // 'postcss-loader'
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+              modules: true
+            }
+          }, {
+            loader: 'postcss-loader',
+            options: {
+              sourceMap: true,
+              plugins: function () {
+                return [];
+              }
+            }
+          }, {
+            loader: 'less-loader',
+            options: {
+              sourceMap: true,
+              modifyVars: JSON.stringify(theme)
+            }
+          }
+        ])
       },
-      // JSON is not enabled by default in Webpack but both Node and Browserify
-      // allow it implicitly so we also enable it.
-      {
-        test: /\.json$/,
-        use: 'json-loader'
-      },
-      // "file" loader for svg
-      {
-        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        use: `${require.resolve('url-loader')}?` +
-          `limit=10000&minetype=image/svg+xml`
-      },
-      {
-        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-        use: `${require.resolve('url-loader')}?` +
-          `limit=10000&name=static/fonts/[name].[ext]&minetype=application/font-woff`
-      },
-      {
-        test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-        use: `${require.resolve('url-loader')}?` +
-          `limit=10000&minetype=application/font-woff`
-      },
-      {
-        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        use: `${require.resolve('url-loader')}?` +
-          `limit=10000&minetype=application/octet-stream`
-      },
-      {
-        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        use: `${require.resolve('url-loader')}?` +
-          `limit=10000&minetype=application/vnd.ms-fontobject`
-      }
+      // // JSON is not enabled by default in Webpack but both Node and Browserify
+      // // allow it implicitly so we also enable it.
+      // {
+      //   test: /\.json$/,
+      //   use: 'json-loader'
+      // },
+      // // "file" loader for svg
+      // {
+      //   test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+      //   use: [{
+      //     loader: 'url-loader',
+      //     options: {
+      //       limit: 10000,
+      //       minetype: `image/svg+xml`
+      //     }
+      //   }]
+      // },
+      // {
+      //   test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+      //   use: [{
+      //     loader: 'url-loader',
+      //     options: {
+      //       limit: 10000,
+      //       name: 'static/fonts/[name].[ext]',
+      //       minetype: `application/font-woff`
+      //     }
+      //   }]
+      // },
+      // {
+      //   test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+      //   use: [{
+      //     loader: 'url-loader',
+      //     options: {
+      //       limit: 10000,
+      //       name: 'static/fonts/[name].[ext]',
+      //       minetype: `application/font-woff`
+      //     }
+      //   }]
+      // },
+      // {
+      //   test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+      //   use: [{
+      //     loader: 'url-loader',
+      //     options: {
+      //       limit: 10000,
+      //       name: 'static/fonts/[name].[ext]',
+      //       minetype: `application/octet-stream`
+      //     }
+      //   }]
+      // },
+      // {
+      //   test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+      //   use: [{
+      //     loader: 'url-loader',
+      //     options: {
+      //       limit: 10000,
+      //       name: 'static/fonts/[name].[ext]',
+      //       minetype: `application/vnd.ms-fontobject`
+      //     }
+      //   }]
+      // }
       // ** STOP ** Are you adding a new loader?
       // Remember to add the new extension(s) to the "url" loader exclusion list.
     ]
@@ -245,8 +327,8 @@ module.exports = {
       inject: true,
       template: paths.appHtml,
     }),
-    new InterpolateHtmlPlugin(env.raw),
-    new ExtractTextPlugin('static/css/[name].[contenthash:8].css', {
+    //new InterpolateHtmlPlugin(env.raw),
+    new ExtractTextPlugin('static/css/[name].css', {
       disable: false,
       allChunks: true,
     }),
@@ -263,8 +345,8 @@ module.exports = {
     // to restart the development server for Webpack to discover it. This plugin
     // makes the discovery automatic so you don't have to restart.
     // See https://github.com/facebookincubator/create-react-app/issues/186
-    new WatchMissingNodeModulesPlugin(paths.appNodeModules),
-    new BundleAnalyzerPlugin()
+    // new WatchMissingNodeModulesPlugin(paths.appNodeModules),
+    //new BundleAnalyzerPlugin()
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
