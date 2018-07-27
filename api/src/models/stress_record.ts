@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
 import { Stress } from './stress';
-import { StressRunResult } from '../interfaces/dto_stress_setting';
+import { StressRunResult } from '../common/interfaces/dto_stress_setting';
 
 @Entity()
 export class StressRecord {

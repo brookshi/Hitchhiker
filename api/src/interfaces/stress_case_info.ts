@@ -1,4 +1,4 @@
-import { StressMessageType } from '../common/stress_type';
+import { StressMessageType } from '../common/enum/stress_type';
 import { RecordEx } from '../models/record';
 
 export interface StressUser {

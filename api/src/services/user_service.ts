@@ -1,7 +1,7 @@
 import { User } from '../models/user';
 import { ConnectionManager } from './connection_manager';
-import { Message } from '../common/message';
-import { ResObject } from '../common/res_object';
+import { Message } from '../utils/message';
+import { ResObject } from '../interfaces/res_object';
 import { ValidateUtil } from '../utils/validate_util';
 import { Setting } from '../utils/setting';
 import { MailService } from './mail_service';

@@ -1,4 +1,4 @@
-import { NotificationMode } from './notification_mode';
+import { NotificationMode } from '../enum/notification_mode';
 import { DtoStressRecord } from './dto_stress_record';
 
 export interface DtoStress {

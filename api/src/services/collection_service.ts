@@ -1,11 +1,11 @@
-import { ResObject } from '../common/res_object';
+import { ResObject } from '../interfaces/res_object';
 import { Collection } from '../models/collection';
 import { ConnectionManager } from './connection_manager';
 import { ObjectLiteral } from 'typeorm/common/ObjectLiteral';
 import { User } from '../models/user';
-import { Message } from '../common/message';
+import { Message } from '../utils/message';
 import { StringUtil } from '../utils/string_util';
-import { DtoCollection } from '../interfaces/dto_collection';
+import { DtoCollection } from '../common/interfaces/dto_collection';
 import { RecordService } from './record_service';
 import { ProjectService } from './project_service';
 import { Project } from '../models/project';

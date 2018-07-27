@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import KeyValueList from '../../../components/key_value';
-import { KeyValueEditType } from '../../../common/custom_type';
-import { DtoQueryString } from '../../../../../api/src/interfaces/dto_variable';
+import { KeyValueEditType } from '../../../misc/custom_type';
+import { DtoQueryString } from '../../../common/interfaces/dto_variable';
 import * as _ from 'lodash';
-import { DtoHeader } from '../../../../../api/src/interfaces/dto_header';
+import { DtoHeader } from '../../../common/interfaces/dto_header';
 import { UpdateDisplayRecordPropertyType } from '../../../action/record';
 import { actionCreator } from '../../../action/index';
 import { getActiveRecordSelector } from './selector';
@@ -28,7 +28,7 @@ interface RequestQueryStringPanelState { }
 
 class RequestQueryStringPanel extends React.Component<RequestQueryStringPanelProps, RequestQueryStringPanelState> {
 
-    shouldComponentUpdate(nextProps: RequestQueryStringPanelStateProps, nextState: RequestQueryStringPanelState) {
+    shouldComponentUpdate(nextProps: RequestQueryStringPanelStateProps, _nextState: RequestQueryStringPanelState) {
         const { url, queryStrings } = this.props;
         return url !== nextProps.url || !_.isEqual(queryStrings, nextProps.queryStrings);
     }

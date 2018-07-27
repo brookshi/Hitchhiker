@@ -1,6 +1,6 @@
 import { BaseProcessHandler } from './base_process_handler';
-import { StressResponse } from '../../interfaces/dto_stress_setting';
-import { StressMessageType } from '../../common/stress_type';
+import { StressResponse } from '../../common/interfaces/dto_stress_setting';
+import { StressMessageType } from '../../common/enum/stress_type';
 import { Log } from '../../utils/log';
 import { StressRequest } from '../../interfaces/stress_case_info';
 

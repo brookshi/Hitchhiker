@@ -1,11 +1,11 @@
 import { POST, PUT, DELETE, BodyParam, PathParam, BaseController } from 'webapi-router';
-import { ResObject } from '../common/res_object';
+import { ResObject } from '../interfaces/res_object';
 import * as Koa from 'koa';
 import { RecordService } from '../services/record_service';
 import { RecordRunner } from '../run_engine/record_runner';
-import { DtoRecord } from '../interfaces/dto_record';
-import { DtoRecordRun } from '../interfaces/dto_record_run';
-import { DtoRecordSort } from '../interfaces/dto_record_sort';
+import { DtoRecord } from '../common/interfaces/dto_record';
+import { DtoRecordRun } from '../common/interfaces/dto_record_run';
+import { DtoRecordSort } from '../common/interfaces/dto_record_sort';
 import { SessionService } from '../services/session_service';
 
 export default class RecordController extends BaseController {
@@ -23,7 +23,7 @@ export default class RecordController extends BaseController {
     }
 
     @DELETE('/record/:id')
-    async delete( @PathParam('id') id: string): Promise<ResObject> {
+    async delete(@PathParam('id') id: string): Promise<ResObject> {
         return await RecordService.delete(id);
     }
 
@@ -35,7 +35,7 @@ export default class RecordController extends BaseController {
     }
 
     @POST('/record/sort')
-    async sort( @BodyParam info: DtoRecordSort) {
+    async sort(@BodyParam info: DtoRecordSort) {
         return await RecordService.sort(info.recordId, info.folderId, info.collectionId, info.newSort);
     }
 }

@@ -1,16 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Button, Dropdown, Icon, Menu } from 'antd';
-import { KeyValueEditType, KeyValueEditMode } from '../../../common/custom_type';
-import { bodyTypes } from '../../../common/body_type';
-import { defaultBodyType, defaultReqTabKey } from '../../../common/constants';
+import { KeyValueEditType, KeyValueEditMode } from '../../../misc/custom_type';
+import { bodyTypes } from '../../../misc/body_type';
+import { defaultBodyType, defaultReqTabKey } from '../../../misc/constants';
 import { StringUtil } from '../../../utils/string_util';
-import { getTestSnippets } from '../../../common/test_snippet';
+import { getTestSnippets } from '../../../misc/test_snippet';
 import { getActiveRecordSelector, getReqActiveTabKeySelector, getHeadersEditModeSelector } from './selector';
 import { actionCreator } from '../../../action/index';
 import { UpdateDisplayRecordType } from '../../../action/record';
 import { State } from '../../../state/index';
-import { DtoRecord } from '../../../../../api/src/interfaces/dto_record';
+import { DtoRecord } from '../../../common/interfaces/dto_record';
 import { SwitchHeadersEditModeType } from '../../../action/ui';
 import Msg from '../../../locales';
 
@@ -38,7 +38,7 @@ interface RequestTabExtraState { }
 
 class RequestTabExtra extends React.Component<RequestTabExtraProps, RequestTabExtraState> {
 
-    public shouldComponentUpdate(nextProps: RequestTabExtraProps, nextState: RequestTabExtraState) {
+    public shouldComponentUpdate(nextProps: RequestTabExtraProps, _nextState: RequestTabExtraState) {
         return nextProps.activeKey !== this.props.activeKey ||
             nextProps.activeTabKey !== this.props.activeTabKey ||
             nextProps.record.bodyType !== this.props.record.bodyType ||

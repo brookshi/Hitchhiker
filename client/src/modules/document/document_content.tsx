@@ -1,25 +1,25 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { State } from '../../state/index';
-import { DtoCollection } from '../../../../api/src/interfaces/dto_collection';
+import { DtoCollection } from '../../common/interfaces/dto_collection';
 import { getDocumentDisplayCollectionSelector } from '../../components/collection_tree/selector';
-import { DtoRecord } from '../../../../api/src/interfaces/dto_record';
+import { DtoRecord } from '../../common/interfaces/dto_record';
 import * as _ from 'lodash';
-import { DtoHeader } from '../../../../api/src/interfaces/dto_header';
+import { DtoHeader } from '../../common/interfaces/dto_header';
 import HttpMethodIcon from '../../components/font_icon/http_method_icon';
 import HighlightCode from '../../components/highlight_code';
 import './style/index.less';
-import { DataMode } from '../../common/custom_type';
+import { DataMode } from '../../misc/custom_type';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { ScrollDocumentType, DocumentActiveEnvIdType } from '../../action/document';
 import { actionCreator } from '../../action/index';
-import { RecordCategory } from '../../common/record_category';
+import { RecordCategory } from '../../misc/record_category';
 import { mainTpl } from './templates/default';
 import { TemplateUtil } from '../../utils/template_util';
 import EnvironmentSelect from '../../components/environment_select';
 import { Button } from 'antd';
-import { DtoEnvironment } from '../../../../api/src/interfaces/dto_environment';
-import { noEnvironment } from '../../common/constants';
+import { DtoEnvironment } from '../../common/interfaces/dto_environment';
+import { noEnvironment } from '../../misc/constants';
 import LocalesString from '../../locales/string';
 import { StringUtil } from '../../utils/string_util';
 import { DownloadUtil } from '../../utils/download_util';
@@ -210,7 +210,7 @@ class DocumentContent extends React.Component<DocumentContentProps, DocumentCont
         return record;
     }
 
-    public shouldComponentUpdate(nextProps: DocumentContentStateProps, nextState: DocumentContentState) {
+    public shouldComponentUpdate(nextProps: DocumentContentStateProps, _nextState: DocumentContentState) {
         const currentCollection = this.getActiveCollection(this.props);
         const nextCollection = this.getActiveCollection(nextProps);
         const currentEnv = this.props.activeEnv[(currentCollection || { projectId: '' }).projectId];
@@ -230,7 +230,7 @@ class DocumentContent extends React.Component<DocumentContentProps, DocumentCont
         }
     }
 
-    public componentDidUpdate(prevProps: DocumentContentStateProps, prevState: DocumentContentState) {
+    public componentDidUpdate(prevProps: DocumentContentStateProps, _prevState: DocumentContentState) {
         const currentCollection = this.getActiveCollection(this.props);
         const prevCollection = this.getActiveCollection(prevProps);
         if (prevCollection != null &&

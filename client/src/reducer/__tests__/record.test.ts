@@ -2,14 +2,15 @@ import { displayRecordsDefaultValue } from '../../state/collection';
 import { activeKey, recordsOrder, recordStates, recordWithResState } from '../collection';
 import { actionCreator } from '../../action/index';
 import { ActiveTabType, ActiveRecordType, SaveRecordType, SendRequestType, MoveRecordType, CancelRequestType, AddTabType, RemoveTabType, DeleteRecordType, SendRequestFulfilledType, ChangeCurrentParamType, UpdateDisplayRecordPropertyType, SendRequestForParamType, SendRequestForParamFulfilledType } from '../../action/record';
-import { newRecordFlag } from '../../common/constants';
-import { RecordCategory } from '../../common/record_category';
+import { newRecordFlag } from '../../misc/constants';
+import { RecordCategory } from '../../misc/record_category';
 import * as _ from 'lodash';
 import { DeleteCollectionType } from '../../action/collection';
 import { defaultRunResult } from './data';
-import { ParameterType } from '../../common/parameter_type';
-import { RequestStatus } from '../../common/request_status';
-import { ConflictType } from '../../common/conflict_type';
+import { ParameterType } from '../../misc/parameter_type';
+import { RequestStatus } from '../../misc/request_status';
+import { ConflictType } from '../../misc/conflict_type';
+import 'jest';
 
 const defaultRecordState = {
     ...displayRecordsDefaultValue.recordStates,

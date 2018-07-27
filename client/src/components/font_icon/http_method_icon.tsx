@@ -1,6 +1,6 @@
 import React from 'react';
 import FontIcon from './font_icon';
-import { HttpMethodType } from '../../common/http_method';
+import { HttpMethodType } from '../../misc/http_method';
 
 interface HttpMethodIconProps {
 

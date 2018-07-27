@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 export interface ProjectData {
 
     name: string;

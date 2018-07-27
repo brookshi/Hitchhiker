@@ -147,7 +147,7 @@ class Members extends React.Component<MembersProps, MembersState> {
                         key="localhost"
                         width={170}
                         render={
-                            (text, record, index) => (
+                            (text, record, _index) => (
                                 <EditableCell
                                     content={text}
                                     onChange={(newText) => this.changeLocalhost(record.localhostMappingId, record.id, text, newText)}
@@ -160,7 +160,7 @@ class Members extends React.Component<MembersProps, MembersState> {
                         dataIndex="isOwner"
                         key="isOwner"
                         width={120}
-                        render={(text, record) => (<Icon type={record.isOwner ? 'check' : ''} />)}
+                        render={(_text, record) => (<Icon type={record.isOwner ? 'check' : ''} />)}
                     />
                     {
                         this.props.isOwner ? (
@@ -168,7 +168,7 @@ class Members extends React.Component<MembersProps, MembersState> {
                                 title={Msg('Project.Action')}
                                 key="action"
                                 width={240}
-                                render={(text, record) =>
+                                render={(_text, record) =>
                                     record.isOwner ? '' :
                                         (
                                             <span>

@@ -41,7 +41,7 @@ export class DownloadUtil {
     }
 
     static downloadCSV = (header: Array<string>, datas: Array<any>, name: string) => {
-        const csv = [header, ...datas].map((row, index) => row.map((element) => '\"' + (element || '').replace(/"/g, `""`) + '\"').join(',')).join(`\n`);
+        const csv = [header, ...datas].map(row => row.map((element) => '\"' + (element || '').replace(/"/g, `""`) + '\"').join(',')).join(`\n`);
         DownloadUtil.download(`${name}.csv`, csv, 'text/csv;charset=utf-8');
     }
 }

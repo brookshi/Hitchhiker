@@ -1,8 +1,8 @@
 import { Project } from '../models/project';
 import { ConnectionManager } from './connection_manager';
-import { DtoProject } from '../interfaces/dto_project';
-import { ResObject } from '../common/res_object';
-import { Message } from '../common/message';
+import { DtoProject } from '../common/interfaces/dto_project';
+import { ResObject } from '../interfaces/res_object';
+import { Message } from '../utils/message';
 import { StringUtil } from '../utils/string_util';
 import { User } from '../models/user';
 import { UserService } from './user_service';

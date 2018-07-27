@@ -1,21 +1,21 @@
 import { GET, POST, PUT, DELETE, BodyParam, PathParam, QueryParam, BaseController } from 'webapi-router';
-import { ResObject } from '../common/res_object';
-import { DtoProject } from '../interfaces/dto_project';
+import { ResObject } from '../interfaces/res_object';
+import { DtoProject } from '../common/interfaces/dto_project';
 import { ProjectService } from '../services/project_service';
 import * as Koa from 'koa';
 import { SessionService } from '../services/session_service';
 import { UserService } from '../services/user_service';
-import { Message } from '../common/message';
+import { Message } from '../utils/message';
 import { TokenService } from '../services/token_service';
 import { MailService } from '../services/mail_service';
-import { InviteToProjectToken } from '../common/invite_project_token';
+import { InviteToProjectToken } from '../interfaces/invite_project_token';
 import { User } from '../models/user';
 import { Project } from '../models/project';
 import { UserProjectService } from '../services/user_project_service';
 import { ValidateUtil } from '../utils/validate_util';
 import * as _ from 'lodash';
 import { Setting } from '../utils/setting';
-import { ProjectFolderType } from '../common/string_type';
+import { ProjectFolderType } from '../common/enum/string_type';
 import * as multer from 'koa-multer';
 import { ProjectDataService } from '../services/project_data_service';
 

@@ -1,6 +1,6 @@
 import { ConnectionManager } from './connection_manager';
 import { StringUtil } from '../utils/string_util';
-import { DtoBodyFormData } from '../interfaces/dto_variable';
+import { DtoBodyFormData } from '../common/interfaces/dto_variable';
 import { BodyFormData } from '../models/body_form_data';
 
 export class FormDataService {

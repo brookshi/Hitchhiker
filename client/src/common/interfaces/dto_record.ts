@@ -1,11 +1,12 @@
 import { DtoHeader } from './dto_header';
-import { RecordCategory } from '../common/record_category';
-import { BodyType } from '../common/string_type';
+import { RecordCategory } from '../enum/record_category';
+import { BodyType } from '../enum/string_type';
 import { DtoUser } from './dto_user';
-import { ParameterType, ReduceAlgorithmType } from '../common/parameter_type';
+import { ParameterType, ReduceAlgorithmType } from '../enum/parameter_type';
 import { DtoAssert } from './dto_assert';
 import { DtoQueryString, DtoBodyFormData } from './dto_variable';
-import { DataMode } from '../common/data_mode';
+import { DataMode } from '../enum/data_mode';
+import * as _ from 'lodash';
 
 export interface DtoRecord {
 

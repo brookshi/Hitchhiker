@@ -1,6 +1,6 @@
 import { DtoScheduleRecord } from './dto_schedule_record';
-import { Period, TimerType } from './period';
-import { NotificationMode, MailMode } from './notification_mode';
+import { Period, TimerType } from '../enum/period';
+import { NotificationMode, MailMode } from '../enum/notification_mode';
 
 export interface DtoSchedule {
 

@@ -7,7 +7,7 @@ import { RequestState } from '../../state/request';
 import { actionCreator, ResetSyncMsgType } from '../../action/index';
 import { LogoutType, ChangePasswordType } from '../../action/user';
 import ChangePasswordDialog from './change_password_dialog';
-import { Password } from '../../../../api/src/interfaces/password';
+import { Password } from '../../common/interfaces/password';
 import { getProjectsIdNameStateSelector } from '../../components/collection_tree/selector';
 import { ImportDataType } from '../../action/collection';
 import Msg from '../../locales';
@@ -63,7 +63,7 @@ class HeaderPanel extends React.Component<HeaderPanelProps, HeaderPanelState> {
         };
     }
 
-    public componentDidUpdate(prevProps: HeaderPanelProps, prevState: HeaderPanelState) {
+    public componentDidUpdate(_prevProps: HeaderPanelProps, _prevState: HeaderPanelState) {
         const { message } = this.props;
         if (!!message && notification.warning) {
             notification.warning({

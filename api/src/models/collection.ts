@@ -2,7 +2,7 @@ import { Entity, PrimaryColumn, Column, CreateDateColumn, OneToOne, OneToMany, J
 import { Record } from './record';
 import { User } from './user';
 import { Project } from './project';
-import { DtoCommonSetting } from '../interfaces/dto_collection';
+import { DtoCommonSetting } from '../common/interfaces/dto_collection';
 
 @Entity()
 export class Collection {

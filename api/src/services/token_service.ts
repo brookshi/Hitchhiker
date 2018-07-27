@@ -1,6 +1,6 @@
-import { RegToken } from '../common/reg_token';
+import { RegToken } from '../interfaces/reg_token';
 import { Setting } from '../utils/setting';
-import { InviteToProjectToken } from '../common/invite_project_token';
+import { InviteToProjectToken } from '../interfaces/invite_project_token';
 import { StringUtil } from '../utils/string_util';
 import * as uuid from 'uuid';
 

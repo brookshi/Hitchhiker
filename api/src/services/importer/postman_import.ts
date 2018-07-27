@@ -4,18 +4,18 @@ import { User } from '../../models/user';
 import { RecordService } from '../record_service';
 import { CollectionService } from '../collection_service';
 import { EnvironmentService } from '../environment_service';
-import { PostmanRecord, PostmanCollectionV1, PostmanAllV1 } from '../../interfaces/postman_v1';
-import { DtoHeader } from '../../interfaces/dto_header';
+import { PostmanRecord, PostmanCollectionV1, PostmanAllV1 } from '../../common/interfaces/postman_v1';
+import { DtoHeader } from '../../common/interfaces/dto_header';
 import { StringUtil } from '../../utils/string_util';
-import { DtoRecord } from '../../interfaces/dto_record';
-import { RecordCategory } from '../../common/record_category';
-import { MetadataType } from '../../common/metadata_type';
+import { DtoRecord } from '../../common/interfaces/dto_record';
+import { RecordCategory } from '../../common/enum/record_category';
+import { MetadataType } from '../../common/enum/metadata_type';
 import { ProjectService } from '../project_service';
 import { Collection } from '../../models/collection';
-import { DtoVariable, DtoBodyFormData } from '../../interfaces/dto_variable';
+import { DtoVariable, DtoBodyFormData } from '../../common/interfaces/dto_variable';
 import { Environment } from '../../models/environment';
 import { VariableService } from '../variable_service';
-import { DataMode } from '../../common/data_mode';
+import { DataMode } from '../../common/enum/data_mode';
 
 export class PostmanImport implements RequestsImport {
 

@@ -1,13 +1,13 @@
-import { DtoCollectionWithRecord } from '../../../api/src/interfaces/dto_collection';
-import { DtoRecord } from '../../../api/src/interfaces/dto_record';
-import { RunResult } from '../../../api/src/interfaces/dto_run_result';
+import { DtoCollectionWithRecord } from '../common/interfaces/dto_collection';
+import { DtoRecord } from '../common/interfaces/dto_record';
+import { RunResult } from '../common/interfaces/dto_run_result';
 import { StringUtil } from '../utils/string_util';
-import { RecordCategory } from '../common/record_category';
+import { RecordCategory } from '../misc/record_category';
 import { requestStateDefaultValue, RequestState } from './request';
-import { allProject, newRecordFlag, newRequestName, allParameter } from '../common/constants';
-import { ParameterType } from '../common/parameter_type';
-import { RequestStatus } from '../common/request_status';
-import { ConflictType } from '../common/conflict_type';
+import { allProject, newRecordFlag, newRequestName, allParameter } from '../misc/constants';
+import { ParameterType } from '../misc/parameter_type';
+import { RequestStatus } from '../misc/request_status';
+import { ConflictType } from '../misc/conflict_type';
 import * as _ from 'lodash';
 
 export function getDefaultRecord(isInit: boolean = false): DtoRecord {

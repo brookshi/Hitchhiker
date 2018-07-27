@@ -6,7 +6,7 @@ import { StringUtil } from '../utils/string_util';
 import { Setting } from '../utils/setting';
 import { Header } from '../models/header';
 import * as _ from 'lodash';
-import { DataMode } from '../common/data_mode';
+import { DataMode } from '../common/enum/data_mode';
 import { ConsoleMessage } from '../services/console_message';
 
 export class RequestOptionAdapter {

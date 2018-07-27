@@ -1,5 +1,5 @@
 import * as Koa from 'koa';
-import { DateUtil } from '../utils/date_util';
+import { DateUtil } from '../common/utils/date_util';
 import { User } from '../models/user';
 import { UserService } from './user_service';
 import { UserVariableManager } from './user_variable_manager';

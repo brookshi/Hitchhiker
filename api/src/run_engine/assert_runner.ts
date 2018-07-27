@@ -1,7 +1,7 @@
 import { RecordEx } from '../models/record';
 import * as _ from 'lodash';
 import * as request from 'request';
-import { noEnvironment } from '../common/stress_type';
+import { noEnvironment } from '../common/enum/stress_type';
 
 export class AssertRunner {
 

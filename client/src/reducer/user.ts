@@ -1,6 +1,6 @@
 import { LoginSuccessType, LoginFailedType, RegisterSuccessType, RegisterFailedType, LoginPendingType, RegisterPendingType, RegisterResetType, FindPasswordSuccessType, FindPasswordPendingType, FindPasswordFailedType, ChangePasswordSuccessType, ChangePasswordFailedType, ChangePasswordPendingType, LoginResetType, LoginType, SyncUserDataSuccessType } from '../action/user';
 import { UserInfoState, userInfoDefaultValue } from '../state/user';
-import { RequestStatus } from '../common/request_status';
+import { RequestStatus } from '../misc/request_status';
 import { SessionInvalidType } from '../action/index';
 import { GlobalVar } from '../utils/global_var';
 import LocalesString from '../locales/string';

@@ -10,8 +10,8 @@ import RegisterPanel from './register';
 import LoginPanel from './login';
 import FindPasswordPanel from './find_password';
 import LoadingScreen from './loading_screen';
-import { LoginPageMode } from '../../common/custom_type';
-import { RequestStatus } from '../../common/request_status';
+import { LoginPageMode } from '../../misc/custom_type';
+import { RequestStatus } from '../../misc/request_status';
 import { FetchLocalDataType } from '../../action/local_data';
 import Msg from '../../locales';
 

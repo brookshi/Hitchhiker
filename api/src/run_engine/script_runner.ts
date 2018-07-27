@@ -2,10 +2,10 @@ import * as request from 'request';
 import * as _ from 'lodash';
 import { Setting } from '../utils/setting';
 import { Sandbox } from './sandbox';
-import { ResObject } from '../common/res_object';
+import { ResObject } from '../interfaces/res_object';
 import { Log } from '../utils/log';
 import { RecordEx } from '../models/record';
-import { ConsoleMsg } from '../interfaces/dto_res';
+import { ConsoleMsg } from '../common/interfaces/dto_res';
 const { NodeVM: safeVM } = require('vm2');
 
 export class ScriptRunner {

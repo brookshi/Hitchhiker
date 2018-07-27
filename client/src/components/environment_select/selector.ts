@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { State } from '../../state';
-import { noEnvironment } from '../../common/constants';
+import { noEnvironment } from '../../misc/constants';
 
 const getActiveKey = (state: State) => state.displayRecordsState.activeKey;
 

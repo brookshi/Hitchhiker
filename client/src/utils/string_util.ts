@@ -1,12 +1,12 @@
 import * as uuid from 'uuid';
-import { KeyValuePair } from '../common/key_value_pair';
+import { KeyValuePair } from '../misc/key_value_pair';
 import { Beautify } from './beautify';
 import * as shortId from 'shortid';
-import { ParameterType, ReduceAlgorithmType } from '../common/parameter_type';
+import { ParameterType, ReduceAlgorithmType } from '../misc/parameter_type';
 import * as _ from 'lodash';
-import { allParameter } from '../common/constants';
+import { allParameter } from '../misc/constants';
 import LocalesString from '../locales/string';
-import { DtoHeader } from '../../../api/src/interfaces/dto_header';
+import { DtoHeader } from '../common/interfaces/dto_header';
 import { PairwiseStrategy } from './pairwise';
 
 export class StringUtil {
@@ -267,7 +267,7 @@ export class StringUtil {
             if (Array.isArray(paramObj)) {
                 return paramObj;
             }
-            Object.keys(paramObj).forEach((key, index) => {
+            Object.keys(paramObj).forEach((key) => {
                 for (let i = 0; i < paramObj[key].length; i++) {
                     paramArr[i] = paramArr[i] || {};
                     paramArr[i][key] = paramObj[key][i];
@@ -276,7 +276,7 @@ export class StringUtil {
         } else if (reduceAlgorithm === ReduceAlgorithmType.pairwise) {
             return PairwiseStrategy.GetTestCasesByObj(paramObj);
         } else {
-            Object.keys(paramObj).forEach((key, index) => {
+            Object.keys(paramObj).forEach((key) => {
                 let temp = [...paramArr];
                 paramArr.splice(0, paramArr.length);
                 for (let i = 0; i < paramObj[key].length; i++) {

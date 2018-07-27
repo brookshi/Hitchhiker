@@ -1,5 +1,5 @@
 import { Header } from '../models/header';
-import { DtoHeader } from '../interfaces/dto_header';
+import { DtoHeader } from '../common/interfaces/dto_header';
 import { ConnectionManager } from './connection_manager';
 import { StringUtil } from '../utils/string_util';
 

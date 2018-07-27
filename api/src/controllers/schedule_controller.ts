@@ -1,10 +1,10 @@
 import { GET, POST, PUT, DELETE, QueryParam, BodyParam, PathParam, BaseController } from 'webapi-router';
-import { ResObject } from '../common/res_object';
+import { ResObject } from '../interfaces/res_object';
 import * as Koa from 'koa';
-import { DtoSchedule } from '../interfaces/dto_schedule';
+import { DtoSchedule } from '../common/interfaces/dto_schedule';
 import { ScheduleService } from '../services/schedule_service';
 import { ScheduleRecordService } from '../services/schedule_record_service';
-import { Message } from '../common/message';
+import { Message } from '../utils/message';
 import { ScheduleRunner } from '../run_engine/schedule_runner';
 
 export default class ScheduleController extends BaseController {

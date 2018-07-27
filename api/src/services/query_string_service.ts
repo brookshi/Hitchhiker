@@ -1,6 +1,6 @@
 import { ConnectionManager } from './connection_manager';
 import { StringUtil } from '../utils/string_util';
-import { DtoQueryString } from '../interfaces/dto_variable';
+import { DtoQueryString } from '../common/interfaces/dto_variable';
 import { QueryString } from '../models/query_string';
 
 export class QueryStringService {

@@ -2,7 +2,7 @@ import { ScheduleService } from './schedule_service';
 import { ScheduleRunner } from '../run_engine/schedule_runner';
 import { WebSocketHandler } from './base/web_socket_handler';
 import { Log } from '../utils/log';
-import { Message } from '../common/message';
+import { Message } from '../utils/message';
 
 export class ScheduleOnDemandService extends WebSocketHandler {
 

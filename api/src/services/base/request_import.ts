@@ -1,6 +1,6 @@
 import { Record } from '../../models/record';
 import { SwaggerImport } from '../importer/swagger_import';
-import { ImportType } from '../../common/string_type';
+import { ImportType } from '../../common/enum/string_type';
 import { User } from '../../models/user';
 import { PostmanImport } from '../importer/postman_import';
 

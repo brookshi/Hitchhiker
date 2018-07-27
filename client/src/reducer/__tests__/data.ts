@@ -1,5 +1,6 @@
-import { Period, TimerType } from '../../common/period';
-import { NotificationMode, MailMode } from '../../common/notification_mode';
+import { Period, TimerType } from '../../misc/period';
+import { NotificationMode, MailMode } from '../../misc/notification_mode';
+import 'jest';
 
 export const defaultSchedule = {
     id: '123',

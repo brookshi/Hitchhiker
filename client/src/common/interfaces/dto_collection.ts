@@ -1,5 +1,6 @@
 import { DtoRecord } from './dto_record';
 import { DtoHeader } from './dto_header';
+import * as _ from 'lodash';
 
 export interface DtoCollection {
 

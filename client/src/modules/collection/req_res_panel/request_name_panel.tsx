@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Form, Alert, Icon } from 'antd';
-import { ValidateStatus, ValidateType } from '../../../common/custom_type';
+import { ValidateStatus, ValidateType } from '../../../misc/custom_type';
 import { actionCreator } from '../../../action/index';
 import { UpdateDisplayRecordPropertyType } from '../../../action/record';
 import { getActiveRecordSelector, getActiveRecordStateSelector } from './selector';
-import { ConflictType } from '../../../common/conflict_type';
+import { ConflictType } from '../../../misc/conflict_type';
 import { ShowTimelineType, ToggleRequestDescriptionType } from '../../../action/ui';
 import Msg from '../../../locales';
 import LoInput from '../../../locales/input';

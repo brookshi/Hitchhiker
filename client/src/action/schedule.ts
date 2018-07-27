@@ -1,6 +1,6 @@
 import { takeEvery, put, call, take } from 'redux-saga/effects';
 import { syncAction, actionCreator } from './index';
-import { HttpMethod } from '../common/http_method';
+import { HttpMethod } from '../misc/http_method';
 import { eventChannel, END } from 'redux-saga';
 import { Urls } from '../utils/urls';
 

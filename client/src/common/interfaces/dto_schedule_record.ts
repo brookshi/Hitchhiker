@@ -1,4 +1,5 @@
 import { RunResult } from './dto_run_result';
+import * as _ from 'lodash';
 
 export interface DtoScheduleRecord {
 

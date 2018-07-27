@@ -1,7 +1,7 @@
 import { DtoRecord } from './dto_record';
 import { DtoEnvironment } from './dto_environment';
 import { DtoVariable } from './dto_variable';
-import { DataMode } from '../common/data_mode';
+import { DataMode } from '../enum/data_mode';
 
 export interface PostmanAllV1 {
 

@@ -1,9 +1,9 @@
 import React from 'react';
-import { DtoRecord } from '../../../../api/src/interfaces/dto_record';
+import { DtoRecord } from '../../common/interfaces/dto_record';
 import { Modal, Menu, Dropdown, Button, Icon, message } from 'antd';
 import Editor from '../editor';
-import { HAR } from '../../common/har';
-import { CodeSnippetLang, CodeSnippetType } from '../../common/code_snippet_type';
+import { HAR } from '../../misc/har';
+import { CodeSnippetLang, CodeSnippetType } from '../../misc/code_snippet_type';
 import HTTPSnippet from 'httpsnippet';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import * as _ from 'lodash';

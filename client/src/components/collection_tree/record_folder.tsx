@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon, Menu } from 'antd';
 import ItemWithMenu from '../item_with_menu';
 import './style/index.less';
-import { DtoRecord } from '../../../../api/src/interfaces/dto_record';
+import { DtoRecord } from '../../common/interfaces/dto_record';
 import { confirmDlg } from '../confirm_dialog/index';
 import { getDefaultRecord } from '../../state/collection';
 import { StringUtil } from '../../utils/string_util';

@@ -11,14 +11,14 @@ import './style/index.less';
 import { RecordState } from '../../../state/collection';
 import { actionCreator } from '../../../action/index';
 import { ActiveTabType, SaveRecordType, AddTabType, RemoveTabType } from '../../../action/record';
-import { DtoRecord } from '../../../../../api/src/interfaces/dto_record';
+import { DtoRecord } from '../../../common/interfaces/dto_record';
 import { State } from '../../../state/index';
 import { ResizeResHeightType, BatchCloseType } from '../../../action/ui';
 import { getReqActiveTabKeySelector, getIsResPanelMaximumSelector, getActiveRecordStateSelector, getResHeightSelector, getActiveReqResUIStateSelector, getActiveEnvIdSelector, getActiveRecordProjectIdSelector, getProjectEnvsSelector } from './selector';
-import { newRecordFlag } from '../../../common/constants';
-import { ConflictType } from '../../../common/conflict_type';
+import { newRecordFlag } from '../../../misc/constants';
+import { ConflictType } from '../../../misc/conflict_type';
 import Msg from '../../../locales';
-import { CloseAction } from '../../../common/custom_type';
+import { CloseAction } from '../../../misc/custom_type';
 import { SwitchEnvType } from '../../../action/project';
 
 interface ReqResPanelStateProps {
@@ -96,7 +96,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
         this.adjustResPanelHeight();
     }
 
-    componentDidUpdate(prevProps: ReqResPanelProps, prevState: ReqResPanelState) {
+    componentDidUpdate(prevProps: ReqResPanelProps, _prevState: ReqResPanelState) {
         const { recordStates, activeKey, activeReqTab } = this.props;
         const record = recordStates[activeKey].record;
         const prevRecord = prevProps.recordStates[prevProps.activeKey].record;

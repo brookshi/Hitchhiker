@@ -3,8 +3,8 @@ import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'r
 import { Input, Checkbox, Icon, AutoComplete, Button } from 'antd';
 import './style/index.less';
 import { StringUtil } from '../../utils/string_util';
-import { DtoHeader } from '../../../../api/src/interfaces/dto_header';
-import { headerKeys, headerValues } from '../../common/constants';
+import { DtoHeader } from '../../common/interfaces/dto_header';
+import { headerKeys, headerValues } from '../../misc/constants';
 import Msg from '../../locales';
 
 const Option = AutoComplete.Option;

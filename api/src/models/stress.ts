@@ -1,5 +1,5 @@
 import { Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn, OneToMany } from 'typeorm';
-import { NotificationMode } from '../interfaces/notification_mode';
+import { NotificationMode } from '../common/enum/notification_mode';
 import { StressRecord } from './stress_record';
 
 @Entity()

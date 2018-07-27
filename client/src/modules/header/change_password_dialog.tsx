@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Modal, Button, message } from 'antd';
 import { StringUtil } from '../../utils/string_util';
 import { RequestState } from '../../state/request';
-import { RequestStatus } from '../../common/request_status';
+import { RequestStatus } from '../../misc/request_status';
 import Msg from '../../locales';
 import LoInput from '../../locales/input';
 import './style/index.less';
@@ -75,7 +75,7 @@ class ChangePasswordDialog extends React.Component<ChangePasswordDlgFormProps, C
         this.setState({ isConfirmPwdModified: this.state.isConfirmPwdModified || !!value });
     }
 
-    private checkPassword = (rule, value, callback) => {
+    private checkPassword = (_rule, value, callback) => {
         const form = this.props.form;
         if (value && value !== form.getFieldValue('newPassword')) {
             callback(LocalesString.get('Reg.Inconsistent'));
@@ -84,7 +84,7 @@ class ChangePasswordDialog extends React.Component<ChangePasswordDlgFormProps, C
         }
     }
 
-    private checkConfirm = (rule, value, callback) => {
+    private checkConfirm = (_rule, value, callback) => {
         const form = this.props.form;
         if (!value || !StringUtil.checkPassword(value)) {
             callback(LocalesString.get('Reg.PasswordRule'));

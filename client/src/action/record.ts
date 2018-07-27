@@ -1,10 +1,10 @@
 import { takeEvery, call, put, all } from 'redux-saga/effects';
 import RequestManager from '../utils/request_manager';
-import { HttpMethod } from '../common/http_method';
+import { HttpMethod } from '../misc/http_method';
 import { syncAction, actionCreator, SessionInvalidType } from './index';
 import { Urls } from '../utils/urls';
 import * as _ from 'lodash';
-import { RunResult } from '../../../api/src/interfaces/dto_run_result';
+import { RunResult } from '../common/interfaces/dto_run_result';
 
 export const AddTabType = 'add tab';
 

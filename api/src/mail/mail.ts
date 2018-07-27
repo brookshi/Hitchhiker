@@ -3,7 +3,7 @@ import * as request from 'request';
 import * as fs from 'fs';
 import * as _ from 'lodash';
 import * as path from 'path';
-import { MailScheduleRecord, MailRunResult } from '../interfaces/dto_mail';
+import { MailScheduleRecord, MailRunResult } from '../common/interfaces/dto_mail';
 import { Setting } from '../utils/setting';
 import { Log } from '../utils/log';
 import * as nodeMailer from 'nodemailer';

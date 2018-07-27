@@ -1,7 +1,7 @@
 import { CollectionService } from './collection_service';
 import { User } from '../models/user';
 import { EnvironmentService } from './environment_service';
-import { DtoEnvironment } from '../interfaces/dto_environment';
+import { DtoEnvironment } from '../common/interfaces/dto_environment';
 import { StringUtil } from '../utils/string_util';
 import { RecordService } from './record_service';
 import { PostmanImport } from './importer/postman_import';

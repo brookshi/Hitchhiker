@@ -21,7 +21,9 @@
     "noUnusedLocals": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
   },
   "include": [
     "./src/**/*"
@@ -33,7 +35,7 @@
     "acceptance-tests",
     "webpack",
     "src/setupTests.ts",
-    "api"
+    "../api"
   ],
   "types": [
     "typePatches"

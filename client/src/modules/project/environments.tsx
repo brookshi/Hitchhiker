@@ -1,11 +1,11 @@
 import React from 'react';
 import { Table, Modal, Input, Button } from 'antd';
-import { DtoEnvironment } from '../../../../api/src/interfaces/dto_environment';
+import { DtoEnvironment } from '../../common/interfaces/dto_environment';
 import KeyValueComponent from '../../components/key_value';
-import { KeyValueEditType, KeyValueEditMode } from '../../common/custom_type';
-import { DtoHeader } from '../../../../api/src/interfaces/dto_header';
+import { KeyValueEditType, KeyValueEditMode } from '../../misc/custom_type';
+import { DtoHeader } from '../../common/interfaces/dto_header';
 import { StringUtil } from '../../utils/string_util';
-import { DtoVariable } from '../../../../api/src/interfaces/dto_variable';
+import { DtoVariable } from '../../common/interfaces/dto_variable';
 import { confirmDlg } from '../../components/confirm_dialog/index';
 import Msg from '../../locales';
 import LocalesString from '../../locales/string';
@@ -162,7 +162,7 @@ class Environments extends React.Component<EnvironmentsProps, EnvironmentsState>
                         title={Msg('Project.Action')}
                         key="action"
                         width={240}
-                        render={(text, record) => (
+                        render={(_text, record) => (
                             <span>
                                 <a href="#" onClick={() => this.editEnv(record, false)}>{Msg('Common.Edit')}</a> - <span />
                                 <a href="#" onClick={() => this.duplicate(record)}>{Msg('Common.Duplicate')}</a> - <span />

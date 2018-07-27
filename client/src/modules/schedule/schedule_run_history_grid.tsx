@@ -1,21 +1,21 @@
 import React from 'react';
 import { Table, Tag, Tooltip, Radio, Button, message, Checkbox } from 'antd';
-import { DtoScheduleRecord } from '../../../../api/src/interfaces/dto_schedule_record';
-import { RunResult } from '../../../../api/src/interfaces/dto_run_result';
+import { DtoScheduleRecord } from '../../common/interfaces/dto_schedule_record';
+import { RunResult } from '../../common/interfaces/dto_run_result';
 import * as _ from 'lodash';
-import { DtoRecord } from '../../../../api/src/interfaces/dto_record';
-import { noEnvironment, unknownName, successColor, failColor, pass, fail, match, notMatch, notMatchButIgnore, defaultExport } from '../../common/constants';
+import { DtoRecord } from '../../common/interfaces/dto_record';
+import { noEnvironment, unknownName, successColor, failColor, pass, fail, match, notMatch, notMatchButIgnore, defaultExport } from '../../misc/constants';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { StringUtil } from '../../utils/string_util';
 import Editor from '../../components/editor';
 import ScheduleRunConsole from './schedule_run_console';
 import './style/index.less';
-import { DtoSchedule } from '../../../../api/src/interfaces/dto_schedule';
+import { DtoSchedule } from '../../common/interfaces/dto_schedule';
 import DiffDialog from '../../components/diff_dialog';
 import { ScheduleRecordsInfo } from '../../state/schedule';
 import { GlobalVar } from '../../utils/global_var';
-import { ScheduleRecordsDisplayMode, ScheduleRecordsDisplayType } from '../../common/custom_type';
-import { ScheduleStatistics } from '../../common/schedule_statistics';
+import { ScheduleRecordsDisplayMode, ScheduleRecordsDisplayType } from '../../misc/custom_type';
+import { ScheduleStatistics } from '../../misc/schedule_statistics';
 import Msg from '../../locales';
 import ReactEchartsCore from 'echarts-for-react/lib/core';
 import echarts from 'echarts/lib/echarts';
@@ -142,14 +142,14 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                         bordered={true}
                         size="small"
                         rowKey="key"
-                        onChange={(pagination, filters, sorter) => { this.setState({ ...this.state, isFilter: filters && filters['success'] && filters['success'].length > 0 }); }}
+                        onChange={(_pagination, filters, _sorter) => { this.setState({ ...this.state, isFilter: filters && filters['success'] && filters['success'].length > 0 }); }}
                         dataSource={displayRunResults}
                         pagination={false}
                     >
                         <RunResultColumn
                             title={Msg('Common.Name')}
                             dataIndex="id"
-                            render={(text, runResult) => ({ children: this.getRecordDisplayName(runResult.id), props: { rowSpan: runResult.rowSpan } })}
+                            render={(_text, runResult) => ({ children: this.getRecordDisplayName(runResult.id), props: { rowSpan: runResult.rowSpan } })}
                         />
                         <RunResultColumn
                             title={Msg('Schedule.Param')}
@@ -159,7 +159,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                         <RunResultColumn
                             title={Msg('Schedule.Pass')}
                             dataIndex="success"
-                            render={(text, runResult) => <Tag color={this.isSuccess(runResult) ? successColor : failColor}>{this.isSuccess(runResult) ? pass() : fail()}</Tag>}
+                            render={(_text, runResult) => <Tag color={this.isSuccess(runResult) ? successColor : failColor}>{this.isSuccess(runResult) ? pass() : fail()}</Tag>}
                             filters={[{
                                 text: pass(),
                                 value: 'true',
@@ -172,12 +172,12 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                         <RunResultColumn
                             title={Msg('Schedule.Duration')}
                             dataIndex="duration"
-                            render={(text, runResult) => `${runResult.elapsed / 1000} s`}
+                            render={(_text, runResult) => `${runResult.elapsed / 1000} s`}
                         />
                         <RunResultColumn
                             title={Msg('Common.Environment')}
                             dataIndex="envId"
-                            render={(text, runResult) => this.getEnvName(runResult.envId)}
+                            render={(_text, runResult) => this.getEnvName(runResult.envId)}
                         />
                         <RunResultColumn title={Msg('Schedule.Headers')} dataIndex="headers" render={this.getHeadersDisplay} />
                         <RunResultColumn title={Msg('Schedule.Body')} dataIndex="body" render={this.getBodyDisplay} />
@@ -188,7 +188,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                                     title={Msg('Schedule.Compare')}
                                     dataIndex="compareResult"
                                     key="compareResult"
-                                    render={(text, runResult) => ({
+                                    render={(_text, runResult) => ({
                                         children: (
                                             <div>
                                                 <div className={runResult.compareResult !== notMatch() ? 'schedule-success' : 'schedule-failed'}>{runResult.compareResult}</div>
@@ -293,7 +293,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
         return value ? (value.length < length ? value : `${value.substr(0, length)}...`) : '';
     }
 
-    private getHeadersDisplay = (text: any, runResult: DisplayRunResult) => {
+    private getHeadersDisplay = (_text: any, runResult: DisplayRunResult) => {
         const headers = JSON.stringify(runResult.headers);
         const beautifyHeaders = StringUtil.beautify(headers || '');
         return (
@@ -315,7 +315,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
         );
     }
 
-    private getBodyDisplay = (text: any, runResult: DisplayRunResult) => {
+    private getBodyDisplay = (_text: any, runResult: DisplayRunResult) => {
         const body = runResult.body as string;
         const beautifyBody = StringUtil.beautify(runResult.body || '');
         return (
@@ -337,7 +337,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
         );
     }
 
-    private getTestsDisplay = (text: any, runResult: DisplayRunResult) => {
+    private getTestsDisplay = (_text: any, runResult: DisplayRunResult) => {
         const tests = JSON.stringify(runResult.tests);
         return (
             <span>
@@ -418,7 +418,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
         return schedule.recordsOrder ? schedule.recordsOrder.split(';').filter(r => r.endsWith(':0')).map(r => r.substr(0, r.length - 2)) : [];
     }
 
-    private handleTableChange = (pagination, filters, sorter) => {
+    private handleTableChange = (pagination, _filters, _sorter) => {
         this.props.setScheduleRecordsPage(this.props.schedule.id, pagination.current);
     }
 
@@ -438,22 +438,22 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                 <ScheduleRecordColumn
                     title={Msg('Common.RunDate')}
                     dataIndex="runDate"
-                    render={(text, record) => new Date(record.runDate).toLocaleString()}
+                    render={(_text, record) => new Date(record.runDate).toLocaleString()}
                 />
                 <ScheduleRecordColumn
                     title={Msg('Schedule.Pass')}
                     dataIndex="success"
-                    render={(text, record) => <Tag color={record.success ? successColor : failColor}>{record.success ? pass() : fail()}</Tag>}
+                    render={(_text, record) => <Tag color={record.success ? successColor : failColor}>{record.success ? pass() : fail()}</Tag>}
                 />
                 <ScheduleRecordColumn
                     title={Msg('Schedule.Duration')}
                     dataIndex="duration"
-                    render={(text, record) => `${record.duration / 1000} s`}
+                    render={(_text, record) => `${record.duration / 1000} s`}
                 />
                 <ScheduleRecordColumn
                     title={Msg('Schedule.Description')}
                     dataIndex="description"
-                    render={(text, record) => this.getScheduleDescription(record, schedule)}
+                    render={(_text, record) => this.getScheduleDescription(record, schedule)}
                 />
             </ScheduleRecordTable>
         );
@@ -489,7 +489,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                 <ScheduleStatisticsColumn
                     title={Msg('Common.Name')}
                     dataIndex="name"
-                    render={(text, record) => this.getParamDisplay(`${record.name}${record.param ? ' - ' + record.param : ''}`, 30, false)}
+                    render={(_text, record) => this.getParamDisplay(`${record.name}${record.param ? ' - ' + record.param : ''}`, 30, false)}
                 />
                 <ScheduleStatisticsColumn
                     title={Msg('Common.Environment')}
@@ -500,7 +500,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                 <ScheduleStatisticsColumn
                     title={Msg('Schedule.Latest')}
                     dataIndex="lastStatus"
-                    render={(text, record) => <Tag color={record.lastStatus ? successColor : failColor}>{record.lastStatus ? pass() : fail()}</Tag>}
+                    render={(_text, record) => <Tag color={record.lastStatus ? successColor : failColor}>{record.lastStatus ? pass() : fail()}</Tag>}
                     filters={[{
                         text: pass(),
                         value: 'true',
@@ -513,12 +513,12 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
                 <ScheduleStatisticsColumn
                     title={Msg('Common.Success')}
                     dataIndex="successNum"
-                    render={(text, record) => <span className="schedule-success">{text}</span>}
+                    render={(text, _record) => <span className="schedule-success">{text}</span>}
                 />
                 <ScheduleStatisticsColumn
                     title={Msg('Schedule.Error')}
                     dataIndex="errorNum"
-                    render={(text, record) => <span className="schedule-failed">{text}</span>}
+                    render={(text, _record) => <span className="schedule-failed">{text}</span>}
                 />
                 <ScheduleStatisticsColumn
                     title={Msg('Common.Total')}
@@ -613,7 +613,7 @@ class ScheduleRunHistoryGrid extends React.Component<ScheduleRunHistoryGridProps
         }
         scheduleRecords = _.chain(scheduleRecords).sortBy('runDate').value();
         const statisticsData: _.Dictionary<ScheduleStatistics> = {};
-        scheduleRecords.forEach((r, i) => {
+        scheduleRecords.forEach((r, _i) => {
             this.insertToStatisticsData(envs, statisticsData, r.result.origin, r.runDate);
             this.insertToStatisticsData(envs, statisticsData, r.result.compare, r.runDate);
         });

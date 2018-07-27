@@ -4,19 +4,19 @@ import * as request from 'request';
 import { ServerResponse } from 'http';
 import { ScriptRunner } from './script_runner';
 import * as _ from 'lodash';
-import { RunResult } from '../interfaces/dto_run_result';
+import { RunResult } from '../common/interfaces/dto_run_result';
 import { StringUtil } from '../utils/string_util';
 import { UserVariableManager } from '../services/user_variable_manager';
-import { ResObject } from '../common/res_object';
+import { ResObject } from '../interfaces/res_object';
 import { HeaderService } from '../services/header_service';
 import { CollectionService } from '../services/collection_service';
-import { Duration } from '../interfaces/dto_stress_setting';
+import { Duration } from '../common/interfaces/dto_stress_setting';
 import { RecordService } from '../services/record_service';
 import { AssertRunner } from './assert_runner';
 import { ValidateUtil } from '../utils/validate_util';
 import { FormDataService } from '../services/form_data_service';
 import { ConsoleMessage } from '../services/console_message';
-import { ConsoleMsg } from '../interfaces/dto_res';
+import { ConsoleMsg } from '../common/interfaces/dto_res';
 
 type BatchRunResult = RunResult | _.Dictionary<RunResult>;
 

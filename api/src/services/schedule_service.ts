@@ -1,16 +1,16 @@
-import { DtoSchedule } from '../interfaces/dto_schedule';
+import { DtoSchedule } from '../common/interfaces/dto_schedule';
 import { Schedule } from '../models/schedule';
 import { StringUtil } from '../utils/string_util';
 import { User } from '../models/user';
 import { ConnectionManager } from './connection_manager';
-import { Message } from '../common/message';
-import { ResObject } from '../common/res_object';
+import { Message } from '../utils/message';
+import { ResObject } from '../interfaces/res_object';
 import { UserCollectionService } from './user_collection_service';
 import { ObjectLiteral } from 'typeorm/common/ObjectLiteral';
 import { ScheduleRecordService } from './schedule_record_service';
 import { ScheduleRecord } from '../models/schedule_record';
-import { TimerType } from '../interfaces/period';
-import { DateUtil } from '../utils/date_util';
+import { TimerType } from '../common/enum/period';
+import { DateUtil } from '../common/utils/date_util';
 
 export class ScheduleService {
 

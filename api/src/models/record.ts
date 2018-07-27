@@ -2,14 +2,14 @@ import { OneToMany, Entity, PrimaryColumn, JoinColumn, Column, ManyToOne, Update
 import { Collection } from './collection';
 import { Header } from './header';
 import { QueryString } from './query_string';
-import { RecordCategory } from '../common/record_category';
-import { DataMode } from '../common/data_mode';
-import { BodyType } from '../common/string_type';
-import { ParameterType, ReduceAlgorithmType } from '../common/parameter_type';
+import { RecordCategory } from '../common/enum/record_category';
+import { DataMode } from '../common/enum/data_mode';
+import { BodyType } from '../common/enum/string_type';
+import { ParameterType, ReduceAlgorithmType } from '../common/enum/parameter_type';
 import { RecordDoc } from './record_doc';
 import { RecordHistory } from './record_history';
 import { ServerResponse } from 'http';
-import { DtoAssert } from '../interfaces/dto_assert';
+import { DtoAssert } from '../common/interfaces/dto_assert';
 import { BodyFormData } from './body_form_data';
 
 @Entity()

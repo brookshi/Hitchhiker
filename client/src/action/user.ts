@@ -4,7 +4,7 @@ import { actionCreator, syncAction } from './index';
 import { Urls } from '../utils/urls';
 import LocalStore from '../utils/local_store';
 import { delay } from 'redux-saga';
-import { HttpMethod } from '../common/http_method';
+import { HttpMethod } from '../misc/http_method';
 import { GlobalVar } from '../utils/global_var';
 import { DateUtil } from '../utils/date_util';
 

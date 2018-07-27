@@ -1,5 +1,5 @@
 import { SessionService } from '../services/session_service';
-import { Message } from '../common/message';
+import { Message } from '../utils/message';
 
 export default function sessionHandle(): (ctx: any, next: Function) => Promise<void> {
     return async (ctx, next) => {

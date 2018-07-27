@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { State } from '../../state/index';
-import { DtoCollection } from '../../../../api/src/interfaces/dto_collection';
+import { DtoCollection } from '../../common/interfaces/dto_collection';
 import { getDocumentDisplayCollectionSelector } from '../../components/collection_tree/selector';
 import CollectionList from '../../components/collection_tree';
 import SiderLayout from '../../components/sider_layout';
@@ -30,7 +30,7 @@ interface ApiDocumentState { }
 
 class ApiDocument extends React.Component<ApiDocumentProps, ApiDocumentState> {
 
-    public componentDidUpdate(prevProps: ApiDocumentProps, prevState: ApiDocumentState) {
+    public componentDidUpdate(_prevProps: ApiDocumentProps, _prevState: ApiDocumentState) {
         if (!this.props.changeByScroll) {
             location.hash = this.props.activeKey;
         }

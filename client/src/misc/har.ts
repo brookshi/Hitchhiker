@@ -1,4 +1,4 @@
-import { DtoRecord } from '../../../api/src/interfaces/dto_record';
+import { DtoRecord } from '../common/interfaces/dto_record';
 import { StringUtil } from '../utils/string_util';
 import { DataMode } from './custom_type';
 

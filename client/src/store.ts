@@ -5,7 +5,7 @@ import createSagaMiddleware from 'redux-saga';
 import { rootSaga, actionCreator } from './action';
 import { StoreLocalDataType } from './action/local_data';
 import { State } from './state/index';
-import { RequestStatus } from './common/request_status';
+import { RequestStatus } from './misc/request_status';
 import { StressWS } from './action/stress';
 
 const sagaMiddleware = createSagaMiddleware();

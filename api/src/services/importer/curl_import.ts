@@ -2,10 +2,10 @@ import { RequestImport } from '../base/request_import';
 import { Record } from '../../models/record';
 import * as yargs from 'yargs';
 import { StringUtil } from '../../utils/string_util';
-import { DtoHeader } from '../../interfaces/dto_header';
+import { DtoHeader } from '../../common/interfaces/dto_header';
 import { RecordService } from '../record_service';
-import { RecordCategory } from '../../common/record_category';
-import { ParameterType } from '../../common/parameter_type';
+import { RecordCategory } from '../../common/enum/record_category';
+import { ParameterType } from '../../common/enum/parameter_type';
 
 export class CurlImport implements RequestImport<string> {
 

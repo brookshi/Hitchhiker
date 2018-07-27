@@ -3,10 +3,10 @@ import { Setting } from './setting';
 import * as uuid from 'uuid';
 import * as shortId from 'shortid';
 import * as URL from 'url';
-import { ParameterType, ReduceAlgorithmType } from '../common/parameter_type';
+import { ParameterType, ReduceAlgorithmType } from '../common/enum/parameter_type';
 import * as _ from 'lodash';
-import { DtoHeader } from '../interfaces/dto_header';
-import { PairwiseStrategy } from './pairwise';
+import { DtoHeader } from '../common/interfaces/dto_header';
+import { PairwiseStrategy } from '../common/utils/pairwise';
 
 export class StringUtil {
 

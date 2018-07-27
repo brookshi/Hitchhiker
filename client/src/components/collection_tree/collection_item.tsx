@@ -3,13 +3,13 @@ import { Icon, Menu } from 'antd';
 import ItemWithMenu from '../item_with_menu';
 import './style/index.less';
 import { confirmDlg } from '../confirm_dialog/index';
-import { DtoRecord } from '../../../../api/src/interfaces/dto_record';
+import { DtoRecord } from '../../common/interfaces/dto_record';
 import { StringUtil } from '../../utils/string_util';
-import { RecordCategory } from '../../common/record_category';
-import { DtoCollection } from '../../../../api/src/interfaces/dto_collection';
-import { newFolderName } from '../../common/constants';
+import { RecordCategory } from '../../misc/record_category';
+import { DtoCollection } from '../../common/interfaces/dto_collection';
+import { newFolderName } from '../../misc/constants';
 import { getDefaultRecord } from '../../state/collection';
-import { ParameterType } from '../../common/parameter_type';
+import { ParameterType } from '../../misc/parameter_type';
 import Msg from '../../locales';
 import LocalesString from '../../locales/string';
 

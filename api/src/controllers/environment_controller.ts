@@ -1,7 +1,7 @@
 import { POST, DELETE, PUT, PathParam, BodyParam, BaseController } from 'webapi-router';
-import { ResObject } from '../common/res_object';
+import { ResObject } from '../interfaces/res_object';
 import { EnvironmentService } from '../services/environment_service';
-import { DtoEnvironment } from '../interfaces/dto_environment';
+import { DtoEnvironment } from '../common/interfaces/dto_environment';
 
 export default class EnvironmentController extends BaseController {
 

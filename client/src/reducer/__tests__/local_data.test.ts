@@ -2,7 +2,8 @@ import { actionCreator } from '../../action/index';
 import { FetchLocalDataSuccessType, FetchLocalDataPendingType, FetchLocalDataFailedType } from '../../action/local_data';
 import { localDataState } from '../local_data';
 import { localDataDefaultValue } from '../../state/local_data';
-import { RequestStatus } from '../../common/request_status';
+import { RequestStatus } from '../../misc/request_status';
+import 'jest';
 
 test('fetch local data success', () => {
 

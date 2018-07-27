@@ -4,9 +4,9 @@ import * as path from 'path';
 import { UserVariableManager } from '../services/user_variable_manager';
 import { Setting } from '../utils/setting';
 import { ProjectDataService } from '../services/project_data_service';
-import { ProjectData } from '../interfaces/dto_project_data';
+import { ProjectData } from '../common/interfaces/dto_project_data';
 import { Record } from '../models/record';
-import { ConsoleMsg } from '../interfaces/dto_res';
+import { ConsoleMsg } from '../common/interfaces/dto_res';
 import { StringUtil } from '../utils/string_util';
 
 class SandboxRequest {

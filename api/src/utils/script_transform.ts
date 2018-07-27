@@ -1,8 +1,8 @@
-import * as ts from '../../../../../Users/Brook/AppData/Roaming/npm/node_modules/typescript';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as archiver from 'archiver';
 import { Log } from './log';
+import * as ts from 'typescript';
 
 export class ScriptTransform {
 

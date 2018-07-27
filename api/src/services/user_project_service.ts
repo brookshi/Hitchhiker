@@ -1,7 +1,7 @@
-import { DtoProjectQuit } from '../interfaces/dto_project_quit';
+import { DtoProjectQuit } from '../common/interfaces/dto_project_quit';
 import { UserService } from './user_service';
-import { ResObject } from '../common/res_object';
-import { Message } from '../common/message';
+import { ResObject } from '../interfaces/res_object';
+import { Message } from '../utils/message';
 import { ProjectService } from './project_service';
 import { User } from '../models/user';
 import { EnvironmentService } from './environment_service';
@@ -11,11 +11,11 @@ import { Setting } from '../utils/setting';
 import { StressService } from './stress_service';
 import { UserData } from '../interfaces/user_data';
 import { UserCollectionService } from './user_collection_service';
-import { DtoRecord } from '../interfaces/dto_record';
+import { DtoRecord } from '../common/interfaces/dto_record';
 import { RecordService } from './record_service';
-import { DtoCollection } from '../interfaces/dto_collection';
+import { DtoCollection } from '../common/interfaces/dto_collection';
 import { CollectionService } from './collection_service';
-import { ProjectFiles, ProjectData } from '../interfaces/dto_project_data';
+import { ProjectFiles, ProjectData } from '../common/interfaces/dto_project_data';
 import { ProjectDataService } from './project_data_service';
 
 export class UserProjectService {

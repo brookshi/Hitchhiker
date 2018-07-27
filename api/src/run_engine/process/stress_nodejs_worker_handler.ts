@@ -1,5 +1,5 @@
 import { BaseProcessHandler } from './base_process_handler';
-import { StressMessageType } from '../../common/stress_type';
+import { StressMessageType } from '../../common/enum/stress_type';
 import { Log } from '../../utils/log';
 
 export class StressNodejsWorkerHandler extends BaseProcessHandler {

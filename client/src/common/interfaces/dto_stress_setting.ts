@@ -1,5 +1,6 @@
 import { RunResult } from './dto_run_result';
-import { StressMessageType, WorkerStatus } from '../common/stress_type';
+import { StressMessageType, WorkerStatus } from '../enum/stress_type';
+import * as _ from 'lodash';
 
 export interface WorkerInfo {
 

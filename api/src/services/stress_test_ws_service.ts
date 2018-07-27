@@ -1,9 +1,10 @@
 import { WebSocketHandler } from './base/web_socket_handler';
 import { Log } from '../utils/log';
-import { StressRequest, StressResponse } from '../interfaces/dto_stress_setting';
+import { StressResponse } from '../common/interfaces/dto_stress_setting';
+import { StressRequest } from '../interfaces/stress_case_info';
 import { ChildProcessManager } from '../run_engine/process/child_process_manager';
 import { StringUtil } from '../utils/string_util';
-import { StressMessageType } from '../common/stress_type';
+import { StressMessageType } from '../common/enum/stress_type';
 import { StressService } from './stress_service';
 import { StressProcessHandler } from '../run_engine/process/stress_process_handler';
 

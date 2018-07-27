@@ -1,9 +1,9 @@
 import { Urls } from '../utils/urls';
-import { StressResponse } from '../../../api/src/interfaces/dto_stress_setting';
-import { StressMessageType } from '../common/stress_type';
+import { StressResponse } from '../common/interfaces/dto_stress_setting';
+import { StressMessageType } from '../misc/stress_type';
 import { takeEvery, put, takeLatest } from 'redux-saga/effects';
 import { syncAction, actionCreator } from './index';
-import { HttpMethod } from '../common/http_method';
+import { HttpMethod } from '../misc/http_method';
 import message from 'antd/lib/message';
 import LocalesString from '../locales/string';
 

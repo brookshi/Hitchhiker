@@ -2,7 +2,7 @@ import React from 'react';
 import { StringUtil } from '../../utils/string_util';
 import './style/index.less';
 import { Input } from 'antd';
-import { DtoError } from '../../../../api/src/interfaces/dto_error';
+import { DtoError } from '../../common/interfaces/dto_error';
 import Msg from '../../locales';
 
 const { TextArea } = Input;

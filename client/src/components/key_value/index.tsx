@@ -1,10 +1,10 @@
 import React, { SyntheticEvent } from 'react';
-import { DtoHeader } from '../../../../api/src/interfaces/dto_header';
-import { KeyValuePair } from '../../common/key_value_pair';
+import { DtoHeader } from '../../common/interfaces/dto_header';
+import { KeyValuePair } from '../../misc/key_value_pair';
 import { Input } from 'antd';
 import { StringUtil } from '../../utils/string_util';
 import KeyValueList from './key_value_list';
-import { KeyValueEditMode, KeyValueEditType } from '../../common/custom_type';
+import { KeyValueEditMode, KeyValueEditType } from '../../misc/custom_type';
 
 interface KeyValueComponentProps {
 

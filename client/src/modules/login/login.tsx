@@ -1,9 +1,9 @@
 import React from 'react';
 import { Form, Button, Icon, message, Input } from 'antd';
 import { RequestState } from '../../state/request';
-import { RequestStatus } from '../../common/request_status';
+import { RequestStatus } from '../../misc/request_status';
 import './style/index.less';
-import { LoginPageMode } from '../../common/custom_type';
+import { LoginPageMode } from '../../misc/custom_type';
 import Msg from '../../locales';
 import LocalesString from '../../locales/string';
 

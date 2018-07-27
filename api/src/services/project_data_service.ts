@@ -1,8 +1,8 @@
 import * as _ from 'lodash';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import { ProjectData } from '../interfaces/dto_project_data';
-import { ProjectFolderType } from '../common/string_type';
+import { ProjectData } from '../common/interfaces/dto_project_data';
+import { ProjectFolderType } from '../common/enum/string_type';
 import * as AdmZip from 'adm-zip';
 import { ChildProcessManager } from '../run_engine/process/child_process_manager';
 import { ScheduleProcessHandler } from '../run_engine/process/schedule_process_handler';

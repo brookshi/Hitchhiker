@@ -1,18 +1,18 @@
 import { GET, POST, PUT, DELETE, QueryParam, BodyParam, PathParam, BaseController } from 'webapi-router';
-import { ResObject } from '../common/res_object';
+import { ResObject } from '../interfaces/res_object';
 import { UserService } from '../services/user_service';
 import * as Koa from 'koa';
 import { User } from '../models/user';
-import { DtoUser } from '../interfaces/dto_user';
+import { DtoUser } from '../common/interfaces/dto_user';
 import { SessionService } from '../services/session_service';
-import { Message } from '../common/message';
-import { RegToken } from '../common/reg_token';
-import { DateUtil } from '../utils/date_util';
+import { Message } from '../utils/message';
+import { RegToken } from '../interfaces/reg_token';
+import { DateUtil } from '../common/utils/date_util';
 import { Setting } from '../utils/setting';
 import { StringUtil } from '../utils/string_util';
 import { MailService } from '../services/mail_service';
 import { ValidateUtil } from '../utils/validate_util';
-import { Password } from '../interfaces/password';
+import { Password } from '../common/interfaces/password';
 
 export default class UserController extends BaseController {
 

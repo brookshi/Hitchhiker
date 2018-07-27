@@ -3,7 +3,7 @@ import { Record } from '../models/record';
 import { EnvironmentService } from './environment_service';
 import { Variable } from '../models/variable';
 import { Environment } from '../models/environment';
-import { DtoVariable } from '../interfaces/dto_variable';
+import { DtoVariable } from '../common/interfaces/dto_variable';
 
 export class VariableService {
 

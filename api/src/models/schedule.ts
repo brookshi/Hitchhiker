@@ -1,6 +1,6 @@
 import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
-import { Period, TimerType } from '../interfaces/period';
-import { NotificationMode, MailMode } from '../interfaces/notification_mode';
+import { Period, TimerType } from '../common/enum/period';
+import { NotificationMode, MailMode } from '../common/enum/notification_mode';
 import { ScheduleRecord } from './schedule_record';
 
 @Entity()

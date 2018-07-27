@@ -1,4 +1,4 @@
-import { ConsoleMsg } from '../interfaces/dto_res';
+import { ConsoleMsg } from '../common/interfaces/dto_res';
 
 export class ConsoleMessage {
 

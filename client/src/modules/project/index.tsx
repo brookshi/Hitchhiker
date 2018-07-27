@@ -3,18 +3,18 @@ import { connect } from 'react-redux';
 import ProjectList from './project_list';
 import Members from './members';
 import Environments from './environments';
-import { DtoProject } from '../../../../api/src/interfaces/dto_project';
+import { DtoProject } from '../../common/interfaces/dto_project';
 import { State } from '../../state';
 import { actionCreator } from '../../action';
 import { EditEnvType, DisbandProjectType, QuitProjectType, SaveProjectType, RemoveUserType, InviteMemberType, SaveEnvironmentType, DelEnvironmentType, ActiveProjectType, EditEnvCompletedType, SaveLocalhostMappingType, SaveGlobalFunctionType, DeleteProjectFileType, AddProjectFileType } from '../../action/project';
-import { DtoUser } from '../../../../api/src/interfaces/dto_user';
-import { DtoEnvironment } from '../../../../api/src/interfaces/dto_environment';
+import { DtoUser } from '../../common/interfaces/dto_user';
+import { DtoEnvironment } from '../../common/interfaces/dto_environment';
 import * as _ from 'lodash';
 import './style/index.less';
-import { localhost } from '../../common/constants';
+import { localhost } from '../../misc/constants';
 import { StringUtil } from '../../utils/string_util';
-import { ProjectFileType } from '../../common/custom_type';
-import { ProjectFiles } from '../../../../api/src/interfaces/dto_project_data';
+import { ProjectFileType } from '../../misc/custom_type';
+import { ProjectFiles } from '../../common/interfaces/dto_project_data';
 import SiderLayout from '../../components/sider_layout';
 
 interface ProjectStateProps {

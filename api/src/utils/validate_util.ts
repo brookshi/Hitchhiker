@@ -1,5 +1,5 @@
-import { ResObject } from '../common/res_object';
-import { Message } from '../common/message';
+import { ResObject } from '../interfaces/res_object';
+import { Message } from '../utils/message';
 
 export class ValidateUtil {
 

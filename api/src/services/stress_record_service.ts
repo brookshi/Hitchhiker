@@ -1,8 +1,8 @@
 import { ConnectionManager } from './connection_manager';
 import { Setting } from '../utils/setting';
-import { DateUtil } from '../utils/date_util';
+import { DateUtil } from '../common/utils/date_util';
 import { StressRecord } from '../models/stress_record';
-import { DtoStressRecord } from '../interfaces/dto_stress_record';
+import { DtoStressRecord } from '../common/interfaces/dto_stress_record';
 import { StressFailedInfo } from '../models/stress_failed_info';
 
 export class StressRecordService {

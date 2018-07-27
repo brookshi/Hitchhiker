@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { TestCase, StressRequest } from '../../interfaces/stress_case_info';
 import { Log } from '../../utils/log';
 import { RecordRunner } from '../record_runner';
-import { StressMessageType } from '../../common/stress_type';
+import { StressMessageType } from '../../common/enum/stress_type';
 import * as _ from 'lodash';
 import { ConsoleMessage } from '../../services/console_message';
 

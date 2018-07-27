@@ -1,13 +1,13 @@
 import React from 'react';
 import * as _ from 'lodash';
 import JSONTree from 'react-json-tree';
-import { DtoAssert } from '../../../../api/src/interfaces/dto_assert';
+import { DtoAssert } from '../../common/interfaces/dto_assert';
 import './style/index.less';
 import { Modal, Button, Icon, Tooltip } from 'antd';
 import AssertItem from './assert_item';
 import { AssertType, AssertTypeFuncMapping } from './assert_funcs';
-import { allEnvironment, noEnvironment } from '../../common/constants';
-import { DtoEnvironment } from '../../../../api/src/interfaces/dto_environment';
+import { allEnvironment, noEnvironment } from '../../misc/constants';
+import { DtoEnvironment } from '../../common/interfaces/dto_environment';
 import Msg from '../../locales';
 
 interface AssertJsonViewProps {

@@ -1,8 +1,8 @@
 import React from 'react';
-import { DtoRecord } from '../../../../api/src/interfaces/dto_record';
+import { DtoRecord } from '../../common/interfaces/dto_record';
 import * as _ from 'lodash';
 import './style/index.less';
-import { StressRunResult, StressReqProgress, Duration, StressResStatisticsTime, StressResFailedStatistics } from '../../../../api/src/interfaces/dto_stress_setting';
+import { StressRunResult, StressReqProgress, StressResFailedStatistics } from '../../common/interfaces/dto_stress_setting';
 import ReactEchartsCore from 'echarts-for-react/lib/core';
 import echarts from 'echarts/lib/echarts';
 import 'echarts/lib/chart/effectScatter';
@@ -15,7 +15,7 @@ import 'echarts/lib/component/dataZoom';
 import 'echarts/lib/component/grid';
 import 'echarts/lib/component/title';
 import 'echarts/lib/component/legend';
-import { unknownName } from '../../common/constants';
+import { unknownName } from '../../misc/constants';
 import { Table, Tooltip, Button } from 'antd';
 import LocalesString from '../../locales/string';
 import { DownloadUtil } from '../../utils/download_util';
@@ -342,7 +342,7 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
                             key={t}
                             title={t}
                             dataIndex={dataIndexs[i]}
-                            render={(text, record) => this.highlightCellIfNeed(text, errDataIndexs, dataIndexs[i])}
+                            render={text => this.highlightCellIfNeed(text, errDataIndexs, dataIndexs[i])}
                         />))
                     }
                 </StressTable>

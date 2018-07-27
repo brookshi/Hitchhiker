@@ -1,12 +1,12 @@
-import { ResObject } from '../common/res_object';
+import { ResObject } from '../interfaces/res_object';
 import { Environment } from '../models/environment';
 import { ConnectionManager } from './connection_manager';
-import { Message } from '../common/message';
+import { Message } from '../utils/message';
 import { StringUtil } from '../utils/string_util';
-import { DtoEnvironment } from '../interfaces/dto_environment';
+import { DtoEnvironment } from '../common/interfaces/dto_environment';
 import { VariableService } from './variable_service';
 import { Project } from '../models/project';
-import { noEnvironment } from '../common/stress_type';
+import { noEnvironment } from '../common/enum/stress_type';
 
 export class EnvironmentService {
 

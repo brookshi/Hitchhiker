@@ -1,5 +1,5 @@
-import { DtoStress } from '../../../api/src/interfaces/dto_stress';
-import { StressRunResult, WorkerInfo } from '../../../api/src/interfaces/dto_stress_setting';
+import { DtoStress } from '../common/interfaces/dto_stress';
+import { StressRunResult, WorkerInfo } from '../common/interfaces/dto_stress_setting';
 import * as _ from 'lodash';
 
 export interface StressTestState {
