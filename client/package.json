@@ -66,6 +66,7 @@
     "jest": "18.1.0",
     "json-loader": "^0.5.7",
     "less-loader": "^4.1.0",
+    "mini-css-extract-plugin": "^0.4.1",
     "object-assign": "4.1.1",
     "postcss-loader": "^2.1.6",
     "promise": "7.1.1",

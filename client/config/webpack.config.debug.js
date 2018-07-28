@@ -10,6 +10,7 @@ var getClientEnvironment = require('./env');
 var paths = require('./paths');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+var MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
@@ -150,27 +151,28 @@ module.exports = {
       // "style" loader turns CSS into JS modules that inject <style> tags.
       // In production, we use a plugin to extract that CSS to a file, but
       // in development "style" loader enables hot editing of CSS.
+      // {
+      //   test: /\.css$/,
+      //   loader: [{
+      //     loader: 'css-loader',
+      //     options: {
+      //       importLoaders: 1
+      //     }
+      //   }, {
+      //     loader: 'postcss-loader',
+      //     options: {
+      //       sourceMap: true,
+      //       plugins: function () {
+      //         return [];
+      //       }
+      //     }
+      //   }]
+      // },
       {
         test: /\.css$/,
-        loader: [{
-          loader: 'css-loader',
-          options: {
-            importLoaders: 1
-          }
-        }, {
-          loader: 'postcss-loader',
-          options: {
-            sourceMap: true,
-            plugins: function () {
-              return [];
-            }
-          }
-        }]
-      },
-      {
-        test: /\.css$/,
-        use: ExtractTextPlugin.extract(
-          [{
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
             loader: 'css-loader',
             options: {
               sourceMap: true,
@@ -184,14 +186,20 @@ module.exports = {
                 return [];
               }
             }
-          }]
-        )
+          }
+        ]
       },
       {
         test: /\.less$/,
-        include: paths.appSrc,
         use: [
-          'css-loader',
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+              modules: true
+            }
+          },
           {
             loader: 'postcss-loader',
             options: {
@@ -204,102 +212,103 @@ module.exports = {
           {
             loader: 'less-loader',
             options: {
-              strictMath: true
+              //strictMath: true,
+              javascriptEnabled: true
             }
           }
         ]
       },
-      {
-        test: /\.less$/,
-        exclude: paths.appSrc,
-        use: ExtractTextPlugin.extract([
-          // 'css-loader',
-          // 'less-loader',
-          // 'postcss-loader'
-          {
-            loader: 'css-loader',
-            options: {
-              sourceMap: true,
-              modules: true
-            }
-          }, {
-            loader: 'postcss-loader',
-            options: {
-              sourceMap: true,
-              plugins: function () {
-                return [];
-              }
-            }
-          }, {
-            loader: 'less-loader',
-            options: {
-              sourceMap: true,
-              modifyVars: JSON.stringify(theme)
-            }
-          }
-        ])
-      },
+      // {
+      //   test: /\.less$/,
+      //   exclude: paths.appSrc,
+      //   use: ExtractTextPlugin.extract([
+      //     // 'css-loader',
+      //     // 'less-loader',
+      //     // 'postcss-loader'
+      //     {
+      //       loader: 'css-loader',
+      //       options: {
+      //         sourceMap: true,
+      //         modules: true
+      //       }
+      //     }, {
+      //       loader: 'postcss-loader',
+      //       options: {
+      //         sourceMap: true,
+      //         plugins: function () {
+      //           return [];
+      //         }
+      //       }
+      //     }, {
+      //       loader: 'less-loader',
+      //       options: {
+      //         sourceMap: true,
+      //         modifyVars: JSON.stringify(theme)
+      //       }
+      //     }
+      //   ])
+      // },
       // // JSON is not enabled by default in Webpack but both Node and Browserify
       // // allow it implicitly so we also enable it.
       // {
       //   test: /\.json$/,
       //   use: 'json-loader'
       // },
-      // // "file" loader for svg
-      // {
-      //   test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-      //   use: [{
-      //     loader: 'url-loader',
-      //     options: {
-      //       limit: 10000,
-      //       minetype: `image/svg+xml`
-      //     }
-      //   }]
-      // },
-      // {
-      //   test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-      //   use: [{
-      //     loader: 'url-loader',
-      //     options: {
-      //       limit: 10000,
-      //       name: 'static/fonts/[name].[ext]',
-      //       minetype: `application/font-woff`
-      //     }
-      //   }]
-      // },
-      // {
-      //   test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-      //   use: [{
-      //     loader: 'url-loader',
-      //     options: {
-      //       limit: 10000,
-      //       name: 'static/fonts/[name].[ext]',
-      //       minetype: `application/font-woff`
-      //     }
-      //   }]
-      // },
-      // {
-      //   test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-      //   use: [{
-      //     loader: 'url-loader',
-      //     options: {
-      //       limit: 10000,
-      //       name: 'static/fonts/[name].[ext]',
-      //       minetype: `application/octet-stream`
-      //     }
-      //   }]
-      // },
-      // {
-      //   test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-      //   use: [{
-      //     loader: 'url-loader',
-      //     options: {
-      //       limit: 10000,
-      //       name: 'static/fonts/[name].[ext]',
-      //       minetype: `application/vnd.ms-fontobject`
-      //     }
-      //   }]
-      // }
+      // "file" loader for svg
+      {
+        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+        use: [{
+          loader: 'url-loader',
+          options: {
+            limit: 10000,
+            minetype: `image/svg+xml`
+          }
+        }]
+      },
+      {
+        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+        use: [{
+          loader: 'url-loader',
+          options: {
+            limit: 10000,
+            name: 'static/fonts/[name].[ext]',
+            minetype: `application/font-woff`
+          }
+        }]
+      },
+      {
+        test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+        use: [{
+          loader: 'url-loader',
+          options: {
+            limit: 10000,
+            name: 'static/fonts/[name].[ext]',
+            minetype: `application/font-woff`
+          }
+        }]
+      },
+      {
+        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+        use: [{
+          loader: 'url-loader',
+          options: {
+            limit: 10000,
+            name: 'static/fonts/[name].[ext]',
+            minetype: `application/octet-stream`
+          }
+        }]
+      },
+      {
+        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+        use: [{
+          loader: 'url-loader',
+          options: {
+            limit: 10000,
+            name: 'static/fonts/[name].[ext]',
+            minetype: `application/vnd.ms-fontobject`
+          }
+        }]
+      }
       // ** STOP ** Are you adding a new loader?
       // Remember to add the new extension(s) to the "url" loader exclusion list.
     ]
@@ -331,6 +340,10 @@ module.exports = {
     new ExtractTextPlugin('static/css/[name].css', {
       disable: false,
       allChunks: true,
+    }),
+    new MiniCssExtractPlugin({
+      filename: "[name].css",
+      chunkFilename: "[id].css"
     }),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `./env.js`.
