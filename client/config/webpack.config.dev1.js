@@ -4,13 +4,12 @@ var autoprefixer = require('autoprefixer');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-//var InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
-// var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
+var InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
+var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 var getClientEnvironment = require('./env');
 var paths = require('./paths');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-var MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
@@ -74,24 +73,29 @@ module.exports = {
     // We use `fallback` instead of `root` because we want `node_modules` to "win"
     // if there any conflicts. This matches Node resolution mechanism.
     // https://github.com/facebookincubator/create-react-app/issues/253
-    //fallback: paths.nodePaths,
+    fallback: paths.nodePaths,
     // These are the reasonable defaults supported by the Node ecosystem.
     // We also include JSX as a common component filename extension to support
     // some tools, although we do not recommend using it, see:
     // https://github.com/facebookincubator/create-react-app/issues/290
-    extensions: ['.ts', '.tsx', '.js', '.json', '.jsx'],
+    extensions: ['.ts', '.tsx', '.js', '.json', '.jsx', ''],
     alias: {
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web'
     }
   },
-  mode: 'development',
+
   module: {
     // First, run the linter.
     // It's important to do this before Babel processes the JS.
+    preLoaders: [{
+      test: /\.(ts|tsx)$/,
+      loader: 'tslint',
+      include: paths.appSrc,
+    }],
     noParse: /[\/\\]node_modules[\/\\]localforage[\/\\]dist[\/\\]localforage\.js$/,
-    rules: [
+    loaders: [
       // ** ADDING/UPDATING LOADERS **
       // The "url" loader handles all assets unless explicitly excluded.
       // The `exclude` list *must* be updated with every change to loader extensions.
@@ -100,16 +104,6 @@ module.exports = {
 
       // "url" loader embeds assets smaller than specified size as data URLs to avoid requests.
       // Otherwise, it acts like the "file" loader.
-      {
-        test: /\.(ts|tsx)$/,
-        use: [{
-          loader: 'tslint-loader',
-          options: {
-            enforce: 'pre'
-          }
-        }],
-        include: paths.appSrc,
-      },
       {
         exclude: [
           /\.html$/,
@@ -130,21 +124,17 @@ module.exports = {
           /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
           /\.eot(\?v=\d+\.\d+\.\d+)?$/,
         ],
-        use: [{
-          loader: 'url-loader',
-          options: {
-            limit: 10000,
-            name: `static/media/[name].[ext]`
-          }
-        }],
+        loader: 'url',
+        query: {
+          limit: 10000,
+          name: `static/media/[name].[ext]`
+        }
       },
       // Compile .tsx?
       {
         test: /\.(ts|tsx)$/,
         include: paths.appSrc,
-        use: ['babel-loader', {
-          loader: 'awesome-typescript-loader'
-        }]
+        loader: 'babel!ts'
       },
       // "postcss" loader applies autoprefixer to our CSS.
       // "css" loader resolves paths in CSS and adds assets as dependencies.
@@ -153,197 +143,95 @@ module.exports = {
       // in development "style" loader enables hot editing of CSS.
       // {
       //   test: /\.css$/,
-      //   loader: [{
-      //     loader: 'css-loader',
-      //     options: {
-      //       importLoaders: 1
-      //     }
-      //   }, {
-      //     loader: 'postcss-loader',
-      //     options: {
-      //       sourceMap: true,
-      //       plugins: function () {
-      //         return [];
-      //       }
-      //     }
-      //   }]
+      //   loader: 'style!css?importLoaders=1!postcss'
       // },
       {
         test: /\.css$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              sourceMap: true,
-              modules: true
-            }
-          }, {
-            loader: 'postcss-loader',
-            options: {
-              sourceMap: true,
-              plugins: function () {
-                return [];
-              }
-            }
-          }
-        ]
+        loader: ExtractTextPlugin.extract(
+          `${require.resolve('css-loader')}` +
+          `?sourceMap&-restructuring&modules` +
+          `${require.resolve('postcss-loader')}`
+        )
       },
       {
         test: /\.less$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              sourceMap: true,
-              modules: true
-            }
-          },
-          {
-            loader: 'postcss-loader',
-            options: {
-              sourceMap: true,
-              plugins: function () {
-                return [];
-              }
-            }
-          },
-          {
-            loader: 'less-loader',
-            options: {
-              //strictMath: true,
-              javascriptEnabled: true
-            }
-          }
-        ]
+        include: paths.appSrc,
+        loader: 'style!css!postcss!less?strictMath=true'
       },
-      // {
-      //   test: /\.less$/,
-      //   exclude: paths.appSrc,
-      //   use: ExtractTextPlugin.extract([
-      //     // 'css-loader',
-      //     // 'less-loader',
-      //     // 'postcss-loader'
-      //     {
-      //       loader: 'css-loader',
-      //       options: {
-      //         sourceMap: true,
-      //         modules: true
-      //       }
-      //     }, {
-      //       loader: 'postcss-loader',
-      //       options: {
-      //         sourceMap: true,
-      //         plugins: function () {
-      //           return [];
-      //         }
-      //       }
-      //     }, {
-      //       loader: 'less-loader',
-      //       options: {
-      //         sourceMap: true,
-      //         modifyVars: JSON.stringify(theme)
-      //       }
-      //     }
-      //   ])
-      // },
-      // // JSON is not enabled by default in Webpack but both Node and Browserify
-      // // allow it implicitly so we also enable it.
-      // {
-      //   test: /\.json$/,
-      //   use: 'json-loader'
-      // },
+      {
+        test: /\.less$/,
+        exclude: paths.appSrc,
+        loader: ExtractTextPlugin.extract(
+          `${require.resolve('css-loader')}?` +
+          `sourceMap&modules` +
+          `${require.resolve('postcss-loader')}!` +
+          `${require.resolve('less-loader')}?` +
+          `{"sourceMap":true,"modifyVars":${JSON.stringify(theme)}}`
+        )
+      },
+      // JSON is not enabled by default in Webpack but both Node and Browserify
+      // allow it implicitly so we also enable it.
+      {
+        test: /\.json$/,
+        loader: 'json'
+      },
       // "file" loader for svg
       {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        use: [{
-          loader: 'url-loader',
-          options: {
-            limit: 10000,
-            minetype: `image/svg+xml`
-          }
-        }]
+        loader: `${require.resolve('url-loader')}?` +
+          `limit=10000&minetype=image/svg+xml`,
       },
       {
         test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-        use: [{
-          loader: 'url-loader',
-          options: {
-            limit: 10000,
-            name: 'static/fonts/[name].[ext]',
-            minetype: `application/font-woff`
-          }
-        }]
+        loader: `${require.resolve('url-loader')}?` +
+          `limit=10000&name=static/fonts/[name].[ext]&minetype=application/font-woff`,
       },
       {
         test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-        use: [{
-          loader: 'url-loader',
-          options: {
-            limit: 10000,
-            name: 'static/fonts/[name].[ext]',
-            minetype: `application/font-woff`
-          }
-        }]
+        loader: `${require.resolve('url-loader')}?` +
+          `limit=10000&minetype=application/font-woff`,
       },
       {
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        use: [{
-          loader: 'url-loader',
-          options: {
-            limit: 10000,
-            name: 'static/fonts/[name].[ext]',
-            minetype: `application/octet-stream`
-          }
-        }]
+        loader: `${require.resolve('url-loader')}?` +
+          `limit=10000&minetype=application/octet-stream`,
       },
       {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        use: [{
-          loader: 'url-loader',
-          options: {
-            limit: 10000,
-            name: 'static/fonts/[name].[ext]',
-            minetype: `application/vnd.ms-fontobject`
-          }
-        }]
+        loader: `${require.resolve('url-loader')}?` +
+          `limit=10000&minetype=application/vnd.ms-fontobject`,
       }
       // ** STOP ** Are you adding a new loader?
       // Remember to add the new extension(s) to the "url" loader exclusion list.
     ]
   },
   // We use PostCSS for autoprefixing only.
-  // postcss: function () {
-  //   return [
-  //     autoprefixer({
-  //       browsers: [
-  //         '>1%',
-  //         'last 4 versions',
-  //         'Firefox ESR',
-  //         'not ie < 9', // React doesn't support IE8 anyway
-  //       ]
-  //     }),
-  //   ];
-  // },
+  postcss: function () {
+    return [
+      autoprefixer({
+        browsers: [
+          '>1%',
+          'last 4 versions',
+          'Firefox ESR',
+          'not ie < 9', // React doesn't support IE8 anyway
+        ]
+      }),
+    ];
+  },
   plugins: [
     // Makes some environment variables available in index.html.
     // The public URL is available as %PUBLIC_URL% in index.html, e.g.:
     // <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
     // In development, this will be an empty string.
+    new InterpolateHtmlPlugin(env.raw),
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
       inject: true,
       template: paths.appHtml,
     }),
-    //new InterpolateHtmlPlugin(env.raw),
-    new ExtractTextPlugin('static/css/[name].css', {
+    new ExtractTextPlugin('static/css/[name].[contenthash:8].css', {
       disable: false,
       allChunks: true,
-    }),
-    new MiniCssExtractPlugin({
-      filename: "[name].css",
-      chunkFilename: "[id].css"
     }),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `./env.js`.
@@ -358,8 +246,8 @@ module.exports = {
     // to restart the development server for Webpack to discover it. This plugin
     // makes the discovery automatic so you don't have to restart.
     // See https://github.com/facebookincubator/create-react-app/issues/186
-    // new WatchMissingNodeModulesPlugin(paths.appNodeModules),
-    //new BundleAnalyzerPlugin()
+    new WatchMissingNodeModulesPlugin(paths.appNodeModules),
+    new BundleAnalyzerPlugin()
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.

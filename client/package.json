@@ -72,6 +72,7 @@
     "promise": "7.1.1",
     "react-addons-perf": "15.4.2",
     "react-dev-utils": "5.0.1",
+    "resolve-url-loader": "^2.3.0",
     "style-loader": "0.13.1",
     "ts-jest": "20.0.7",
     "tslint": "4.5.0",

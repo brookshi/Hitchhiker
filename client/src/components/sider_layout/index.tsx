@@ -49,7 +49,7 @@ class SiderLayout extends React.Component<SiderLayoutProps, SiderLayoutState> {
             <Layout className="main-panel">
                 <Sider
                     className="main-sider"
-                    style={{ minWidth: collapsed ? 0 : leftPanelWidth }}
+                    width={collapsed ? 0 : leftPanelWidth}
                     collapsible={true}
                     collapsedWidth="0.1"
                     collapsed={collapsed}

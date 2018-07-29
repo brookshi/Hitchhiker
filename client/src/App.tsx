@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Layout, Menu, Icon, Tooltip, Button } from 'antd';
+import { Layout, Menu, Icon, Button } from 'antd';
 import { ClickParam } from 'antd/lib/menu';
 import Collection from './modules/collection';
 import Project from './modules/project';
@@ -18,7 +18,6 @@ import { RequestStatus } from './misc/request_status';
 // import Perf from 'react-addons-perf';
 import './style/App.less';
 import * as _ from 'lodash';
-import { toolBarWidth } from './misc/constants';
 import Msg from './locales';
 import { injectIntl } from 'react-intl';
 import LocalesString from './locales/string';
@@ -97,7 +96,7 @@ class App extends React.Component<AppProps, AppState> {
           <HeaderPanel />
         </Header>
         <Layout>
-          <Sider className="app-slider" style={{ maxWidth: toolBarWidth }}>
+          <Sider className="app-slider" collapsible={true} collapsed={true} collapsedWidth={50}>
             <Menu
               className="sider-menu"
               mode="vertical"
@@ -106,34 +105,28 @@ class App extends React.Component<AppProps, AppState> {
               onClick={this.onClick}
             >
               <Menu.Item key="collection">
-                <Tooltip mouseEnterDelay={0} placement="right" title={Msg('App.Collections')}>
-                  <Icon type="wallet" />
-                </Tooltip>
+                <Icon type="wallet" />
+                {Msg('App.Collections')}
               </Menu.Item>
               <Menu.Item key="project">
-                <Tooltip mouseEnterDelay={0} placement="right" title={Msg('App.Project')}>
-                  <Icon type="solution" />
-                </Tooltip>
+                <Icon type="solution" />
+                {Msg('App.Project')}
               </Menu.Item>
               <Menu.Item key="schedule">
-                <Tooltip mouseEnterDelay={0} placement="right" title={Msg('App.Scheduler')}>
-                  <Icon type="schedule" />
-                </Tooltip>
+                <Icon type="schedule" />
+                {Msg('App.Scheduler')}
               </Menu.Item>
               <Menu.Item key="stress_test">
-                <Tooltip mouseEnterDelay={0} placement="right" title={Msg('App.StressTest')}>
-                  <Icon type="code-o" />
-                </Tooltip>
+                <Icon type="code-o" />
+                {Msg('App.StressTest')}
               </Menu.Item>
               <Menu.Item key="api_doc">
-                <Tooltip mouseEnterDelay={0} placement="right" title={Msg('App.ApiDocument')}>
-                  <Icon type="file-text" />
-                </Tooltip>
+                <Icon type="file-text" />
+                {Msg('App.ApiDocument')}
               </Menu.Item>
               <Menu.Item key="api_mock">
-                <Tooltip mouseEnterDelay={0} placement="right" title={Msg('App.Mock')}>
-                  <Icon type="api" />
-                </Tooltip>
+                <Icon type="api" />
+                {Msg('App.Mock')}
               </Menu.Item>
             </Menu>
           </Sider>
