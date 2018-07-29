@@ -1,3 +1,21 @@
+#### 0.14 2018-07-29
+
+**Features:**
+
+* \#95 Display and download Api document.
+* \#230 Improve editor performance.
+* \#231 Add config field for sending mail include run results of all request after schedule finished. Remove env variable `HITCHHIKER_SCHEDULE_MAILFORFAIL`.
+* \#232 Support to define variable array like `[{a: 1, b:2}, {a:3, b:4}]` in parameters which include all variables' value already.
+* \#234 Export schedule result to cls.
+
+**Bugs:**
+
+* \#214 Lose session if opening db password encryption.
+* \#216 Cannot send E-Mails for inviting members.
+* \#219 URL query string error.
+* \#226 URL query string encode `+` to %20.
+
+
 #### 0.13 2018-06-15
 
 **Features:**

@@ -1,3 +1,22 @@
+#### 0.14 2018-07-29
+
+**Features:**
+
+* \#95 支持接口文档功能
+* \#230 改成编辑器性能
+* \#231 Schedule里的setting选项增加：1. 完成后或当失败后发送邮件， 2. 仅发送失败case或发送所有case。去掉环境变量里的 `HITCHHIKER_SCHEDULE_MAILFORFAIL`。
+注意：这是一个破坏性改动，如果以前有设置过环境变量：`HITCHHIKER_SCHEDULE_MAILFORFAIL`，需要给具体的schedule重新设置。以前是所有统一设置，现在是每个schedule可以自己设置自己的。
+* \#232 给Parameters里的OneByOne增加识别数组的功能，以前只支持对象，现在支持把[{a: 1, b:2}, {a:3, b:4}]识别成两个case。
+* \#234 支持导出schedule结果到cls。
+
+**Bugs:**
+
+* \#214 开启密码加密后，刷新浏览器后丢掉session
+* \#216 项目邀请邮件发送失败
+* \#219 URL传参值错误
+* \#226 URL encode时对参数中+号的encode结果不正确，预期是%2B，实际将+号作为URI中的空格编码为%20
+
+
 #### 0.13 2018-06-15
 
 **Features:**
