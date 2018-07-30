@@ -203,6 +203,36 @@ module.exports = {
       },
       {
         test: /\.less$/,
+        exclude: paths.appSrc,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [{
+              loader: 'css-loader',
+              options: {
+                sourceMap: true,
+                // modules: true
+              }
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                sourceMap: true,
+                plugins: function () {
+                  return [];
+                }
+              }
+            },
+            {
+              loader: 'less-loader',
+              options: {
+                javascriptEnabled: true
+              }
+            }
+          ]
+        })
+      },
+      {
+        test: /\.less$/,
         include: paths.appSrc,
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
@@ -226,36 +256,6 @@ module.exports = {
               loader: 'less-loader',
               options: {
                 strictMath: true,
-                javascriptEnabled: true
-              }
-            }
-          ]
-        })
-      },
-      {
-        test: /\.less$/,
-        exclude: paths.appSrc,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [{
-              loader: 'css-loader',
-              options: {
-                sourceMap: true,
-                // modules: true
-              }
-            },
-            {
-              loader: 'postcss-loader',
-              options: {
-                sourceMap: true,
-                plugins: function () {
-                  return [];
-                }
-              }
-            },
-            {
-              loader: 'less-loader',
-              options: {
                 javascriptEnabled: true
               }
             }
