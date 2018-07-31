@@ -123,6 +123,8 @@
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$"
   },
   "theme": {
-    "@icon-url": "'/static/fonts/iconfont'"
+    "icon-url": "'/static/fonts/iconfont'",
+    "font-family": "Arial, \"Microsoft YaHei\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"PingFang SC\", \"Hiragino Sans GB\", \"Helvetica Neue\", Helvetica, \"Helvetica Neue For Number\", sans-serif",
+    "font-size-base": "12px"
   }
 }

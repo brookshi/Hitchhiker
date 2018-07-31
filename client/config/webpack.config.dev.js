@@ -241,7 +241,8 @@ module.exports = {
             {
               loader: 'less-loader',
               options: {
-                javascriptEnabled: true
+                javascriptEnabled: true,
+                modifyVars: theme
               }
             }
           ]
@@ -397,7 +398,8 @@ module.exports = {
       template: paths.appHtml,
     }),
     //new InterpolateHtmlPlugin(env.raw),
-    commonCssETP,commonLessETP,
+    commonCssETP,
+    commonLessETP,
     appETP,
     // new MiniCssExtractPlugin({
     //   filename: "static/css/[name].css",
