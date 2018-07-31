@@ -26,6 +26,22 @@ var cssFilename = 'static/css/[name].[contenthash:8].css';
 
 var theme = require(paths.appPackageJson).theme;
 
+
+var commonCssETP = new ExtractTextPlugin('static/css/common.css', {
+  disable: false,
+  allChunks: true,
+});
+
+var commonLessETP = new ExtractTextPlugin('static/css/common.css', {
+  disable: false,
+  allChunks: true,
+});
+
+var appETP = new ExtractTextPlugin('static/css/app.css', {
+  disable: false,
+  allChunks: true,
+});
+
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
 // The production configuration is different and lives in a separate file.
@@ -182,7 +198,7 @@ module.exports = {
       // },
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
+        use: commonCssETP.extract({
           fallback: 'style-loader',
           use: [{
             loader: 'css-loader',
@@ -204,7 +220,7 @@ module.exports = {
       {
         test: /\.less$/,
         exclude: paths.appSrc,
-        use: ExtractTextPlugin.extract({
+        use: commonLessETP.extract({
           fallback: 'style-loader',
           use: [{
               loader: 'css-loader',
@@ -234,7 +250,7 @@ module.exports = {
       {
         test: /\.less$/,
         include: paths.appSrc,
-        use: ExtractTextPlugin.extract({
+        use: appETP.extract({
           fallback: 'style-loader',
           use: [{
               loader: 'css-loader',
@@ -381,10 +397,8 @@ module.exports = {
       template: paths.appHtml,
     }),
     //new InterpolateHtmlPlugin(env.raw),
-    new ExtractTextPlugin('static/css/[name].css', {
-      disable: false,
-      allChunks: true,
-    }),
+    commonCssETP,commonLessETP,
+    appETP,
     // new MiniCssExtractPlugin({
     //   filename: "static/css/[name].css",
     //   chunkFilename: "static/css/[id].css"

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, Alert, Icon } from 'antd';
+import { Form, Alert, Icon, Input } from 'antd';
 import { ValidateStatus, ValidateType } from '../../../misc/custom_type';
 import { actionCreator } from '../../../action/index';
 import { UpdateDisplayRecordPropertyType } from '../../../action/record';
@@ -10,8 +10,10 @@ import { ShowTimelineType, ToggleRequestDescriptionType } from '../../../action/
 import Msg from '../../../locales';
 import LoInput from '../../../locales/input';
 import { State } from '../../../state/index';
+import LocalesString from '../../../locales/string';
 
 const FItem = Form.Item;
+const TextArea = Input.TextArea;
 
 interface RequestNamePanelStateProps {
 
@@ -114,12 +116,11 @@ class RequestNamePanel extends React.Component<RequestNamePanelProps, RequestNam
                 {
                     displayRequestDescription ? (
                         <div className="req-panel-description" style={{ marginBottom: 8 }}>
-                            <LoInput
-                                placeholderId="Collection.RequestDescription"
+                            <TextArea
+                                placeholder={LocalesString.get('Collection.RequestDescription')}
                                 spellCheck={false}
                                 onChange={(e) => this.onDescriptionChanged(e.currentTarget.value)}
                                 value={description}
-                                type="textarea"
                                 autosize={true}
                             />
                         </div>

@@ -83,7 +83,7 @@
 }
 
 .req-url {
-    width: calc(100% - (@button-width * 2 + 28px));
+    width: calc(100% - (88px + 98px + 20px));
     .ant-select-selection__rendered {
         line-height: @url-height;
     }
@@ -96,10 +96,10 @@
         padding-top: 0px;
     }
     .ant-select-arrow {
-        margin-top: 2px;
+        transform: translateY(4px);
     }
     .ant-select-selection-selected-value {
-        margin-top: 2px;
+        margin-top: 0px;
         font-weight: 600;
         font-size: 13px;
         width: 100%;
@@ -108,6 +108,15 @@
     input {
         font-size: 14px;
         height: @url-height;
+    }
+    .req-send{
+        margin-right: 10px;
+    }
+}
+
+.req-res-panel .url-panel {
+    .req-url,.req-send {
+        margin-right: 10px;
     }
 }
 
@@ -321,4 +330,18 @@
 
 .tab-extra-dropdown{
     width: 200px;
+}
+
+.req-res-tabs{
+    .ant-tabs-nav .ant-tabs-tab{
+        display: inline-block;
+        height: 100%;
+        margin: 0 32px 0 0;
+        padding: 8px 8px;
+        box-sizing: border-box;
+        position: relative;
+        transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+        cursor: pointer;
+        text-decoration: none;
+    }
 }
