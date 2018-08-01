@@ -6,6 +6,8 @@ import { StringUtil } from '../../utils/string_util';
 import KeyValueList from './key_value_list';
 import { KeyValueEditMode, KeyValueEditType } from '../../misc/custom_type';
 
+const TextArea = Input.TextArea;
+
 interface KeyValueComponentProps {
 
     headers?: DtoHeader[];
@@ -46,9 +48,8 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
         const headers = this.props.headers as KeyValuePair[];
         return this.props.mode === KeyValueEditType.bulkEdit ?
             (
-                <Input
+                <TextArea
                     className="req-header"
-                    type="textarea"
                     spellCheck={false}
                     value={StringUtil.headersToString(headers)}
                     onChange={(e) => this.onHeadersChanged(e)}

@@ -53,8 +53,25 @@
                 "NODE_ENV": "development"
             },
             "name": "setup",
-            "outDir": "${workspaceRoot}/build",
-            "program": "${workspaceRoot}/build/setup.js",
+            "outDir": "${workspaceRoot}/api/build",
+            "program": "${workspaceRoot}/api/build/setup.js",
+            "runtimeArgs": [
+                "--nolazy"
+            ],
+            "sourceMaps": true,
+            "stopOnEntry": false
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceRoot}/client",
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "name": "client_start",
+            "outDir": "${workspaceRoot}/client/scripts",
+            "program": "${workspaceRoot}/client/scripts/start.js",
             "runtimeArgs": [
                 "--nolazy"
             ],
