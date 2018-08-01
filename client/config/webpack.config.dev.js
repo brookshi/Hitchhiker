@@ -1,5 +1,6 @@
 'use strict';
 
+const path = require('path');
 const webpack = require('webpack');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
@@ -89,10 +90,8 @@ module.exports = {
     publicPath: publicPath
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.json', '.jsx'],
-    alias: {
-      'react-native': 'react-native-web'
-    }
+    extensions: ['.ts', '.tsx', '.js', '.json'],
+    alias: {}
   },
   mode: 'development',
   module: {
@@ -127,8 +126,12 @@ module.exports = {
       {
         test: /\.(ts|tsx)$/,
         include: paths.appSrc,
-        use: [
-          'babel-loader',
+        use: [{
+            loader: 'babel-loader',
+            options: {
+              cacheDirectory: true
+            }
+          },
           'awesome-typescript-loader'
         ]
       },
