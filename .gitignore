@@ -44,3 +44,6 @@ staging
 
 # symbolic link folder
 api/src/common
+
+.awcache
+stats.json

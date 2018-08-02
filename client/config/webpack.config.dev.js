@@ -8,6 +8,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 //const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const DllReferencePlugin = require('webpack/lib/DllReferencePlugin');
 
 const publicPath = '/';
 const publicUrl = '';
@@ -107,22 +108,22 @@ module.exports = {
       //   }],
       //   include: paths.appSrc,
       // },
-      {
-        exclude: [
-          /\.html$/,
-          /\.(js|jsx)(\?.*)?$/,
-          /\.(ts|tsx)(\?.*)?$/,
-          /\.less$/,
-          /\.css$/,
-          /\.json$/,
-          /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-          /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-          /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-          /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-          /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        ],
-        use: [getUrlLoader()],
-      },
+      // {
+      //   exclude: [
+      //     /\.html$/,
+      //     /\.(js|jsx)(\?.*)?$/,
+      //     /\.(ts|tsx)(\?.*)?$/,
+      //     /\.less$/,
+      //     /\.css$/,
+      //     /\.json$/,
+      //     /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+      //     /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+      //     /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+      //     /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+      //     /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+      //   ],
+      //   use: [getUrlLoader()],
+      // },
       {
         test: /\.(ts|tsx)$/,
         include: paths.appSrc,
@@ -132,7 +133,12 @@ module.exports = {
               cacheDirectory: true
             }
           },
-          'awesome-typescript-loader'
+          {
+            loader: 'awesome-typescript-loader',
+            options: {
+              useCache: true
+            }
+          }
         ]
       },
       {
@@ -174,22 +180,22 @@ module.exports = {
       //   use: 'json-loader'
       // },
       // "file" loader for svg
-      {
-        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        use: [getUrlLoader('image/svg+xml')]
-      },
+      // {
+      //   test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+      //   use: [getUrlLoader('image/svg+xml')]
+      // },
       {
         test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
         use: [getUrlLoader('application/font-woff')]
       },
-      {
-        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        use: [getUrlLoader('application/octet-stream')]
-      },
-      {
-        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        use: [getUrlLoader('application/vnd.ms-fontobject')]
-      }
+      // {
+      //   test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+      //   use: [getUrlLoader('application/octet-stream')]
+      // },
+      // {
+      //   test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+      //   use: [getUrlLoader('application/vnd.ms-fontobject')]
+      // }
     ]
   },
   plugins: [
@@ -198,11 +204,26 @@ module.exports = {
       template: paths.appHtml,
     }),
     //new InterpolateHtmlPlugin(env.raw),
-    commonCssETP,
-    commonLessETP,
+    //commonCssETP,
+    //commonLessETP,
     appETP,
     new webpack.HotModuleReplacementPlugin(),
     new CaseSensitivePathsPlugin(),
+    new DllReferencePlugin({
+      manifest: require(path.join(__dirname, '../build/static/js/react.manifest.json'))
+    }),
+    new DllReferencePlugin({
+      manifest: require(path.join(__dirname, '../build/static/js/echart.manifest.json'))
+    }),
+    new DllReferencePlugin({
+      manifest: require(path.join(__dirname, '../build/static/js/editor.manifest.json'))
+    }),
+    new DllReferencePlugin({
+      manifest: require(path.join(__dirname, '../build/static/js/antd.manifest.json'))
+    }),
+    new DllReferencePlugin({
+      manifest: require(path.join(__dirname, '../build/static/js/utils.manifest.json'))
+    })
     //new BundleAnalyzerPlugin()
   ],
   node: {
