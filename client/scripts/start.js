@@ -242,7 +242,7 @@ function runDevServer(host, port, protocol) {
     // for files like `favicon.ico`, `manifest.json`, and libraries that are
     // for some reason broken when imported through Webpack. If you just want to
     // use an image, put it in `src` and `import` it from JavaScript instead.
-    contentBase: paths.appPublic,
+    contentBase: paths.appBuild,
     // Enable hot reloading server. It will provide /sockjs-node/ endpoint
     // for the WebpackDevServer client so it can learn when the files were
     // updated. The WebpackDevServer client is included as an entry point

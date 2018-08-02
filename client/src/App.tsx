@@ -90,9 +90,9 @@ class App extends React.Component<AppProps, AppState> {
 
   private get mainPanel() {
     return (
-      <Layout className="layout">
+      <Layout className="layout">  
         <Header>
-          <Button style={{ display: 'none' }} />
+          <Button style={{ display: 'none' }} /> 
           <HeaderPanel />
         </Header>
         <Layout>

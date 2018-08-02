@@ -5,10 +5,11 @@ const webpack = require('webpack');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-//const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const DllReferencePlugin = require('webpack/lib/DllReferencePlugin');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 const publicPath = '/';
 const publicUrl = '';
@@ -80,9 +81,7 @@ const getUrlLoader = (minetype) => {
 module.exports = {
   devtool: 'cheap-module-source-map',
   entry: [
-    require.resolve('react-dev-utils/webpackHotDevClient'),
-    require.resolve('./polyfills'),
-    paths.appIndexJs
+    paths.appIndexJs, require.resolve('react-dev-utils/webpackHotDevClient'), require.resolve('./polyfills')
   ],
   output: {
     path: paths.appBuild,
@@ -97,49 +96,36 @@ module.exports = {
   mode: 'development',
   module: {
     noParse: /[\/\\]node_modules[\/\\]localforage[\/\\]dist[\/\\]localforage\.js$/,
-    rules: [
-      // {
-      //   test: /\.(ts|tsx)$/,
-      //   use: [{
-      //     loader: 'tslint-loader',
-      //     options: {
-      //       enforce: 'pre'
-      //     }
-      //   }],
-      //   include: paths.appSrc,
-      // },
-      // {
-      //   exclude: [
-      //     /\.html$/,
-      //     /\.(js|jsx)(\?.*)?$/,
-      //     /\.(ts|tsx)(\?.*)?$/,
-      //     /\.less$/,
-      //     /\.css$/,
-      //     /\.json$/,
-      //     /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-      //     /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-      //     /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-      //     /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-      //     /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-      //   ],
-      //   use: [getUrlLoader()],
-      // },
+    rules: [{
+        exclude: [
+          /\.html$/,
+          /\.(js|jsx)(\?.*)?$/,
+          /\.(ts|tsx)(\?.*)?$/,
+          /\.less$/,
+          /\.css$/,
+          /\.json$/,
+          /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+          /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+          /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+          /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+          /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+        ],
+        use: [getUrlLoader()],
+      },
       {
         test: /\.(ts|tsx)$/,
         include: paths.appSrc,
         use: [{
-            loader: 'babel-loader',
-            options: {
-              cacheDirectory: true
-            }
-          },
-          {
-            loader: 'awesome-typescript-loader',
-            options: {
-              useCache: true
-            }
+          loader: 'awesome-typescript-loader',
+          options: {
+            forceIsolatedModules: true,
+            reportFiles: [
+              "src/**/*.{ts,tsx}"
+            ],
+            useCache: true,
+            useBabel: true
           }
-        ]
+        }]
       },
       {
         test: /\.css$/,
@@ -175,27 +161,10 @@ module.exports = {
           ]
         })
       },
-      // {
-      //   test: /\.json$/,
-      //   use: 'json-loader'
-      // },
-      // "file" loader for svg
-      // {
-      //   test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-      //   use: [getUrlLoader('image/svg+xml')]
-      // },
       {
         test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
         use: [getUrlLoader('application/font-woff')]
-      },
-      // {
-      //   test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-      //   use: [getUrlLoader('application/octet-stream')]
-      // },
-      // {
-      //   test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-      //   use: [getUrlLoader('application/vnd.ms-fontobject')]
-      // }
+      }
     ]
   },
   plugins: [
@@ -203,10 +172,10 @@ module.exports = {
       inject: true,
       template: paths.appHtml,
     }),
-    //new InterpolateHtmlPlugin(env.raw),
-    //commonCssETP,
-    //commonLessETP,
+    commonCssETP,
+    commonLessETP,
     appETP,
+    new HardSourceWebpackPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new CaseSensitivePathsPlugin(),
     new DllReferencePlugin({
@@ -223,7 +192,7 @@ module.exports = {
     }),
     new DllReferencePlugin({
       manifest: require(path.join(__dirname, '../build/static/js/utils.manifest.json'))
-    })
+    }),
     //new BundleAnalyzerPlugin()
   ],
   node: {
