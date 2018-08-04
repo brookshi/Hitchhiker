@@ -10,6 +10,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const DllReferencePlugin = require('webpack/lib/DllReferencePlugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+const HappyPack = require('happypack');
 
 const publicPath = '/';
 const publicUrl = '';
@@ -81,7 +82,9 @@ const getUrlLoader = (minetype) => {
 module.exports = {
   devtool: 'cheap-module-source-map',
   entry: [
-    paths.appIndexJs, require.resolve('react-dev-utils/webpackHotDevClient'), require.resolve('./polyfills')
+    paths.appIndexJs,
+    require.resolve('react-dev-utils/webpackHotDevClient'),
+    require.resolve('./polyfills')
   ],
   output: {
     path: paths.appBuild,
@@ -123,7 +126,9 @@ module.exports = {
               "src/**/*.{ts,tsx}"
             ],
             useCache: true,
-            useBabel: true
+            useBabel: true,
+            usePrecompiledFiles: true,
+            transpileOnly: true
           }
         }]
       },
@@ -131,10 +136,7 @@ module.exports = {
         test: /\.css$/,
         use: commonCssETP.extract({
           fallback: 'style-loader',
-          use: [
-            cssLoader,
-            postcssLoader
-          ]
+          use: 'happypack/loader?id=commoncss'
         })
       },
       {
@@ -142,11 +144,7 @@ module.exports = {
         exclude: paths.appSrc,
         use: commonLessETP.extract({
           fallback: 'style-loader',
-          use: [
-            cssLoader,
-            postcssLoader,
-            commonLessLoader
-          ]
+          use: 'happypack/loader?id=commonless'
         })
       },
       {
@@ -154,11 +152,7 @@ module.exports = {
         include: paths.appSrc,
         use: appETP.extract({
           fallback: 'style-loader',
-          use: [
-            cssLoader,
-            postcssLoader,
-            appLessLoader
-          ]
+          use: 'happypack/loader?id=appless'
         })
       },
       {
@@ -175,7 +169,33 @@ module.exports = {
     commonCssETP,
     commonLessETP,
     appETP,
-    new HardSourceWebpackPlugin(),
+    new HappyPack({
+      id: 'appless',
+      threads: 3,
+      loaders: [
+        cssLoader,
+        //postcssLoader,
+        appLessLoader
+      ]
+    }),
+    new HappyPack({
+      id: 'commonless',
+      threads: 6,
+      loaders: [
+        cssLoader,
+        //postcssLoader,
+        commonLessLoader
+      ]
+    }),
+    new HappyPack({
+      id: 'commoncss',
+      threads: 2,
+      loaders: [
+        cssLoader,
+        //postcssLoader
+      ]
+    }),
+    //new HardSourceWebpackPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new CaseSensitivePathsPlugin(),
     new WebpackBar(),
