@@ -178,6 +178,7 @@ module.exports = {
     new HardSourceWebpackPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new CaseSensitivePathsPlugin(),
+    new WebpackBar(),
     new DllReferencePlugin({
       manifest: require(path.join(__dirname, '../build/static/js/react.manifest.json'))
     }),
