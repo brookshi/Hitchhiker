@@ -4,7 +4,7 @@ import { StressMessageType } from '../misc/stress_type';
 import { takeEvery, put, takeLatest } from 'redux-saga/effects';
 import { syncAction, actionCreator } from './index';
 import { HttpMethod } from '../misc/http_method';
-import message from 'antd/lib/message';
+import { message } from 'antd';
 import LocalesString from '../locales/string';
 
 export const SaveStressType = 'save stress test';

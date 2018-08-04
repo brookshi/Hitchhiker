@@ -11,6 +11,8 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const DllReferencePlugin = require('webpack/lib/DllReferencePlugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const HappyPack = require('happypack');
+const WebpackBar = require('webpackbar');
+const AutoDllPlugin = require('autodll-webpack-plugin');
 
 const publicPath = '/';
 const publicUrl = '';
@@ -48,7 +50,6 @@ const postcssLoader = {
     }
   }
 };
-
 const appLessLoader = {
   loader: 'less-loader',
   options: {
@@ -56,7 +57,6 @@ const appLessLoader = {
     javascriptEnabled: true
   }
 };
-
 const commonLessLoader = {
   loader: 'less-loader',
   options: {
@@ -83,8 +83,8 @@ module.exports = {
   devtool: 'cheap-module-source-map',
   entry: [
     paths.appIndexJs,
-    require.resolve('react-dev-utils/webpackHotDevClient'),
-    require.resolve('./polyfills')
+    //  require.resolve('react-dev-utils/webpackHotDevClient'),
+    //   require.resolve('./polyfills')
   ],
   output: {
     path: paths.appBuild,
@@ -94,7 +94,9 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.json'],
-    alias: {}
+    alias: {
+      antd: path.resolve(__dirname, '../node_modules/antd/dist/antd.js')
+    }
   },
   mode: 'development',
   module: {
@@ -118,41 +120,54 @@ module.exports = {
       {
         test: /\.(ts|tsx)$/,
         include: paths.appSrc,
-        use: [{
-          loader: 'awesome-typescript-loader',
-          options: {
-            forceIsolatedModules: true,
-            reportFiles: [
-              "src/**/*.{ts,tsx}"
-            ],
-            useCache: true,
-            useBabel: true,
-            usePrecompiledFiles: true,
-            transpileOnly: true
-          }
-        }]
+        use: //'happypack/loader?id=ts'
+          [{
+            loader: 'babel-loader',
+            options: {
+              cacheDirectory: true,
+              presets: [
+                "react",
+                "es2015"
+              ],
+              babelrc: false
+            }
+          }, {
+            loader: 'ts-loader',
+            options: {
+              transpileOnly: true,
+              onlyCompileBundledFiles: true,
+            }
+          }]
       },
       {
         test: /\.css$/,
         use: commonCssETP.extract({
           fallback: 'style-loader',
-          use: 'happypack/loader?id=commoncss'
+          use: cssLoader
         })
       },
-      {
-        test: /\.less$/,
-        exclude: paths.appSrc,
-        use: commonLessETP.extract({
-          fallback: 'style-loader',
-          use: 'happypack/loader?id=commonless'
-        })
-      },
+      // {
+      //   test: /\.less$/,
+      //   exclude: paths.appSrc,
+      //   use: commonLessETP.extract({
+      //     fallback: 'style-loader',
+      //     use: 'happypack/loader?id=commonless'
+      //     // use: [cssLoader,
+      //     //   //postcssLoader,
+      //     //   commonLessLoader
+      //     // ]
+      //   })
+      // },
       {
         test: /\.less$/,
         include: paths.appSrc,
         use: appETP.extract({
           fallback: 'style-loader',
           use: 'happypack/loader?id=appless'
+          // use: [cssLoader,
+          //   //postcssLoader,
+          //   appLessLoader
+          // ]
         })
       },
       {
@@ -167,52 +182,93 @@ module.exports = {
       template: paths.appHtml,
     }),
     commonCssETP,
-    commonLessETP,
+    // commonLessETP,
     appETP,
     new HappyPack({
       id: 'appless',
-      threads: 3,
+      threads: 2,
       loaders: [
         cssLoader,
         //postcssLoader,
         appLessLoader
       ]
     }),
-    new HappyPack({
-      id: 'commonless',
-      threads: 6,
-      loaders: [
-        cssLoader,
-        //postcssLoader,
-        commonLessLoader
-      ]
-    }),
-    new HappyPack({
-      id: 'commoncss',
-      threads: 2,
-      loaders: [
-        cssLoader,
-        //postcssLoader
-      ]
-    }),
+    // new HappyPack({
+    //   id: 'commonless',
+    //   threads: 4,
+    //   loaders: [
+    //     cssLoader,
+    //     //postcssLoader,
+    //     commonLessLoader
+    //   ]
+    // }),
+    // new HappyPack({
+    //   id: 'ts',
+    //   threads: 2,
+    //   loaders: [{
+    //     loader: 'babel-loader',
+    //     options: {
+    //       cacheDirectory: true,
+    //       presets: [
+    //         "react",
+    //         "es2015"
+    //       ],
+    //       babelrc: false
+    //     }
+    //   }, {
+    //     loader: 'ts-loader',
+    //     options: {
+    //       transpileOnly: true,
+    //       onlyCompileBundledFiles: true,
+    //       happyPackMode: true
+    //     }
+    //   }]
+    // }),
     //new HardSourceWebpackPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new CaseSensitivePathsPlugin(),
-    new WebpackBar(),
+    // new WebpackBar({
+    //   profile: true
+    // }),
     new DllReferencePlugin({
       manifest: require(path.join(__dirname, '../build/static/js/react.manifest.json'))
     }),
+    // new AutoDllPlugin({
+    //   inject: true,
+    //   filename: '[name].js',
+    //   entry: {
+    //     react: [
+    //       'react',
+    //       'react-dom',
+    //     ],
+    //     polyfills: [
+    //       'promise/lib/rejection-tracking',
+    //       'promise/lib/es6-extensions.js',
+    //       'whatwg-fetch',
+    //       'object-assign',
+    //       'react-dev-utils/webpackHotDevClient',
+    //     ],
+    //     antd: [
+    //       'antd'
+    //     ],
+    //     editor: ['brace', 'react-ace'],
+    //     utils: ['diff', 'diff2html', 'highlight.js', 'httpsnippet', 'react-copy-to-clipboard', 'react-intl', 'react-json-tree', 'react-perfect-scrollbar', 'react-sortable-hoc', 'react-syntax-highlighter', 'reflect-metadata', 'shellwords', 'shortid', 'uuid', 'lodash']
+    //   }
+    // })
     new DllReferencePlugin({
       manifest: require(path.join(__dirname, '../build/static/js/echart.manifest.json'))
     }),
     new DllReferencePlugin({
       manifest: require(path.join(__dirname, '../build/static/js/editor.manifest.json'))
     }),
-    new DllReferencePlugin({
-      manifest: require(path.join(__dirname, '../build/static/js/antd.manifest.json'))
-    }),
+    // new DllReferencePlugin({
+    //   manifest: require(path.join(__dirname, '../build/static/js/antd.manifest.json'))
+    // }),
     new DllReferencePlugin({
       manifest: require(path.join(__dirname, '../build/static/js/utils.manifest.json'))
+    }),
+    new DllReferencePlugin({
+      manifest: require(path.join(__dirname, '../build/static/js/polyfill.manifest.json'))
     }),
     //new BundleAnalyzerPlugin()
   ],

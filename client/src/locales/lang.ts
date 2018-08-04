@@ -1,4 +1,4 @@
-import antdEn from 'antd/lib/locale-provider/en_US';
+import { LocaleProvider } from 'antd';
 import appLocaleDataEn from 'react-intl/locale-data/en';
 import appLocaleDataZh from 'react-intl/locale-data/zh';
 const enMessages = require('./en');
@@ -9,7 +9,7 @@ export const language = {
         messages: {
             ...enMessages,
         },
-        antd: antdEn,
+        antd: LocaleProvider['antdEn'],
         locale: 'en-US',
         data: appLocaleDataEn
     },
