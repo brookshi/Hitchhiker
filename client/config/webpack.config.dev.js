@@ -83,8 +83,8 @@ module.exports = {
   devtool: 'cheap-module-source-map',
   entry: [
     paths.appIndexJs,
-    //  require.resolve('react-dev-utils/webpackHotDevClient'),
-    //   require.resolve('./polyfills')
+    require.resolve('react-dev-utils/webpackHotDevClient'),
+    require.resolve('./polyfills')
   ],
   output: {
     path: paths.appBuild,
@@ -179,7 +179,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       inject: true,
-      template: paths.appHtml,
+      template: paths.appDevHtml,
     }),
     commonCssETP,
     // commonLessETP,
