@@ -9,14 +9,14 @@ interface HighlightCodeProps {
 
 interface HighlightCodeState { }
 
-const languages = ['javascript', 'json', 'xml'];
-
 class HighlightCode extends React.Component<HighlightCodeProps, HighlightCodeState> {
 
     pre;
 
     public componentDidMount() {
-        languages.forEach(l => hljs.registerLanguage(l, require('highlight.js/lib/languages/' + l)));
+        hljs.registerLanguage('javascript', require('highlight.js/lib/languages/javascript'));
+        hljs.registerLanguage('json', require('highlight.js/lib/languages/json'));
+        hljs.registerLanguage('xml', require('highlight.js/lib/languages/xml'));
         hljs.highlightBlock(this.pre);
     }
 
