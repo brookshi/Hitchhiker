@@ -17,15 +17,11 @@ const publicUrl = '';
 const env = getClientEnvironment(publicUrl);
 const theme = require(paths.appPackageJson).theme;
 
-const commonCssETP = new ExtractTextPlugin('static/css/common.css', {
+const commonLessETP = new ExtractTextPlugin('static/css/common.[md5:contenthash:hex:20].css', {
   disable: false,
   allChunks: true,
 });
-const commonLessETP = new ExtractTextPlugin('static/css/common.css', {
-  disable: false,
-  allChunks: true,
-});
-const appETP = new ExtractTextPlugin('static/css/app.css', {
+const appETP = new ExtractTextPlugin('static/css/app.[md5:contenthash:hex:20].css', {
   disable: false,
   allChunks: true,
 });
@@ -34,7 +30,6 @@ const cssLoader = {
   loader: 'css-loader',
   options: {
     sourceMap: true,
-    // modules: true
   }
 };
 const postcssLoader = {
@@ -78,25 +73,22 @@ const getUrlLoader = (minetype) => {
 }
 
 module.exports = {
-  devtool: 'cheap-module-source-map',
+  bail: true,
+  devtool: 'source-map',
   entry: [
-    paths.appIndexJs,
-    require.resolve('react-dev-utils/webpackHotDevClient'),
-    require.resolve('./polyfills')
+    require.resolve('./polyfills'),
+    paths.appIndexJs
   ],
   output: {
     path: paths.appBuild,
-    pathinfo: true,
-    filename: 'static/js/bundle.js',
+    filename: 'static/js/[name].[chunkhash:8].js',
+    chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js',
     publicPath: publicPath
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.json'],
-    alias: {
-      antd: path.resolve(__dirname, '../node_modules/antd/dist/antd.js')
-    }
   },
-  mode: 'development',
+  mode: 'production',
   module: {
     noParse: /[\/\\]node_modules[\/\\]localforage[\/\\]dist[\/\\]localforage\.js$/,
     rules: [{
@@ -118,54 +110,40 @@ module.exports = {
       {
         test: /\.(ts|tsx)$/,
         include: paths.appSrc,
-        use: //'happypack/loader?id=ts'
-          [{
-            loader: 'babel-loader',
-            options: {
-              cacheDirectory: true,
-              presets: [
-                "react",
-                "es2015"
-              ],
-              babelrc: false
-            }
-          }, {
-            loader: 'ts-loader',
-            options: {
-              transpileOnly: true,
-              onlyCompileBundledFiles: true,
-            }
-          }]
+        use: [{
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+          }
+        }, {
+          loader: 'ts-loader',
+          options: {
+            transpileOnly: true,
+            onlyCompileBundledFiles: true,
+          }
+        }]
       },
       {
         test: /\.css$/,
-        use: commonCssETP.extract({
+        use: commonLessETP.extract({
           fallback: 'style-loader',
           use: cssLoader
         })
       },
-      // {
-      //   test: /\.less$/,
-      //   exclude: paths.appSrc,
-      //   use: commonLessETP.extract({
-      //     fallback: 'style-loader',
-      //     use: 'happypack/loader?id=commonless'
-      //     // use: [cssLoader,
-      //     //   //postcssLoader,
-      //     //   commonLessLoader
-      //     // ]
-      //   })
-      // },
+      {
+        test: /\.less$/,
+        exclude: paths.appSrc,
+        use: commonLessETP.extract({
+          fallback: 'style-loader',
+          use: 'happypack/loader?id=commonless'
+        })
+      },
       {
         test: /\.less$/,
         include: paths.appSrc,
         use: appETP.extract({
           fallback: 'style-loader',
           use: 'happypack/loader?id=appless'
-          // use: [cssLoader,
-          //   //postcssLoader,
-          //   appLessLoader
-          // ]
         })
       },
       {
@@ -177,98 +155,50 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       inject: true,
-      template: paths.appDevHtml,
+      template: paths.appHtml,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeRedundantAttributes: true,
+        useShortDoctype: true,
+        removeEmptyAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        keepClosingSlash: true,
+        minifyJS: true,
+        minifyCSS: true,
+        minifyURLs: true
+      }
     }),
-    commonCssETP,
-    // commonLessETP,
+    commonLessETP,
     appETP,
     new HappyPack({
       id: 'appless',
       threads: 2,
       loaders: [
         cssLoader,
-        //postcssLoader,
+        postcssLoader,
         appLessLoader
       ]
     }),
-    // new HappyPack({
-    //   id: 'commonless',
-    //   threads: 4,
-    //   loaders: [
-    //     cssLoader,
-    //     //postcssLoader,
-    //     commonLessLoader
-    //   ]
-    // }),
-    // new HappyPack({
-    //   id: 'ts',
-    //   threads: 2,
-    //   loaders: [{
-    //     loader: 'babel-loader',
-    //     options: {
-    //       cacheDirectory: true,
-    //       presets: [
-    //         "react",
-    //         "es2015"
-    //       ],
-    //       babelrc: false
-    //     }
-    //   }, {
-    //     loader: 'ts-loader',
-    //     options: {
-    //       transpileOnly: true,
-    //       onlyCompileBundledFiles: true,
-    //       happyPackMode: true
-    //     }
-    //   }]
-    // }),
-    //new HardSourceWebpackPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new CaseSensitivePathsPlugin(),
-    // new WebpackBar({
-    //   profile: true
-    // }),
-    new DllReferencePlugin({
-      manifest: require(path.join(__dirname, '../build/static/js/react.manifest.json'))
+    new HappyPack({
+      id: 'commonless',
+      threads: 4,
+      loaders: [
+        cssLoader,
+        postcssLoader,
+        commonLessLoader
+      ]
     }),
     // new AutoDllPlugin({
     //   inject: true,
-    //   filename: '[name].js',
+    //   filename: '[name].[md5:contenthash:hex:20].js',
     //   entry: {
-    //     react: [
-    //       'react',
-    //       'react-dom',
-    //     ],
-    //     polyfills: [
-    //       'promise/lib/rejection-tracking',
-    //       'promise/lib/es6-extensions.js',
-    //       'whatwg-fetch',
-    //       'object-assign',
-    //       'react-dev-utils/webpackHotDevClient',
-    //     ],
-    //     antd: [
-    //       'antd'
-    //     ],
+    //     react: ['react', 'react-dom', 'redux', 'react-redux', 'redux-saga', 'reselect', 'react-intl'],
     //     editor: ['brace', 'react-ace'],
-    //     utils: ['diff', 'diff2html', 'highlight.js', 'httpsnippet', 'react-copy-to-clipboard', 'react-intl', 'react-json-tree', 'react-perfect-scrollbar', 'react-sortable-hoc', 'react-syntax-highlighter', 'reflect-metadata', 'shellwords', 'shortid', 'uuid', 'lodash']
+    //     utils: ['diff', 'diff2html', 'highlight.js', 'httpsnippet', 'react-copy-to-clipboard', 'react-json-tree', 'react-perfect-scrollbar', 'react-sortable-hoc', 'react-syntax-highlighter', 'reflect-metadata', 'shellwords', 'shortid', 'uuid', 'lodash']
     //   }
     // })
-    new DllReferencePlugin({
-      manifest: require(path.join(__dirname, '../build/static/js/echart.manifest.json'))
-    }),
-    new DllReferencePlugin({
-      manifest: require(path.join(__dirname, '../build/static/js/editor.manifest.json'))
-    }),
-    // new DllReferencePlugin({
-    //   manifest: require(path.join(__dirname, '../build/static/js/antd.manifest.json'))
-    // }),
-    new DllReferencePlugin({
-      manifest: require(path.join(__dirname, '../build/static/js/utils.manifest.json'))
-    }),
-    new DllReferencePlugin({
-      manifest: require(path.join(__dirname, '../build/static/js/polyfill.manifest.json'))
-    }),
-    //new BundleAnalyzerPlugin()
+    new BundleAnalyzerPlugin()
   ],
   node: {
     fs: 'empty',
