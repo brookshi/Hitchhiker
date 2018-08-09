@@ -89,6 +89,43 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js', '.json'],
   },
   mode: 'production',
+  optimization: {
+    splitChunks: {
+      chunks: "all",
+      cacheGroups: {
+        util: {
+          name: "util",
+          test: /[\\/]node_modules[\\/]/,
+          priority: 10,
+          chunks: "all"
+        },
+        react: {
+          name: "react",
+          test: /[\\/]node_modules[\\/](react|redux|reselect)/,
+          priority: 12,
+          chunks: "all"
+        },
+        editor: {
+          name: "editor",
+          test: /[\\/]node_modules[\\/](react-ace|brace)/,
+          priority: 15,
+          chunks: "all"
+        },
+        echart: {
+          name: "echart",
+          test: 'echarts',
+          priority: 18,
+          chunks: "all"
+        },
+        ui: {
+          name: "ui",
+          priority: 20,
+          test: 'antd',
+          chunks: "all"
+        }
+      }
+    }
+  },
   module: {
     noParse: /[\/\\]node_modules[\/\\]localforage[\/\\]dist[\/\\]localforage\.js$/,
     rules: [{
@@ -191,13 +228,13 @@ module.exports = {
     }),
     // new AutoDllPlugin({
     //   inject: true,
-    //   filename: '[name].[md5:contenthash:hex:20].js',
+    //   filename: '[name].[contenthash:8].js',
     //   entry: {
     //     react: ['react', 'react-dom', 'redux', 'react-redux', 'redux-saga', 'reselect', 'react-intl'],
-    //     editor: ['brace', 'react-ace'],
-    //     utils: ['diff', 'diff2html', 'highlight.js', 'httpsnippet', 'react-copy-to-clipboard', 'react-json-tree', 'react-perfect-scrollbar', 'react-sortable-hoc', 'react-syntax-highlighter', 'reflect-metadata', 'shellwords', 'shortid', 'uuid', 'lodash']
+    //     editor: ['brace/mode/javascript', 'brace/mode/json', 'brace/mode/xml', 'brace/theme/eclipse', 'brace/ext/language_tools', 'brace/ext/searchbox', 'brace/snippets/javascript', 'react-ace'],
+    //     utils: ['diff', 'diff2html', 'httpsnippet', 'react-copy-to-clipboard', 'react-json-tree', 'react-perfect-scrollbar', 'react-sortable-hoc', 'reflect-metadata', 'shellwords', 'shortid', 'uuid']
     //   }
-    // })
+    // }),
     new BundleAnalyzerPlugin()
   ],
   node: {
