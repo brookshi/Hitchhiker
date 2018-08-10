@@ -64,6 +64,8 @@
     "fs-extra": "0.30.0",
     "happypack": "^5.0.0",
     "hard-source-webpack-plugin": "^0.12.0",
+    "hash-sum": "^1.0.2",
+    "html-webpack-inline-source-plugin": "0.0.10",
     "html-webpack-plugin": "3.2.0",
     "http-proxy-middleware": "0.17.3",
     "jest": "18.1.0",

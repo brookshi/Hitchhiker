@@ -7,10 +7,10 @@ const paths = require('./paths');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-const DllReferencePlugin = require('webpack/lib/DllReferencePlugin');
 const HappyPack = require('happypack');
 const AutoDllPlugin = require('autodll-webpack-plugin');
+const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
+const hash = require("hash-sum");
 
 const publicPath = '/';
 const publicUrl = '';
@@ -30,6 +30,9 @@ const cssLoader = {
   loader: 'css-loader',
   options: {
     sourceMap: true,
+    options: {
+      minimize: true
+    }
   }
 };
 const postcssLoader = {
@@ -82,7 +85,7 @@ module.exports = {
   output: {
     path: paths.appBuild,
     filename: 'static/js/[name].[chunkhash:8].js',
-    chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js',
+    chunkFilename: 'static/js/[name].[chunkhash:8].js',
     publicPath: publicPath
   },
   resolve: {
@@ -90,9 +93,20 @@ module.exports = {
   },
   mode: 'production',
   optimization: {
+    runtimeChunk: true,
+    moduleIds: 'hashed',
     splitChunks: {
       chunks: "all",
+      maxAsyncRequests: 10,
+      maxInitialRequests: 10,
+      minSize: 30000,
       cacheGroups: {
+        commons: {
+          name: 'commons',
+          chunks: 'initial',
+          priority: 30,
+          minChunks: 2
+        },
         util: {
           name: "util",
           test: /[\\/]node_modules[\\/]/,
@@ -113,15 +127,21 @@ module.exports = {
         },
         echart: {
           name: "echart",
-          test: 'echarts',
+          test: /[\\/]node_modules[\\/](echarts|zrender)/,
           priority: 18,
           chunks: "all"
         },
         ui: {
           name: "ui",
           priority: 20,
-          test: 'antd',
+          test: /[\\/]node_modules[\\/](antd|rc-)/,
           chunks: "all"
+        },
+        default: {
+          name: "app",
+          minChunks: 5,
+          priority: -20,
+          reuseExistingChunk: true,
         }
       }
     }
@@ -162,7 +182,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: commonLessETP.extract({
+        use: appETP.extract({
           fallback: 'style-loader',
           use: cssLoader
         })
@@ -193,6 +213,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       inject: true,
       template: paths.appHtml,
+      inlineSource: /runtime..*.js|app..*.css/,
       minify: {
         removeComments: true,
         collapseWhitespace: true,
@@ -206,6 +227,7 @@ module.exports = {
         minifyURLs: true
       }
     }),
+    new HtmlWebpackInlineSourcePlugin(),
     commonLessETP,
     appETP,
     new HappyPack({
@@ -229,12 +251,29 @@ module.exports = {
     // new AutoDllPlugin({
     //   inject: true,
     //   filename: '[name].[contenthash:8].js',
+    //   path: '../build/static/js',
     //   entry: {
     //     react: ['react', 'react-dom', 'redux', 'react-redux', 'redux-saga', 'reselect', 'react-intl'],
-    //     editor: ['brace/mode/javascript', 'brace/mode/json', 'brace/mode/xml', 'brace/theme/eclipse', 'brace/ext/language_tools', 'brace/ext/searchbox', 'brace/snippets/javascript', 'react-ace'],
-    //     utils: ['diff', 'diff2html', 'httpsnippet', 'react-copy-to-clipboard', 'react-json-tree', 'react-perfect-scrollbar', 'react-sortable-hoc', 'reflect-metadata', 'shellwords', 'shortid', 'uuid']
+    //     editor: ['brace/mode/javascript', 'brace/mode/json', 'brace/mode/xml', 'brace/theme/eclipse', 'brace/ext/language_tools', 'brace/ext/searchbox', 'brace/snippets/javascript', 'react-ace']
     //   }
     // }),
+    new webpack.NamedChunksPlugin(chunk => {
+      if (chunk.name) {
+        return chunk.name;
+      }
+      const modules = Array.from(chunk.modulesIterable);
+      if (modules.length > 1) {
+        const seen = new Set();
+        const nameLength = 4;
+        const joinedHash = hash(modules.map(m => m.id).join("_"));
+        let len = nameLength;
+        while (seen.has(joinedHash.substr(0, len))) len++;
+        seen.add(joinedHash.substr(0, len));
+        return `chunk-${joinedHash.substr(0, len)}`;
+      } else {
+        return modules[0].id;
+      }
+    }),
     new BundleAnalyzerPlugin()
   ],
   node: {
