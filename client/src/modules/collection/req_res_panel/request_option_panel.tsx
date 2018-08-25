@@ -1,34 +1,34 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
-import { Tabs, Badge, Radio, Select, Icon, Checkbox, Button, message } from 'antd';
+import { connect } from 'react-redux';
+import { Tabs, Radio, Select, Icon, Checkbox, Button, message } from 'antd';
 import RequestTabExtra from './request_tab_extra';
-import { normalBadgeStyle } from '../../../style/theme';
-import { DtoHeader } from '../../../../../api/interfaces/dto_header';
+import { DtoHeader } from '../../../common/interfaces/dto_header';
 import { actionCreator } from '../../../action/index';
 import { SelectReqTabType } from '../../../action/ui';
-import { KeyValueEditMode, DataMode } from '../../../common/custom_type';
+import { KeyValueEditMode, DataMode } from '../../../misc/custom_type';
 import { nameWithTag } from '../../../components/name_with_tag/index';
 import Editor from '../../../components/editor';
 import KeyValueList from '../../../components/key_value';
 import { UpdateDisplayRecordPropertyType, ChangeCurrentParamType } from '../../../action/record';
-import { bodyTypes } from '../../../common/body_type';
-import { defaultBodyType, allParameter, noEnvironment } from '../../../common/constants';
+import { bodyTypes } from '../../../misc/body_type';
+import { defaultBodyType, allParameter, noEnvironment } from '../../../misc/constants';
 import { getActiveRecordSelector, getReqActiveTabKeySelector, getHeadersEditModeSelector, getActiveRecordStateSelector, getProjectEnvsSelector, getActiveEnvIdSelector } from './selector';
-import { DtoRecord } from '../../../../../api/interfaces/dto_record';
+import { DtoRecord } from '../../../common/interfaces/dto_record';
 import { RecordState, ParameterStatusState } from '../../../state/collection';
-import { KeyValueEditType } from '../../../common/custom_type';
+import { KeyValueEditType } from '../../../misc/custom_type';
 import { State } from '../../../state/index';
 import * as _ from 'lodash';
-import { ParameterType, ReduceAlgorithmType } from '../../../common/parameter_type';
+import { ParameterType, ReduceAlgorithmType } from '../../../misc/parameter_type';
 import { StringUtil } from '../../../utils/string_util';
-import { RequestStatus } from '../../../common/request_status';
+import { RequestStatus } from '../../../misc/request_status';
 import AssertJsonView from '../../../components/assert_json_view';
-import { DtoAssert } from '../../../../../api/interfaces/dto_assert';
-import { DtoEnvironment } from '../../../../../api/interfaces/dto_environment';
+import { DtoAssert } from '../../../common/interfaces/dto_assert';
+import { DtoEnvironment } from '../../../common/interfaces/dto_environment';
 import Msg from '../../../locales';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { DtoBodyFormData } from '../../../../../api/interfaces/dto_variable';
+import { DtoBodyFormData } from '../../../common/interfaces/dto_variable';
 import LocalesString from '../../../locales/string';
+import { TabWithDot } from '../../../components/tab_dot';
 
 const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
@@ -92,9 +92,9 @@ interface RequestOptionPanelState { }
 
 class RequestOptionPanel extends React.Component<RequestOptionPanelProps, RequestOptionPanelState> {
 
-    private bodyEditor: Editor;
+    private bodyEditor: Editor | null;
 
-    shouldComponentUpdate(nextProps: RequestOptionPanelProps, nextState: RequestOptionPanelState) {
+    shouldComponentUpdate(nextProps: RequestOptionPanelProps, _nextState: RequestOptionPanelState) {
         return !_.isEqual(_.omit(this.props, _.functionsIn(this.props)), _.omit(nextProps, _.functionsIn(nextProps)));
     }
 
@@ -102,7 +102,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
         this.props.selectReqTab(this.props.activeKey, key);
     }
 
-    public componentDidUpdate(nextProps: RequestOptionPanelProps, nextState: RequestOptionPanelState) {
+    public componentDidUpdate(_nextProps: RequestOptionPanelProps, _nextState: RequestOptionPanelState) {
         if (this.bodyEditor) {
             this.bodyEditor.forceUpdate();
         }
@@ -220,11 +220,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                     />
                 </TabPane>
                 <TabPane
-                    tab={(
-                        <Badge style={normalBadgeStyle} dot={!!parameters && parameters.length > 0} count="" >
-                            {Msg('Collection.Parameters')}
-                        </Badge>
-                    )}
+                    tab={<TabWithDot content={LocalesString.get('Collection.Parameters')} show={!!parameters && parameters.length > 0} />}
                     key="parameters"
                 >
                     <span className="req-res-tabs-param-title">
@@ -246,11 +242,7 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
                     <Editor type="json" fixHeight={true} height={258} value={parameters || ''} onChange={v => this.props.changeRecord({ 'parameters': v })} />
                 </TabPane>
                 <TabPane
-                    tab={(
-                        <Badge style={normalBadgeStyle} dot={(!!body && body.length > 0) || (formDatas && formDatas.length > 0)} count="" >
-                            {Msg('Collection.Body')}
-                        </Badge>
-                    )}
+                    tab={<TabWithDot content={LocalesString.get('Collection.Body')} show={(!!body && body.length > 0) || (!!formDatas && formDatas.length > 0)} />}
                     key="body"
                 >
                     <RadioGroup style={{ marginBottom: 8 }} onChange={v => this.props.changeRecord({ 'dataMode': (v.target as any).value })} value={bodyMode}>
@@ -272,31 +264,19 @@ class RequestOptionPanel extends React.Component<RequestOptionPanelProps, Reques
 
                 </TabPane>
                 <TabPane
-                    tab={(
-                        <Badge style={normalBadgeStyle} dot={!!prescript && prescript.length > 0} count="">
-                            {Msg('Collection.PreRequestScript')}
-                        </Badge>
-                    )}
+                    tab={<TabWithDot content={LocalesString.get('Collection.PreRequestScript')} show={!!prescript && prescript.length > 0} />}
                     key="prescript"
                 >
                     <Editor type="javascript" height={300} fixHeight={true} value={prescript || ''} onChange={v => this.props.changeRecord({ 'prescript': v })} />
                 </TabPane>
                 <TabPane
-                    tab={(
-                        <Badge style={normalBadgeStyle} dot={!!test && test.length > 0} count="">
-                            {Msg('Collection.Test')}
-                        </Badge>
-                    )}
+                    tab={<TabWithDot content={LocalesString.get('Collection.Test')} show={!!test && test.length > 0} />}
                     key="test"
                 >
                     <Editor type="javascript" height={300} fixHeight={true} value={test} onChange={v => this.props.changeRecord({ 'test': v })} />
                 </TabPane>
                 <TabPane
-                    tab={(
-                        <Badge style={normalBadgeStyle} dot={!!assertInfos && Object.keys(assertInfos).length > 0} count="">
-                            {Msg('Collection.AssertBaseOnUI')}
-                        </Badge>
-                    )}
+                    tab={<TabWithDot content={LocalesString.get('Collection.AssertBaseOnUI')} show={!!assertInfos && Object.keys(assertInfos).length > 0} />}
                     key="assert"
                 >
                     {isResValid ?
@@ -364,7 +344,7 @@ const mapStateToProps = (state: State): RequestOptionPanelStateProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): RequestOptionPanelDispatchProps => {
+const mapDispatchToProps = (dispatch: any): RequestOptionPanelDispatchProps => {
     return {
         selectReqTab: (recordId, tab) => dispatch(actionCreator(SelectReqTabType, { recordId, tab })),
         changeRecord: (value) => dispatch(actionCreator(UpdateDisplayRecordPropertyType, value)),

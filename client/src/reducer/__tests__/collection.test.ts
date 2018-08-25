@@ -2,12 +2,13 @@ import { collectionState } from '../collection';
 import { actionCreator } from '../../action/index';
 import { collectionDefaultValue } from '../../state/collection';
 import { SelectedProjectChangedType, CollectionOpenKeysType, SaveCollectionType, DeleteCollectionType } from '../../action/collection';
-import { RequestStatus } from '../../common/request_status';
+import { RequestStatus } from '../../misc/request_status';
 import { SaveAsRecordType, SaveRecordType, MoveRecordType, DeleteRecordType } from '../../action/record';
-import { RecordCategory } from '../../common/record_category';
+import { RecordCategory } from '../../misc/record_category';
 import { defaultUser } from './data';
-import { ParameterType } from '../../common/parameter_type';
+import { ParameterType } from '../../misc/parameter_type';
 import { LoginSuccessType } from '../../action/user';
+import 'jest';
 
 test('login success', () => {
 

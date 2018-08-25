@@ -41,3 +41,9 @@ typings
 build
 ~$test case.xlsx
 staging
+
+# symbolic link folder
+api/src/common
+
+.awcache
+stats.json

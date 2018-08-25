@@ -2,17 +2,18 @@
 
 @font-face {
   font-family: SourceCodePro;
-  src: url('./fonts/SourceCodePro-Regular.woff');
+  src: url('fonts/SourceCodePro-Regular.woff');
 }
 @font-face {
   font-family: IconFont;
-  src: url('./fonts/iconfont.woff');
+  src: url('fonts/iconfont.woff');
 }
 
 html,
 body {
   margin: 0px;
   padding: 0;
+  font-size: 12px;
   font-family: Arial, "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", Helvetica, "Helvetica Neue For Number", sans-serif, IconFont;
 }
 
@@ -30,25 +31,33 @@ body {
 
 .app-slider {
   background: @panel-background-deep-dark;
+  padding: 0;
 }
 
 .sider-menu {
   background: transparent;
-  flex: auto;
   width: 50px;
+  margin-top: -4px;
   i {
-    font-size: 22px;
+    font-size: 22px !important;
     vertical-align: text-bottom;
   }
   li[role="menuitem"] {
-    height: 50px;
-    line-height: 50px;
     padding: 0px 13px;
+    margin-left: -18px !important;
   }
 }
 
 .ant-layout-sider-trigger{
   display: none;
+}
+
+.collection-item .ant-menu .ant-menu-item,
+.collection-item .folder { 
+    padding: 0;
+    margin-top: 0;
+    font-size: 12px;
+    margin-bottom: 0;
 }
 
 .scrollbar-container {
@@ -65,15 +74,15 @@ body {
     position: absolute;
     top: 4px;
     right: 8px;
-    background: @panel-background;
+    background: transparent;
     color: @primary-color;
     &:hover {
         color: @primary-color-light;
-        background: @panel-background;
+        background: transparent;
     }
     &:focus {
         color: @primary-color;
-        background: @panel-background;
+        background: transparent;
     }
 }
 
@@ -105,4 +114,8 @@ body {
     line-height: 50px;
     width: 100%;
     text-align: center;
+}
+
+ul{
+  padding-left: 0px;
 }

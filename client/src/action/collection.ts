@@ -1,5 +1,5 @@
 import { put, takeEvery } from 'redux-saga/effects';
-import { HttpMethod } from '../common/http_method';
+import { HttpMethod } from '../misc/http_method';
 import { syncAction, actionCreator, ReloadType } from './index';
 import { Urls } from '../utils/urls';
 

@@ -1,11 +1,11 @@
 import { StringUtil } from './string_util';
-import { DtoRecord } from '../../../api/interfaces/dto_record';
+import { DtoRecord } from '../common/interfaces/dto_record';
 import * as words from 'shellwords';
 import { getDefaultRecord } from '../state/collection';
 
 export class CurlImport {
 
-    static do(target: string, collectionId: string = ''): DtoRecord | undefined {
+    static do(target: string): DtoRecord | undefined {
 
         let content = this.prepare(target);
         if (!content.includes('curl ')) {

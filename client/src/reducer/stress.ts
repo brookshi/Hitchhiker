@@ -1,7 +1,7 @@
 import { LoginSuccessType, SyncUserDataSuccessType } from '../action/user';
 import * as _ from 'lodash';
 import { StressTestState, stressDefaultValue } from '../state/stress';
-import { DtoStress } from '../../../api/interfaces/dto_stress';
+import { DtoStress } from '../common/interfaces/dto_stress';
 import { SaveStressType, ActiveStressType, DeleteStressType, RunStressFulfillType, StressChunkDataType, StressStatusType } from '../action/stress';
 
 export function stressTestState(state: StressTestState = stressDefaultValue, action: any): StressTestState {

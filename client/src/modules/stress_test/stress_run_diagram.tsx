@@ -1,8 +1,8 @@
 import React from 'react';
-import { DtoRecord } from '../../../../api/interfaces/dto_record';
+import { DtoRecord } from '../../common/interfaces/dto_record';
 import * as _ from 'lodash';
 import './style/index.less';
-import { StressRunResult, StressReqProgress, Duration, StressResStatisticsTime, StressResFailedStatistics } from '../../../../api/interfaces/dto_stress_setting';
+import { StressRunResult, StressReqProgress, StressResFailedStatistics, Duration, StressResStatisticsTime } from '../../common/interfaces/dto_stress_setting';
 import ReactEchartsCore from 'echarts-for-react/lib/core';
 import echarts from 'echarts/lib/echarts';
 import 'echarts/lib/chart/effectScatter';
@@ -15,7 +15,7 @@ import 'echarts/lib/component/dataZoom';
 import 'echarts/lib/component/grid';
 import 'echarts/lib/component/title';
 import 'echarts/lib/component/legend';
-import { unknownName } from '../../common/constants';
+import { unknownName } from '../../misc/constants';
 import { Table, Tooltip, Button } from 'antd';
 import LocalesString from '../../locales/string';
 import { DownloadUtil } from '../../utils/download_util';
@@ -304,7 +304,7 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
         const dataIndexs = ['averageDns', 'averageConnect', 'averageRequest', 'high', 'low', 'stddev', 'p95', 'p90', 'p75', 'p50'].concat(errDataIndexs);
 
         const keys = Object.keys(runState.stressReqDuration);
-        const dataSource = keys.map<StressTableDisplay>(d => {
+        const dataSource = keys.map<any>(d => {
 
             const m500 = runState.stressFailedResult.m500[d] || 0;
             const testFailed = runState.stressFailedResult.testFailed[d] || 0;
@@ -342,7 +342,7 @@ class StressRunDiagram extends React.Component<StressRunDiagramProps, StressRunD
                             key={t}
                             title={t}
                             dataIndex={dataIndexs[i]}
-                            render={(text, record) => this.highlightCellIfNeed(text, errDataIndexs, dataIndexs[i])}
+                            render={text => this.highlightCellIfNeed(text, errDataIndexs, dataIndexs[i])}
                         />))
                     }
                 </StressTable>

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Table, Upload, Button, message, Modal, Popconfirm } from 'antd';
-import { ProjectData, ProjectFiles } from '../../../../api/interfaces/dto_project_data';
+import { ProjectData, ProjectFiles } from '../../common/interfaces/dto_project_data';
 import * as _ from 'lodash';
-import { ProjectFileType, ProjectFileTypes } from '../../common/custom_type';
+import { ProjectFileType, ProjectFileTypes } from '../../misc/custom_type';
 import { Urls } from '../../utils/urls';
 import Msg from '../../locales';
 import LocalesString from '../../locales/string';
@@ -108,7 +108,7 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
                             <ProjectLibColumn
                                 title={Msg('Project.Path')}
                                 dataIndex="path"
-                                render={(text, record) => {
+                                render={(text, _record) => {
                                     const globalPathIndex = (text || '').indexOf('global_data');
                                     if (globalPathIndex < 0) {
                                         return (text || '').replace(/\\/g, '/');
@@ -121,7 +121,7 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
                             <ProjectLibColumn
                                 title={Msg('Project.Origin')}
                                 dataIndex="isGlobal"
-                                render={(text, record) => record.isGlobal ? 'global' : 'project'}
+                                render={(_text, record) => record.isGlobal ? 'global' : 'project'}
                             />
                             {/* <ProjectLibColumn
                             title="Size"
@@ -131,13 +131,13 @@ class ProjectDataDialog extends React.Component<ProjectDataDialogProps, ProjectD
                             <ProjectLibColumn
                                 title={Msg('Project.CreatedDate')}
                                 dataIndex="createdDate"
-                                render={(text, record) => new Date(record.createdDate).toLocaleDateString()}
+                                render={(_text, record) => new Date(record.createdDate).toLocaleDateString()}
                             />
                             <ProjectLibColumn
                                 title={Msg('Project.Action')}
                                 key="action"
                                 width={140}
-                                render={(text, record) => (
+                                render={(_text, record) => (
                                     record.isGlobal ? '' : (
                                         <span>
                                             <Popconfirm title={Msg('Common.SureDelete')} onConfirm={() => this.delProjectLib(record)}>

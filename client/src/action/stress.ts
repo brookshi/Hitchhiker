@@ -1,11 +1,10 @@
 import { Urls } from '../utils/urls';
-import { StressResponse } from '../../../api/interfaces/dto_stress_setting';
-import { StressMessageType } from '../common/stress_type';
+import { StressResponse } from '../common/interfaces/dto_stress_setting';
+import { StressMessageType } from '../misc/stress_type';
 import { takeEvery, put, takeLatest } from 'redux-saga/effects';
 import { syncAction, actionCreator } from './index';
-import { HttpMethod } from '../common/http_method';
-import { Dispatch } from 'react-redux';
-import message from 'antd/lib/message';
+import { HttpMethod } from '../misc/http_method';
+import { message } from 'antd';
 import LocalesString from '../locales/string';
 
 export const SaveStressType = 'save stress test';
@@ -30,9 +29,9 @@ export class StressWS {
 
     private socket: WebSocket;
 
-    private dispatch: Dispatch<any>;
+    private dispatch: any;
 
-    initStressWS(dispatch: Dispatch<any>) {
+    initStressWS(dispatch: any) {
         this.dispatch = dispatch;
         this.socket = new WebSocket(Urls.getWebSocket('stresstest'));
         this.socket.onmessage = (ev: MessageEvent) => {
@@ -55,7 +54,7 @@ export class StressWS {
                 dispatch(actionCreator(StressStatusType, data));
             }
         };
-        this.socket.onclose = (ev: CloseEvent) => {
+        this.socket.onclose = () => {
             console.error(LocalesString.get('Stress.SocketError'));
             console.log(LocalesString.get('Stress.Reconnect'));
             setTimeout(() => this.initStressWS(this.dispatch), 3000);

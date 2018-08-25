@@ -5,7 +5,6 @@ import { store } from './store';
 import * as l from './locales/lang';
 import App from './App';
 import LocalStore from './utils/local_store';
-import { LocaleProvider } from 'antd';
 import { addLocaleData, IntlProvider } from 'react-intl';
 import { GlobalVar } from './utils/global_var';
 
@@ -16,12 +15,10 @@ addLocaleData(appLocale.data);
 LocalStore.init();
 
 ReactDOM.render(
-  <LocaleProvider locale={appLocale.antd}>
-    <IntlProvider locale={appLocale.locale} messages={appLocale.messages}>
-      <Provider store={store}>
-        <App />
-      </Provider>
-    </IntlProvider>
-  </LocaleProvider>,
+  <IntlProvider locale={appLocale.locale} messages={appLocale.messages}>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </IntlProvider>,
   document.getElementById('root') as HTMLElement
 );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { WorkerStatus } from '../../common/stress_type';
+import { WorkerStatus } from '../../misc/stress_type';
 import { primaryColor } from '../../style/theme';
 import './style/index.less';
 

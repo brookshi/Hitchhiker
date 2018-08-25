@@ -1,17 +1,19 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
-import { Form, Alert, Icon } from 'antd';
-import { ValidateStatus, ValidateType } from '../../../common/custom_type';
+import { connect } from 'react-redux';
+import { Form, Alert, Icon, Input } from 'antd';
+import { ValidateStatus, ValidateType } from '../../../misc/custom_type';
 import { actionCreator } from '../../../action/index';
 import { UpdateDisplayRecordPropertyType } from '../../../action/record';
 import { getActiveRecordSelector, getActiveRecordStateSelector } from './selector';
-import { ConflictType } from '../../../common/conflict_type';
+import { ConflictType } from '../../../misc/conflict_type';
 import { ShowTimelineType, ToggleRequestDescriptionType } from '../../../action/ui';
 import Msg from '../../../locales';
 import LoInput from '../../../locales/input';
 import { State } from '../../../state/index';
+import LocalesString from '../../../locales/string';
 
 const FItem = Form.Item;
+const TextArea = Input.TextArea;
 
 interface RequestNamePanelStateProps {
 
@@ -61,12 +63,6 @@ class RequestNamePanel extends React.Component<RequestNamePanelProps, RequestNam
     }
 
     private onNameChanged = (value: string) => {
-        let nameValidateStatus = this.state.nameValidateStatus;
-        if ((value as string).trim() === '') {
-            nameValidateStatus = ValidateType.warning;
-        } else if (this.state.nameValidateStatus) {
-            nameValidateStatus = undefined;
-        }
         this.props.changeRecord({ 'name': value });
     }
 
@@ -120,16 +116,15 @@ class RequestNamePanel extends React.Component<RequestNamePanelProps, RequestNam
                 {
                     displayRequestDescription ? (
                         <div className="req-panel-description" style={{ marginBottom: 8 }}>
-                            <LoInput
-                                placeholderId="Collection.RequestDescription"
+                            <TextArea
+                                placeholder={LocalesString.get('Collection.RequestDescription')}
                                 spellCheck={false}
                                 onChange={(e) => this.onDescriptionChanged(e.currentTarget.value)}
                                 value={description}
-                                type="textarea"
                                 autosize={true}
                             />
                         </div>
-                    ) : ''
+                    ) : null
                 }
             </div>
         );
@@ -151,7 +146,7 @@ const mapStateToProps = (state: State): RequestNamePanelStateProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): RequestNamePanelDispatchProps => {
+const mapDispatchToProps = (dispatch: any): RequestNamePanelDispatchProps => {
     return {
         changeRecord: (value) => dispatch(actionCreator(UpdateDisplayRecordPropertyType, value)),
         showTimeLine: (id) => dispatch(actionCreator(ShowTimelineType, id)),

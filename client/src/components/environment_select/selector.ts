@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { State } from '../../state';
-import { noEnvironment } from '../../common/constants';
+import { noEnvironment } from '../../misc/constants';
 
 const getActiveKey = (state: State) => state.displayRecordsState.activeKey;
 
@@ -23,8 +23,8 @@ export const getActiveRecordStateSelector = () => {
 
 export const getActiveRecordSelector = () => {
     return createSelector(
-        [getActiveKey, getActiveRecordStateSelector()],
-        (activeKey, recordState) => {
+        [getActiveRecordStateSelector()],
+        (recordState) => {
             if (!recordState) {
                 throw new Error('miss active record state');
             }

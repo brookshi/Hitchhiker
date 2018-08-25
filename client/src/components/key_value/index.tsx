@@ -1,10 +1,12 @@
 import React, { SyntheticEvent } from 'react';
-import { DtoHeader } from '../../../../api/interfaces/dto_header';
-import { KeyValuePair } from '../../common/key_value_pair';
+import { DtoHeader } from '../../common/interfaces/dto_header';
+import { KeyValuePair } from '../../misc/key_value_pair';
 import { Input } from 'antd';
 import { StringUtil } from '../../utils/string_util';
 import KeyValueList from './key_value_list';
-import { KeyValueEditMode, KeyValueEditType } from '../../common/custom_type';
+import { KeyValueEditMode, KeyValueEditType } from '../../misc/custom_type';
+
+const TextArea = Input.TextArea;
 
 interface KeyValueComponentProps {
 
@@ -46,9 +48,8 @@ class KeyValueComponent extends React.Component<KeyValueComponentProps, KeyValue
         const headers = this.props.headers as KeyValuePair[];
         return this.props.mode === KeyValueEditType.bulkEdit ?
             (
-                <Input
+                <TextArea
                     className="req-header"
-                    type="textarea"
                     spellCheck={false}
                     value={StringUtil.headersToString(headers)}
                     onChange={(e) => this.onHeadersChanged(e)}

@@ -12,17 +12,17 @@ import { localDataState } from './local_data';
 import { syncDefaultValue } from '../state/ui';
 import { scheduleState } from './schedule';
 import { ReloadType } from '../action/index';
-import { DtoCollection } from '../../../api/interfaces/dto_collection';
-import { DtoRecord } from '../../../api/interfaces/dto_record';
+import { DtoCollection } from '../common/interfaces/dto_collection';
+import { DtoRecord } from '../common/interfaces/dto_record';
 import { QuitProjectType, DisbandProjectType } from '../action/project';
 import { getNewRecordState, RecordState } from '../state/collection';
 import { stressTestState } from './stress';
 import { SyncUserDataSuccessType } from '../action/user';
-import { ConflictType } from '../common/conflict_type';
-import { newRecordFlag } from '../common/constants';
+import { ConflictType } from '../misc/conflict_type';
+import { newRecordFlag } from '../misc/constants';
 import { ShowTimelineType, BatchCloseType } from '../action/ui';
 import { CompareUtil } from '../utils/compare_util';
-import { CloseAction } from '../common/custom_type';
+import { CloseAction } from '../misc/custom_type';
 import { documentState } from './document';
 
 export const reduceReducers = (...reducers) => {
@@ -211,7 +211,7 @@ export function multipleStateReducer(state: State, action: any): State {
             const recordStates = { ...state.displayRecordsState.recordStates };
             const responseState = { ...state.displayRecordsState.responseState };
             let activeKey = activedTab;
-            state.displayRecordsState.recordsOrder.forEach((t, i) => {
+            state.displayRecordsState.recordsOrder.forEach(t => {
                 const recordState = state.displayRecordsState.recordStates[t];
                 if (recordState) {
                     if (!(closeAction === CloseAction.exceptActived && recordState.record.id === activedTab) && (!recordState.isChanged || t.startsWith(newRecordFlag))) {

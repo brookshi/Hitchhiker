@@ -1,4 +1,5 @@
-import { allProject } from '../common/constants';
+import { allProject } from '../misc/constants';
+import * as _ from 'lodash';
 
 export interface DocumentState {
 

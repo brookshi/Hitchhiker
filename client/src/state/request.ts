@@ -1,4 +1,4 @@
-import { RequestStatus } from '../common/request_status';
+import { RequestStatus } from '../misc/request_status';
 
 export interface RequestState {
 

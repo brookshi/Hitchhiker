@@ -2,7 +2,7 @@ import { LoginSuccessType, SyncUserDataSuccessType } from '../action/user';
 import * as _ from 'lodash';
 import { ScheduleState, scheduleDefaultValue } from '../state/schedule';
 import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType, RunScheduleType, RunScheduleFulfillType, ScheduleChunkDataType, SetScheduleRecordsModeType, SetScheduleRecordsPageType, SetScheduleRecordsExcludeNotExistType } from '../action/schedule';
-import { DtoSchedule } from '../../../api/interfaces/dto_schedule';
+import { DtoSchedule } from '../common/interfaces/dto_schedule';
 import { GlobalVar } from '../utils/global_var';
 
 export function scheduleState(state: ScheduleState = scheduleDefaultValue, action: any): ScheduleState {

@@ -1,4 +1,4 @@
-import { HttpMethod, HttpMethodType } from '../common/http_method';
+import { HttpMethod, HttpMethodType } from '../misc/http_method';
 
 export interface SyncItem {
 

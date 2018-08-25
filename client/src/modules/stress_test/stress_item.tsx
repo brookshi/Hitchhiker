@@ -2,7 +2,7 @@ import React from 'react';
 import ItemWithMenu from '../../components/item_with_menu';
 import { Menu, Icon } from 'antd';
 import { confirmDlg } from '../../components/confirm_dialog/index';
-import { DtoStress } from '../../../../api/interfaces/dto_stress';
+import { DtoStress } from '../../common/interfaces/dto_stress';
 import Msg from '../../locales';
 import './style/index.less';
 import LocalesString from '../../locales/string';
@@ -28,7 +28,7 @@ interface StressItemState { }
 
 class StressItem extends React.Component<StressItemProps, StressItemState> {
 
-    private itemWithMenu: ItemWithMenu;
+    private itemWithMenu: ItemWithMenu | null;
 
     private getMenu = () => {
         const { isOwner, isRunning } = this.props;

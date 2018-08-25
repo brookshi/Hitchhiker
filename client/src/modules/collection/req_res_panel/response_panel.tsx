@@ -1,12 +1,12 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { Tabs, Button, Tag, Icon } from 'antd';
 import Editor from '../../../components/editor';
 import './style/index.less';
-import { RunResult } from '../../../../../api/interfaces/dto_run_result';
+import { RunResult } from '../../../common/interfaces/dto_run_result';
 import { StringUtil } from '../../../utils/string_util';
 import { nameWithTag } from '../../../components/name_with_tag';
-import { successColor, failColor, pass, fail, allParameter } from '../../../common/constants';
+import { successColor, failColor, pass, fail, allParameter } from '../../../misc/constants';
 import { actionCreator } from '../../../action/index';
 import { SelectResTabType, ToggleReqPanelVisibleType } from '../../../action/ui';
 import ResponseLoadingPanel from './response_loading_panel';
@@ -14,7 +14,7 @@ import ResErrorPanel from '../../../components/res_error_panel';
 import { State } from '../../../state/index';
 import { getActiveRecordSelector, getActiveRecordStateSelector, getResHeightSelector, getResActiveTabKeySelector, getIsResPanelMaximumSelector } from './selector';
 import { ResponseState } from '../../../state/collection';
-import { ConsoleMsg } from '../../../../../api/interfaces/dto_res';
+import { ConsoleMsg } from '../../../common/interfaces/dto_res';
 import Msg from '../../../locales';
 import * as _ from 'lodash';
 import { DateUtil } from '../../../utils/date_util';
@@ -290,7 +290,7 @@ const mapStateToProps = (state: State): ResponsePanelStateProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): ResponsePanelDispatchProps => {
+const mapDispatchToProps = (dispatch: any): ResponsePanelDispatchProps => {
     return {
         selectResTab: (recordId, tab) => dispatch(actionCreator(SelectResTabType, { recordId, tab })),
         toggleResPanelMaximize: (recordId, visible) => dispatch(actionCreator(ToggleReqPanelVisibleType, { recordId, visible })),

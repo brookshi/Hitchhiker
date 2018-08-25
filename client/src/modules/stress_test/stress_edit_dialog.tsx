@@ -1,16 +1,16 @@
 import React from 'react';
 import { Select, Form, Modal, Input, Checkbox, Row, Col, InputNumber } from 'antd';
-import { DtoStress } from '../../../../api/interfaces/dto_stress';
-import { noEnvironment } from '../../common/constants';
+import { DtoStress } from '../../common/interfaces/dto_stress';
+import { noEnvironment } from '../../misc/constants';
 import { StringUtil } from '../../utils/string_util';
 import * as _ from 'lodash';
-import { NotificationMode, NotificationStr } from '../../common/notification_mode';
-import { DtoRecord } from '../../../../api/interfaces/dto_record';
+import { NotificationMode, NotificationStr } from '../../misc/notification_mode';
+import { DtoRecord } from '../../common/interfaces/dto_record';
 import SortableListComponent from '../../components/sortable_list';
-import { RecordCategory } from '../../common/record_category';
-import { DtoCollection } from '../../../../api/interfaces/dto_collection';
-import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
-import { ParameterType } from '../../common/parameter_type';
+import { RecordCategory } from '../../misc/record_category';
+import { DtoCollection } from '../../common/interfaces/dto_collection';
+import { DtoEnvironment } from '../../common/interfaces/dto_environment';
+import { ParameterType } from '../../misc/parameter_type';
 import Msg from '../../locales';
 import LocalesString from '../../locales/string';
 
@@ -155,7 +155,7 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
         );
     }
 
-    private checkEmails = (rule, value, callback) => {
+    private checkEmails = (_rule, value, callback) => {
         const result = StringUtil.checkEmails(value);
         if (!value || value.length === 0 || result.success) {
             callback();
@@ -164,7 +164,7 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
         }
     }
 
-    private checkRequests = (rule, value, callback) => {
+    private checkRequests = (_rule, _value, callback) => {
         if (this.state.sortedRecords.some(r => r.include)) {
             callback();
         } else {
@@ -215,7 +215,7 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                 </div>
                 <RecordSortList
                     items={this.state.sortedRecords}
-                    buildListItem={(item, dragHandler) => (
+                    buildListItem={(item, _dragHandler) => (
                         <li className="stress-dlg-sort-item">
                             <span className="keyvalue-dragicon">☰</span>
                             {item.name}
@@ -277,9 +277,6 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
             labelCol: { span: 3 },
             wrapperCol: { span: 19 },
         };
-        const stressColStyle = {
-            textAlign: 'right'
-        };
         return (
             <Modal
                 visible={isEditDlgOpen}
@@ -295,7 +292,7 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                             rules: [{ required: true, message: LocalesString.get('Stress.EnterName') }],
                         })(
                             <Input spellCheck={false} />
-                            )}
+                        )}
                     </FormItem>
                     <FormItem {...formItemLayout} required={true} label={Msg('Stress.Collection')}>
                         {getFieldDecorator('collectionId', {
@@ -303,7 +300,7 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                             rules: [{ required: true, message: LocalesString.get('Stress.SelectCollection') }],
                         })(
                             this.generateCollectionSelect()
-                            )}
+                        )}
                     </FormItem>
                     <FormItem {...formItemLayout} required={true} label={Msg('Stress.Requests')}>
                         {getFieldDecorator('requests', {
@@ -315,7 +312,7 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                             <div className="stress-dlg-list">
                                 {this.generateSortRecordsList()}
                             </div>
-                            )}
+                        )}
                     </FormItem>
                     <FormItem {...formItemLayout} label={Msg('Stress.Repeat')}>
                         <Row gutter={8}>
@@ -325,40 +322,40 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                                         initialValue: stress.repeat,
                                     })(
                                         <InputNumber className="stress-dlg-input-number" min={1} />
-                                        )}
+                                    )}
                                 </FormItem>
                             </Col>
-                            <Col span={3} style={stressColStyle}>{Msg('Stress.Concurrency')}: </Col>
+                            <Col span={3} className="stress-dlg-col">{Msg('Stress.Concurrency')}: </Col>
                             <Col span={3}>
                                 <FormItem>
                                     {getFieldDecorator('concurrencyCount', {
                                         initialValue: stress.concurrencyCount,
                                     })(
                                         <InputNumber className="stress-dlg-input-number" min={1} />
-                                        )}
+                                    )}
                                 </FormItem>
                             </Col>
-                            <Col span={2} style={stressColStyle}>{Msg('Stress.QPS')}: </Col>
+                            <Col span={2} className="stress-dlg-col">{Msg('Stress.QPS')}: </Col>
                             <Col span={3}>
                                 <FormItem>
                                     {getFieldDecorator('qps', {
                                         initialValue: stress.qps,
                                     })(
                                         <InputNumber className="stress-dlg-input-number" min={0} />
-                                        )}
+                                    )}
                                 </FormItem>
                             </Col>
-                            <Col span={3} style={stressColStyle}>{Msg('Stress.Timeout')}: </Col>
+                            <Col span={3} className="stress-dlg-col">{Msg('Stress.Timeout')}: </Col>
                             <Col span={3}>
                                 <FormItem>
                                     {getFieldDecorator('timeout', {
                                         initialValue: stress.timeout,
                                     })(
                                         <InputNumber className="stress-dlg-input-number" min={0} />
-                                        )}
+                                    )}
                                 </FormItem>
                             </Col>
-                            <Col span={1} style={stressColStyle} />
+                            <Col span={1} className="stress-dlg-col" />
                             <Col span={3}>
                                 <FormItem>
                                     {getFieldDecorator('keepAlive', {
@@ -366,7 +363,7 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                                         initialValue: stress.keepAlive,
                                     })(
                                         <Checkbox>{Msg('Stress.KeepAlive')}</Checkbox>
-                                        )}
+                                    )}
                                 </FormItem>
                             </Col>
                         </Row>
@@ -376,14 +373,14 @@ class StressEditDialog extends React.Component<StressEditFormProps, StressEditDi
                             initialValue: stress.environmentId,
                         })(
                             this.generateEnvSelect()
-                            )}
+                        )}
                     </FormItem>
                     <FormItem {...formItemLayout} label={Msg('Common.Notification')} style={{ display: 'none' }}>
                         {getFieldDecorator('notification', {
                             initialValue: stress.notification.toString(),
                         })(
                             this.generateNotificationSelect()
-                            )}
+                        )}
                     </FormItem>
                     <FormItem style={{ display: this.state.showEmails ? '' : 'none' }} {...formItemLayout} label={Msg('Common.Emails')}>
                         {getFieldDecorator('emails', {

@@ -7,6 +7,7 @@ import { RemoveTabType, SaveRecordType } from '../action/record';
 import { SyncUserDataType } from '../action/user';
 import { GlobalVar } from '../utils/global_var';
 import LocalesString from '../locales/string';
+import * as _ from 'lodash';
 
 export function uiState(state: UIState = uiDefaultValue, action: any): UIState {
     return combineReducers<UIState>({

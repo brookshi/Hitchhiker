@@ -1,23 +1,23 @@
 import React from 'react';
-import { connect, Dispatch, MapStateToPropsFactory } from 'react-redux';
+import { connect, MapStateToPropsFactory } from 'react-redux';
 import { Button, Dropdown, Select, Menu, Modal, TreeSelect, message } from 'antd';
-import { HttpMethod } from '../../../common/http_method';
+import { HttpMethod } from '../../../misc/http_method';
 import { getActiveRecordSelector, getActiveRecordStateSelector, getActiveEnvIdSelector, getCollectionTreeDataSelector, getActiveReqResUIStateSelector } from './selector';
 import { actionCreator } from '../../../action/index';
 import { SaveRecordType, SaveAsRecordType, SendRequestType, UpdateDisplayRecordType } from '../../../action/record';
 import { State } from '../../../state/index';
-import { DtoRecord } from '../../../../../api/interfaces/dto_record';
-import { newRecordFlag, allParameter } from '../../../common/constants';
+import { DtoRecord } from '../../../common/interfaces/dto_record';
+import { newRecordFlag, allParameter } from '../../../misc/constants';
 import { StringUtil } from '../../../utils/string_util';
 import { TreeData } from 'antd/lib/tree-select/interface';
 import * as _ from 'lodash';
-import { DtoHeader } from '../../../../../api/interfaces/dto_header';
+import { DtoHeader } from '../../../common/interfaces/dto_header';
 import CodeSnippetDialog from '../../../components/code_snippet_dialog';
 import Msg from '../../../locales';
 import LoInput from '../../../locales/input';
 import LocalesString from '../../../locales/string';
 import { DisplayQueryStringType } from '../../../action/ui';
-import { DtoQueryString, DtoBodyFormData } from '../../../../../api/interfaces/dto_variable';
+import { DtoQueryString, DtoBodyFormData } from '../../../common/interfaces/dto_variable';
 
 const DButton = Dropdown.Button as any;
 const Option = Select.Option;
@@ -134,7 +134,7 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
         }
     }
 
-    private onSaveNew = (e) => {
+    private onSaveNew = () => {
         if (!this.state.selectedFolderId) {
             return;
         }
@@ -312,7 +312,7 @@ class RequestUrlPanel extends React.Component<RequestUrlPanelProps, RequestUrlPa
     }
 }
 
-const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any, ownProps: any) => {
+const makeMapStateToProps: MapStateToPropsFactory<any, any, any> = () => {
     const getRecordState = getActiveRecordStateSelector();
     const getActiveEnvId = getActiveEnvIdSelector();
     const getActiveRecord = getActiveRecordSelector();
@@ -333,7 +333,7 @@ const makeMapStateToProps: MapStateToPropsFactory<any, any> = (initialState: any
     return mapStateToProps;
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): RequestUrlPanelDispatchProps => {
+const mapDispatchToProps = (dispatch: any): RequestUrlPanelDispatchProps => {
     return {
         changeRecord: (record) => dispatch(actionCreator(UpdateDisplayRecordType, record)),
         save: (record, isNew, oldId) => dispatch(actionCreator(SaveRecordType, { isNew, record, oldId })),

@@ -1,15 +1,15 @@
 import React from 'react';
 import { Modal, Tabs, Badge, Dropdown, Icon, Button, Menu } from 'antd';
 import Editor from '../editor';
-import { DtoCommonSetting } from '../../../../api/interfaces/dto_collection';
+import { DtoCommonSetting } from '../../common/interfaces/dto_collection';
 import { nameWithTag } from '../name_with_tag/index';
 import { normalBadgeStyle } from '../../style/theme';
 import Msg from '../../locales';
 import KeyValueList from '../key_value';
-import { KeyValueEditMode, KeyValueEditType } from '../../common/custom_type';
-import { getTestSnippets } from '../../common/test_snippet';
+import { KeyValueEditMode, KeyValueEditType } from '../../misc/custom_type';
+import { getTestSnippets } from '../../misc/test_snippet';
 import * as _ from 'lodash';
-import { DtoHeader } from '../../../../api/interfaces/dto_header';
+import { DtoHeader } from '../../common/interfaces/dto_header';
 
 const TabPane = Tabs.TabPane;
 

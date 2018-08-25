@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { Layout } from 'antd';
 import { State } from '../../state/index';
 import { actionCreator } from '../../action/index';
@@ -49,7 +49,7 @@ class SiderLayout extends React.Component<SiderLayoutProps, SiderLayoutState> {
             <Layout className="main-panel">
                 <Sider
                     className="main-sider"
-                    style={{ minWidth: collapsed ? 0 : leftPanelWidth }}
+                    width={collapsed ? 0 : leftPanelWidth}
                     collapsible={true}
                     collapsedWidth="0.1"
                     collapsed={collapsed}
@@ -66,7 +66,7 @@ class SiderLayout extends React.Component<SiderLayoutProps, SiderLayoutState> {
     }
 }
 
-const mapStateToProps = (state: State, ownProps?: OwnProps): SiderLayoutStateProps => {
+const mapStateToProps = (state: State, ownProps: OwnProps): SiderLayoutStateProps => {
     const { leftPanelWidth, collapsed, activeModule } = state.uiState.appUIState;
     return {
         leftPanelWidth,
@@ -76,7 +76,7 @@ const mapStateToProps = (state: State, ownProps?: OwnProps): SiderLayoutStatePro
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): SiderLayoutDispatchProps => {
+const mapDispatchToProps = (dispatch: any): SiderLayoutDispatchProps => {
     return {
         updateLeftPanelStatus: (collapsed, activeModule) => dispatch(actionCreator(UpdateLeftPanelType, { collapsed, activeModule })),
         resizeLeftPanel: (width) => dispatch(actionCreator(ResizeLeftPanelType, width))

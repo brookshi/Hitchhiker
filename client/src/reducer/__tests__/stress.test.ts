@@ -3,7 +3,8 @@ import { defaultStress, defaultStressRunResult } from './data';
 import { stressDefaultValue } from '../../state/stress';
 import { stressTestState } from '../stress';
 import { SaveStressType, ActiveStressType, DeleteStressType, StressChunkDataType, RunStressFulfillType, StressStatusType } from '../../action/stress';
-import { WorkerStatus } from '../../common/stress_type';
+import { WorkerStatus } from '../../misc/stress_type';
+import 'jest';
 
 test('login success', () => {
 

@@ -4,13 +4,13 @@ import { SelectParam } from 'antd/lib/menu';
 import ProjectItem from './project_item';
 import ProjectDataDialog from './project_data_dialog';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { DtoProject } from '../../../../api/interfaces/dto_project';
+import { DtoProject } from '../../common/interfaces/dto_project';
 import { StringUtil } from '../../utils/string_util';
-import { DtoUser } from '../../../../api/interfaces/dto_user';
-import { ProjectFiles } from '../../../../api/interfaces/dto_project_data';
-import { newProjectName } from '../../common/constants';
+import { DtoUser } from '../../common/interfaces/dto_user';
+import { ProjectFiles } from '../../common/interfaces/dto_project_data';
+import { newProjectName } from '../../misc/constants';
 import ScriptDialog from '../../components/script_dialog';
-import { ProjectFileTypes, ProjectFileType } from '../../common/custom_type';
+import { ProjectFileTypes, ProjectFileType } from '../../misc/custom_type';
 import * as _ from 'lodash';
 import Msg from '../../locales';
 
@@ -64,7 +64,7 @@ const createDefaultProject = (user: DtoUser) => {
 class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
 
     private currentNewProject: DtoProject | undefined;
-    private projectRefs: _.Dictionary<ProjectItem> = {};
+    private projectRefs: _.Dictionary<ProjectItem | null> = {};
 
     constructor(props: ProjectListProps) {
         super(props);
@@ -75,10 +75,13 @@ class ProjectList extends React.Component<ProjectListProps, ProjectListState> {
         };
     }
 
-    componentDidUpdate(prevProps: ProjectListProps, prevState: ProjectListState) {
-        if (this.currentNewProject && this.projectRefs[this.currentNewProject.id]) {
-            this.projectRefs[this.currentNewProject.id].edit();
-            this.currentNewProject = undefined;
+    componentDidUpdate(_prevProps: ProjectListProps, _prevState: ProjectListState) {
+        if (this.currentNewProject) {
+            const projectRef = this.projectRefs[this.currentNewProject.id];
+            if (projectRef) {
+                projectRef.edit();
+                this.currentNewProject = undefined;
+            }
         }
     }
 

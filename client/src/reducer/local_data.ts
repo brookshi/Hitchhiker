@@ -1,6 +1,6 @@
 import { LocalDataState, localDataDefaultValue } from '../state/local_data';
 import { FetchLocalDataSuccessType, FetchLocalDataFailedType, FetchLocalDataPendingType } from '../action/local_data';
-import { RequestStatus } from '../common/request_status';
+import { RequestStatus } from '../misc/request_status';
 
 export function localDataState(state: LocalDataState = localDataDefaultValue, action: any): LocalDataState {
     switch (action.type) {

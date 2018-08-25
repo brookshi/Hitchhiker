@@ -1,9 +1,9 @@
 import { createSelector } from 'reselect';
 import { State } from '../../state';
 import * as _ from 'lodash';
-import { DtoProject } from '../../../../api/interfaces/dto_project';
-import { allProject } from '../../common/constants';
-import { DtoCollection } from '../../../../api/interfaces/dto_collection';
+import { DtoProject } from '../../common/interfaces/dto_project';
+import { allProject } from '../../misc/constants';
+import { DtoCollection } from '../../common/interfaces/dto_collection';
 
 const getProjects = (state: State) => state.projectState.projects;
 

@@ -2,12 +2,12 @@ import { SaveCollectionType, DeleteCollectionType, SelectedProjectChangedType, C
 import { ActiveTabType, ActiveRecordType, DeleteRecordType, MoveRecordType, SendRequestFulfilledType, AddTabType, RemoveTabType, SendRequestType, CancelRequestType, SaveRecordType, SaveAsRecordType, ChangeCurrentParamType, SendRequestForParamType, SendRequestForParamFulfilledType, UpdateDisplayRecordPropertyType } from '../action/record';
 import { combineReducers } from 'redux';
 import * as _ from 'lodash';
-import { RecordCategory } from '../common/record_category';
+import { RecordCategory } from '../misc/record_category';
 import { CollectionState, collectionDefaultValue, RecordState, DisplayRecordsState, displayRecordsDefaultValue, getNewRecordState } from '../state/collection';
-import { DtoCollectionWithRecord } from '../../../api/interfaces/dto_collection';
-import { RequestStatus } from '../common/request_status';
+import { DtoCollectionWithRecord } from '../common/interfaces/dto_collection';
+import { RequestStatus } from '../misc/request_status';
 import { LoginSuccessType } from '../action/user';
-import { ConflictType } from '../common/conflict_type';
+import { ConflictType } from '../misc/conflict_type';
 
 export function collectionState(state: CollectionState = collectionDefaultValue, action: any): CollectionState {
     switch (action.type) {
@@ -97,7 +97,7 @@ export function root(state: DisplayRecordsState = displayRecordsDefaultValue, ac
         activeKey,
         recordStates,
         recordsOrder,
-        responseState: (s = displayRecordsDefaultValue.responseState, a) => s
+        responseState: (s = displayRecordsDefaultValue.responseState, _a) => s
     })(state, action);
 
     const finalState = recordWithResState(intermediateState, action);

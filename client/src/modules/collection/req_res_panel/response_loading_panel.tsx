@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { Spin, Button } from 'antd';
 import RequestManager from '../../../utils/request_manager';
 import { State } from '../../../state/index';
@@ -48,7 +48,7 @@ const mapStateToProps = (state: State): ResponseLoadingPanelStateProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): ResponseLoadingPanelDispatchProps => {
+const mapDispatchToProps = (dispatch: any): ResponseLoadingPanelDispatchProps => {
     return {
         cancelRequest: (id) => dispatch(actionCreator(CancelRequestType, id)),
     };

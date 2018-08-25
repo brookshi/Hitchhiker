@@ -3,8 +3,7 @@
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [
-        {
+    "configurations": [{
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome",
@@ -37,8 +36,8 @@
                 "NODE_ENV": "development"
             },
             "name": "启动程序",
-            "outDir": "${workspaceRoot}/build",
-            "program": "${workspaceRoot}/build/index.js",
+            "outDir": "${workspaceRoot}/api/build",
+            "program": "${workspaceRoot}/api/build/index.js",
             "runtimeArgs": [
                 "--nolazy"
             ],
@@ -54,8 +53,25 @@
                 "NODE_ENV": "development"
             },
             "name": "setup",
-            "outDir": "${workspaceRoot}/build",
-            "program": "${workspaceRoot}/build/setup.js",
+            "outDir": "${workspaceRoot}/api/build",
+            "program": "${workspaceRoot}/api/build/setup.js",
+            "runtimeArgs": [
+                "--nolazy"
+            ],
+            "sourceMaps": true,
+            "stopOnEntry": false
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceRoot}/client",
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "name": "client_start",
+            "outDir": "${workspaceRoot}/client/scripts",
+            "program": "${workspaceRoot}/client/scripts/start.js",
             "runtimeArgs": [
                 "--nolazy"
             ],

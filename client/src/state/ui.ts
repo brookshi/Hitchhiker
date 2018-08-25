@@ -1,7 +1,8 @@
 import { SyncItem } from '../utils/request_manager';
-import { defaultLeftPanelWidth, defaultModuleKey, defaultReqTabKey, defaultResTabKey } from '../common/constants';
-import { KeyValueEditMode, KeyValueEditType, CloseAction } from '../common/custom_type';
-import { DtoRecord } from '../../../api/interfaces/dto_record';
+import { defaultLeftPanelWidth, defaultModuleKey, defaultReqTabKey, defaultResTabKey } from '../misc/constants';
+import { KeyValueEditMode, KeyValueEditType, CloseAction } from '../misc/custom_type';
+import { DtoRecord } from '../common/interfaces/dto_record';
+import * as _ from 'lodash';
 
 export interface AppUIState {
 

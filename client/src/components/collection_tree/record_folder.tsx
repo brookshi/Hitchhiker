@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon, Menu } from 'antd';
 import ItemWithMenu from '../item_with_menu';
 import './style/index.less';
-import { DtoRecord } from '../../../../api/interfaces/dto_record';
+import { DtoRecord } from '../../common/interfaces/dto_record';
 import { confirmDlg } from '../confirm_dialog/index';
 import { getDefaultRecord } from '../../state/collection';
 import { StringUtil } from '../../utils/string_util';
@@ -39,7 +39,7 @@ interface RecordFolderState {
 
 class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState> {
 
-    private itemWithMenu: ItemWithMenu;
+    private itemWithMenu: ItemWithMenu | null;
 
     constructor(props: RecordFolderProps) {
         super(props);
@@ -105,7 +105,7 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
         }
     }
 
-    private dragLeave = (e) => {
+    private dragLeave = () => {
         this.setState({ ...this.state, isDragOver: false });
     }
 

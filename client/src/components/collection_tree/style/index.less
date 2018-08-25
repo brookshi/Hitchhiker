@@ -20,7 +20,7 @@
     height: 10px;
 }
 
-.collection-item {
+.collection-tree > .collection-item {
     >div[aria-expanded] {
         z-index: 10;
         padding-left: 16px;
@@ -36,9 +36,14 @@
         box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.18);
         padding-bottom: 4px;
         border-bottom: #ccc 1px solid;
+        margin-top: 0px;
     }
     ul[role="menu"] {
         background: @panel-background;
+    }
+
+    .ant-menu-submenu-arrow{
+        display: none;
     }
 }
 
@@ -92,7 +97,6 @@
 
     .ant-badge-count {
         position: absolute;
-        transform: translateX(-50%);
         height: 16px;
         border-radius: 10px;
         min-width: 16px;
@@ -107,4 +111,9 @@
         font-family: tahoma;
         box-shadow: 0 0 0 1px #fff;
     }
+}
+
+.menu-item-name {
+    float: right;
+    margin-right: 8px;
 }

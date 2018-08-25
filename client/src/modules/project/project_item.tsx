@@ -3,7 +3,7 @@ import ItemWithMenu from '../../components/item_with_menu';
 import './style/index.less';
 import { Menu, Icon } from 'antd';
 import { confirmDlg } from '../../components/confirm_dialog/index';
-import { DtoProject } from '../../../../api/interfaces/dto_project';
+import { DtoProject } from '../../common/interfaces/dto_project';
 import { GlobalVar } from '../../utils/global_var';
 import Msg from '../../locales';
 import LocalesString from '../../locales/string';
@@ -31,7 +31,7 @@ interface ProjectItemState { }
 
 class ProjectItem extends React.Component<ProjectItemProps, ProjectItemState> {
 
-    private itemWithMenu: ItemWithMenu;
+    private itemWithMenu: ItemWithMenu | null;
 
     constructor(props: ProjectItemProps) {
         super(props);

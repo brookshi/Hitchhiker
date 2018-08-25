@@ -7,7 +7,9 @@ process.env.NODE_ENV = 'production';
 // if this file is missing. dotenv will never modify any environment variables
 // that have already been set.
 // https://github.com/motdotla/dotenv
-require('dotenv').config({silent: true});
+require('dotenv').config({
+  silent: true
+});
 
 var chalk = require('chalk');
 var fs = require('fs-extra');
@@ -23,7 +25,9 @@ var printFileSizesAfterBuild = FileSizeReporter.printFileSizesAfterBuild;
 
 var recursive = require('recursive-readdir');
 var stripAnsi = require('strip-ansi');
-var { highlight } = require('cli-highlight');
+var {
+  highlight
+} = require('cli-highlight');
 
 var useYarn = fs.existsSync(paths.yarnLockFile);
 
@@ -32,8 +36,8 @@ if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
   process.exit(1);
 }
 
-function padLeft(n, nr, str = ' '){
-    return Array(n-String(nr).length+1).join(str)+nr;
+function padLeft(n, nr, str = ' ') {
+  return Array(n - String(nr).length + 1).join(str) + nr;
 }
 
 // First, read the current file sizes in build directory.
@@ -58,19 +62,26 @@ function printErrors(summary, errors) {
     let linePointer;
     if (err.loaderSource === 'ts-loader') {
       if (err.file) {
-        const { line, character } = err.location;
-        const longestLineNumber = Array.from({ length: 7 }).map((_, i) => (line - 3) + i).reduce((a, b) => String(a).length === String(b).length ? String(a).length : String(a).length > String(b).length ? String(a).length : String(b).length);
-        const fileContent = highlight(fs.readFileSync(err.file, 'utf8'), { language: 'typescript' })
+        const {
+          line,
+          character
+        } = err.location;
+        const longestLineNumber = Array.from({
+          length: 7
+        }).map((_, i) => (line - 3) + i).reduce((a, b) => String(a).length === String(b).length ? String(a).length : String(a).length > String(b).length ? String(a).length : String(b).length);
+        const fileContent = highlight(fs.readFileSync(err.file, 'utf8'), {
+            language: 'typescript'
+          })
           .split('\n');
         const before = fileContent.slice(line - 4, line)
-          .reduce((lines, code, i) => 
-              lines.concat(`${padLeft(longestLineNumber, (line - 4) + (i + 1))} | ${code}`)
-              , [])
-        const pointer = Array.from({ length: character + 4 }).map(() => '-').concat('^');
+          .reduce((lines, code, i) =>
+            lines.concat(`${padLeft(longestLineNumber, (line - 4) + (i + 1))} | ${code}`), [])
+        const pointer = Array.from({
+          length: character + 4
+        }).map(() => '-').concat('^');
         const after = fileContent.slice(line, line + 4)
-          .reduce((lines, code, i) => 
-              lines.concat(`${padLeft(longestLineNumber, (line) + (i + 1))} | ${code}`)
-              , [])
+          .reduce((lines, code, i) =>
+            lines.concat(`${padLeft(longestLineNumber, (line) + (i + 1))} | ${code}`), [])
 
         console.log('Error in ' + err.file);
         linePointer = before.concat(pointer.join('')).concat(after).join('\n');
@@ -103,9 +114,9 @@ function build(previousFileSizes) {
     }
 
     if (process.env.CI && stats.compilation.warnings.length) {
-     printErrors('Failed to compile. When process.env.CI = true, warnings are treated as failures. Most CI servers set this automatically.', stats.compilation.warnings);
-     process.exit(1);
-   }
+      printErrors('Failed to compile. When process.env.CI = true, warnings are treated as failures. Most CI servers set this automatically.', stats.compilation.warnings);
+      process.exit(1);
+    }
 
     console.log(chalk.green('Compiled successfully.'));
     console.log();
@@ -115,14 +126,14 @@ function build(previousFileSizes) {
     printFileSizesAfterBuild(stats, previousFileSizes);
     console.log();
 
-    var appPackage  = require(paths.appPackageJson);
+    var appPackage = require(paths.appPackageJson);
     var publicUrl = paths.publicUrl;
     var publicPath = config.output.publicPath;
     var publicPathname = url.parse(publicPath).pathname;
     if (publicUrl && publicUrl.indexOf('.github.io/') !== -1) {
       // "homepage": "http://user.github.io/project"
       console.log('The project was built assuming it is hosted at ' + chalk.green(publicPathname) + '.');
-      console.log('You can control this with the ' + chalk.green('homepage') + ' field in your '  + chalk.cyan('package.json') + '.');
+      console.log('You can control this with the ' + chalk.green('homepage') + ' field in your ' + chalk.cyan('package.json') + '.');
       console.log();
       console.log('The ' + chalk.cyan('build') + ' folder is ready to be deployed.');
       console.log('To publish it at ' + chalk.green(publicUrl) + ', run:');
@@ -130,9 +141,9 @@ function build(previousFileSizes) {
       if (typeof appPackage.scripts.deploy === 'undefined') {
         console.log();
         if (useYarn) {
-          console.log('  ' + chalk.cyan('yarn') +  ' add --dev gh-pages');
+          console.log('  ' + chalk.cyan('yarn') + ' add --dev gh-pages');
         } else {
-          console.log('  ' + chalk.cyan('npm') +  ' install --save-dev gh-pages');
+          console.log('  ' + chalk.cyan('npm') + ' install --save-dev gh-pages');
         }
         console.log();
         console.log('Add the following script in your ' + chalk.cyan('package.json') + '.');
@@ -147,25 +158,25 @@ function build(previousFileSizes) {
         console.log('Then run:');
       }
       console.log();
-      console.log('  ' + chalk.cyan(useYarn ? 'yarn' : 'npm') +  ' run deploy');
+      console.log('  ' + chalk.cyan(useYarn ? 'yarn' : 'npm') + ' run deploy');
       console.log();
     } else if (publicPath !== '/') {
       // "homepage": "http://mywebsite.com/project"
       console.log('The project was built assuming it is hosted at ' + chalk.green(publicPath) + '.');
-      console.log('You can control this with the ' + chalk.green('homepage') + ' field in your '  + chalk.cyan('package.json') + '.');
+      console.log('You can control this with the ' + chalk.green('homepage') + ' field in your ' + chalk.cyan('package.json') + '.');
       console.log();
       console.log('The ' + chalk.cyan('build') + ' folder is ready to be deployed.');
       console.log();
     } else {
       if (publicUrl) {
         // "homepage": "http://mywebsite.com"
-        console.log('The project was built assuming it is hosted at ' + chalk.green(publicUrl) +  '.');
-        console.log('You can control this with the ' + chalk.green('homepage') + ' field in your '  + chalk.cyan('package.json') + '.');
+        console.log('The project was built assuming it is hosted at ' + chalk.green(publicUrl) + '.');
+        console.log('You can control this with the ' + chalk.green('homepage') + ' field in your ' + chalk.cyan('package.json') + '.');
         console.log();
       } else {
         // no homepage
         console.log('The project was built assuming it is hosted at the server root.');
-        console.log('To override this, specify the ' + chalk.green('homepage') + ' in your '  + chalk.cyan('package.json') + '.');
+        console.log('To override this, specify the ' + chalk.green('homepage') + ' in your ' + chalk.cyan('package.json') + '.');
         console.log('For example, add this to build it for GitHub Pages:')
         console.log();
         console.log('  ' + chalk.green('"homepage"') + chalk.cyan(': ') + chalk.green('"http://myname.github.io/myapp"') + chalk.cyan(','));

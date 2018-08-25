@@ -21,10 +21,6 @@ export class DateUtil {
         return date.getUTCHours() - date.getHours() + hour;
     }
 
-    static getLocaleDateString(utcDate: Date): string {
-        return new Date(new Date() + ' UTC').toLocaleString();
-    }
-
     static subNowSec(date: Date): number {
         return (Date.now() - date.valueOf()) / 1000;
     }

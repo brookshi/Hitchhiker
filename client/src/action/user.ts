@@ -4,7 +4,7 @@ import { actionCreator, syncAction } from './index';
 import { Urls } from '../utils/urls';
 import LocalStore from '../utils/local_store';
 import { delay } from 'redux-saga';
-import { HttpMethod } from '../common/http_method';
+import { HttpMethod } from '../misc/http_method';
 import { GlobalVar } from '../utils/global_var';
 import { DateUtil } from '../utils/date_util';
 
@@ -82,7 +82,7 @@ export function* login() {
 }
 
 export function* tempUse() {
-    yield takeLatest(TempUseType, function* (action: any) {
+    yield takeLatest(TempUseType, function* () {
         try {
             yield put(actionCreator(LoginPendingType));
             const res = yield call(RequestManager.post, Urls.getUrl('user/temp'), {});
@@ -103,7 +103,7 @@ export function* tempUse() {
 }
 
 export function* getUserInfo() {
-    yield takeLatest(GetUserInfoType, function* (action: any) {
+    yield takeLatest(GetUserInfoType, function* () {
         try {
             yield put(actionCreator(LoginPendingType));
             const res = yield call(RequestManager.get, Urls.getUrl('user/me'));

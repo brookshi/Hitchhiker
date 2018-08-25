@@ -1,12 +1,12 @@
 import React from 'react';
 import { Table, Tooltip } from 'antd';
-import { DtoStressRecord } from '../../../../api/interfaces/dto_stress_record';
+import { DtoStressRecord } from '../../common/interfaces/dto_stress_record';
 import * as _ from 'lodash';
-import { DtoRecord } from '../../../../api/interfaces/dto_record';
+import { DtoRecord } from '../../common/interfaces/dto_record';
 import './style/index.less';
-import { StressRunResult, StressResFailedStatistics } from '../../../../api/interfaces/dto_stress_setting';
+import { StressRunResult, StressResFailedStatistics } from '../../common/interfaces/dto_stress_setting';
 import StressRunDiagram from './stress_run_diagram';
-import { DtoStress } from '../../../../api/interfaces/dto_stress';
+import { DtoStress } from '../../common/interfaces/dto_stress';
 import Msg from '../../locales';
 import LocalesString from '../../locales/string';
 
@@ -95,7 +95,7 @@ class StressRunHistoryGrid extends React.Component<StressRunHistoryGridProps, St
                     <StressRecordColumn
                         title={Msg('Common.RunDate')}
                         dataIndex="createDate"
-                        render={(text, record) => new Date(record.runDate).toLocaleString()}
+                        render={(_text, record) => new Date(record.runDate).toLocaleString()}
                     />
                     <StressRecordColumn
                         title={Msg('Stress.RequestCount')}
@@ -115,7 +115,7 @@ class StressRunHistoryGrid extends React.Component<StressRunHistoryGridProps, St
         );
     }
 
-    private getFailedDisplay = (text: any, record: StressRecordDisplay) => {
+    private getFailedDisplay = (_text: any, record: StressRecordDisplay) => {
         const failedArr = _.keys(record.failed).map(k => `${this.formatFailedKey(k)}: ${_.chain(record.failed[k]).values().flatten().sum().value()}`);
         return (
             <span>

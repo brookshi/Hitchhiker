@@ -1,6 +1,6 @@
 import React from 'react';
 import './style/index.less';
-import { toolBarWidth, minLeftPanelWidth, maxLeftPanelWidth } from '../../common/constants';
+import { toolBarWidth, minLeftPanelWidth, maxLeftPanelWidth } from '../../misc/constants';
 
 interface SplitterProps {
 

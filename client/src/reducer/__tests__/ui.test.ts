@@ -5,7 +5,8 @@ import { EditEnvType } from '../../action/project';
 import { uiState } from '../ui';
 import { uiDefaultValue, reqResUIDefaultValue } from '../../state/ui';
 import { RemoveTabType, SaveRecordType } from '../../action/record';
-import { KeyValueEditType } from '../../common/custom_type';
+import { KeyValueEditType } from '../../misc/custom_type';
+import 'jest';
 
 test('resize left panel', () => {
 

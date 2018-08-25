@@ -3,6 +3,7 @@ import { scheduleState } from '../schedule';
 import { LoginSuccessType } from '../../action/user';
 import { SaveScheduleType, ActiveScheduleType, DeleteScheduleType, RunScheduleType, ScheduleChunkDataType, RunScheduleFulfillType } from '../../action/schedule';
 import { defaultSchedule } from './data';
+import 'jest';
 
 test('login success', () => {
 

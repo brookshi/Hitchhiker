@@ -1,7 +1,7 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { Button, Tooltip, Select, Dropdown, Menu, message } from 'antd';
-import { noEnvironment, newRequestName, allParameter } from '../../common/constants';
+import { noEnvironment, newRequestName, allParameter } from '../../misc/constants';
 import { actionCreator } from '../../action/index';
 import { AddTabType } from '../../action/record';
 import { EditEnvType } from '../../action/project';
@@ -9,9 +9,9 @@ import { State } from '../../state/index';
 import ScriptDialog from '../script_dialog';
 import { RecordState } from '../../state/collection';
 import { CurlImport } from '../../utils/curl_import';
-import { ConflictType } from '../../common/conflict_type';
+import { ConflictType } from '../../misc/conflict_type';
 import Msg from '../../locales';
-import { CloseAction } from '../../common/custom_type';
+import { CloseAction } from '../../misc/custom_type';
 import { BatchCloseType } from '../../action/ui';
 import LocalesString from '../../locales/string';
 import './style/index.less';
@@ -188,7 +188,7 @@ const makeMapStateToProps = () => {
     return mapStateToProps;
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): EnvironmentSelectDispatchProps => {
+const mapDispatchToProps = (dispatch: any): EnvironmentSelectDispatchProps => {
     return {
         addTab: (newRequestState) => dispatch(actionCreator(AddTabType, newRequestState)),
         switchEnv: (type, projectId, envId) => dispatch(actionCreator(type, { projectId, envId })),

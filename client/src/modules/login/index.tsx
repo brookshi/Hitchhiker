@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { Row, Col } from 'antd';
 import './style/index.less';
 import { State } from '../../state/index';
@@ -10,8 +10,8 @@ import RegisterPanel from './register';
 import LoginPanel from './login';
 import FindPasswordPanel from './find_password';
 import LoadingScreen from './loading_screen';
-import { LoginPageMode } from '../../common/custom_type';
-import { RequestStatus } from '../../common/request_status';
+import { LoginPageMode } from '../../misc/custom_type';
+import { RequestStatus } from '../../misc/request_status';
 import { FetchLocalDataType } from '../../action/local_data';
 import Msg from '../../locales';
 
@@ -157,7 +157,7 @@ const mapStateToProps = (state: State): LoginPageStateProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): LoginPageDispatchProps => {
+const mapDispatchToProps = (dispatch: any): LoginPageDispatchProps => {
     return {
         login: (value) => dispatch(actionCreator(LoginType, value)),
         getUserInfo: () => dispatch(actionCreator(GetUserInfoType)),

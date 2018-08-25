@@ -1,7 +1,7 @@
 import React from 'react';
-import { RunResult } from '../../../../api/interfaces/dto_run_result';
-import { noEnvironment, unknownName, pass, fail } from '../../common/constants';
-import { DtoRecord } from '../../../../api/interfaces/dto_record';
+import { RunResult } from '../../common/interfaces/dto_run_result';
+import { noEnvironment, unknownName, pass, fail } from '../../misc/constants';
+import { DtoRecord } from '../../common/interfaces/dto_record';
 import * as _ from 'lodash';
 import * as ReactDOM from 'react-dom';
 import Msg from '../../locales';
@@ -22,9 +22,9 @@ interface ScheduleConsoleState { }
 
 class ScheduleRunConsole extends React.Component<ScheduleConsoleProps, ScheduleConsoleState> {
 
-    private consoleLastView: HTMLDivElement;
+    private consoleLastView: HTMLDivElement | null;
 
-    public componentDidUpdate(prevProps: ScheduleConsoleProps, prevState: ScheduleConsoleState) {
+    public componentDidUpdate(_prevProps: ScheduleConsoleProps, _prevState: ScheduleConsoleState) {
         this.scrollToBottom();
     }
 

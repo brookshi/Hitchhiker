@@ -1,6 +1,6 @@
 import { takeEvery, put, call, take } from 'redux-saga/effects';
 import { syncAction, actionCreator } from './index';
-import { HttpMethod } from '../common/http_method';
+import { HttpMethod } from '../misc/http_method';
 import { eventChannel, END } from 'redux-saga';
 import { Urls } from '../utils/urls';
 
@@ -59,10 +59,10 @@ function initScheduleWS(id: string) {
                 emitter(actionCreator(ScheduleChunkDataType, { id, data }));
             }
         };
-        socket.onopen = (ev: Event) => {
+        socket.onopen = () => {
             socket.send(id);
         };
-        socket.onclose = (ev: CloseEvent) => {
+        socket.onclose = () => {
             setTimeout(() => {
                 emitter(END);
             }, 2000);

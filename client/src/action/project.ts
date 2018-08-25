@@ -1,6 +1,6 @@
 import { takeEvery, put } from 'redux-saga/effects';
 import { syncAction } from './index';
-import { HttpMethod } from '../common/http_method';
+import { HttpMethod } from '../misc/http_method';
 import { Urls } from '../utils/urls';
 
 export const QuitProjectType = 'quit project';

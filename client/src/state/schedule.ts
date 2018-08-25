@@ -1,6 +1,7 @@
-import { DtoSchedule } from '../../../api/interfaces/dto_schedule';
-import { RunResult } from '../../../api/interfaces/dto_run_result';
-import { ScheduleRecordsDisplayMode } from '../common/custom_type';
+import { DtoSchedule } from '../common/interfaces/dto_schedule';
+import { RunResult } from '../common/interfaces/dto_run_result';
+import { ScheduleRecordsDisplayMode } from '../misc/custom_type';
+import * as _ from 'lodash';
 
 export interface ScheduleState {
 

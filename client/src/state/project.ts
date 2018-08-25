@@ -1,5 +1,6 @@
-import { DtoProject } from '../../../api/interfaces/dto_project';
-import { ProjectFiles } from '../../../api/interfaces/dto_project_data';
+import { DtoProject } from '../common/interfaces/dto_project';
+import { ProjectFiles } from '../common/interfaces/dto_project_data';
+import * as _ from 'lodash';
 
 export interface ProjectState {
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Form, message, Button, Input } from 'antd';
 import { RequestState } from '../../state/request';
-import { RequestStatus } from '../../common/request_status';
-import { LoginPageMode } from '../../common/custom_type';
+import { RequestStatus } from '../../misc/request_status';
+import { LoginPageMode } from '../../misc/custom_type';
 import Msg from '../../locales';
 import LocalesString from '../../locales/string';
 

@@ -1,18 +1,18 @@
 import React from 'react';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import StressList from './stress_list';
-import { DtoStress } from '../../../../api/interfaces/dto_stress';
-import { DtoUser } from '../../../../api/interfaces/dto_user';
+import { DtoStress } from '../../common/interfaces/dto_stress';
+import { DtoUser } from '../../common/interfaces/dto_user';
 import { State } from '../../state/index';
 import * as _ from 'lodash';
-import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
+import { DtoEnvironment } from '../../common/interfaces/dto_environment';
 import { actionCreator } from '../../action/index';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { TableDisplayType } from '../../action/ui';
 import StressRunHistoryGrid from './stress_run_history_grid';
-import { DtoRecord } from '../../../../api/interfaces/dto_record';
-import { DtoCollection } from '../../../../api/interfaces/dto_collection';
-import { StressRunResult } from '../../../../api/interfaces/dto_stress_setting';
+import { DtoRecord } from '../../common/interfaces/dto_record';
+import { DtoCollection } from '../../common/interfaces/dto_collection';
+import { StressRunResult } from '../../common/interfaces/dto_stress_setting';
 import { SaveStressType, DeleteStressType, ActiveStressType, RunStressType, StopStressType } from '../../action/stress';
 import StressWorkerStatus from './stress_worker_status';
 import SiderLayout from '../../components/sider_layout';
@@ -119,7 +119,7 @@ const mapStateToProps = (state: State): StressStateProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): StressDispatchProps => {
+const mapDispatchToProps = (dispatch: any): StressDispatchProps => {
     return {
         createStress: (stress) => dispatch(actionCreator(SaveStressType, { isNew: true, stress })),
         updateStress: (stress) => dispatch(actionCreator(SaveStressType, { isNew: false, stress })),

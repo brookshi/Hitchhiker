@@ -2,7 +2,7 @@ import { EditEnvType, SaveProjectType, QuitProjectType, DisbandProjectType, Acti
 import { LoginSuccessType, SyncUserDataSuccessType } from '../action/user';
 import * as _ from 'lodash';
 import { ProjectState, projectDefaultValue } from '../state/project';
-import { ProjectFileTypes } from '../common/custom_type';
+import { ProjectFileTypes } from '../misc/custom_type';
 
 export function projectState(state: ProjectState = projectDefaultValue, action: any): ProjectState {
     switch (action.type) {

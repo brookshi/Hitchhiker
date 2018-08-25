@@ -3,6 +3,7 @@ import { projectDefaultValue } from '../../state/project';
 import { LoginSuccessType } from '../../action/user';
 import { SaveProjectType, ActiveProjectType, QuitProjectType, DisbandProjectType, EditEnvType, RemoveUserType, SaveLocalhostMappingType, SaveGlobalFunctionType } from '../../action/project';
 import { defaultUser } from './data';
+import 'jest';
 
 test('login success', () => {
 

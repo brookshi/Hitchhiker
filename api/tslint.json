@@ -1,0 +1,91 @@
+{
+	"rules": {
+		"align": [
+			true,
+			"parameters",
+			"statements"
+		],
+		"ban": false,
+		"class-name": true,
+		"comment-format": [
+			true,
+			"check-space"
+		],
+		"curly": true,
+		"eofline": false,
+		"forin": true,
+		"indent": [
+			true,
+			"spaces"
+		],
+		"interface-name": [
+			true,
+			"never-prefix"
+		],
+		"jsdoc-format": true,
+		"jsx-no-lambda": false,
+		"jsx-no-multiline-js": false,
+		"label-position": true,
+		"member-ordering": [
+			false
+		],
+		"no-arg": true,
+		"no-consecutive-blank-lines": true,
+		"no-construct": true,
+		"no-debugger": true,
+		"no-duplicate-variable": true,
+		"no-empty": false,
+		"no-eval": false,
+		"no-shadowed-variable": true,
+		"no-switch-case-fall-through": true,
+		"no-trailing-whitespace": false,
+		"no-unused-expression": true,
+		"no-use-before-declare": true,
+		"one-line": [
+			true,
+			"check-catch",
+			"check-else",
+			"check-open-brace",
+			"check-whitespace"
+		],
+		"quotemark": [
+			true,
+			"single",
+			"jsx-double"
+		],
+		"semicolon": [
+			true,
+			"always"
+		],
+		"switch-default": true,
+		"trailing-comma": [
+			false
+		],
+		"triple-equals": [
+			true,
+			"allow-null-check"
+		],
+		"typedef": [
+			true,
+			"parameter",
+			"property-declaration"
+		],
+		"typedef-whitespace": [
+			true,
+			{
+				"call-signature": "nospace",
+				"index-signature": "nospace",
+				"parameter": "nospace",
+				"property-declaration": "nospace",
+				"variable-declaration": "nospace"
+			}
+		],
+		"variable-name": [
+			true,
+			"ban-keywords",
+			"check-format",
+			"allow-leading-underscore",
+			"allow-pascal-case"
+		]
+	}
+}

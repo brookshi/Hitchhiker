@@ -3,8 +3,8 @@ import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'r
 import { Input, Checkbox, Icon, AutoComplete, Button } from 'antd';
 import './style/index.less';
 import { StringUtil } from '../../utils/string_util';
-import { DtoHeader } from '../../../../api/interfaces/dto_header';
-import { headerKeys, headerValues } from '../../common/constants';
+import { DtoHeader } from '../../common/interfaces/dto_header';
+import { headerKeys, headerValues } from '../../misc/constants';
 import Msg from '../../locales';
 
 const Option = AutoComplete.Option;
@@ -83,29 +83,32 @@ class KeyValueListComponent extends React.Component<KeyValueListComponentProps, 
     private DragHandle = SortableHandle(() => <span className="keyvalue-dragicon">☰</span>);
 
     private SortableItem = SortableElement(({ hIndex, header }: SortableElementParam) => {
-        const visibility = { visibility: (hIndex === this.state.headers.length - 1 ? 'hidden' : 'visible') };
+        const canCheck = hIndex !== this.state.headers.length - 1;
+        const handleVisible = canCheck ? 'visible' : 'hidden';
         const favStyle = { color: `${header.isFav ? '#f1d500' : '#000'}`, paddingLeft: 4, paddingRight: 8 };
         return (
             <li className="keyvalue-item">
-                <div style={visibility}>
-                    <this.DragHandle />
-                    <Checkbox
-                        key={`cb${header.id}`}
-                        style={this.props.disableActive ? { display: 'none', marginRight: 4 } : { marginRight: 4 }}
-                        onChange={(e) => this.onValueChange('isActive', hIndex, e)}
-                        defaultChecked={header.isActive}
-                    />
-                    {
-                        this.props.showFav ?
-                            <Button className="keyvalue-item-fav-btn" style={favStyle} icon={header.isFav ? 'star' : 'star-o'} onClick={() => this.onValueChange('isFav', hIndex, !header.isFav)} />
-                            : ''
-                    }
-                </div>
+                {(
+                    <div style={{ visibility: handleVisible }}>
+                        <this.DragHandle />
+                        <Checkbox
+                            key={`cb${header.id}`}
+                            style={this.props.disableActive ? { display: 'none', marginRight: 4 } : { marginRight: 4 }}
+                            onChange={(e) => this.onValueChange('isActive', hIndex, e)}
+                            defaultChecked={header.isActive}
+                        />
+                        {
+                            this.props.showFav ?
+                                <Button className="keyvalue-item-fav-btn" style={favStyle} icon={header.isFav ? 'star' : 'star-o'} onClick={() => this.onValueChange('isFav', hIndex, !header.isFav)} />
+                                : ''
+                        }
+                    </div>
+                )}
+
                 {this.generateInputControl(true, hIndex, header.key)}
                 {this.generateInputControl(false, hIndex, header.value)}
                 {this.props.showDescription ? this.getInput('description', hIndex, header.description) : ''}
-
-                <Icon style={visibility} type="close" onClick={(event) => this.onDelItem(hIndex)} />
+                <Icon style={{ visibility: handleVisible }} type="close" onClick={() => this.onDelItem(hIndex)} />
             </li>
         );
     });

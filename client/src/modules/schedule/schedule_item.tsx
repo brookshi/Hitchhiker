@@ -2,12 +2,12 @@ import React from 'react';
 import ItemWithMenu from '../../components/item_with_menu';
 import { Menu, Icon, Popover, Checkbox } from 'antd';
 import { confirmDlg } from '../../components/confirm_dialog/index';
-import { DtoSchedule } from '../../../../api/interfaces/dto_schedule';
+import { DtoSchedule } from '../../common/interfaces/dto_schedule';
 import './style/index.less';
-import { PeriodStr, TimerCode, TimerType } from '../../common/period';
+import { PeriodStr, TimerCode, TimerType } from '../../misc/period';
 import { DateUtil } from '../../utils/date_util';
-import { NotificationStr, NotificationMode, MailModeStr } from '../../common/notification_mode';
-import { noEnvironment } from '../../common/constants';
+import { NotificationStr, NotificationMode, MailModeStr } from '../../misc/notification_mode';
+import { noEnvironment } from '../../misc/constants';
 import Msg from '../../locales';
 import LocalesString from '../../locales/string';
 
@@ -42,7 +42,7 @@ interface ScheduleItemState { }
 
 class ScheduleItem extends React.Component<ScheduleItemProps, ScheduleItemState> {
 
-    private itemWithMenu: ItemWithMenu;
+    private itemWithMenu: ItemWithMenu | null;
 
     private getMenu = () => {
         return (

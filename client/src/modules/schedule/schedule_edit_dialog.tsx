@@ -1,18 +1,18 @@
 import React from 'react';
 import { Select, Form, Modal, Input, Row, Col, Checkbox, Switch } from 'antd';
-import { DtoSchedule } from '../../../../api/interfaces/dto_schedule';
-import { noEnvironment } from '../../common/constants';
+import { DtoSchedule } from '../../common/interfaces/dto_schedule';
+import { noEnvironment } from '../../misc/constants';
 import { StringUtil } from '../../utils/string_util';
 import * as _ from 'lodash';
-import { Period, PeriodStr, TimerType, TimerCode } from '../../common/period';
-import { NotificationMode, NotificationStr, MailModeStr, MailMode } from '../../common/notification_mode';
+import { Period, PeriodStr, TimerType, TimerCode } from '../../misc/period';
+import { NotificationMode, NotificationStr, MailModeStr, MailMode } from '../../misc/notification_mode';
 import { DateUtil } from '../../utils/date_util';
-import { DtoRecord } from '../../../../api/interfaces/dto_record';
+import { DtoRecord } from '../../common/interfaces/dto_record';
 import SortableListComponent from '../../components/sortable_list';
-import { RecordCategory } from '../../common/record_category';
-import { DtoCollection } from '../../../../api/interfaces/dto_collection';
-import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
-import { ParameterType } from '../../common/parameter_type';
+import { RecordCategory } from '../../misc/record_category';
+import { DtoCollection } from '../../common/interfaces/dto_collection';
+import { DtoEnvironment } from '../../common/interfaces/dto_environment';
+import { ParameterType } from '../../misc/parameter_type';
 import Msg from '../../locales';
 import LocalesString from '../../locales/string';
 
@@ -226,7 +226,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
         );
     }
 
-    private checkEmails = (rule, value, callback) => {
+    private checkEmails = (_rule, value, callback) => {
         const result = StringUtil.checkEmails(value);
         if (!value || value.length === 0 || result.success) {
             callback();
@@ -235,7 +235,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
         }
     }
 
-    private checkCompareEnv = (rule, value, callback) => {
+    private checkCompareEnv = (_rule, value, callback) => {
         if (!this.props.form.getFieldValue('needCompare') || this.props.form.getFieldValue('environmentId') !== value) {
             callback();
         } else {
@@ -272,7 +272,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                 </div>
                 <RecordSortList
                     items={this.state.sortedRecords}
-                    buildListItem={(item, dragHandler) => (
+                    buildListItem={(item, _dragHandler) => (
                         <li className="schedule-dlg-sort-item">
                             <span className="keyvalue-dragicon">☰</span>
                             {item.name}
@@ -356,7 +356,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                             rules: [{ required: true, message: LocalesString.get('Schedule.EnterName') }],
                         })(
                             <Input spellCheck={false} />
-                            )}
+                        )}
                     </FormItem>
                     <FormItem {...formItemLayout} required={true} label={Msg('Schedule.Collection')}>
                         <Row gutter={8}>
@@ -367,7 +367,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                                         rules: [{ required: true, message: LocalesString.get('Schedule.SelectCollection') }],
                                     })(
                                         this.generateCollectionSelect()
-                                        )}
+                                    )}
                                 </FormItem>
                             </Col>
                             <Col span={6}>
@@ -384,7 +384,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                                         >
                                             {Msg('Schedule.SortRequests')}
                                         </Checkbox>
-                                        )}
+                                    )}
                                 </FormItem>
                             </Col>
                         </Row>
@@ -407,7 +407,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                                         initialValue: schedule.timer.toString()
                                     })(
                                         this.generateTimerSelect()
-                                        )}
+                                    )}
                                 </FormItem>
                             </Col>
                             {needPeriod ? (
@@ -417,7 +417,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                                             initialValue: schedule.period.toString()
                                         })(
                                             this.generatePeriodSelect()
-                                            )}
+                                        )}
                                     </FormItem>
                                 </Col>
                             ) : ''}
@@ -427,7 +427,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                                         initialValue: this.state.currentTimerType === TimerType.Day ? DateUtil.utcHourToLocal(schedule.hour).toString() : schedule.hour.toString(),
                                     })(
                                         this.generateHourSelect()
-                                        )}
+                                    )}
                                 </FormItem>
                             </Col>
                         </Row>
@@ -440,7 +440,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                                         initialValue: schedule.environmentId,
                                     })(
                                         this.generateEnvSelect()
-                                        )}
+                                    )}
                                 </FormItem>
                             </Col>
                             <Col span={4}>
@@ -456,7 +456,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                                         >
                                             {Msg('Schedule.compare')}
                                         </Checkbox>
-                                        )}
+                                    )}
                                 </FormItem>
                             </Col>
                             <Col span={10}>
@@ -468,7 +468,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                                         initialValue: schedule.compareEnvironmentId,
                                     })(
                                         this.generateEnvSelect(true)
-                                        )}
+                                    )}
                                 </FormItem>
                             </Col>
                         </Row>
@@ -478,7 +478,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                             initialValue: schedule.notification.toString(),
                         })(
                             this.generateNotificationSelect()
-                            )}
+                        )}
                     </FormItem>
                     <FormItem style={{ display: this.state.showEmails ? '' : 'none' }} {...formItemLayout} label={Msg('Common.Emails')}>
                         {getFieldDecorator('emails', {
@@ -496,7 +496,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                                         initialValue: schedule.mailMode.toString(),
                                     })(
                                         this.generatMailModeSelect()
-                                        )}
+                                    )}
                                 </FormItem>
                             </Col>
                             <Col span={10}>
@@ -512,7 +512,7 @@ class ScheduleEditDialog extends React.Component<ScheduleEditFormProps, Schedule
                                         >
                                             {Msg('Common.MailIncludeSuccessReq')}
                                         </Checkbox>
-                                        )}
+                                    )}
                                 </FormItem>
                             </Col>
                         </Row>

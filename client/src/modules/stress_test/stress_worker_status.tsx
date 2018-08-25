@@ -1,9 +1,9 @@
 import React from 'react';
 import './style/index.less';
-import { WorkerInfo } from '../../../../api/interfaces/dto_stress_setting';
+import { WorkerInfo } from '../../common/interfaces/dto_stress_setting';
 import Indicator from '../../components/indicator';
 import { State } from '../../state/index';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import Msg from '../../locales';
 import LocalesString from '../../locales/string';
 
@@ -52,7 +52,7 @@ const mapStateToProps = (state: State): StressWorkerStatusProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>): StressWorkerStatusDispatchProps => {
+const mapDispatchToProps = (): StressWorkerStatusDispatchProps => {
     return {};
 };
 

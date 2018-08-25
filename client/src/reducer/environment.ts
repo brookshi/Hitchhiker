@@ -2,7 +2,7 @@ import { LoginSuccessType, SyncUserDataSuccessType } from '../action/user';
 import { SwitchEnvType, EditEnvType, QuitProjectType, DisbandProjectType, SaveEnvironmentType, DelEnvironmentType, EditEnvCompletedType } from '../action/project';
 import * as _ from 'lodash';
 import { EnvironmentState, environmentDefaultValue } from '../state/environment';
-import { noEnvironment } from '../common/constants';
+import { noEnvironment } from '../misc/constants';
 
 export function environmentState(state: EnvironmentState = environmentDefaultValue, action: any): EnvironmentState {
     switch (action.type) {

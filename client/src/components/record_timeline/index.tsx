@@ -1,17 +1,17 @@
 import React from 'react';
 import './style/index.less';
 import { Timeline, Modal } from 'antd';
-import { DtoRecord, DtoRecordHistory } from '../../../../api/interfaces/dto_record';
+import { DtoRecord, DtoRecordHistory } from '../../common/interfaces/dto_record';
 import { StringUtil } from '../../utils/string_util';
-import { unknownName } from '../../common/constants';
+import { unknownName } from '../../misc/constants';
 import * as _ from 'lodash';
 import SyntaxHighlighter, { registerLanguage } from 'react-syntax-highlighter/dist/light';
 import js from 'react-syntax-highlighter/dist/languages/javascript';
 import xcode from 'react-syntax-highlighter/dist/styles/xcode';
-import { DiffMode, DiffType } from '../../common/custom_type';
+import { DiffMode, DiffType } from '../../misc/custom_type';
 import { IDiffResult } from 'diff';
 import * as JsDiff from 'diff';
-import { ParameterType } from '../../common/parameter_type';
+import { ParameterType } from '../../misc/parameter_type';
 import Msg from '../../locales';
 
 registerLanguage('javascript', js);

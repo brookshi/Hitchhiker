@@ -1,21 +1,21 @@
 import React from 'react';
-import { DtoSchedule } from '../../../../api/interfaces/dto_schedule';
+import { DtoSchedule } from '../../common/interfaces/dto_schedule';
 import ScheduleItem from './schedule_item';
 import { SelectParam } from 'antd/lib/menu';
-import { DtoUser } from '../../../../api/interfaces/dto_user';
+import { DtoUser } from '../../common/interfaces/dto_user';
 import { StringUtil } from '../../utils/string_util';
 import { Tooltip, Button, Menu, Checkbox } from 'antd';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import ScheduleEditDialog from './schedule_edit_dialog';
-import { Period, TimerType } from '../../common/period';
-import { NotificationMode, MailMode } from '../../common/notification_mode';
-import { noEnvironment, newScheduleName, unknownName } from '../../common/constants';
+import { Period, TimerType } from '../../misc/period';
+import { NotificationMode, MailMode } from '../../misc/notification_mode';
+import { noEnvironment, newScheduleName, unknownName } from '../../misc/constants';
 import { DateUtil } from '../../utils/date_util';
 import * as _ from 'lodash';
 import { ScheduleRunState } from '../../state/schedule';
-import { DtoRecord } from '../../../../api/interfaces/dto_record';
-import { DtoEnvironment } from '../../../../api/interfaces/dto_environment';
-import { DtoCollection } from '../../../../api/interfaces/dto_collection';
+import { DtoRecord } from '../../common/interfaces/dto_record';
+import { DtoEnvironment } from '../../common/interfaces/dto_environment';
+import { DtoCollection } from '../../common/interfaces/dto_collection';
 import Msg from '../../locales';
 
 interface ScheduleListProps {
