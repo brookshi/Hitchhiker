@@ -3,5 +3,5 @@
     "tslint.run": "onSave",
     "todohighlight.include": "{**/*.ts,**/*.html,**/*.php,**/*.css}",
     "auto-close-tag.SublimeText3Mode": true,
-    "typescript.tsdk": "node_modules\\typescript\\lib"
+    "typescript.tsdk": "client\\node_modules\\typescript\\lib"
 }
