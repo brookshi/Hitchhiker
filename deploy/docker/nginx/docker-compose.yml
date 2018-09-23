@@ -6,5 +6,6 @@ services:
     network_mode: host
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
+      # doc volumn
     ports:
       - "80:80"
