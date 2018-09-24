@@ -5,4 +5,6 @@ export interface KeyValuePair {
     value?: string;
 
     isActive: boolean;
+
+    description?: string;
 }

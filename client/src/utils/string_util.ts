@@ -129,15 +129,15 @@ export class StringUtil {
         });
     }
 
-    static headersToString(headers: Array<KeyValuePair>): string {
-        return headers ? headers.map(r => StringUtil.headerToString(r)).join('\n') : '';
+    static headersToString(headers: Array<KeyValuePair>, includeDesc: boolean = false): string {
+        return headers ? headers.map(r => StringUtil.headerToString(r, includeDesc)).join('\n') : '';
     }
 
-    static headerToString(header: KeyValuePair): string {
+    static headerToString(header: KeyValuePair, includeDesc: boolean = false): string {
         const prefix = header.isActive ? '' : '//';
         const key = header.key === undefined || header.key === null ? '' : header.key;
         const value = header.value === undefined || header.value === null ? '' : `:${header.value}`;
-        return `${prefix}${key}${value}`;
+        return `${prefix}${key}${value}${includeDesc ? header.description || '' : ''}`;
     }
 
     static isJson(value: string): boolean {
