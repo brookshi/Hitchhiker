@@ -148,8 +148,7 @@ export class ScheduleService {
         } else if (schedule.timer === TimerType.Hour) {
             return !schedule.lastRunDate || DateUtil.diff(schedule.lastRunDate, DateUtil.getUTCDate(), 'h', 3000) >= schedule.hour;
         } else if (schedule.timer === TimerType.Minute) {
-            const diff = DateUtil.diff(schedule.lastRunDate, DateUtil.getUTCDate(), 'm', 3000);
-            return !schedule.lastRunDate || diff >= schedule.hour;
+            return !schedule.lastRunDate || DateUtil.diff(schedule.lastRunDate, DateUtil.getUTCDate(), 'm', 3000) >= schedule.hour;
         }
         return false;
     }
