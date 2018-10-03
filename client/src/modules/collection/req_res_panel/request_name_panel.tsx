@@ -1,18 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, Alert, Icon, Input } from 'antd';
-import { ValidateStatus, ValidateType } from '../../../misc/custom_type';
+import { Alert, Icon, Input } from 'antd';
 import { actionCreator } from '../../../action/index';
 import { UpdateDisplayRecordPropertyType } from '../../../action/record';
 import { getActiveRecordSelector, getActiveRecordStateSelector } from './selector';
 import { ConflictType } from '../../../misc/conflict_type';
 import { ShowTimelineType, ToggleRequestDescriptionType } from '../../../action/ui';
 import Msg from '../../../locales';
-import LoInput from '../../../locales/input';
 import { State } from '../../../state/index';
 import LocalesString from '../../../locales/string';
+import ValidatedName from '../../../components/validated_name';
 
-const FItem = Form.Item;
 const TextArea = Input.TextArea;
 
 interface RequestNamePanelStateProps {
@@ -43,23 +41,13 @@ interface RequestNamePanelDispatchProps {
 
 type RequestNamePanelProps = RequestNamePanelStateProps & RequestNamePanelDispatchProps;
 
-interface RequestNamePanelState {
-
-    nameValidateStatus?: ValidateStatus;
-}
+interface RequestNamePanelState { }
 
 class RequestNamePanel extends React.Component<RequestNamePanelProps, RequestNamePanelState> {
 
     constructor(props: RequestNamePanelProps) {
         super(props);
         this.state = {};
-    }
-
-    public componentWillReceiveProps(nextProps: RequestNamePanelProps) {
-        this.setState({
-            ...this.state,
-            nameValidateStatus: nextProps.name.trim() === '' ? ValidateType.warning : undefined
-        });
     }
 
     private onNameChanged = (value: string) => {
@@ -81,7 +69,6 @@ class RequestNamePanel extends React.Component<RequestNamePanelProps, RequestNam
 
     public render() {
 
-        const { nameValidateStatus } = this.state;
         const { id, name, description, notShowConflict, conflictType, displayRequestDescription, toggleRequestDescription } = this.props;
         const currentConflictType = notShowConflict ? ConflictType.none : conflictType;
 
@@ -97,20 +84,7 @@ class RequestNamePanel extends React.Component<RequestNamePanelProps, RequestNam
                 <div>
                     <span className="req-panel-name-caret" onClick={() => toggleRequestDescription(id, !displayRequestDescription)}><Icon type={displayRequestDescription ? 'caret-down' : 'caret-right'} /></span>
                     <span className="req-panel">
-                        <Form className="req-panel-form">
-                            <FItem
-                                className="req-name"
-                                hasFeedback={true}
-                                validateStatus={nameValidateStatus}
-                            >
-                                <LoInput
-                                    placeholderId="Collection.EnterNameForRequest"
-                                    spellCheck={false}
-                                    onChange={(e) => this.onNameChanged(e.currentTarget.value)}
-                                    value={name}
-                                />
-                            </FItem>
-                        </Form>
+                        <ValidatedName name={name} onNameChanged={n => this.onNameChanged(n)} />
                     </span>
                 </div>
                 {
