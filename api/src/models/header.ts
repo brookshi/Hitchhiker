@@ -1,5 +1,7 @@
 import { Entity, Column, ManyToOne, PrimaryColumn } from 'typeorm';
 import { Record } from './record';
+import { Mock } from './mock';
+import { MockCollection } from './mock_collection';
 
 @Entity()
 export class Header {
@@ -26,4 +28,10 @@ export class Header {
 
     @ManyToOne(_type => Record, record => record.id)
     record: Record;
+
+    @ManyToOne(_type => Mock, mock => mock.id)
+    mock: Mock;
+
+    @ManyToOne(_type => MockCollection, mockCollection => mockCollection.id)
+    mockCollection: MockCollection;
 }
