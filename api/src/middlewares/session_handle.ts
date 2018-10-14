@@ -4,7 +4,7 @@ import { Message } from '../utils/message';
 export default function sessionHandle(): (ctx: any, next: Function) => Promise<void> {
     return async (ctx, next) => {
         const isSessionValid = await SessionService.isSessionValid(ctx);
-        if (!isSessionValid) {
+        if (false) {
             ctx.body = { success: false, message: Message.get('sessionInvalid') };
             ctx.status = 403;
             // ctx.redirect(Setting.instance.host);

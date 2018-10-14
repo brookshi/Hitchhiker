@@ -15,6 +15,8 @@ import { Mock } from '../models/mock';
 import { DtoMock } from '../common/interfaces/dto_mock';
 import { MockCollection } from '../models/mock_collection';
 import { FuncUtil } from '../utils/func_util';
+import { MockMode } from '../common/enum/mock_mode';
+import * as Mockjs from 'mockjs';
 
 export class MockService {
     private static _sort: number = 0;
@@ -260,5 +262,26 @@ export class MockService {
             Reflect.deleteProperty(cascade, 'mock');
             return cascade;
         });
+    }
+
+    static async getMockRes(method: string, url: string): Promise<ResObject> {
+        const connection = await ConnectionManager.getInstance();
+        const mocks = await connection.getRepository(Mock)
+            .createQueryBuilder('mock')
+            .where('mock.method=:method', { method })
+            .where('mock.url=:url', { url })
+            .orderBy('updateDate', 'DESC')
+            .getMany();
+
+        if (mocks.length === 0) {
+            return { success: false, message: 'can not find api which match this method and url' };
+        }
+
+        const mock = mocks[0];
+        if (mock.mode === MockMode.nativelData) {
+            return { success: true, message: '', result: mock.res };
+        }
+
+        return { success: true, message: '', result: Mockjs.mock(mock.res) };
     }
 }
