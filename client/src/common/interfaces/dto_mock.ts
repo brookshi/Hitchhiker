@@ -2,6 +2,7 @@ import { DtoHeader } from './dto_header';
 import { RecordCategory } from '../enum/record_category';
 import { DtoQueryString, DtoBodyFormData } from './dto_variable';
 import { DataMode } from '../enum/data_mode';
+import { MockMode } from '../enum/mock_mode';
 
 export interface DtoMock {
 
@@ -12,6 +13,8 @@ export interface DtoMock {
     pid?: string;
 
     category: RecordCategory;
+
+    mode: MockMode;
 
     name: string;
 
@@ -28,6 +31,8 @@ export interface DtoMock {
     body?: string;
 
     dataMode?: DataMode;
+
+    res?: string;
 
     sort?: number;
 

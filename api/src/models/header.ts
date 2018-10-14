@@ -30,8 +30,5 @@ export class Header {
     record: Record;
 
     @ManyToOne(_type => Mock, mock => mock.id)
-    mock: Mock;
-
-    @ManyToOne(_type => MockCollection, mockCollection => mockCollection.id)
-    mockCollection: MockCollection;
+    mock?: Mock;
 }

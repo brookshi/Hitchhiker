@@ -2,7 +2,7 @@ import { Entity, PrimaryColumn, Column, CreateDateColumn, OneToOne, OneToMany, J
 import { User } from './user';
 import { Project } from './project';
 import { Mock } from './mock';
-import { Header } from './header';
+import { DtoHeader } from '../common/interfaces/dto_header';
 
 @Entity()
 export class MockCollection {
@@ -34,11 +34,8 @@ export class MockCollection {
     @Column({ default: true })
     public: boolean;
 
-    @OneToMany(_type => Header, header => header.mockCollection, {
-        cascadeInsert: true,
-        cascadeUpdate: true
-    })
-    headers: Header[];
+    @Column('json', { nullable: true })
+    headers: DtoHeader[];
 
     @CreateDateColumn()
     createDate: Date;

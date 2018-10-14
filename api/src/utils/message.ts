@@ -1,4 +1,4 @@
-import { Setting } from '../utils/setting';
+import { Setting } from './setting';
 
 export class Message {
 

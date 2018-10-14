@@ -8,6 +8,7 @@ import { Header } from '../models/header';
 import * as _ from 'lodash';
 import { DataMode } from '../common/enum/data_mode';
 import { ConsoleMessage } from '../services/console_message';
+import { FuncUtil } from '../utils/func_util';
 
 export class RequestOptionAdapter {
     static async fromRecord(record: RecordEx, cm: ConsoleMessage): Promise<Options> {
@@ -21,8 +22,8 @@ export class RequestOptionAdapter {
         const option: Options = {
             url: StringUtil.tryAddHttpPrefix(StringUtil.fixedEncodeURI(StringUtil.stringifyUrl(record.url, record.queryStrings))),
             method: record.method,
-            headers: RecordService.formatKeyValue(record.headers),
-            form: record.dataMode === DataMode.urlencoded ? RecordService.formatKeyValue(record.formDatas) : undefined,
+            headers: FuncUtil.formatKeyValue(record.headers),
+            form: record.dataMode === DataMode.urlencoded ? FuncUtil.formatKeyValue(record.formDatas) : undefined,
             body: record.dataMode === DataMode.urlencoded ? null : record.body,
             strictSSL: reqStrictSSL,
             followRedirect: reqFollowRedirect,

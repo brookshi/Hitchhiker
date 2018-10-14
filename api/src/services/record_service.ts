@@ -22,6 +22,7 @@ import { FormDataService } from './form_data_service';
 import { QueryString } from '../models/query_string';
 import { BodyFormData } from '../models/body_form_data';
 import { ConsoleMessage } from './console_message';
+import { FuncUtil } from '../utils/func_util';
 
 export class RecordService {
     private static _sort: number = 0;
@@ -72,40 +73,6 @@ export class RecordService {
 
     static toDto(target: Record): DtoRecord {
         return <DtoRecord><any>{ ...target, collectionId: target.collection.id };
-    }
-
-    static formatHeaders(record: Record): { [key: string]: string } {
-        let headers: { [key: string]: string } = {};
-        record.headers.forEach(o => {
-            if (o.isActive) {
-                headers[o.key] = o.value;
-            }
-        });
-        return headers;
-    }
-
-    static formatKeyValue(keyValues: { key: string, value: string, isActive: boolean }[]) {
-        let objs: { [key: string]: string } = {};
-        keyValues.forEach(o => {
-            if (o.isActive) {
-                objs[o.key] = o.value;
-            }
-        });
-        return objs;
-    }
-
-    static restoreKeyValue<T>(obj: { [key: string]: string }, fromDto: (dto: { isActive: boolean, key: string, value: string, id: string, sort: number }) => T) {
-        const keyValues = [];
-        _.keys(obj || {}).forEach(k => {
-            keyValues.push(fromDto({
-                isActive: true,
-                key: k,
-                value: obj[k],
-                id: '',
-                sort: 0
-            }));
-        });
-        return keyValues;
     }
 
     static clone(record: Record): Record {
@@ -182,9 +149,9 @@ export class RecordService {
 
     static async create(record: Record, user: User): Promise<ResObject> {
         record.sort = await this.getMaxSort();
-        this.adjustAttachs(record.headers);
-        this.adjustAttachs(record.formDatas);
-        this.adjustAttachs(record.queryStrings);
+        FuncUtil.adjustAttachs(record.headers);
+        FuncUtil.adjustAttachs(record.formDatas);
+        FuncUtil.adjustAttachs(record.queryStrings);
         return await this.save(record, user);
     }
 
@@ -203,9 +170,9 @@ export class RecordService {
                 await connection.getRepository(BodyFormData).remove(recordInDB.formDatas);
             }
         }
-        this.adjustAttachs(record.headers);
-        this.adjustAttachs(record.formDatas);
-        this.adjustAttachs(record.queryStrings);
+        FuncUtil.adjustAttachs(record.headers);
+        FuncUtil.adjustAttachs(record.formDatas);
+        FuncUtil.adjustAttachs(record.queryStrings);
         return await this.save(record, user);
     }
 
@@ -226,9 +193,9 @@ export class RecordService {
 
     static async deleteRecord(id: string): Promise<ResObject> {
         await Promise.all([
-            HeaderService.deleteForRecord(id),
-            QueryStringService.deleteForRecord(id),
-            FormDataService.deleteForRecord(id)
+            HeaderService.deleteForHost('record', id),
+            QueryStringService.deleteForHost('record', id),
+            FormDataService.deleteForHost('record', id)
         ]);
 
         const connection = await ConnectionManager.getInstance();
@@ -240,16 +207,6 @@ export class RecordService {
                 .execute();
         });
         return { success: true, message: Message.get('recordDeleteSuccess') };
-    }
-
-    private static adjustAttachs<T extends { id: string, sort: number }>(attachs: T[]) {
-        if (!attachs) {
-            return;
-        }
-        attachs.forEach((attach, index) => {
-            attach.id = attach.id || StringUtil.generateUID();
-            attach.sort = index;
-        });
     }
 
     static async getMaxSort(): Promise<number> {

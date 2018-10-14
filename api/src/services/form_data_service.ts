@@ -21,11 +21,12 @@ export class FormDataService {
         return target;
     }
 
-    static async deleteForRecord(recordId: string) {
+    static async deleteForHost(hostName: string, hostId: string) {
         const connection = await ConnectionManager.getInstance();
-        await connection.getRepository(BodyFormData).createQueryBuilder('formData')
+        await connection.getRepository(BodyFormData)
+            .createQueryBuilder('formData')
             .delete()
-            .where('formData.record=:id', { id: recordId })
+            .where(`${hostName}Id=:id`, { id: hostId })
             .execute();
     }
 }

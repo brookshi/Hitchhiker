@@ -17,6 +17,7 @@ import { ValidateUtil } from '../utils/validate_util';
 import { FormDataService } from '../services/form_data_service';
 import { ConsoleMessage } from '../services/console_message';
 import { ConsoleMsg } from '../common/interfaces/dto_res';
+import { FuncUtil } from '../utils/func_util';
 
 type BatchRunResult = RunResult | _.Dictionary<RunResult>;
 
@@ -153,7 +154,7 @@ export class RecordRunner {
         const prescriptResult = await ScriptRunner.prerequest(record);
         const { request } = prescriptResult.result;
         if (prescriptResult.success) {
-            record = { ...record, ...request, headers: RecordService.restoreKeyValue(request.headers, HeaderService.fromDto), queryStrings: [], formDatas: RecordService.restoreKeyValue(request.formDatas, FormDataService.fromDto) };
+            record = { ...record, ...request, headers: FuncUtil.restoreKeyValue(request.headers, HeaderService.fromDto), queryStrings: [], formDatas: FuncUtil.restoreKeyValue(request.formDatas, FormDataService.fromDto) };
         }
         return { prescriptResult, record };
     }

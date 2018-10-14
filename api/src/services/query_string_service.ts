@@ -21,11 +21,12 @@ export class QueryStringService {
         return target;
     }
 
-    static async deleteForRecord(recordId: string) {
+    static async deleteForHost(hostName: string, hostId: string) {
         const connection = await ConnectionManager.getInstance();
-        await connection.getRepository(QueryString).createQueryBuilder('queryString')
+        await connection.getRepository(QueryString)
+            .createQueryBuilder('queryString')
             .delete()
-            .where('queryString.record=:id', { id: recordId })
+            .where(`${hostName}Id=:id`, { id: hostId })
             .execute();
     }
 }

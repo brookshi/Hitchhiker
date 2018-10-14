@@ -22,11 +22,12 @@ export class HeaderService {
         return target;
     }
 
-    static async  deleteForRecord(recordId: string) {
+    static async  deleteForHost(hostName: string, hostId: string) {
         const connection = await ConnectionManager.getInstance();
-        await connection.getRepository(Header).createQueryBuilder('header')
+        await connection.getRepository(Header)
+            .createQueryBuilder('header')
             .delete()
-            .where('header.record=:id', { id: recordId })
+            .where(`${hostName}Id=:id`, { id: hostId })
             .execute();
     }
 }
