@@ -4,14 +4,14 @@ import ItemWithMenu from '../item_with_menu';
 import './style/index.less';
 import { Menu, Icon, Badge } from 'antd';
 import { confirmDlg } from '../confirm_dialog/index';
-import { DtoRecord } from '../../common/interfaces/dto_record';
+import { DtoBaseItem, DtoRecord } from '../../common/interfaces/dto_record';
 import { StringUtil } from '../../utils/string_util';
 import Msg from '../../locales';
 import LocalesString from '../../locales/string';
 
 interface RecordItemProps {
 
-    record: DtoRecord;
+    item: DtoBaseItem;
 
     inFolder: boolean;
 
@@ -21,9 +21,9 @@ interface RecordItemProps {
 
     duplicateRecord();
 
-    moveRecordToFolder(record: DtoRecord, collectionId?: string, folderId?: string);
+    moveRecordToFolder(record: DtoBaseItem, collectionId?: string, folderId?: string);
 
-    moveToCollection(record: DtoRecord, collection?: string);
+    moveToCollection(record: DtoBaseItem, collection?: string);
 
     showTimeline();
 }
@@ -39,12 +39,16 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
     }
 
     public shouldComponentUpdate(nextProps: RecordItemProps, _nextState: RecordItemState) {
-        return this.props.record.id !== nextProps.record.id ||
-            this.props.record.name !== nextProps.record.name ||
-            this.props.record.method !== nextProps.record.method ||
-            this.props.record.parameters !== nextProps.record.parameters ||
-            this.props.record.parameterType !== nextProps.record.parameterType ||
-            this.props.record.reduceAlgorithm !== nextProps.record.reduceAlgorithm ||
+        const preRecord = this.props.item as DtoRecord;
+        const nextRecord = nextProps.item as DtoRecord;
+
+        return this.props.item.id !== nextProps.item.id ||
+            this.props.item.name !== nextProps.item.name ||
+            this.props.item.method !== nextProps.item.method ||
+            (preRecord && nextRecord &&
+                preRecord.parameters !== nextRecord.parameters ||
+                preRecord.parameterType !== nextRecord.parameterType ||
+                preRecord.reduceAlgorithm !== nextRecord.reduceAlgorithm) ||
             this.props.inFolder !== nextProps.inFolder;
     }
 
@@ -79,7 +83,7 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
     }
 
     private dragStart = (e) => {
-        e.dataTransfer.setData('record', JSON.stringify(this.props.record));
+        e.dataTransfer.setData('record', JSON.stringify(this.props.item));
     }
 
     private dragOver = (e) => {
@@ -87,14 +91,14 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
     }
 
     private drop = (e) => {
-        const currentRecord = this.props.record;
+        const currentRecord = this.props.item;
         if (this.checkTransferFlag(e, 'record')) {
-            const transferRecord = JSON.parse(e.dataTransfer.getData('record')) as DtoRecord;
+            const transferRecord = JSON.parse(e.dataTransfer.getData('record')) as DtoBaseItem;
             if (transferRecord.pid !== currentRecord.pid || transferRecord.collectionId !== currentRecord.collectionId) {
                 this.props.moveRecordToFolder(transferRecord, currentRecord.collectionId, currentRecord.pid);
             }
         } else if (this.checkTransferFlag(e, 'folder')) {
-            const folder = JSON.parse(e.dataTransfer.getData('folder')) as DtoRecord;
+            const folder = JSON.parse(e.dataTransfer.getData('folder')) as DtoBaseItem;
             if (folder.collectionId !== currentRecord.collectionId) {
                 this.props.moveToCollection(folder, currentRecord.collectionId);
             }
@@ -102,11 +106,12 @@ class RecordItem extends React.Component<RecordItemProps, RecordItemState> {
     }
 
     public render() {
-        let { record, inFolder, readOnly } = this.props;
-        let { method, name } = record;
+        let { item, inFolder, readOnly } = this.props;
+        let { method, name } = item;
         method = method || 'GET';
-        const paramReqInfo = StringUtil.verifyParameters(record.parameters || '', record.parameterType);
-        const reqCount = StringUtil.getUniqParamArr(record.parameters || '', record.parameterType, record.reduceAlgorithm).length;
+        const record = item as DtoRecord;
+        const paramReqInfo = record ? StringUtil.verifyParameters(record.parameters || '', record.parameterType) : { isValid: false };
+        const reqCount = record ? StringUtil.getUniqParamArr(record.parameters || '', record.parameterType, record.reduceAlgorithm).length : 0;
 
         return (
             <div

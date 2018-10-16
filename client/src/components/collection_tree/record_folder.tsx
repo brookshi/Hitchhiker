@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon, Menu } from 'antd';
 import ItemWithMenu from '../item_with_menu';
 import './style/index.less';
-import { DtoRecord } from '../../common/interfaces/dto_record';
+import { DtoBaseItem } from '../../common/interfaces/dto_record';
 import { confirmDlg } from '../confirm_dialog/index';
 import { getDefaultRecord } from '../../state/collection';
 import { StringUtil } from '../../utils/string_util';
@@ -11,7 +11,7 @@ import LocalesString from '../../locales/string';
 
 interface RecordFolderProps {
 
-    folder: DtoRecord;
+    folder: DtoBaseItem;
 
     isOpen: boolean;
 
@@ -19,13 +19,13 @@ interface RecordFolderProps {
 
     deleteRecord();
 
-    createRecord(record: DtoRecord);
+    createRecord(record: DtoBaseItem);
 
     onNameChanged(name: string);
 
-    moveRecordToFolder(record: DtoRecord, collectionId?: string, folderId?: string);
+    moveRecordToFolder(record: DtoBaseItem, collectionId?: string, folderId?: string);
 
-    moveToCollection(folder: DtoRecord, collectionId?: string);
+    moveToCollection(folder: DtoBaseItem, collectionId?: string);
 
     editCommonSetting();
 }
@@ -79,7 +79,7 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
 
     delete = () => confirmDlg(LocalesString.get('Collection.DeleteFolder'), () => this.props.deleteRecord(), LocalesString.get('Collection.DeleteThisFolder'));
 
-    createRecord = () => this.props.createRecord({ ...getDefaultRecord(false), collectionId: this.props.folder.collectionId, pid: this.props.folder.id, id: StringUtil.generateUID() });
+    createRecord = () => this.props.createRecord({ ...getDefaultRecord(false) as DtoBaseItem, collectionId: this.props.folder.collectionId, pid: this.props.folder.id, id: StringUtil.generateUID() });
 
     edit = () => {
         if (this.itemWithMenu) {
@@ -114,7 +114,7 @@ class RecordFolder extends React.Component<RecordFolderProps, RecordFolderState>
             const record = JSON.parse(e.dataTransfer.getData('record'));
             this.props.moveRecordToFolder(record, this.props.folder.collectionId, this.props.folder.id);
         } else if (this.checkTransferFlag(e, 'folder')) {
-            const folder = JSON.parse(e.dataTransfer.getData('folder')) as DtoRecord;
+            const folder = JSON.parse(e.dataTransfer.getData('folder')) as DtoBaseItem;
             if (folder.collectionId !== this.props.folder.collectionId) {
                 this.props.moveToCollection(folder, this.props.folder.collectionId);
             }

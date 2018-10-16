@@ -5,7 +5,7 @@ import { State } from '../../state';
 import RecordFolder from './record_folder';
 import RecordItem from './record_item';
 import CollectionItem from './collection_item';
-import { DtoRecord } from '../../common/interfaces/dto_record';
+import { DtoBaseItem, DtoRecord } from '../../common/interfaces/dto_record';
 import * as _ from 'lodash';
 import { DtoCollection, DtoCommonSetting } from '../../common/interfaces/dto_collection';
 import { RecordCategory } from '../../misc/record_category';
@@ -50,7 +50,7 @@ interface CollectionListStateProps extends OwnProps {
 
     collections: DtoCollection[];
 
-    records: _.Dictionary<_.Dictionary<DtoRecord>>;
+    records: _.Dictionary<_.Dictionary<DtoBaseItem>>;
 
     projects: { id: string, name: string }[];
 
@@ -61,23 +61,23 @@ interface CollectionListStateProps extends OwnProps {
 
 interface CollectionListDispatchProps {
 
-    activeRecord: (type: string, record: DtoRecord) => void;
+    activeRecord: (type: string, record: DtoBaseItem) => void;
 
-    deleteRecord(id: string, records: _.Dictionary<DtoRecord>);
+    deleteRecord(id: string, records: _.Dictionary<DtoBaseItem>);
 
     deleteCollection(id: string);
 
-    updateRecord(record: DtoRecord);
+    updateRecord(record: DtoBaseItem);
 
     saveCollection(collection: DtoCollection);
 
     updateCollection(collection: DtoCollection);
 
-    duplicateRecord(record: DtoRecord);
+    duplicateRecord(record: DtoBaseItem);
 
-    createRecord(record: DtoRecord);
+    createRecord(record: DtoBaseItem);
 
-    moveRecord(record: DtoRecord);
+    moveRecord(record: DtoBaseItem);
 
     openKeysChanged(type: string, openKeys: string[]);
 
@@ -106,14 +106,14 @@ interface CollectionListState {
 
     currentOperatedCollection?: DtoCollection;
 
-    currentOperatedFolder?: DtoRecord;
+    currentOperatedFolder?: DtoBaseItem;
 
     commonSettingType: 'Collection' | 'Folder';
 }
 
 class CollectionList extends React.Component<CollectionListProps, CollectionListState> {
 
-    private currentNewFolder: DtoRecord | undefined;
+    private currentNewFolder: DtoBaseItem | undefined;
     private folderRefs: _.Dictionary<RecordFolder | null> = {};
     private newCollectionNameRef: Input | null;
 
@@ -139,7 +139,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         }
     }
 
-    private createRecord = (record: DtoRecord) => {
+    private createRecord = (record: DtoBaseItem) => {
         if (!record) {
             return;
         }
@@ -164,7 +164,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         }
     }
 
-    private changeFolderName = (folder: DtoRecord, name: string) => {
+    private changeFolderName = (folder: DtoBaseItem, name: string) => {
         if (name.trim() !== '' && name !== folder.name) {
             this.props.updateRecord({ ...folder, name });
         }
@@ -176,11 +176,11 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         }
     }
 
-    private moveRecordToFolder = (record: DtoRecord, collectionId: string, folderId: string) => {
+    private moveRecordToFolder = (record: DtoBaseItem, collectionId: string, folderId: string) => {
         this.props.moveRecord({ ...record, pid: folderId, collectionId });
     }
 
-    private moveToCollection = (record: DtoRecord, collectionId: string) => {
+    private moveToCollection = (record: DtoBaseItem, collectionId: string) => {
         this.props.moveRecord({ ...record, collectionId, pid: '' });
         if (record.category === RecordCategory.folder) {
             _.values(this.props.records[record.collectionId]).filter(r => r.pid === record.id).forEach(r => {
@@ -224,7 +224,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
         this.setState({ ...this.state, isProjectSelectedDlgOpen: false, newCollectionName: newCollectionName(), selectedProjectInDlg: undefined });
     }
 
-    private duplicateRecord = (record: DtoRecord) => {
+    private duplicateRecord = (record: DtoBaseItem) => {
         let headers = record.headers;
         let queryStrings = record.queryStrings;
         let formDatas = record.formDatas;
@@ -253,12 +253,12 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                 this.props.updateCollection({ ...currentOperatedCollection, commonSetting });
             }
         } else if (currentOperatedFolder) {
-            this.props.updateRecord({ ...currentOperatedFolder, ...commonSetting });
+            this.props.updateRecord({ ...currentOperatedFolder, ...commonSetting } as DtoRecord);
         }
         this.setState({ ...this.state, isCommonSettingDlgOpen: false });
     }
 
-    private loopRecords = (data: DtoRecord[], cid: string, inFolder: boolean = false) => {
+    private loopRecords = (data: DtoBaseItem[], cid: string, inFolder: boolean = false) => {
         const { openKeys, records, deleteRecord, showTimeLine, readOnly } = this.props;
 
         return data.map(r => {
@@ -293,7 +293,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             return (
                 <MenuItem key={r.id} style={recordStyle} data={r}>
                     <RecordItem
-                        record={{ ...r }}
+                        item={{ ...r }}
                         inFolder={inFolder}
                         moveRecordToFolder={this.moveRecordToFolder}
                         moveToCollection={this.moveToCollection}
@@ -328,10 +328,11 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
             }
             commonSetting = { ...currentOperatedCollection.commonSetting, prescript: currentOperatedCollection.commonSetting ? currentOperatedCollection.commonSetting.prescript : currentOperatedCollection.commonPreScript };
         } else {
-            if (!currentOperatedFolder) {
+            const folder = currentOperatedFolder as DtoRecord;
+            if (!folder) {
                 return;
             }
-            commonSetting = { prescript: currentOperatedFolder.prescript || '', headers: currentOperatedFolder.headers || [], test: currentOperatedFolder.test || '' };
+            commonSetting = { prescript: folder.prescript || '', headers: folder.headers || [], test: folder.test || '' };
         }
 
         return (
@@ -418,7 +419,7 @@ class CollectionList extends React.Component<CollectionListProps, CollectionList
                         {
                             collections.map(c => {
                                 const recordCount = _.values(records[c.id]).filter(r => r.category === RecordCategory.record).length;
-                                let sortRecords = _.chain(records[c.id]).values<DtoRecord>().sortBy(['category', 'name']).value();
+                                let sortRecords = _.chain(records[c.id]).values<DtoBaseItem>().sortBy(['category', 'name']).value();
 
                                 return (
                                     <SubMenu

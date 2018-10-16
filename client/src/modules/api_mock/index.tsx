@@ -1,20 +1,30 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import ValidatedName from '../../components/validated_name';
+import { actionCreator } from '../../action';
 
-interface ApiMockStateProps { }
+interface ApiMockStateProps {
+}
 
-interface ApiMockDispatchProps { }
+interface ApiMockDispatchProps {
+
+    changeRecord(value: { [key: string]: any });
+}
 
 type ApiMockProps = ApiMockStateProps & ApiMockDispatchProps;
 
 interface ApiMockState { }
 
 class ApiMock extends React.Component<ApiMockProps, ApiMockState> {
+
+    private onNameChanged = (value: string) => {
+        this.props.changeRecord({ 'name': value });
+    }
+
     public render() {
         return (
-            <div className="taken-sentence">
-                <div>I don’t know if we each have a destiny, or if we’re all just floating around accidental—like on a breeze.</div>
-                <div>-- Forrest Gump</div>
+            <div>
+                <ValidatedName name={name} onNameChanged={n => this.onNameChanged(n)} />
             </div>
         );
     }
@@ -26,9 +36,9 @@ const mapStateToProps = (state: any): ApiMockStateProps => {
     };
 };
 
-const mapDispatchToProps = (): ApiMockDispatchProps => {
+const mapDispatchToProps = (dispatch: any): ApiMockDispatchProps => {
     return {
-        // ...mapDispatchToProps
+        changeRecord: (value) => dispatch(actionCreator('', value)),
     };
 };
 

@@ -8,7 +8,7 @@ import { DtoQueryString, DtoBodyFormData } from './dto_variable';
 import { DataMode } from '../enum/data_mode';
 import * as _ from 'lodash';
 
-export interface DtoRecord {
+export interface DtoBaseItem {
 
     id: string;
 
@@ -30,15 +30,24 @@ export interface DtoRecord {
 
     headers?: DtoHeader[];
 
+    body?: string;
+
+    dataMode?: DataMode;
+
+    sort?: number;
+
+    description?: string;
+
+    children?: DtoBaseItem[];
+}
+
+export interface DtoRecord extends DtoBaseItem {
+
     history?: DtoRecordHistory[];
 
     assertInfos?: _.Dictionary<DtoAssert[]>;
 
-    body?: string;
-
     bodyType?: BodyType;
-
-    dataMode?: DataMode;
 
     parameters?: string;
 
@@ -49,12 +58,6 @@ export interface DtoRecord {
     prescript?: string;
 
     test?: string;
-
-    sort?: number;
-
-    description?: string;
-
-    children?: DtoRecord[];
 }
 
 export interface DtoRecordHistory {
