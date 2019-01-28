@@ -119,6 +119,7 @@ class ReqResPanel extends React.Component<ReqResPanelProps, ReqResPanelState> {
     private getUsingProperties = (props: ReqResPanelProps) => {
         return {
             activeKey: props.activeKey,
+            activeEnvId: props.activeEnvId,
             isResPanelMaximum: props.isResPanelMaximum,
             activeReqTab: props.activeReqTab,
             isRequesting: props.isRequesting,
